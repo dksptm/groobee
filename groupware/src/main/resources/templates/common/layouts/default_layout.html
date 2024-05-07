@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--공통 JS / CSS 영역을 관리하는 환경 영역-->
+<head th:replace="common/configs/config :: ConfigFragment">
+<title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">그룹웨어-3조</title>
+</head>
+
+<body>
+<div class="container">
+	<header>
+		<th:block th:replace="common/fragments/header :: HeaderFragment" />
+	</header>
+	
+	<main>
+		<!-- Content 영역. (동적으로 변하는 영역)(여기서부터 라이브러리 적용) -->
+		<th:block layout:fragment="Content"></th:block>
+	</main>
+	
+	<footer>
+		<th:block th:replace="common/fragments/footer :: FooterFragment" />
+	</footer>
+</div>
+
+</body>
+</html>
