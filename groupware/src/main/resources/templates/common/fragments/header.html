@@ -2,9 +2,33 @@
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <th:block th:fragment="HeaderFragment">
-	<div class="bg-primary">
-		<p>헤더영역</p>
-	</div>
+	<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+		 id="layout-navbar">
+		<div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+			<a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+				<i class="bx bx-menu bx-sm"></i>
+			</a>
+		</div>
+
+		<div class="navbar-nav-right d-flex align-items-center"
+			 id="navbar-collapse">
+			<!-- Search -->
+			<div class="navbar-nav align-items-center">
+				<div class="nav-item d-flex align-items-center"></div>
+			</div>
+			<!-- /Search -->
+
+			<ul class="navbar-nav flex-row align-items-center ms-auto">
+				<!-- User -->
+				<i class="bx bx-user me-2"></i>
+				<div class="user">테스트님</div>
+				&emsp;
+				<form action="/" method="post">
+					<input type="submit" value="로그아웃" class="btn btn-dark">
+				</form>
+			</ul>
+		</div>
+	</nav>
 </th:block>
 
 </html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<th:block th:fragment="MenuFragment">
+	<div class="app-brand demo">
+		<a href="/" class="app-brand-link"> 
+			<span class="app-brand-logo demo">
+				<img src="/assets/img/logo.png" width="200px">
+			</span>
+		</a>
+	</div>
+
+	<div class="menu-inner-shadow"></div>
+
+	<ul class="menu-inner py-1 overflow-auto">
+	
+		<!-- Dashboard -->
+		<li class="menu-item">
+			<a href="/" class="menu-link">
+				<i class="menu-icon tf-icons bx bx-home-circle"></i>
+				<div data-i18n="Analytics">메인</div>
+			</a>
+		</li>
+
+		<li class="menu-item">
+			<a href="/" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-dock-top"></i>
+				<div>메일</div>
+			</a>
+			<ul class="menu-sub">
+				<li class="menu-item">11
+				</li>
+				<li class="menu-item">22
+				</li>
+			</ul>
+		</li>
+		<li class="menu-item">
+			<a href="/" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+				<div data-i18n="Authentications">근태관리</div>
+			</a>
+			<ul class="menu-sub">
+				<li class="menu-item">
+				</li>
+				<li class="menu-item">
+				</li>
+			</ul>
+		</li>
+	</ul>
+</th:block>
+
+</html>

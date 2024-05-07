@@ -1,26 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <!--공통 JS / CSS 영역을 관리하는 환경 영역-->
 <head th:replace="common/configs/config :: ConfigFragment">
-<title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">그룹웨어-3조</title>
+<title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">공통타이틀</title>
 </head>
 
 <body>
-<div class="container">
-	<header>
-		<th:block th:replace="common/fragments/header :: HeaderFragment" />
-	</header>
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar">
+	<!-- /Layout container -->
+	<div class="layout-container">
 	
-	<main>
-		<!-- Content 영역. (동적으로 변하는 영역)(여기서부터 라이브러리 적용) -->
-		<th:block layout:fragment="Content"></th:block>
-	</main>
-	
-	<footer>
-		<th:block th:replace="common/fragments/footer :: FooterFragment" />
-	</footer>
+		<!-- Menu 영역 -->
+		<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" data-bg-class="bg-menu-theme">
+			<th:block th:replace="common/fragments/menu :: MenuFragment" />
+		</aside>
+		
+		<!-- Main 영역 -->
+		<div class="layout-page">
+		<header>
+			<th:block th:replace="common/fragments/header :: HeaderFragment" />
+		</header>
+		
+		<main>
+			<!-- Content 영역. (동적으로 변하는 영역)(여기서부터 라이브러리 적용) -->
+			<th:block layout:fragment="Content"></th:block>
+		</main>
+		
+		<footer>
+			<th:block th:replace="common/fragments/footer :: FooterFragment" />
+		</footer>
+		
+		</div>
+		<!-- /Main 영역 -->
+	</div>
+	<!-- /Layout container -->
 </div>
+<!-- /Layout wrapper -->
 
 </body>
 </html>
