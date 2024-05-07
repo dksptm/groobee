@@ -62,7 +62,7 @@
 			<version>2.3.2</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- log -->
+		<!-- SQL Log -->
 		<dependency>
 			<groupId>org.bgee.log4jdbc-log4j2</groupId>
 			<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
@@ -74,6 +74,10 @@
 		    <artifactId>thymeleaf-layout-dialect</artifactId>
 		    <version>3.2.1</version>
 		</dependency>
+		<!-- AOP : aspect-->
+		<!-- Spring Security -->
+		<!-- Thymeleaf + Security -->
+		<!-- properties encryption -->
 	</dependencies>
 
 	<build>
