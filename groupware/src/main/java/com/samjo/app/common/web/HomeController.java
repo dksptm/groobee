@@ -11,4 +11,13 @@ public class HomeController {
 		return "test/test";
 	}
 
+	@GetMapping("/basic")
+	public String BasicPage() {
+		return "common/basic";
+	}
+	
+	@GetMapping("/introduce")
+	public String IntroducePage() {
+		return "common/introduce";
+	}
 }
