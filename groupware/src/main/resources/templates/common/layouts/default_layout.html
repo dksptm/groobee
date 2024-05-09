@@ -2,15 +2,15 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<!--공통 JS / CSS 영역을 관리하는 환경 영역-->
+<!-- head(config) 영역-->
 <head th:replace="common/configs/config :: ConfigFragment">
-<title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">공통타이틀</title>
+	<title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">공통타이틀</title>
 </head>
 
 <body>
 <!-- Layout wrapper -->
 <div class="layout-wrapper layout-content-navbar">
-	<!-- /Layout container -->
+	<!-- Layout container -->
 	<div class="layout-container">
 	
 		<!-- Menu 영역 -->
@@ -24,15 +24,14 @@
 			<th:block th:replace="common/fragments/header :: HeaderFragment" />
 		</header>
 		
+		<!-- Content 영역.-->
 		<main>
-			<!-- Content 영역. (동적으로 변하는 영역)(여기서부터 라이브러리 적용) -->
 			<th:block layout:fragment="Content"></th:block>
 		</main>
 		
-		<footer>
+		<footer class="mt-auto">
 			<th:block th:replace="common/fragments/footer :: FooterFragment" />
 		</footer>
-		
 		</div>
 		<!-- /Main 영역 -->
 	</div>
