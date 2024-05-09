@@ -5,8 +5,7 @@
 <body>
 <th:block layout:fragment="Content">
 	<div class="d-flex justify-content-center">
-		<form name="insertForm" th:action="@{/apr/docInsert}" method="post" th:object="${doc}" class="card my-4 col-10">
-		<div>
+		<form name="insertForm" th:action="@{/docInsert}" method="post" th:object="${doc}" class="card my-4 col-10">
 			<h5 class="card-header">문서작성</h5>
 			<div class="card-body">
                 <div class="mt-3">
@@ -39,7 +38,6 @@
                 	<button type="submit" class="btn rounded-pill btn-primary">작성완료</button>
                 </div>
 			</div>
-		</div>
 		</form>
 	</div>
 </th:block>

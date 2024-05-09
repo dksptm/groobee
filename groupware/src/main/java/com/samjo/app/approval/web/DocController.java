@@ -19,13 +19,23 @@ public class DocController {
 		this.docService = docService;
 	}
 	
-	@GetMapping("/apr/docInsert")
+	@GetMapping("/hjTest")
+	public String test() {
+		return "approval/doc/test";
+	}
+	
+	@GetMapping("/docInfo")
+	public String docInfo() {
+		return "approval/doc/info";
+	}
+	
+	@GetMapping("/docInsert")
 	public String dobInsertForm(Model model) {
 		model.addAttribute("doc", new DocVO());
 		return "approval/doc/insert";
 	}
 	
-	@PostMapping("/apr/docInsert")
+	@PostMapping("/docInsert")
 	public String docInsertProcess(DocVO docVO) {
 		docService.docInfoInsert(docVO);
 		return "test/test";
