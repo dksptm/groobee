@@ -3,6 +3,38 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.DocMapper">
+	<insert id="insertDoc" parameterType="DocVO">
+		<selectKey keyProperty="docNo"
+			       resultType="Integer"
+				   order="BEFORE">
+			SELECT NVL(MAX(doc_no), 0) + 1 
+			FROM doc
+		</selectKey>
+		INSERT INTO doc
+				(
+					doc_no,
+	                draft,
+	                dept_id,
+	                title,
+	                <if test="cntn != null and !cntn.equals('')">
+	                cntn,
+	                </if>
+	                temp_id,
+	                final_line
+				)
+	  	  VALUES
+	  	  		(
+	  	  			#{docNo},
+			        'YDE005E',
+			        'YDE01D',
+			        #{title},
+			        <if test="cntn != null and !cntn.equals('')">
+			        #{cntn},
+			        </if>
+			        #{tempId},
+			        #{finalLine}
+			     )
+	</insert>
 
 </mapper>
   
