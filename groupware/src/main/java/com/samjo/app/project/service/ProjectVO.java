@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class ProjectVO {
+	
 	// 업무공통
 	private int taskNo;
 	private String taskName;
@@ -35,15 +36,7 @@ public class ProjectVO {
 	private Date prjtStartDt;
 	private Date prjtDueDT;
 	private String respMngrId;
-	
-	//협력업체
-	private int coopCoNo;
-	private String coName;
-	private String coTel;
-	private String pic;
-	private String custAddr;
-	private String cntn;
-	
+ 
 	// 업무참여자
 	private String taskEmpId;
 	private String deptName;
