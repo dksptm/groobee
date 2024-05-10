@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="container">
+			<form name="insertForm" th:action="@{/prjtInsert}" method="post"
+				th:object="${projects}">
+				<label for="title" class="col-md-2 col-form-label">프로젝트 등록</label>
+				<select class="form-select" th:field="*{prjtId}">
+                        <option value="prjtTop">프로젝트 등록</option>
+                        <option value="prjtBottom">프로젝트 업무등록</option>
+                        <option value="prjtRegu">상시업무 등록</option>
+                    </select>
+				<table id="form" class="table">
+					<tr>
+						<th>프로젝트ID</th>
+						<td><input type="text" th:field="*{prjtId}"></td>
+					</tr>
+					<tr>
+						<th>프로젝트명</th>
+						<td><input type="text" th:field="*{prjtName}"></td>
+					</tr>
+					<tr>
+						<th>부서명</th>
+						<td><input type="text" th:field="*{deptName}"></td>
+					</tr>
+					<tr>
+						<th>시작일</th>
+						<td><input type="date" th:field="*{prjtStartDt}"></td>
+					</tr>
+					<tr>
+						<th>마감일</th>
+						<td><input type="date" th:field="*{prjtDueDT}"></td>
+					</tr>
+					<tr>
+						<th>총괄책임자</th>
+						<td><input type="text" th:field="*{respMngrId}"></td>
+					</tr>
+					<tr>
+						<th>개요</th>
+						<td><input type="text" th:field="*{smry}"></td>
+					</tr>
+					<tr>
+						<th>목적</th>
+						<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+					</tr>
+				</table>
+				<div>
+					<button type="submit">저장</button>
+					<button type="button">취소</button>
+				</div>
+			</form>
+		</div>
+		<script>
+			document.querySelector('form[name="insertForm"]').addEventListener(
+					'submit', prjtInsert);
+
+			function prjtInsert(event) {
+				event.preventDefault();
+
+				let name = document.getElementById('prjtName');
+				if (name.value == '') {
+					alert('프로젝트명이 입력되지않았습니다.');
+					name.focus();
+					return;
+				}
+				alert('프로젝트등록이 완료되었습니다.');
+				insertForm.submit();
+			}
+		</script>
+</html>
