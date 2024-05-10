@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
+  <select id="selectAllList" resultType="WorkVO">
+ 	SELECT
+ 	  sysdate,
+      j.emp_no,
+      j.emp_name,
+      i.wk_in	,
+      i.wk_out,
+      i.wk_yn	,
+      i.wk_stat,
+      i.wk_site
+     FROM emp j join wk i
+            on j.emp_id = i.emp_id
+  </select>
+  <insert id="inserWork" parameterType="WorkVO">
+  
+  </insert>
+
+  
+  
+  </mapper>
+  
