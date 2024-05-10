@@ -3,7 +3,7 @@
 
 <th:block th:fragment="MenuFragment">
 	<div>
-		<a href="/" class="app-brand-link"> 
+		<a href="/home" class="app-brand-link"> 
 			<span class="app-brand-logo demo">
 				<img src="/assets/img/logo.png" width="260px">
 			</span>
@@ -16,50 +16,11 @@
 	
 		<!-- 메인화면 메뉴 -->
 		<li class="menu-item">
-			<a href="/" class="menu-link">
+			<a href="/home" class="menu-link">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Analytics">메인</div>
 			</a>
 		</li>
-		
-		
-		<li class="menu-item">
-			<a href="javascript:void(0)" class="menu-link menu-toggle">
-				<i class="menu-icon tf-icons bx bx-dock-top"></i>
-				<div>전자결재</div>
-			</a>
-			<ul class="menu-sub">
-				<li class="menu-item">
-					<a href="www.naver.com" class="menu-link">
-						<div>문서작성</div>
-					</a>
-				</li>
-				<li class="menu-item">
-					<a href="www.naver.com" class="menu-link">
-						<div>문서함</div>
-					</a>
-				</li>
-			</ul>
-		</li>
-		<li class="menu-item">
-			<a href="javascript:void(0)" class="menu-link menu-toggle">
-				<i class="menu-icon tf-icons bx bx-dock-top"></i>
-				<div>--문서작성</div>
-			</a>
-			<ul class="menu-sub">
-				<li class="menu-item">
-					<a href="www.naver.com" class="menu-link">
-						<div>문서작성</div>
-					</a>
-				</li>
-				<li class="menu-item">
-					<a href="www.naver.com" class="menu-link">
-						<div>문서함</div>
-					</a>
-				</li>
-			</ul>
-		</li>
-		
 
 		<!-- 메일 메뉴 -->
 		<li class="menu-item">
@@ -179,6 +140,8 @@
 				</a></li>
 			</ul>
 		</li>
+		
+		<!-- 자료실 메뉴 -->
 		<li class="menu-item">
 			<a href="javascript:void(0);" class="menu-link menu-toggle">
 				<i class="menu-icon tf-icons bx bx-detail"></i>
@@ -199,6 +162,8 @@
 				</a></li>
 			</ul>
 		</li>
+		
+		<!-- 관리자 기능 -->
 		<li class="menu-item">
 			<a href="javascript:void(0);" class="menu-link menu-toggle">
 				<i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
@@ -224,6 +189,24 @@
 				<li class="menu-item"><a
 					href="#" class="menu-link">
 						<div>유지보수 관리</div>
+				</a></li>
+			</ul>
+		</li>
+		
+		<!-- 관리자 기능 -->
+		<li class="menu-item">
+			<a href="javascript:void(0);" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+				<div>솔루션-모듈관리</div>
+			</a>
+			<ul class="menu-sub">
+				<li class="menu-item"><a
+					href="#" class="menu-link">
+						<div>보유모듈목록</div>
+				</a></li>
+				<li class="menu-item"><a
+					href="#" class="menu-link">
+						<div>템플릿 관리</div>
 				</a></li>
 			</ul>
 		</li>
