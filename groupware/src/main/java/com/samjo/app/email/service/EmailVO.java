@@ -1,7 +1,10 @@
-package com.samjo.app.email;
+package com.samjo.app.email.service;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class EmailVO {
 	
 	// email TABLE
@@ -29,6 +32,4 @@ public class EmailVO {
 	private String fileSize;
 	private Date fileDt;
 	private String uplEmp;
-	
-	
 }

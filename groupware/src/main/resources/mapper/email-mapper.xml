@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
+ <!-- 
+ 	<select id="selectInboxAll" resultType="EmailVO">
+  		SELECT REC_EMAIL_NO
+               ,CHAIN_MAIL_NO
+               ,RECP_DT
+               ,RECP
+               ,RECP_TYPE
+               ,READ_DT
+               ,EMAIL_STAT
+               ,CUST_NO
+        FROM inbox
+        WHERE RECP = 
+  	</select>
+  -->
+  
+  
+  
+  
+  	<insert id="insertEmail" parameterType="EmailVO">
+  		<selectKey keyProperty="senEmailNo"
+  				   resultType="Integer"
+  				   order="BEFORE">
+  			SELECT NVL(MAX(sen_email_no),0) + 1
+  			FROM email	   
+  		</selectKey>
+  	</insert>
+  	
+  	
+  	
+  	
+  	
+  </mapper>
