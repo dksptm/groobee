@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>이미지 업로드</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+	<form th:action="@{/formUpload}" method="post"
+		enctype="multipart/form-data">
+		<input type="file" name="images" multiple="multiple">
+		<button type="submit">전송</button>
+	</form>
+	<hr>
+	<div>
+		<input name="uploadFiles" type="file" multiple>
+		<button class="uploadBtn">Upload</button>
+	</div>
+	<hr>
+	<div class="test">
+		<input name="uploadFiles2" type="file" multiple>
+		<button class="uploadBtn2">jQueryUpload</button>
+	</div>
+	<script>
+		document.querySelector('.uploadBtn').addEventListener('click', function(e){
+			let formData = new FormData(); // 유사) jQuery.serialize() or jQuery.serializeArray()
+			// 1) Form 태그 내부의 데이터를 한번에 담음
+			// 2) Ajax를 이용해서 'Content-type:multipart/form-data'를 보내야 하는경우 사용
+			
+			let fileInput = document.querySelector('input[name="uploadFiles"]');
+			let fileList = fileInput.files;
+
+			for(let file of fileList){
+				formData.append('uploadFiles', file);
+			}
+			
+			fetch('uploadsAjax',{
+				method : 'post', 
+				body : formData
+			})
+			.then(res => res.json())
+			.then(result => {
+				console.log(result);
+			})
+			.catch(err => console.log(err));
+		})
+		
+		//jQuery.ajax
+		document.querySelector('.uploadBtn2').addEventListener('click', function(e){
+			let formData = new FormData(); // 유사) jQuery.serialize() or jQuery.serializeArray()
+			// 1) Form 태그 내부의 데이터를 한번에 담음
+			// 2) Ajax를 이용해서 'Content-type:multipart/form-data'를 보내야 하는경우 사용
+			
+			let fileInput = document.querySelector('input[name="uploadFiles2"]');
+			let fileList = fileInput.files;
+
+			for(let file of fileList){
+				formData.append('uploadFiles', file);
+			}
+			
+	         $.ajax({
+	             url: 'uploadsAjax',	
+	             type: 'POST',
+	             processData: false,	
+	             //기본값은 true, ajax 통신을 통해 데이터를 전송할 때, 기본적으로 key와 value값을 Query String으로 변환해서 보냅니다.
+	             contentType: false,	
+	             // multipart/form-data타입을 사용하기위해 false 로 지정합니다.
+	             data: formData,               
+	             success: function(result){
+	                 for(let image of result){
+	              	   let imgTag = $('<img/>').prop('src', 'images/'+ image)
+	              	   						   .css('width', '50%');
+	              	   $('div.test').append(imgTag);
+	                 }
+	             },
+	             error: function(reject){	
+	                 console.log(reject);
+	             }
+	         });
+		})
+		
+	</script>
+</body>
+</html>

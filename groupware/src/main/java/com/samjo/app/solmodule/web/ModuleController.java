@@ -6,8 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ModuleController {
 
-	@GetMapping("")
+	@GetMapping("/soltemplate")
 	public String templatePage() {
 		return "solution/module/template";
+	}
+	
+	@GetMapping("/insertSolTemp")
+	public String InsertTemplate() {
+		return "solution/module/insertTemp";
 	}
 }

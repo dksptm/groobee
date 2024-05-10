@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
 <body>
-
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">템플릿 전체조회</h5>
+				<div class="card-body">
+					<!-- 템플릿 목록 출력 -->
+					<p>test</p>
+					
+					<!-- 템플릿 등록 버튼 -->
+					<div class="d-flex align-items-end flex-column mb-3">
+						<button type="button" th:onclick="|location.href='@{/insertSolTemp}'|" class="btn btn-primary mt-auto p-2">새 템플릿 등록</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
 </body>
 </html>
