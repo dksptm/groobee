@@ -6,17 +6,54 @@
 
 	<!-- 프로젝트 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
-		SELECT prjt_id 
-	           , prjt_name
-	           , prjt_stat 
-	           , smry 
-	           , purpose 
-	           , prjt_start_dt  
-	           , prjt_due_dt 
-	           , resp_mngr_id 
-		FROM prjt 
-		ORDER BY prjt_id 
+		SELECT prjt_id
+				, prjt_name
+				, prjt_stat
+				, prjt_start_dt
+				, prjt_due_dt
+				, resp_mngr_id
+		FROM prjt
+		ORDER BY prjt_id
 	</select>
 
-
+	<!-- 프로젝트 등록 -->
+	<insert id="insertPrjt" parameterType="ProjectVO"> 
+			<selectKey keyProperty="prjtId" order="BEFORE"
+			resultType="string">
+			SELECT NVL(MAX(prjt_id),0) +1 
+			FROM prjt
+		</selectKey>
+		
+		INSERT ALL INTO prjt ( prjt_id
+							,prjt_name
+							,prjt_stat
+							,prjt_start_dt
+							,prjt_due_dt
+							,smry
+							,purpose
+							,resp_mngr_id)
+					VALUES (#{prjtId}
+							,#{prjtName}
+							,#{prjtStat}
+							,#{prjtStartDt}
+							,#{prjtDueDT}
+							,#{smry}
+							,#{purpose}
+							,#{respMngrId})
+		INTO dept (dept_id
+					,dept_name
+					,cust_no
+					, dept_loc
+					, dept_mngr)
+		VALUES(#{deptId}
+				,#{deptName}
+				,#{custNo}
+				,#{deptLoc}
+				,#{deptMngr})
+		SELECT * FROM DUAL
+	</insert>
+	
+	
+	
+	
 </mapper>

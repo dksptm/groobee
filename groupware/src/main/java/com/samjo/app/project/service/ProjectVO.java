@@ -2,6 +2,8 @@ package com.samjo.app.project.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -12,6 +14,7 @@ public class ProjectVO {
 	private String taskName;
 	private String taskPurpose;
 	private String taskCntn;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date taskStartDt;
 	private Date taskDueDt;
 	private String taskType;
@@ -33,10 +36,20 @@ public class ProjectVO {
 	private String prjtStat;
 	private String smry;
 	private String purpose;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date prjtStartDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date prjtDueDT;
 	private String respMngrId;
- 
+	
+	//협력업체
+	private int coopCoNo;
+	private String coName;
+	private String coTel;
+	private String pic;
+	private String custAddr;
+	private String cntn; 
+	
 	// 업무참여자
 	private String taskEmpId;
 	private String deptName;

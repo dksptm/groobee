@@ -14,10 +14,10 @@ public interface ProjectMapper {
 	public ProjectVO selectPrjt(ProjectVO projectVO);
 	
 	// 프로젝트 등록
-	public int insertPrjt(ProjectVO projectVO);
+	public int prjtInsert(ProjectVO projectVO);
 	
 	// 프로젝트 수정
-	public int updatePrjt(ProjectVO projectVO);
+	public int prjtUpdate(ProjectVO projectVO);
 	
 	// 프로젝트 삭제
 	//public int deletePrjt(@Param()int prjtId);
@@ -27,7 +27,9 @@ public interface ProjectMapper {
 	public List<CoopCoVO> selectCoopAllList();
 	
 	// 협력업체 수정
-	public int updateCoopCo(CoopCoVO coopCoVO);
+	public int coopCoUpdate(CoopCoVO coopCoVO);
+
+
 	
 	// 협력업체 삭제
 	//public int deleteCoopCo(@Param()int coopCoNo);
