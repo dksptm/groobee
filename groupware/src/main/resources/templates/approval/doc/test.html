@@ -5,53 +5,27 @@
 <body>
 <th:block layout:fragment="Content">
 
-<div class="tab-content doc-example-content row d-flex justify-content-around">
-<div class="card col-3">
-  <h5 class="card-header">업무정보</h5>
-  <div class="table-responsive">
-    <table class="table card-table">
-      <thead>
-        <tr>
-          <th>관련업무</th>
-          <th>담당부서</th>
-        </tr>
-      </thead>
-      <tbody class="table-border-bottom-0">
-        <tr>
-          <td><span class="fw-medium">A업무</span></td>
-          <td>경영지원부</td>
-        </tr>
-        <tr>
-          <td><span class="fw-medium">B업무</span></td>
-          <td>기획부</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-<div class="card col-5">
-  <h5 class="card-header">문서정보</h5>
-  <div class="table-responsive">
-    <table class="table card-table">
-      <thead>
-        <tr>
-          <th>작성자</th>
-          <th>부서</th>
-          <th>작성일자</th>
-          <th>결재상태</th>
-        </tr>
-      </thead>
-      <tbody class="table-border-bottom-0">
-        <tr>
-          <td><span class="fw-medium">여기에 draft</span></td>
-          <td>여기에 deptid</td>
-          <td>여기에 doc dt</td>
-          <td><span class="badge bg-label-primary me-1">여기에 doc stat</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<th:block th:each="doc : ${list}">
+		        <td>[[ ${doc.title} ]]</td>
+		        <td>[[ ${doc.docNo} ]]</td>
+</th:block>
+
+<div class="center">
+	<div class="pagination">
+	
+		<th:block th:if="${pageDTO.prev}">
+		<a th:href="|docList?page=${pageDTO.startPage - 1 }|"> &laquo; </a>
+		</th:block>
+		
+		<th:block th:each="num : ${#numbers.sequence(1, pageDTO.endPage)}">
+		<a th:href="|docList?page=${num}|" th:class="${num ==  pageDTO.page ? 'active' : ' '}">[[ ${num} ]]</a>
+		</th:block>
+		
+		<th:block th:if="${pageDTO.next}">
+		<a th:href="|docList?page=${pageDTO.endPage + 1 }|"> &raquo; </a>
+		</th:block>
+	
+	</div>
 </div>
 
 </th:block>
