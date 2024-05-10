@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+<body>
+<th:block layout:fragment="Content">
+<div class="d-flex justify-content-center">
+	<div class="card my-4 col-11">
+	<div>
+	<h5 id="time"></h5>
+	<button type="button" class="btn btn-primary">출근</button>
+	</div>
+	<div>
+	<br>
+		<input type="date"> <input type="date" > <button type="button" class="btn btn-primary">검색</button>
+
+	<div style="float:right">		
+		<label>
+			<select  class="form-select" id="floatingSelectGrid">
+				<option selected value="사번">사번</option>
+				<option value="사원명">사원명</option>
+				<option value="출근">출근</option>
+				<option value="퇴근">퇴근</option>
+				<option value="근무지">내근</option>
+				<option value="근무상태">근무상태</option>
+				<option value="근무여부">근무여부</option>
+			</select>
+		</label>
+		<br>
+		</div>
+	</div>
+	<br>
+	<table  class="table table-striped-columns">
+		<tr>
+			<th>오늘날짜</th>
+			<th>사원번호</th>		
+			<th>사원명</th>
+			<th>출근시간</th>
+			<th>퇴근시간</th>
+			<th>근무지</th>
+			<th>근무상태</th>
+			<th>근무여부</th>
+		</tr>
+		<tr th:each="info : ${works}">
+		    <td>[[${#dates.format(info.sysdate, "yyyy/MM/dd")}]]</td>
+			<td>[[${info.empNo}]]</td>
+			<td>[[${info.empName}]]</td>		
+			<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
+			<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
+			<td>[[${info.wkYn}]]</td>
+			<td>[[${info.wkStat}]]</td>
+			<td>[[${info.wkSite}]]</td>
+		</tr>
+	</table>
+	
+	<div>
+	<h4> 1 2 3 4 5 ></h4>
+	
+	</div>
+	</div>
+	</div>
+	</th:block>
+</body>
+<script>
+const time = document.getElementById('time');
+
+</script>
+</html>

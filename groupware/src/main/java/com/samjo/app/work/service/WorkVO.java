@@ -8,17 +8,21 @@ import lombok.Data;
 
 @Data
 public class WorkVO {
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date sysdate;
 	private String empId;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "HH-MI-SS")
 	private Date dt;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "HH-MI-SS")
 	private Date wkIn;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "HH-MI-SS")
 	private Date wkOut;
 	private String wkInLoc;
 	private String wkOutLoc;
 	private String wkYn;
 	private String wkStat;
 	private String wkSite;
+	private int empNo;
+	private String empName;
 
 }
