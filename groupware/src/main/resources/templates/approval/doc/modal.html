@@ -14,7 +14,7 @@
 		</thead>
 		<tbody>
 			<th:block th:each="emp : ${dept.emps}">
-			<tr th:attr="data-emp=${emp.empId}">
+			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}">
 				<td><input type="checkbox" name="chk-list"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>
@@ -27,17 +27,16 @@
 	<div class="col-1 align-self-center">
 		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes"><span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
 		<p> </p>
-		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no"><span class="tf-icons bx bx-upvote bx-rotate-270"></button>
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no"><span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
 	</div>
 	<div class="col-5">
 	<table class="table" id="aprlist">
 		<tbody>
 			<tr>
-				<th>삭제</th>
-				<th>결재순서</th>
+				<th>선택</th>
+				<th>순서</th>
 				<th>이름</th>
 				<th>직급명</th>
-				<th>이동</th>
 			</tr>
 		</tbody>
 	</table>
@@ -47,12 +46,12 @@
 <script>
 $(function(){
 
-	$('#list > tbody').on('click', 'tr' , function(e){
-		let checkbox = $(this).find("input[name='chk-list']");
+	$('#list > tbody, #aprlist > tbody').on('click', 'tr' , function(e){
+		let checkbox = $(this).find("input[type='checkbox']");
 		checkbox.prop("checked", !checkbox.prop("checked"));
 	});
 
-	$('#list > tbody').on('click', 'input[name="chk-list"]' , function(e){
+	$('#list > tbody, #aprlist > tbody').on('click', 'input[type="checkbox"]' , function(e){
 		let checkbox = $(this)
 		checkbox.prop("checked", !checkbox.prop("checked"));
 	});
@@ -66,24 +65,43 @@ $(function(){
 			let td = tr.children();
 			
 			let code = tr.data('emp');
+			let dept = tr.data('dept');
 			let name = td.eq(2).text();
 			let job = td.eq(3).text();
 
-			$('#aprlist > tbody').append('<tr data-emp="' + code + '">'
-						+'<td>X</td>'
+			$('#aprlist > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
+						+'<td><input type="checkbox" name="d-chk-list" /></td>'
 						+'<td></td>'
 						+'<td>'+ name +'</td>'
 						+'<td>'+ job +'</td>'
-						+'<td class="upbtn"><span class="tf-icons bx bx-upvote bx-xs"></td>'
 						+'</tr>');
-			
 			tr.remove();
 		})
-
 		resq();
 	})
+	$('#no').on('click', function(){
+		let checkbox = $("input[name=d-chk-list]:checked");
+		
+		checkbox.each(function(idx){
+			let chk = $(this);
+			let tr = chk.closest('tr');
+			let td = tr.children();
+			
+			let code = tr.data('emp');
+			let dept = tr.data('dept');
+			let name = td.eq(2).text();
+			let job = td.eq(3).text();
 
-
+			$('#list > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
+						+'<td><input type="checkbox" name="chk-list" /></td>'
+						+'<td>'+ dept +'</td>'
+						+'<td>'+ name +'</td>'
+						+'<td>'+ job +'</td>'
+						+'</tr>');
+			tr.remove();
+		})
+		resq();
+	})
 
 })//end
 
