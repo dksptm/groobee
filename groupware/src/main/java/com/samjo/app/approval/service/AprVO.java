@@ -1,0 +1,18 @@
+package com.samjo.app.approval.service;
+
+import java.util.Date;
+
+import lombok.Data;
+
+@Data
+public class AprVO {
+	private Integer aprNo;   
+	private Integer docNo;           
+	private Integer aprSq;      
+	private Integer aprLine;       
+	private String aprEmp;    
+	private String aprYn;          
+	private Date aprDt;                  
+	private String reCmt;            
+	private String aprName;      
+}

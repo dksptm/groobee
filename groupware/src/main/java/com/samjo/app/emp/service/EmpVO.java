@@ -1,7 +1,10 @@
-package com.samjo.app.emp;
+package com.samjo.app.emp.service;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class EmpVO {
 	private String empId;
 	private String ctNo;
@@ -21,5 +24,8 @@ public class EmpVO {
 	private String empAddr4;
 	private String empTel;
 	private String emailAddr;
+	
+	// jobs.
+	private String jobTitle;
 	 
 }

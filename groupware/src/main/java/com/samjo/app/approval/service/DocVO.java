@@ -18,4 +18,10 @@ public class DocVO {
 	private Integer nowLine;
 	private String docStat;
     private Date cmpltDt;
+    
+    // doc 테이블 항목 외 추가.
+    private String draftName; //기안자이름.
+    private String deptName; //기안자의부서명.
+    private String draftStatName; //작성상태 부코드명.
+    private String docStatName; //작성상태 부코드명.
 }

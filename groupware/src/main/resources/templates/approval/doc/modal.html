@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<div class="row">
+	<div class="col-5">
+	<table class="table" id="list">
+		<thead>
+			<tr>
+				<th>선택</th>
+				<th>부서명</th>
+				<th>이름</th>
+				<th>직급명</th>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="emp : ${dept.emps}">
+			<tr th:attr="data-emp=${emp.empId}">
+				<td><input type="checkbox" name="chk-list"></td>
+				<td>[[ ${dept.deptName} ]]</td>
+				<td>[[ ${emp.empName} ]]</td>
+				<td>[[ ${emp.jobTitle} ]]</td>
+			</tr>
+			</th:block>
+		</tbody>
+	</table>
+	</div>
+	<div class="col-1 align-self-center">
+		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes"><span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
+		<p> </p>
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no"><span class="tf-icons bx bx-upvote bx-rotate-270"></button>
+	</div>
+	<div class="col-5">
+	<table class="table" id="aprlist">
+		<tbody>
+			<tr>
+				<th>삭제</th>
+				<th>결재순서</th>
+				<th>이름</th>
+				<th>직급명</th>
+				<th>이동</th>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+</div>
+
+<script>
+$(function(){
+
+	$('#list > tbody').on('click', 'tr' , function(e){
+		let checkbox = $(this).find("input[name='chk-list']");
+		checkbox.prop("checked", !checkbox.prop("checked"));
+	});
+
+	$('#list > tbody').on('click', 'input[name="chk-list"]' , function(e){
+		let checkbox = $(this)
+		checkbox.prop("checked", !checkbox.prop("checked"));
+	});
+	
+	$('#yes').on('click', function(){
+		let checkbox = $("input[name=chk-list]:checked");
+		
+		checkbox.each(function(idx){
+			let chk = $(this);
+			let tr = chk.closest('tr');
+			let td = tr.children();
+			
+			let code = tr.data('emp');
+			let name = td.eq(2).text();
+			let job = td.eq(3).text();
+
+			$('#aprlist > tbody').append('<tr data-emp="' + code + '">'
+						+'<td>X</td>'
+						+'<td></td>'
+						+'<td>'+ name +'</td>'
+						+'<td>'+ job +'</td>'
+						+'<td class="upbtn"><span class="tf-icons bx bx-upvote bx-xs"></td>'
+						+'</tr>');
+			
+			tr.remove();
+		})
+
+		resq();
+	})
+
+
+
+})//end
+
+function resq() {
+    $('#aprlist > tbody > tr:not(:first-child)').each(function(index) {
+        $(this).children().eq(1).text(index + 1);
+    });
+}
+
+</script>
+
+
+
+
+</html>

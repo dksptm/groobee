@@ -14,6 +14,6 @@ public interface DocMapper {
 	public int updateDoc(DocVO docVO);
 	// 문서전체
 	public List<DocVO> selectDocAll(SearchVO searchVO);
-	// 문서전체페이지
+	// 문서전체-페이징
 	public int count();
 }	

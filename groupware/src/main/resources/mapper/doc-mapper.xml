@@ -5,25 +5,25 @@
 <mapper namespace="com.samjo.app.approval.mapper.DocMapper">
 
 	<select id="selectDocAll" parameterType="searchVO" resultType="DocVO">
-		SELECT rn,
-		       doc_no,
-		       draft,
-		       dept_id,
-		       title,
-		       cntn,
-		       draft_dt,
-		       draft_stat,
-		       temp_id,
-		       final_line,
-		       now_line,
-		       doc_stat,
-		       cmplt_dt
+		SELECT rn
+		       ,doc_no
+		       ,draft
+		       ,dept_id
+		       ,title
+		       ,cntn
+		       ,draft_dt
+		       ,draft_stat
+		       ,temp_id
+		       ,final_line
+		       ,now_line
+		       ,doc_stat
+		       ,cmplt_dt
 		FROM (SELECT /*+ INDEX(DOC DOC_DOC_NO_PK) */
 		            rownum rn,
 		            doc.*
 		      FROM  doc
-		      WHERE rownum <![CDATA[<=]]> (#{page} * 3)) a
-		WHERE  a.rn > (#{page} - 1) * 3	
+		      WHERE rownum <![CDATA[<=]]> (#{page} * 5)) a
+		WHERE  a.rn > (#{page} - 1) * 5	
 	</select>
 
 	<select id="count">
@@ -32,19 +32,27 @@
 	</select>
 
 	<select id="selectDoc" resultType="DocVO">
-		SELECT doc_no,
-		       draft,
-		       dept_id,
-		       title,
-		       cntn,
-		       draft_dt,
-		       draft_stat,
-		       temp_id,
-		       final_line,
-		       now_line,
-		       doc_stat,
-		       cmplt_dt
-		FROM doc
+		SELECT d.doc_no
+				,d.draft
+		        ,e.emp_name as draft_name
+		        ,d.dept_id
+		        ,dt.dept_name
+		        ,d.title
+		        ,d.cntn
+		        ,d.draft_dt
+		        ,d.draft_stat
+		        ,get_codename(d.draft_stat) as draft_stat_name       
+		        ,d.temp_id
+		        ,temp_id
+		        ,d.final_line
+		        ,d.now_line
+		        ,d.doc_stat
+		        ,get_codename(d.doc_stat) as doc_stat_name
+				,d.cmplt_dt
+		FROM doc d JOIN emp e 
+		             ON(d.draft = e.emp_id)
+		           JOIN dept dt 
+		             ON(d.dept_id = dt.dept_id)
 		WHERE doc_no = #{docNo}
 	</select>
 	
@@ -57,38 +65,38 @@
 		</selectKey>
 		INSERT INTO doc
 				(
-					doc_no,
-	                draft,
-	                dept_id,
-	                title,
+					doc_no
+	                ,draft
+	                ,dept_id
+	                ,title
 	                <if test="cntn != null and !cntn.equals('')">
-	                cntn,
+	                ,cntn
 	                </if>
-	                temp_id,
-	                final_line
+	                ,temp_id
+	                ,final_line
 				)
 	  	  VALUES
 	  	  		(
-	  	  			#{docNo},
-			        #{draft},
-			        #{deptId},
-			        #{title},
+	  	  			#{docNo}
+			        ,#{draft}
+			        ,#{deptId}
+			        ,#{title}
 			        <if test="cntn != null and !cntn.equals('')">
-			        #{cntn},
+			        ,#{cntn}
 			        </if>
-			        #{tempId},
-			        #{finalLine}
+			        ,#{tempId}
+			        ,#{finalLine}
 			     )
 	</insert>
 	
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc
-		SET draft = draft,
-		    title = #{title},
+		SET draft = draft
+		    ,title = #{title}
 		    <if test="cntn != null and !cntn.equals('')">
-		    cntn = #{cntn},
+		    ,cntn = #{cntn}
 		    </if>
-		    final_line = #{finalLine}
+		    ,final_line = #{finalLine}
 		WHERE doc_no = #{docNo}
 	</update>
 
