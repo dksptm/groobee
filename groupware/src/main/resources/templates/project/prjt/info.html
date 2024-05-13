@@ -10,23 +10,28 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>업무번호</th>
 						<th>프로젝트명</th>
-						<th>업무명</th>
+						<th>프로젝업무명</th>
+						<th>업무번호</th>
+						<th>부서이름</th>
+						<th>참여자id</th>
 						<th>시작일</th>
 						<th>마감일</th>
-						<th>참여인원</th>
-						<th>진행도</th>
-						<th>진행상황</th>
+						<th>목적</th>
+						<th>개요</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="info : ${projects}">
-						<td>[[ ${info.taskNo}]]</td>
 						<td>[[ ${info.prjtName}]]</td>
 						<td>[[ ${info.taskName}]]</td>
+						<td>[[ ${info.taskNo}]]</td>
+						<td>[[ ${info.deptName}]]</td>
+						<td>[[ ${info.taskEmpId}]]</td>
 						<td>[[ ${#dates.format(info.prjtStartDt, "yyyy/MM/dd")}]]</td>
 						<td>[[ ${#dates.format(info.prjtDueDT, "yyyy/MM/dd")}]]</td>
+						<td>[[ ${info.purpose}]]</td>
+						<td>[[ ${info.smry}]]</td>
 					</tr>
 				</tbody>
 			</table>

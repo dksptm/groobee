@@ -17,18 +17,25 @@ public interface ProjectMapper {
 	public int prjtInsert(ProjectVO projectVO);
 	
 	// 프로젝트 수정
-	public int prjtUpdate(ProjectVO projectVO);
+	 public int prjtUpdate(ProjectVO projectVO);
 	
 	// 프로젝트 삭제
-	//public int deletePrjt(@Param()int prjtId);
+	// public int deletePrjt(@Param()int prjtId);
 	
 	
-	// 협력업체 등록
-	public List<CoopCoVO> selectCoopAllList();
+	
+	// 상시(주기적) 업무 조회
+	public List<ProjectVO> selectReguAllList();
+	
+	// 상시(주기적) 업무 등록
+	
+	
+	
+	// 협력업체 조회
+	 public List<CoopCoVO> selectCoopCoAllList();
 	
 	// 협력업체 수정
-	public int coopCoUpdate(CoopCoVO coopCoVO);
-
+	// public int coopCoUpdate(CoopCoVO coopCoVO);
 
 	
 	// 협력업체 삭제
