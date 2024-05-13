@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.samjo.app.project.service.CoopCoVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 
@@ -26,17 +27,22 @@ public class ProjectController {
 	public String prjtAllList(Model model) {
 		List<ProjectVO> list = projectService.PrjtAllList();
 		model.addAttribute("projects", list);
-		return "project/list";
+		return "project/prjt/list";
 	}
 	
 	// 프로젝트 단건조회
-	
+	@GetMapping("prjtInfo")
+	public String prjtInfo(ProjectVO projectVO, Model model) {
+		ProjectVO findVO = projectService.prjtInfo(projectVO);
+		model.addAttribute("projects", findVO);
+		return "project/prjt/info";
+	}
 	
 	// 프로젝트 등록
 	@GetMapping("prjtInsert")
 	public String prjtInsertForm(Model model) {
 		model.addAttribute("projects", new ProjectVO());
-		return "project/insert";
+		return "project/prjt/insert";
 	}
 	
 	@PostMapping("prjtInsert")
@@ -54,4 +60,17 @@ public class ProjectController {
 	
 	
 	
+	
+	
+	
+	
+	// 협력업체 전체 조회
+	@GetMapping("CoopAllList")
+	public String CoopAllList(Model model) {
+		List<CoopCoVO> list = projectService.CoopCoAllList();
+		model.addAttribute("coopCo", list);
+		return "project/coopCoList";
+	}
 }
+
+

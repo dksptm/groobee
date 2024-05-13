@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.project.mapper.ProjectMapper;
+import com.samjo.app.project.service.CoopCoVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 
+
 @Service
 public class ProjectServiceImpl implements ProjectService {
-	
 	
 	ProjectMapper projectMapper;
 	
@@ -20,28 +21,42 @@ public class ProjectServiceImpl implements ProjectService {
 		this.projectMapper = projectMapper;
 	}
 	
-	// 프로젝트 전체조회
-	@Override
+	@Override // 프로젝트 전체조회
 	public List<ProjectVO> PrjtAllList() {
 		return projectMapper.selectPrjtAllList();
 	}
 	
-	// 프로젝트 단건조회
-	@Override
+	@Override // 프로젝트 단건조회
 	public ProjectVO prjtInfo(ProjectVO projectVO) {
 		return projectMapper.selectPrjt(projectVO);
 	}
 	
-	// 프로젝트 등록
-	@Override
+	@Override // 프로젝트 등록
 	public int prjtInsert(ProjectVO projectVO) {
 		return projectMapper.prjtInsert(projectVO);
 	}
 	
-	// 프로젝트 수정
-	@Override
+	@Override // 프로젝트 수정
 	public int prjtupdate(ProjectVO projectVO) {
 		return projectMapper.prjtUpdate(projectVO);
 	}
+	
 
+	@Override // 상시(주기적)업무 등록
+	public int reguInsert(ProjectVO projectVO) {
+		return projectMapper.prjtInsert(projectVO);
+	}
+
+	@Override // 상시(주기적)업무 조회
+	public List<ProjectVO> reguAllList() {
+		return projectMapper.selectReguAllList();
+	}
+	
+	
+	
+	
+	@Override // 협력업체 조회
+	public List<CoopCoVO> CoopCoAllList() {
+		return projectMapper.selectCoopCoAllList();
+	}
 }
