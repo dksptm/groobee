@@ -23,10 +23,10 @@ public interface EmailMapper {
 	public EmailVO selectEmail(EmailVO emailVo);
 	
 	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
-	public EmailVO deleteMail(EmailVO emailVo);
+	public EmailVO deleteEmail(EmailVO emailVo);
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념
-	public EmailVO getInboxNo();
+	public EmailVO getInboxNo(EmailVO emailVo);
 	
 	// 주고받은 메일 조회
 	public List<EmailVO> chainMailList();
@@ -36,6 +36,9 @@ public interface EmailMapper {
 		
 	// 수신한 이메일의 파일 내려받기
 	public EmailVO getFile(EmailVO emailVo);
+	
+	//전체 페이지
+	public int count();
 	
 	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
 	// public List<EmpVO> getEmpList();

@@ -3,7 +3,6 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
- <!-- 
  	<select id="selectInboxAll" resultType="EmailVO">
   		SELECT REC_EMAIL_NO
                ,CHAIN_MAIL_NO
@@ -14,13 +13,9 @@
                ,EMAIL_STAT
                ,CUST_NO
         FROM inbox
-        WHERE RECP = 
+        <!--  WHERE RECP = #{empId} -->
   	</select>
-  -->
-  
-  
-  
-  
+
   	<insert id="insertEmail" parameterType="EmailVO">
   		<selectKey keyProperty="senEmailNo"
   				   resultType="Integer"
@@ -30,7 +25,10 @@
   		</selectKey>
   	</insert>
   	
-  	
+  	<select id="count">
+  		SELECT count(*)
+  		FROM inbox
+  	</select>
   	
   	
   	
