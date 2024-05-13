@@ -24,11 +24,17 @@
 					<input th:field="*{title}" class="form-control" type="text" />
 				</div>
 				
-				<div class="mt-3">
+				<!-- <div class="mt-3">
 					<span>결재자 수 : <input class="form-control" type="number" th:field="*{finalLine}" readonly /></span>
 					<span id="sel">
+						<th:block th:each="row,rowStat : *{aprs}">
+						<input class="form-control" th:field="*{words[__${rowStat.index}__].aprEmp}">
+						<input class="form-control" th:field="*{words[__${rowStat.index}__].aprSq}">
+						<input class="form-control" th:field="*{words[__${rowStat.index}__].aprEmp}">
+						<input class="form-control" th:field="*{words[__${rowStat.index}__].aprSq}">
+						</th:block>
 					</span>
-				</div>
+				</div> -->
 								
 				<!-- 모달  -->
 				<!-- Modal with scrollable content -->

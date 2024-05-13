@@ -1,5 +1,6 @@
 package com.samjo.app.approval.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.samjo.app.approval.service.AprVO;
 import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.PageDTO;
@@ -51,6 +53,7 @@ public class DocController {
 	@GetMapping("docInsert")
 	public String dobInsertForm(Model model) {
 		model.addAttribute("doc", new DocVO());
+		model.addAttribute("aprs", new ArrayList<AprVO>());
 		return "approval/doc/insert";
 	}
 	
