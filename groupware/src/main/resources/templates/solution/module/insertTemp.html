@@ -15,35 +15,35 @@
 							<div class="card-body">
 								<div class="mt-3 row">
 									<label for="title" class="col-md-2 col-form-label">템플릿번호</label>
-									<div class="col-md-10">
+									<div class="col-md-5">
 										<input class="form-control" type="text" />
 									</div>
 								</div>
 								<div class="mt-3 row">
 									<label for="title" class="col-md-2 col-form-label">사용고객사</label>
-									<div class="col-md-10">
+									<div class="col-md-5">
 										<input class="form-control" type="text" />
 									</div>
 								</div>
 								<div class="mt-3 row">
 									<label for="title" class="col-md-2 col-form-label">템플릿번호</label>
-									<div class="col-md-10">
+									<div class="col-md-5">
 										<input class="form-control" type="text" />
 									</div>
 								</div>
 								<div class="mt-3 row">
 									<label for="title" class="col-md-2 col-form-label">템플릿명</label>
-									<div class="col-md-10">
+									<div class="col-md-5">
 										<input class="form-control" type="text" />
 									</div>
 								</div>
 								<div class="mt-3 row">
 									<label for="cntn" class="col-md-2 col-form-label">설명</label>
-									<div class="col-md-10">
+									<div class="col-md-5">
 										<textarea class="form-control">...</textarea>
 									</div>
 								</div>
-								<div class="mt-3">
+								<div class="mt-3 col-2">
 									<label for="tempId" class="form-label">등록방식</label> <select
 										class="form-select inserttype">
 										<option value="option">-선택-</option>
@@ -55,29 +55,37 @@
 						</div>
 					</form>
 
+					<!-- 직접입력 태그 -->
 					<div style="display: none;" id="doctype">
+						<input class="form-control" id="filename" type="text" />
 						<textarea style="width: 790px; height: 200px;" id="content"></textarea>
+						<div class="test3"></div>
 						<div class="template"></div>
 
 						<!-- 템플릿 등록 버튼 -->
 						<div class="d-flex justify-content-center mb-3">
-							<button type="button" class="btn btn-primary mx-2" id="htmlbtn">반영</button>
-
+							<button type="button" class="btn btn-primary mx-2"
+								id="htmlbtn">저장</button>
 							<button type="button" class="btn btn-primary mx-2" id="htmlreset">초기화</button>
 						</div>
 					</div>
+
+					<!-- 파일업로드 태그 -->
 					<div style="display: none;" id="docupload">
 						<div class="test">
 							<input name="uploadFiles2" type="file" multiple>
-							<button class="uploadBtn2">업로드</button>
+							<button class="btn btn-secondary mx-2 uploadBtn2">업로드</button>
 						</div>
 						<div class="test2"></div>
 					</div>
+
+					<!-- 작성완료 버튼 -->
 					<div class="mt-3 text-end">
 						<button type="submit" class="btn rounded-pill btn-primary">작성완료</button>
 					</div>
 
 					<script>
+					//업로드or직접입력 선택 반영
 						$(".inserttype").on("change", function(e) {
 							if ($(".inserttype").val() == "input") {
 								$("#doctype").css('display', 'block');
@@ -91,15 +99,30 @@
 							}
 						});
 
+						//직접입력값 반영
 						$("#htmlbtn").on("click", function(e) {
-							$(".template").html($("#content").val());
+							let tVal = $("#content").val()
+							let fileName = $("#filename").val();
+							$(".template").html(tVal);
+							$.ajax({
+								url: 'uploadsHtml',	
+					            type: 'POST',
+					            data: JSON.stringify({tags:tVal,fileName:fileName}),
+					            dataType: 'text',
+					            contentType: 'application/json;charset=UTF-8',
+					            success: function (result) { 
+					            	console.log(result);
+					            }
+							})
+							
+							
 						});
-
+						//직접입력값 초기화
 						$("#htmlreset").on("click", function(e) {
 							$(".template").empty();
 						});
 						
-						//jQuery.ajax
+						//업로드 처리
 						document.querySelector('.uploadBtn2').addEventListener('click', function(e){
 							let formData = new FormData(); // 유사) jQuery.serialize() or jQuery.serializeArray()
 							// 1) Form 태그 내부의 데이터를 한번에 담음
@@ -116,30 +139,24 @@
 					             url: 'uploadsAjax',	
 					             type: 'POST',
 					             processData: false,	
-					             //기본값은 true, ajax 통신을 통해 데이터를 전송할 때, 기본적으로 key와 value값을 Query String으로 변환해서 보냅니다.
+					             //기본값은 true, ajax 통신을 통해 데이터를 전송할 때, 기본적으로 key와 value값을 Query String으로 변환해서 전송.
 					             contentType: false,	
-					             // multipart/form-data타입을 사용하기위해 false 로 지정합니다.
+					             // multipart/form-data타입을 사용하기위해 false 로 지정.
 					             data: formData,               
 					             success: function(result){
-					            	 console.log(result);
+					            	 /* img 업로드시 미리보기 기능
 					                 for(let image of result){
 					              	   let imgTag = $('<img/>').prop('src', 'images/'+ image)
 					              	   						   .css('width', '50%');
 					              	   $('div.test2').append(imgTag);
-					                 }
-					                 $.ajax({
-					                	    url: 'images/' + result,	// HTML 파일 가져올 경로
+					                 } */
+					                 //
+					                 $.ajax({  //C:\upload	  ┌>\application\octet-stream\2024\05\10\001.jpg
+					                	    url: 'files/' + result,	// HTML 파일 가져올 경로
 					                	    dataType: "html",
 					                	    success: function (html){
 												console.log(html);
 					                	    	$('div.test2').html(html); // HTML 코드 붙여넣기
-
-					                	        /* $.getScript({
-					                	            url: "file.js",		// script 가져올 경로
-					                	            success: function () {	 // 스크립트 가져온 후에 실행할 코드
-					                	               
-					                	            }
-					                	        }); */
 					                	    }
 					                	});
 					             },
