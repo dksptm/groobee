@@ -11,7 +11,7 @@ import com.samjo.app.work.service.WorkService;
 import com.samjo.app.work.service.WorkVO;
 
 @Controller
-public class WorkServiceControll {
+public class WorkControll {
 
 	@Autowired
 	WorkService workService;
@@ -22,4 +22,7 @@ public class WorkServiceControll {
 		model.addAttribute("works", list);
 		return "work/worklist";
 	}
+	
+	
+	
 }
