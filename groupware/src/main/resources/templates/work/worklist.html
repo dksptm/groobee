@@ -9,6 +9,7 @@
 	<div>
 	<h5 id="time"></h5>
 	<button type="button" class="btn btn-primary">출근</button>
+	<button type="button" class="btn btn-primary">퇴근</button>
 	</div>
 	<div>
 	<br>
@@ -18,18 +19,19 @@
 		<label>
 			<select  class="form-select" id="floatingSelectGrid">
 				<option selected value="사번">사번</option>
-				<option value="사원명">사원명</option>
-				<option value="출근">출근</option>
-				<option value="퇴근">퇴근</option>
-				<option value="근무지">내근</option>
-				<option value="근무상태">근무상태</option>
-				<option value="근무여부">근무여부</option>
+				<option value="emp_no">사원명</option>
+				<option value="wk_no">출근</option>
+				<option value="wk_out">퇴근</option>
+				<option value="wk_yn">내근</option>
+				<option value="wk_stsat">근무상태</option>
+				<option value="sk_site">근무여부</option>
 			</select>
 		</label>
 		<br>
 		</div>
 	</div>
 	<br>
+	<div id="page">
 	<table  class="table table-striped-columns">
 		<tr>
 			<th>오늘날짜</th>
@@ -52,9 +54,10 @@
 			<td>[[${info.wkSite}]]</td>
 		</tr>
 	</table>
-	
+	</div>
 	<div>
 	<h4> 1 2 3 4 5 ></h4>
+	
 	
 	</div>
 	</div>
@@ -62,7 +65,6 @@
 	</th:block>
 </body>
 <script>
-const time = document.getElementById('time');
 
 </script>
 </html>

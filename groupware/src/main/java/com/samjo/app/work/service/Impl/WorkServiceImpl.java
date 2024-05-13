@@ -22,8 +22,15 @@ public class WorkServiceImpl implements WorkService{
 
 	@Override
 	public WorkVO getWorkId() {
-		return workMapper.getWorkId();
+		return workMapper.getWork();
 	}
+	
+	@Override
+	public int insertwork(WorkVO workVO) {
+		return workMapper.insertwork(workVO);
+	}
+	
+	
 	
 	
 	
