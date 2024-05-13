@@ -1,12 +1,14 @@
 package com.samjo.app.upload.service.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ public class UploadServiceImpl implements UploadService {
 	@Override
 	public List<String> uploadFile(MultipartFile[] uploadFiles) {
 
-		List<String> imageList = new ArrayList<>();
+		List<String> fileList = new ArrayList<>();
 
 		for (MultipartFile uploadFile : uploadFiles) {
 			String filetype = uploadFile.getContentType() + "/";
@@ -55,12 +57,13 @@ public class UploadServiceImpl implements UploadService {
 				e.printStackTrace();
 			}
 			// DB에 해당 경로 저장
+
 			// 1) 사용자가 업로드할 때 사용한 파일명
 			// 2) 실제 서버에 업로드할 때 사용한 경로
-			imageList.add(setImagePath(uploadFileName));
+			fileList.add(setImagePath(uploadFileName));
 		}
 
-		return imageList;
+		return fileList;
 	}
 
 	@Override
@@ -85,6 +88,41 @@ public class UploadServiceImpl implements UploadService {
 	@Override
 	public String setImagePath(String uploadFileName) {
 		return uploadFileName.replace(File.separator, "/");
+	}
+
+	@Override
+	public String uploadHtml(HashMap<String, Object> map) {
+		String text = (String)map.get("tags");
+		String fileName = (String)map.get("fileName");
+		String path = "text/html/";
+		// 날짜 폴더 생성
+		String folderPath = makeFolder(path);
+		// UUID
+		String uuid = UUID.randomUUID().toString();
+		// 저장할 파일 이름 중간에 "_"를 이용하여 구분
+
+		String uploadFileName = folderPath + File.separator + uuid + "_" + fileName + ".html";
+
+		String saveName = uploadPath + File.separator + uploadFileName;
+
+		File f1 = new File(saveName);
+		/*// 파일이 존재하면 종료
+		 * if (f1.exists()) {
+			System.out.println("파일이 존재..."); 
+			return null;
+		}*/
+		byte[] bytes = text.getBytes();
+		try {
+			FileOutputStream fos = new FileOutputStream(f1);
+			// 객체생성방법 1.절대경로넘기기(fullpath) 2.파일객체넘기기 (f1)
+			
+			fos.write(bytes);
+
+			fos.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return uploadFileName;
 	}
 
 }
