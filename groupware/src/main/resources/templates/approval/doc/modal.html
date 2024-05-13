@@ -14,7 +14,8 @@
 		</thead>
 		<tbody>
 			<th:block th:each="emp : ${dept.emps}">
-			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != 'KHJ22215'}">
+			<!-- 로그인 구현되면 아래정보 변경. -->
+			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != 'KHJ22214'}">
 				<td><input type="checkbox" name="chk-list"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>

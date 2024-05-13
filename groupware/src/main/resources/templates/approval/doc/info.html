@@ -8,7 +8,8 @@
 	<div class="d-flex justify-content-center">
 		<div class="card my-4 col-10" style="background-color: rgba(67,89,113, 0.05);">
 			<h5 class="card-header display-5">문서조회</h5>
-			<p>로그인한 사람 : KHJ22215</p>
+			<p>로그인한 사람 : KHJ22214</p>
+			<h6></h6>
 			<div class="card-body">
 				<div class="mt-3 row">
 					<label class="col-md-2 col-form-label">제목</label>
@@ -32,7 +33,7 @@
 						      </thead>
 						      <tbody class="table-border-bottom-0">
 						        <tr>
-						          <td data-dno="${doc.docNo}">[[ ${doc.docNo} ]]</td>
+						          <td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
 						          <td>[[ ${doc.tempId} ]]</td>
 						          <td><span class="badge bg-label-primary me-1">[[ ${doc.docStatName} ]]</span></td>
 						          <td th:if="${doc.cmpltDt != null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
@@ -49,7 +50,7 @@
 						      </thead>
 						      <tbody class="table-border-bottom-0">
 						        <tr>
-						          <td data-draft="${doc.draft}">[[ ${doc.draftName} ]]</td>
+						          <td th:attr="data-draft=${doc.draft}">[[ ${doc.draftName} ]]</td>
 						          <td>[[ ${doc.deptName} ]]</td>
 						          <td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 						          <td><span class="badge bg-label-primary me-1">[[ ${doc.draftStatName} ]]</span></td>
@@ -145,11 +146,39 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function(e){
-			document.getElementById('gotoapr').addEventListener('click', gotoApr);
+			document.getElementById('gotoapr').addEventListener('click', function(e) {
+				let obj = getObj();
+				
+				if(obj == null){
+					return;
+				}
+				
+				console.log(obj);
+				let url = `/apr/${obj.docNo}/${obj.aprEmp}`;
+				console.log(url);
+				fetch(url, {
+					method : 'PUT',
+				 	body : JSON.stringify(obj),
+				 	headers : {
+				 		'Content-type' : 'application/json'
+				 	}
+				})
+				.then(res => res.json())
+				.then(ret => console.log(ret))
+				.catch(err => console.error(err))	
+			});
 		})
 
-		function gotoApr(e) {
-			consol.log(e);
+		function getObj(){
+			let docNo = document.querySelector('td[data-dno]').dataset.dno;
+			let aprEmp = document.querySelector('td[data-draft]').dataset.draft;
+
+			if(docNo !== '' && aprEmp !== ''){
+				let obj = {docNo, aprEmp};
+				return obj;
+			} else {
+				return null;
+			}
 		}
 
 	</script>

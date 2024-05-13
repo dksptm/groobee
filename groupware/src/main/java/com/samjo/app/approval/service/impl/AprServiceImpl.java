@@ -19,8 +19,9 @@ public class AprServiceImpl implements AprService {
 
 	@Override
 	public int goToApr(AprVO aprVO) {
-		aprVO = aprMapper.updateMyApr();
-		return aprVO.getResult();
+		int ret = aprMapper.updateMyApr(aprVO);
+		System.out.println("결과->" + aprVO.getResult());
+		return ret;
 	}
 
 }
