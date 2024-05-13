@@ -7,25 +7,25 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">받은 메일</h5>
+				<h5 class="card-header">보낸 메일</h5>
 				<div class="card-body">
 					<div class="table-responsive">
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th>수신시간</th>
+									<th>발신시간</th>
 									<th>메일 제목</th>
-									<th>발신자명</th>
+									<th>수신자명</th>
 									<th>첨부파일</th>
 									<th>선택</th>
 								</tr>
 							</thead>
 							<tbody>
-								<th:block th:each="Email : ${inboxList}">
-								<tr th:onclick="|location.href='@{/inboxInfo(recp=${Email.recp})}'|">
-									<td>[[ ${Email.recpDt} ]]</td>
+								<th:block th:each="Email : ${emailList}">
+								<tr th:onclick="|location.href='@{/emailInfo(sender=${Email.sender})}'|">
+									<td>[[ ${Email.sentDt} ]]</td>
 									<td>[[ ${Email.title} ]]</td>
-									<td>[[ ${Email.sender} ]]</td>
+									<td>[[ ${Email.recp]} ]]</td>
 									<td>[[ ${Email.fileNo} ]]</td>
 									<td>[[ ${doc.draft} ]]</td>
 									<td><span class="badge bg-label-primary me-1">빈공간1</span></td>

@@ -5,7 +5,7 @@
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
  	<select id="selectInboxAll" resultType="EmailVO">
   		SELECT REC_EMAIL_NO
-               ,CHAIN_MAIL_NO
+               ,SEN_EMAIL_NO
                ,RECP_DT
                ,RECP
                ,RECP_TYPE
@@ -27,9 +27,20 @@
   	
   	<select id="count">
   		SELECT count(*)
-  		FROM inbox
+  		FROM INBOX
   	</select>
   	
-  	
+  	<select id="selectEmailAll" resultType="EmailVO">
+  		SELECT SEN_EMAIL_NO
+              ,SENDER
+              ,TITLE
+              ,CNTN
+              ,SENT_DT
+              ,EMAIL_STAT
+              ,CHAIN_MAIL_NO
+              ,CUST_NO
+        FROM EMAIL
+        <!--  WHERE RECP = #{empId} -->
+  	</select>
   	
   </mapper>
