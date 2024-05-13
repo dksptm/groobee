@@ -14,5 +14,8 @@ public class AprVO {
 	private String aprYn;          
 	private Date aprDt;                  
 	private String reCmt;            
-	private String aprName;      
+	private String aprName;  
+	
+	// 프로시저 결과반환.
+	private Integer result;
 }

@@ -25,7 +25,7 @@
 		      WHERE rownum <![CDATA[<=]]> (#{page} * 5)) a
 		WHERE  a.rn > (#{page} - 1) * 5	
 	</select>
-
+	
 	<select id="count">
 		SELECT count(*)
 		FROM doc
@@ -57,12 +57,6 @@
 	</select>
 	
 	<insert id="insertDoc" parameterType="DocVO">
-		<selectKey keyProperty="docNo"
-			       resultType="Integer"
-				   order="BEFORE">
-			SELECT NVL(MAX(doc_no), 0) + 1 
-			FROM doc
-		</selectKey>
 		INSERT INTO doc
 				(
 					doc_no
@@ -88,6 +82,11 @@
 			        ,#{finalLine}
 			     )
 	</insert>
+	
+	<select id="getDocNo" resultType="docVO">
+		SELECT NVL(MAX(doc_no), 0) + 1 as docNo
+		FROM doc	
+	</select>
 	
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc

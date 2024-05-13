@@ -14,7 +14,7 @@
 		</thead>
 		<tbody>
 			<th:block th:each="emp : ${dept.emps}">
-			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}">
+			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != 'KHJ22215'}">
 				<td><input type="checkbox" name="chk-list"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>
@@ -107,7 +107,7 @@ $(function(){
 
 function resq() {
     $('#aprlist > tbody > tr:not(:first-child)').each(function(index) {
-        $(this).children().eq(1).text(index + 1);
+        $(this).children().eq(1).text(index + 2);
     });
 }
 

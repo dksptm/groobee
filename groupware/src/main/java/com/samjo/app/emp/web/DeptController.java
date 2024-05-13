@@ -19,11 +19,10 @@ public class DeptController {
 		this.deptService = deptService;
 	}
 	
-	@GetMapping("deptTest")
+	@GetMapping("getMyEmps")
 	public String deptTest(@RequestParam String deptId, Model model) {
 		DeptVO findDept = deptService.myDeptEmps(deptId);
 		model.addAttribute("dept", findDept);
-		System.out.println(findDept);
 		return "approval/doc/modal";
 	}
 

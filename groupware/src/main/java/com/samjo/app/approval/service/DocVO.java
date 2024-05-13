@@ -1,6 +1,7 @@
 package com.samjo.app.approval.service;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -24,4 +25,7 @@ public class DocVO {
     private String deptName; //기안자의부서명.
     private String draftStatName; //작성상태 부코드명.
     private String docStatName; //작성상태 부코드명.
+    
+    // 결재자 리스트.
+    private List<AprVO> aprs;
 }

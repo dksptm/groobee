@@ -8,6 +8,8 @@ import com.samjo.app.common.service.SearchVO;
 public interface DocMapper {
 	// 문서등록
 	public int insertDoc(DocVO docVO);
+	// 문서등록 - 문서번호 조회.
+	public DocVO getDocNo();
 	// 단건조회
 	public DocVO selectDoc(DocVO docVO);
 	// 문서수정

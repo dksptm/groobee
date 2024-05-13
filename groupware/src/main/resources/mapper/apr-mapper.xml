@@ -4,29 +4,46 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.AprMapper">
 
-
 	<insert id="insertApr" parameterType="AprVO">
-INSERT INTO apr
-        (
-            apr_no
-            ,doc_no
-            ,apr_sq
-            ,apr_line
-            ,apr_emp
-            ,apr_yn
-            ,apr_name
-        )
-  VALUES
-        (
-            (SELECT NVL(MAX(apr_no),0) + 1 FROM apr)
-            ,10003
-            ,1
-            ,1
-            ,'KHJ22214'
-            ,'4D1d'
-            ,get_emptitle('KHJ22214')
-        )
+		<selectKey keyProperty="aprNo"
+				   resultType="Integer"
+				   order="BEFORE">
+			SELECT NVL(MAX(apr_no), 0) + 1
+			FROM apr
+		</selectKey>
+	
+		INSERT INTO apr
+		        (
+		            apr_no
+		            ,doc_no
+		            ,apr_sq
+		            ,apr_line
+		            ,apr_emp
+		            ,apr_yn
+		            ,apr_name
+		        )
+		  VALUES
+		        (
+		            #{aprNo}
+		            ,#{docNo}
+		            ,#{aprSq}
+		            ,#{aprSq}
+		            ,#{aprEmp}
+		            ,'4D1d'
+		            ,get_emptitle(#{aprEmp})
+		        )
 	</insert>
+	
+	<update id="updateMyApr" parameterType="AprVO" statementType="CALLABLE">
+		{CALL
+			go_apr(
+				#{docNo, mode=IN, jdbcType=INTEGER},
+				#{aprEmp, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=INTEGER}
+			)
+		}	
+	</update>
+
 
 
 </mapper>
