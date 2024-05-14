@@ -20,6 +20,10 @@ public interface ProjectService {
 	
 	// 협력업체 조회
 	public List<CoopCoVO> CoopCoAllList();
+	// 협력업체 등록
+	public int coopInsert(CoopCoVO coopCoVO);
+	// 협력업체 단건조회
+	public CoopCoVO coopInfo(CoopCoVO coopCoVO);
 	
 	
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+
+<body>
+	<th:block layout:fragment="Content">
+
+		<div class="container">
+			<br>
+			<h4>협력업체 조회</h4>
+			<br> <select>
+				<option value="">업체명</option>
+				<option value="">담당자</option>
+				<option value="">내용</option>
+			</select> 
+			<input type="text">
+			<button type="button">검색</button>
+			<br> 
+			<select>
+				<option value="">업체명순</option>
+				<option value="">담당자순</option>
+				<option value="">내용순</option>
+			</select>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>업체명</th>
+						<th>담당자</th>
+						<th>연락처</th>
+						<th>내용</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="coop : ${coopCo}">
+						<td>[[ ${coop.coopCoNo}]]</td>
+						<td>[[ ${coop.pic}]]</td>
+						<td>[[ ${coop.coTel}]]</td>
+						<td>[[ ${coop.cntn}]]</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- 모달을 열기 위한 버튼 -->
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+			data-bs-target="#exampleModal">등록</button>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1"
+			aria-labelledby="exampleModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">협력 업체 등록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+					
+					
+					</div>
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-primary">등록</button>
+						<button type="button" class="btn btn-secondary"data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			
+		</script>
+</html>
+
