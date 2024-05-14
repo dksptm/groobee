@@ -8,6 +8,7 @@ public interface WorkService {
 	public List<WorkVO> workList();
 	
 	public WorkVO getWorkId();
+	
 	// 근태등록(임시)
 	public int insertwork(WorkVO workVO);
 	
