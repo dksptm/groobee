@@ -10,7 +10,7 @@ public interface ProjectService {
 	// 프로젝트 등록
 	public int prjtInsert(ProjectVO projectVO);
 	// 프로젝트 수정
-	public int prjtupdate(ProjectVO projectVO);
+	//public int prjtupdate(ProjectVO projectVO);
 
 	// 상시(주기적)업무 등록
 	public int reguInsert(ProjectVO projectVO);
