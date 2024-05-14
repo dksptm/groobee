@@ -18,4 +18,7 @@ public interface DocMapper {
 	public List<DocVO> selectDocAll(SearchVO searchVO);
 	// 문서전체-페이징
 	public int count();
+	
+	// 템플릿목록.
+	
 }	

@@ -8,7 +8,7 @@
 	<div class="d-flex justify-content-center">
 		<div class="card my-4 col-10" style="background-color: rgba(67,89,113, 0.05);">
 			<h5 class="card-header display-5">문서조회</h5>
-			<p>로그인한 사람 : KHJ22214</p>
+			<p>로그인한 사람 : <span id="my">KHJ22212</span></p>
 			<h6></h6>
 			<div class="card-body">
 				<div class="mt-3 row">
@@ -84,29 +84,30 @@
 						</div>
 					</div>
                 </div>
-                <div class="d-flex justify-content-end mt-3 row">
-					<div th:class="'col-' + ${doc.finalLine}">
-					<table class="table table-bordered bg-white">
-						<tbody>
-							<tr>
-								<th:block th:each="num : ${#numbers.sequence(1, doc.finalLine)}">
-								<th th:class="${num ==  doc.nowLine ? '' : 'text-muted'}">결재라인</th>
-								</th:block>
-							</tr>
-							<tr>
-								<th:block th:each="num : ${#numbers.sequence(1, doc.finalLine)}">
-								<td>서명이미지</td>
-								</th:block>
-							</tr>
-							<tr>
-								<th:block th:each="num : ${#numbers.sequence(1, doc.finalLine)}">
-								<th>결재자</th>
-								</th:block>
-							</tr>
-						</tbody>
-						
-					</table>
-					</div>
+                <div class="d-flex justify-content-end m-3 row">
+					<th:block th:each="apr,aprStat : ${doc.aprs}">
+						<th:block th:if="${apr.aprSq == doc.nowLine}">
+						<div class="card col-1" style="width: 10rem;background-color: skyblue;">
+			  				<ul class="list-group list-group-flush"
+			  					th:attr="data-apr=${apr.aprEmp}">
+			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
+			    				<li class="list-group-item">[[ ${apr.aprCode} ]]
+			    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
+			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
+			  				</ul>
+			  			</div>
+		  				</th:block>
+		  				<th:block th:unless="${apr.aprSq == doc.nowLine}">
+						<div class="card" style="width: 10rem;">
+			  				<ul class="list-group list-group-flush">
+			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
+			    				<li class="list-group-item">[[ ${apr.aprCode} ]]
+			    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
+			    				<li class="list-group-item card-footer">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
+			  				</ul>
+						</div>
+			  			</th:block>
+					</th:block>
                 </div>
                 <div class="mt-3">
                 	<label for="cntn" class="col-md-2 col-form-label">내용</label>
@@ -131,13 +132,18 @@
                 </div>
                 <div class="mt-3 text-end">
 					<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn btn-primary">목록</button>
-					<th:block th:switch="${doc.draftStat}">
-						<th:block th:case="4A1a">
-							<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
-							<button type="button" class="btn btn-info" id="gotoapr">상신</button>
-							<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
-								    class="btn btn-danger">삭제</button>
-						</th:block>
+					<!-- 아래 버튼은 로그인정보에 따라 다름 -->
+					<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == 'KHJ22214'}">
+						<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
+						<button type="button" class="btn btn-info" id="gotoapr">상신</button>
+						<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
+							    class="btn btn-danger">삭제</button>
+					</th:block>
+					<th:block th:each="apr,aprStat : ${doc.aprs}">
+						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == 'KHJ22212'}">
+							<button type="button" class="btn btn-warning" id="aprok">결재</button>
+							<button type="button" class="btn btn-danger" id="aprng">반려</button>
+					 	</th:block>
 					</th:block>
                 </div>
 			</div>
@@ -146,41 +152,142 @@
 
 	<script>
 		document.addEventListener("DOMContentLoaded", function(e){
-			document.getElementById('gotoapr').addEventListener('click', function(e) {
-				let obj = getObj();
-				
-				if(obj == null){
-					return;
-				}
-				
-				console.log(obj);
-				let url = `/apr/${obj.docNo}/${obj.aprEmp}`;
-				console.log(url);
-				fetch(url, {
-					method : 'PUT',
-				 	body : JSON.stringify(obj),
-				 	headers : {
-				 		'Content-type' : 'application/json'
-				 	}
+			
+			let goApr = document.getElementById('gotoapr');
+			let aprOk = document.getElementById('aprok');
+			let aprNg = document.getElementById('aprng');
+
+			if(goApr != null) {
+				goApr.addEventListener('click', function(e) {
+					let obj = getObj('goApr');
+					
+					if(obj == null) {
+						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						return;
+					}
+					
+					let url = `/doc/${obj.docNo}/${obj.aprEmp}`;
+					console.log(url);
+					
+					fetch(url, {
+						method : 'PUT',
+						body : JSON.stringify(obj),
+						headers : {
+							'Content-type' : 'application/json'
+						}
+					})
+					.then(res => res.json())
+					.then(ret => {
+						if(ret.OUT == 'Y'){
+							alert('상신완료!');
+							location.href = "/docInfo?docNo=" + obj.docNo;
+						} else {
+							alert('상신실패!');
+							location.href = "/docList";
+						}
+					})
+					.catch(err => console.error(err))				
+				});
+			} // goApr
+			
+			if(aprOk != null) {
+				aprOk.addEventListener('click', function(e) {
+				console.log('시작');
+					let obj = getObj('aprOk');
+					
+					if(obj == null) {
+						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						return;
+					}
+					
+					let url = `/aprOk/${obj.docNo}/${obj.aprEmp}`;
+					console.log(url);
+					
+					fetch(url, {
+						method : 'PUT',
+						body : JSON.stringify(obj),
+						headers : {
+							'Content-type' : 'application/json'
+						}
+					})
+					.then(res => res.json())
+					.then(ret => {
+						console.log(ret);
+						if(ret.OUT == 'GO_NEXT'){
+							alert('결재완료!\n다음결재자에게 전달됩니다.');
+							location.href = "/docInfo?docNo=" + obj.docNo;
+						} else if(ret.OUT == 'APR_CMPLT') {
+							alert('결재완료!\n해당 문서가 최종결재 완료되었습니다.');
+							location.href = "/docInfo?docNo=" + obj.docNo;
+						} else {
+							alert('결재실패!');
+							location.href = "/docList";
+						} 
+					})
+					.catch(err => console.error(err))	
 				})
-				.then(res => res.json())
-				.then(ret => console.log(ret))
-				.catch(err => console.error(err))	
-			});
-		})
-
-		function getObj(){
+			} // aprOk
+			
+			
+			if(aprNg != null) {
+				aprNg.addEventListener('click', function(e) {
+				console.log('시작');
+					let obj = getObj('aprNg');
+					
+					if(obj == null) {
+						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						return;
+					}
+					
+					let url = `/aprNg/${obj.docNo}/${obj.aprEmp}`;
+					console.log(url);
+					
+					fetch(url, {
+						method : 'PUT',
+						body : JSON.stringify(obj),
+						headers : {
+							'Content-type' : 'application/json'
+						}
+					})
+					.then(res => res.json())
+					.then(ret => {
+						console.log(ret);
+						if(ret.OUT == 'OK') {
+							alert('반려완료!\n기안자에게 알립니다.');
+							console.log(ret);
+							//location.href = "docInfo?docNo=" + obj.docNo;
+						} else if(ret.OUT == 'NG') {
+							alert('반려실패!\n다시확인해주세요.');
+							console.log(ret);
+							//location.href = "/docList";
+						} else {
+							alert('오류!');
+							//location.href = "/docList";
+						} 
+					})
+					.catch(err => console.error(err))	
+				})
+			} // aprNg
+			
+		}); // end
+		
+		function getObj(aprBtn) {
 			let docNo = document.querySelector('td[data-dno]').dataset.dno;
-			let aprEmp = document.querySelector('td[data-draft]').dataset.draft;
+			let aprEmp = '';
+			if(aprBtn == 'goApr') {
+				aprEmp = document.querySelector('td[data-draft]').dataset.draft;
+			} else if (aprBtn == 'aprOk' || aprBtn == 'aprNg') {
+				aprEmp = document.querySelector('ul[data-apr]').dataset.apr;
+			}
 
-			if(docNo !== '' && aprEmp !== ''){
+			if(docNo != '' && aprEmp != ''){
 				let obj = {docNo, aprEmp};
 				return obj;
 			} else {
 				return null;
 			}
 		}
-
+ 
 	</script>
 </th:block>
 

@@ -16,6 +16,9 @@ public class AprVO {
 	private String reCmt;            
 	private String aprName;  
 	
+	// code name.
+	private String aprCode;
+	
 	// 프로시저 결과반환.
-	private Integer result;
+	private String result;
 }

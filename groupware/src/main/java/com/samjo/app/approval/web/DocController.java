@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
+import com.samjo.app.approval.service.TempVO;
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 
@@ -48,13 +49,17 @@ public class DocController {
 		return "approval/doc/info";
 	}
 	
+	// 문서작성 양식.
 	@GetMapping("docInsert")
 	public String dobInsertForm(Model model) {
 		DocVO docVO = docService.getDocNo();
+		List<TempVO> temps = docService.getCustTemps();
 		model.addAttribute("doc", docVO);
+		model.addAttribute("temps", temps);
 		return "approval/doc/insert";
 	}
 	
+	// 문서작성 저장.
 	@PostMapping("docInsert")
 	public String docInsertProcess(DocVO docVO) {
 		int docNo = docService.docInfoInsert(docVO);

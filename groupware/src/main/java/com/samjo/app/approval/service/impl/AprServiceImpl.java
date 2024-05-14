@@ -1,5 +1,8 @@
 package com.samjo.app.approval.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,30 @@ public class AprServiceImpl implements AprService {
 	}
 
 	@Override
-	public int goToApr(AprVO aprVO) {
-		int ret = aprMapper.updateMyApr(aprVO);
-		System.out.println("결과->" + aprVO.getResult());
-		return ret;
+	public Map<String, Object> goToApr(AprVO aprVO) {
+		Map<String, Object> map = new HashMap<>();
+		aprMapper.updateMyApr(aprVO);
+		map.put("OUT", aprVO.getResult());
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> aprOk(AprVO aprVO) {
+		Map<String, Object> map = new HashMap<>();
+		aprMapper.updateAprOk(aprVO);
+		map.put("OUT", aprVO.getResult());
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> aprNg(AprVO aprVO) {
+		if(aprVO.getReCmt() == null) {
+			aprVO.setReCmt("no comment");
+		}
+		Map<String, Object> map = new HashMap<>();
+		aprMapper.updateAprNg(aprVO);
+		map.put("OUT", aprVO.getResult());
+		return map;
 	}
 
 }
