@@ -53,24 +53,55 @@ public class ProjectController {
 		if(pId > -1) {
 			uri = "redirect:prjtInfo?prjtId=" + pId;
 		} else {
-			uri = "prjtList";
+			uri = "project/prjt/list";
 		}
 		return uri;
 	}
 	
 	
-	
-	
-	
-	
-	
 	// 협력업체 전체 조회
-	@GetMapping("CoopAllList")
-	public String CoopAllList(Model model) {
+	@GetMapping("coopAllList")
+	public String coopAllList(Model model) {
 		List<CoopCoVO> list = projectService.CoopCoAllList();
 		model.addAttribute("coopCo", list);
-		return "project/coopCoList";
+		return "project/coopCo/list";
 	}
+	// 협력업체 단건조회.
+	@GetMapping("coopInfo")
+	public String coopInfo(CoopCoVO coopCoVO, Model model) {
+		CoopCoVO findVO = projectService.coopInfo(coopCoVO);
+		model.addAttribute("coopCo", findVO);
+		return "project/coopCo/info";
+	}
+	
+	
+	// 협력업체 등록
+	@GetMapping("coopInsert")
+	public String coopInsertForm(Model model) {
+		model.addAttribute("coopCo", new CoopCoVO());
+		return "project/coopCo/insert";
+	}
+	
+	@PostMapping("coopInsert")
+	public String coopInsertProcess(CoopCoVO coopCoVO) {
+		int cNo =  projectService.coopInsert(coopCoVO);
+		String uri = null;
+		
+		if(cNo > -1) {
+			uri = "redirect:coopInfo?coopCoNo=" + cNo;
+		} else {
+			uri = "coopAllList";			
+		}
+		return uri;
+	}
+	
+
+
+
+
+
+
+
+
+
 }
-
-

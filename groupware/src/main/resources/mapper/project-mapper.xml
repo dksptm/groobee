@@ -14,7 +14,7 @@
 		           ,e.task_emp_id
 		           ,t.prjt_mat 
 		FROM prjt p join task_emps e
-		             on p.prjt_id = e.task_no
+		             on p.prjt_id = to_char(e.task_no)
 		             join task_common t 
 		             on t.task_no = e.task_no 
 		ORDER BY p.prjt_id
@@ -32,7 +32,7 @@
 		      ,p.purpose
 		      ,p.smry
 		FROM prjt p join task_common t 
-		             on p.prjt_id = t.task_no
+		             on p.prjt_id = to_char(t.task_no)
 		             join task_emps e
 		             on t.task_no = e.task_no 
 		ORDER BY p.prjt_id
@@ -72,9 +72,8 @@
 				,#{custNo}
 				,#{deptLoc}
 				,#{deptMngr})
-		SELECT * FROM DUAL
+		SELECT 1 FROM DUAL
 	</insert>
-	
 	
 	
 	
@@ -91,6 +90,53 @@
 		       ,cntn
 		FROM coop_co
 		ORDER BY coop_co_no
+	</select>
+	
+	<!-- 협력업체 등록 -->
+	<insert id="insertCoop" parameterType="ProjectVO"> 
+		INSERT INTO coop_co (coop_co_no
+                     ,task_no 
+                     ,co_name 
+                     ,co_tel  
+                     ,pic 
+                     ,cust_addr 
+                     ,cntn)
+		VALUES ( #{coopCoNo}
+				,#{taskNo}
+				,#{coName}
+				,#{coTel}
+				,#{pic}
+				,#{custAddr}
+				,#{cntn}
+				,#{deptId}
+		)
+	</insert>
+	
+	<!-- 협력업체 단건 -->
+	<select id="selectCoopt" resultType="CoopCoVO">
+		SELECT coop_co_no
+		       ,task_no
+		       ,co_name
+		       ,co_tel
+		       ,pic
+		       ,cust_addr
+		       ,cntn
+		FROM coop_co
+		WHERE coop_co_no =#{coopCoNo}
+		</select>
+	
+	
+	<!-- 상시(주기적) 업무 조회 -->
+	<select id="selectReguAllList" resultType="ProjectVO">
+	SELECT 			t.task_no
+			       ,t.task_name
+			       ,r.regu_id
+			       ,r.cre_perd
+			       ,r.active
+			       ,t.task_start_dt
+	FROM 	task_common t 
+		         JOIN regu_stad r 
+		         ON to_char(t.task_no) = r.regu_id
 	</select>
 	
 </mapper>

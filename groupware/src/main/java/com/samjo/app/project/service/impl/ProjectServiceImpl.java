@@ -25,17 +25,14 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<ProjectVO> PrjtAllList() {
 		return projectMapper.selectPrjtAllList();
 	}
-	
 	@Override // 프로젝트 단건조회
 	public ProjectVO prjtInfo(ProjectVO projectVO) {
 		return projectMapper.selectPrjt(projectVO);
 	}
-	
 	@Override // 프로젝트 등록
 	public int prjtInsert(ProjectVO projectVO) {
 		return projectMapper.prjtInsert(projectVO);
 	}
-	
 	@Override // 프로젝트 수정
 	public int prjtupdate(ProjectVO projectVO) {
 		return projectMapper.prjtUpdate(projectVO);
@@ -44,9 +41,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override // 상시(주기적)업무 등록
 	public int reguInsert(ProjectVO projectVO) {
-		return projectMapper.prjtInsert(projectVO);
+		return projectMapper.reguInsert(projectVO);
 	}
-
 	@Override // 상시(주기적)업무 조회
 	public List<ProjectVO> reguAllList() {
 		return projectMapper.selectReguAllList();
@@ -59,4 +55,16 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<CoopCoVO> CoopCoAllList() {
 		return projectMapper.selectCoopCoAllList();
 	}
+	@Override // 협력업체 등록
+	public int coopInsert(CoopCoVO coopCoVO) {
+		return projectMapper.coopInsert(coopCoVO);
+	}
+
+	@Override
+	public CoopCoVO coopInfo(CoopCoVO coopCoVO) {
+		return projectMapper.selectCoop(coopCoVO);
+	}
+
+
+	
 }
