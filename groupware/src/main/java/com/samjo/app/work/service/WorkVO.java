@@ -11,7 +11,7 @@ public class WorkVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sysdate;
 	private String empId;
-	@DateTimeFormat(pattern = "HH-MI-SS")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dt;
 	@DateTimeFormat(pattern = "HH-MI-SS")
 	private Date wkIn;
