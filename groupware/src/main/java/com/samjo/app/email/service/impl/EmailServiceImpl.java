@@ -14,6 +14,8 @@ public class EmailServiceImpl implements EmailService {
 	
 	EmailMapper emailMapper;
 	
+	
+	
 	@Autowired
 	public EmailServiceImpl(EmailMapper emailMapper) {
 		this.emailMapper = emailMapper;
@@ -83,6 +85,21 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public int count() {
 		return emailMapper.count();
+	}
+
+	@Override
+	public int countSend() {
+		return emailMapper.countSend();
+	}
+
+	@Override
+	public List<EmailVO> wastedList() {
+		return emailMapper.wastedList();
+	}
+
+	@Override
+	public int countWasted() {
+		return emailMapper.countWasted();
 	}
 	
 }

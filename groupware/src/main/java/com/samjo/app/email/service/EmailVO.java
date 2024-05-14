@@ -19,9 +19,8 @@ public class EmailVO {
 	
 	// inbox TABLE
 	private Integer recEmailNo;
-	private Date recpDt;
 	private String recp;
-	private String recpType;
+	private String recpType; //수신자,참조자 구별하는건데 이거 없애고 걍 참조자 필드 추가.
 	private Date readDt;
 	
 	// email_file TABLE

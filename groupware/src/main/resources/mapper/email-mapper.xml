@@ -5,14 +5,14 @@
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
  	<select id="selectInboxAll" resultType="EmailVO">
   		SELECT REC_EMAIL_NO
-               ,CHAIN_MAIL_NO
+               ,SEN_EMAIL_NO
                ,RECP_DT
                ,RECP
                ,RECP_TYPE
                ,READ_DT
                ,EMAIL_STAT
                ,CUST_NO
-        FROM inbox
+        FROM INBOX
         <!--  WHERE RECP = #{empId} -->
   	</select>
 
@@ -27,9 +27,48 @@
   	
   	<select id="count">
   		SELECT count(*)
-  		FROM inbox
+  		FROM INBOX
   	</select>
   	
+  	<select id="selectEmailAll" resultType="EmailVO">
+  		SELECT SEN_EMAIL_NO
+              ,SENDER
+              ,TITLE
+              ,CNTN
+              ,SENT_DT
+              ,EMAIL_STAT
+              ,CHAIN_MAIL_NO
+              ,CUST_NO
+        FROM EMAIL
+        <!--  WHERE RECP = #{empId} -->
+  	</select>
   	
+  	 <select id="countSend">
+  		SELECT count(*)
+  		FROM EMAIL
+  	</select>
+  	
+  	<!-- 휴지통 -->
+  	<update id="goWaste">
+	  	UPDATE email
+		SET email_stat = '3B2b'
+		WHERE sen_email_no = 
+  	</update>
+  	
+  	 <select id="countWasted">
+  		SELECT count(*)
+  		FROM   EMAIL
+  		WHERE  email_stat = '3B2b'
+  	</select>
+
+	<select id="wastedList" resultType="EmailVO">
+  	SELECT s.sender
+      	  ,s.title
+          ,s.sent_dt
+    FROM  email s JOIN inbox i
+          ON s.sen_email_no = i.sen_email_no
+    WHERE s.email_stat = '3B2b'
+          AND i.email_stat = '3B2b'
+	</select>
   	
   </mapper>

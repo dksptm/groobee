@@ -75,19 +75,40 @@ public class EmailController {
 	}
 	
 	// 보낸메일 전체조회
-	@GetMapping("/email/emailList")
-	public String emailList(Model model) {
+	@GetMapping("emailList")
+	public String emailList(SearchVO searchVO, Model model) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
 		List<EmailVO> list = emailService.emailList();
 		model.addAttribute("emailList", list);
+		PageDTO pageDTO = new PageDTO(searchVO.getPage(), emailService.countSend());
+		model.addAttribute("pageDTO", pageDTO);
 		return "email/emailList";
 	}
 		
 	// 보낸메일 상세조회
-	@GetMapping("/email/emailInfo")
+	@GetMapping("emailInfo")
 	public String emailInfo(EmailVO emailVO, Model model) {
 		EmailVO sfindVO = emailService.emailInfo(emailVO);
 		model.addAttribute("emailInfo", sfindVO);
 		return "email/emailInfo";
 	}
-
+	
+	// 주소록(그냥 해당고객사 전체사원 일부정보 가리고 출력하기로 해서.. 좀만 더 생각해보기)
+	// 많이 어려울것 같지는 않다
+	
+	// 휴지통 목록조회
+	@GetMapping("wastedList")
+	public String wastedmail(SearchVO searchVO, Model model) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		List<EmailVO> list = emailService.wastedList();
+		model.addAttribute("emailList", list);
+		PageDTO pageDTO = new PageDTO(searchVO.getPage(), emailService.countWasted());
+		model.addAttribute("pageDTO", pageDTO);
+		return "email/wastedMail";
+	}
+	
 }
