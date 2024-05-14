@@ -7,25 +7,30 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">보낸 메일</h5>
+				<h5 class="card-header">휴지통</h5>
 				<div class="card-body">
 					<div class="table-responsive">
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th>발신시간</th>
+									<th>종류</th> <!-- 발신,수신 분류 -->
+									<th>시간</th>
 									<th>메일 제목</th>
-									<th>수신자명</th>
-									<th>첨부파일</th>
 									<th>선택</th>
 								</tr>
 							</thead>
 							<tbody>
-								<th:block th:each="Email : ${emailList}">
-								<tr th:onclick="|location.href='@{/emailInfo(sender=${Email.sender})}'|">
-									<td>[[ ${Email.sentDt} ]]</td>
+								<th:block th:each="Email : ${wastedList}">
+								<tr th:onclick="|location.href='@{/wastedInfo(recp=${Email.recp})}'|">
+								<!-- 아래 부분 분명히 틀렸을 것이다. Email.sender 같은 부분 문제 있을 것이다. 반드시 체크하자. -->
+									<td>
+									<span th:if="${session.EmailVO.empId == Email.sender}">보낸메일</span>
+									<span th:if="${session.EmailVO.empId == Email.recp}">받은메일</span>
+									<span th:if="${Email.sender == Email.recp}">내게쓴메일</span>
+									</td>
+									<td>[[ ${Email.recpDt} ]]</td>
 									<td>[[ ${Email.title} ]]</td>
-									<td>[[ ${Email.recp]} ]]</td>
+									<td>[[ ${Email.sender} ]]</td>
 									<td>[[ ${Email.fileNo} ]]</td>
 									<td>[[ ${doc.draft} ]]</td>
 									<td><span class="badge bg-label-primary me-1">빈공간1</span></td>
@@ -41,19 +46,19 @@
 							<ul class="pagination justify-content-center">
 								<th:block th:if="${pageDTO.prev}">
 									<li class="page-item prev">
-										<a th:href="|emailList?page=${pageDTO.startPage - 1 }|"
+										<a th:href="|inboxList?page=${pageDTO.startPage - 1 }|"
 										   class="page-link"><i class="bx bx-chevron-left"></i></a>
 									</li>
 								</th:block>
 								<th:block th:each="num : ${#numbers.sequence(1, pageDTO.endPage)}">
 									<li class="page-item "
 										th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
-										<a th:href="|emailList?page=${num}|" class="page-link">[[${num}]]</a>
+										<a th:href="|inboxList?page=${num}|" class="page-link">[[${num}]]</a>
 									</li>
 								</th:block>
 								<th:block th:if="${pageDTO.next}">
 									<li class="page-item next">
-										<a th:href="|emailList?page=${pageDTO.endPage + 1 }|"
+										<a th:href="|inboxList?page=${pageDTO.endPage + 1 }|"
 										   class="page-link"><i class="bx bx-chevron-right"></i></a>
 									</li>
 								</th:block>

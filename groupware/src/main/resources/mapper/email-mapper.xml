@@ -12,7 +12,7 @@
                ,READ_DT
                ,EMAIL_STAT
                ,CUST_NO
-        FROM inbox
+        FROM INBOX
         <!--  WHERE RECP = #{empId} -->
   	</select>
 
@@ -42,5 +42,33 @@
         FROM EMAIL
         <!--  WHERE RECP = #{empId} -->
   	</select>
+  	
+  	 <select id="countSend">
+  		SELECT count(*)
+  		FROM EMAIL
+  	</select>
+  	
+  	<!-- 휴지통 -->
+  	<update id="goWaste">
+	  	UPDATE email
+		SET email_stat = '3B2b'
+		WHERE sen_email_no = 
+  	</update>
+  	
+  	 <select id="countWasted">
+  		SELECT count(*)
+  		FROM   EMAIL
+  		WHERE  email_stat = '3B2b'
+  	</select>
+
+	<select id="wastedList" resultType="EmailVO">
+  	SELECT s.sender
+      	  ,s.title
+          ,s.sent_dt
+    FROM  email s JOIN inbox i
+          ON s.sen_email_no = i.sen_email_no
+    WHERE s.email_stat = '3B2b'
+          AND i.email_stat = '3B2b'
+	</select>
   	
   </mapper>

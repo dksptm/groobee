@@ -22,6 +22,9 @@ public interface EmailMapper {
 	// 보낸메일 상세조회
 	public EmailVO selectEmail(EmailVO emailVo);
 	
+	// 휴지통 전체조회
+	public List<EmailVO> wastedList();
+	
 	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
 	public EmailVO deleteEmail(EmailVO emailVo);
 	
@@ -37,8 +40,14 @@ public interface EmailMapper {
 	// 수신한 이메일의 파일 내려받기
 	public EmailVO getFile(EmailVO emailVo);
 	
-	//전체 페이지
+	//전체 페이지(받은메일)
 	public int count();
+	
+	//전체 페이지(보낸메일)
+	public int countSend();
+	
+	//전체 페이지(휴지통)
+	public int countWasted();
 	
 	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
 	// public List<EmpVO> getEmpList();
