@@ -40,7 +40,7 @@
 								<div class="mt-3 row">
 									<label for="cntn" class="col-md-2 col-form-label">설명</label>
 									<div class="col-md-5">
-										<textarea class="form-control">...</textarea>
+										<textarea class="form-control"></textarea>
 									</div>
 								</div>
 								<div class="mt-3 col-2">
@@ -73,18 +73,20 @@
 					<!-- 파일업로드 태그 -->
 					<div style="display: none;" id="docupload">
 						<div class="test">
-							<input name="uploadFiles2" type="file" multiple>
+							<input name="uploadFiles2" id="uploadFiles2" type="file" multiple>
 							<button class="btn btn-secondary mx-2 uploadBtn2">업로드</button>
 						</div>
-						<div class="test2"></div>
+						<h4 style="display: none;" class="test2">=템플릿 미리보기=</h4>
+						<div style="display: none;" class="upload-sample p-3 test2 border border-dark"></div>
 					</div>
 
 					<!-- 작성완료 버튼 -->
 					<div class="mt-3 text-end">
-						<button type="submit" class="btn rounded-pill btn-primary">작성완료</button>
+						<button type="submit" class="commitbtn btn rounded-pill btn-primary">작성완료</button>
 					</div>
 
 					<script>
+					
 					//업로드or직접입력 선택 반영
 						$(".inserttype").on("change", function(e) {
 							if ($(".inserttype").val() == "input") {
@@ -112,11 +114,11 @@
 					            contentType: 'application/json;charset=UTF-8',
 					            success: function (result) { 
 					            	console.log(result);
+							        $(".template").append("<a href='download/"+result+"' '>"+result+" 다운로드</a>");
 					            }
 							})
-							
-							
 						});
+						
 						//직접입력값 초기화
 						$("#htmlreset").on("click", function(e) {
 							$(".template").empty();
@@ -151,12 +153,14 @@
 					              	   $('div.test2').append(imgTag);
 					                 } */
 					                 //
-					                 $.ajax({  //C:\upload	  ┌>\application\octet-stream\2024\05\10\001.jpg
+					                 
+					                 //특정요소 안에 html 파일의 태그를 추가.
+					                 $.ajax({  //C:\upload	  ┌>실제경로
 					                	    url: 'files/' + result,	// HTML 파일 가져올 경로
 					                	    dataType: "html",
 					                	    success: function (html){
-												console.log(html);
-					                	    	$('div.test2').html(html); // HTML 코드 붙여넣기
+					                	    	$('div.upload-sample').html(html); // HTML 코드 붙여넣기
+					                	    	$('.test2').css('display', 'block');
 					                	    }
 					                	});
 					             },
@@ -165,6 +169,22 @@
 					             }
 					         });
 						})
+						
+						$(".commitbtn").on("click", function(e) {
+							let tVal = $('div.upload-sample').html()
+							console.log("@test@:" + tVal);
+							let fileName = $("#uploadFiles2").val();
+							$.ajax({
+								url: 'uploadsHtml',	
+					            type: 'POST',
+					            data: JSON.stringify({tags:tVal,fileName:fileName}),
+					            dataType: 'text',
+					            contentType: 'application/json;charset=UTF-8',
+					            success: function (result) { 
+					            	console.log(result);
+					            }
+							})
+						});
 					</script>
 				</div>
 			</div>

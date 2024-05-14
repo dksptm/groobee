@@ -23,7 +23,7 @@
 			<ul class="navbar-nav flex-row align-items-center ms-auto">
 				<!-- User -->
 				<i class="bx bx-user me-2"></i>
-				<div class="user">테스트님</div>
+				<div class="user" th:text="${session.loginType}+님"></div>
 				&emsp;
 				<form action="/" method="get">
 					<input type="submit" value="로그아웃" class="btn btn-dark">

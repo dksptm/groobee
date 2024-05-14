@@ -9,6 +9,7 @@ public interface UploadService {
 	
 	//업로드 기능
 	public List<String> uploadFile(MultipartFile[] uploadFiles);
+	
 	//경로폴더 생성
 	public String makeFolder(String ftype);
 	public String setImagePath(String uploadFileName);
