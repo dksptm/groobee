@@ -11,7 +11,6 @@
 			SELECT NVL(MAX(apr_no), 0) + 1
 			FROM apr
 		</selectKey>
-	
 		INSERT INTO apr
 		        (
 		            apr_no
@@ -34,17 +33,52 @@
 		        )
 	</insert>
 	
+	<select id="selectDocApr" resultType="AprVO">
+		SELECT apr_no
+		       ,doc_no
+		       ,apr_sq
+		       ,apr_line
+		       ,apr_emp
+		       ,apr_name
+		       ,apr_yn
+		       ,get_codename(apr_yn) as apr_code
+		       ,apr_dt
+		       ,re_cmt
+		FROM apr
+		WHERE doc_no = #{dno}
+		ORDER BY apr_sq
+	</select>
+	
 	<update id="updateMyApr" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			go_apr(
 				#{docNo, mode=IN, jdbcType=INTEGER},
 				#{aprEmp, mode=IN, jdbcType=VARCHAR},
-				#{result, mode=OUT, jdbcType=INTEGER}
+				#{result, mode=OUT, jdbcType=VARCHAR}
 			)
 		}	
 	</update>
-
-
+	
+	<update id="updateAprOk" parameterType="AprVO" statementType="CALLABLE">
+		{CALL
+			apr_ok(
+				#{docNo, mode=IN, jdbcType=INTEGER},
+				#{aprEmp, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=VARCHAR}	
+			)
+		}
+	</update>
+	
+	<update id="updateAprNg" parameterType="AprVO" statementType="CALLABLE">
+		{CALL
+			apr_ng(
+				#{docNo, mode=IN, jdbcType=INTEGER},
+				#{aprEmp, mode=IN, jdbcType=VARCHAR},
+				#{reCmt, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=VARCHAR}	
+			)
+		}	
+	</update>
 
 </mapper>
   

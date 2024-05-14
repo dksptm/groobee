@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.DocMapper">
 
+	<!-- 전체목록 : 나중에 cust id 및 열람가능 문서로 제한해야함. -->
 	<select id="selectDocAll" parameterType="searchVO" resultType="DocVO">
 		SELECT rn
 		       ,doc_no
@@ -26,11 +27,13 @@
 		WHERE  a.rn > (#{page} - 1) * 5	
 	</select>
 	
+	<!-- 페이징 위한 count. -->
 	<select id="count">
 		SELECT count(*)
 		FROM doc
 	</select>
 
+	<!-- 한 문서 상세정보. -->
 	<select id="selectDoc" resultType="DocVO">
 		SELECT d.doc_no
 				,d.draft
