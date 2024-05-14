@@ -33,10 +33,10 @@ public class ProjectServiceImpl implements ProjectService {
 	public int prjtInsert(ProjectVO projectVO) {
 		return projectMapper.prjtInsert(projectVO);
 	}
-	@Override // 프로젝트 수정
-	public int prjtupdate(ProjectVO projectVO) {
-		return projectMapper.prjtUpdate(projectVO);
-	}
+	/*
+	 * @Override // 프로젝트 수정 public int prjtupdate(ProjectVO projectVO) { return
+	 * projectMapper.prjtUpdate(projectVO); }
+	 */
 	
 
 	@Override // 상시(주기적)업무 등록
