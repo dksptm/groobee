@@ -64,6 +64,7 @@
 				(
 					doc_no
 	                ,draft
+	                ,cust_no
 	                ,dept_id
 	                ,title
 	                <if test="cntn != null and !cntn.equals('')">
@@ -76,6 +77,7 @@
 	  	  		(
 	  	  			#{docNo}
 			        ,#{draft}
+			        ,#{custNo}
 			        ,#{deptId}
 			        ,#{title}
 			        <if test="cntn != null and !cntn.equals('')">

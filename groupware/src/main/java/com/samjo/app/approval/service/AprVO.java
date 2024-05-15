@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class AprVO {
 	private Integer aprNo;   
-	private Integer docNo;           
+	private Integer docNo;    
+	private String custNo;
 	private Integer aprSq;      
 	private Integer aprLine;       
 	private String aprEmp;    

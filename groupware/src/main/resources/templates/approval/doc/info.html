@@ -7,9 +7,12 @@
 <th:block layout:fragment="Content">
 	<div class="d-flex justify-content-center">
 		<div class="card my-4 col-10" style="background-color: rgba(67,89,113, 0.05);">
-			<h5 class="card-header display-5">문서조회</h5>
-			<p>로그인한 사람 : <span id="my">KHJ22212</span></p>
-			<h6></h6>
+			<h5 class="card-header display-5" id="ttttt">문서조회</h5>
+			
+			<p>로그인Id <input type="text" th:value="${session.id}" name="draft" readonly />
+			부서ID <input type="text" th:value="${session.dept}" name="deptId" readonly />
+			회사ID <input type="text" th:value="${session.cust}" name="custNo" readonly /></p>
+			
 			<div class="card-body">
 				<div class="mt-3 row">
 					<label class="col-md-2 col-form-label">제목</label>
@@ -19,6 +22,8 @@
                 </div>
                 <div class="mt-3 row">
 					<div class="d-flex justify-content-between tab-content doc-example-content">
+					
+						<!-- 문서정보.  -->
 						<div class="card col-7" style="background-color: rgba(67,89,113, 0.025);">
 						  <h5 class="card-header">문서정보</h5>
 						  <div class="table-responsive">
@@ -34,7 +39,7 @@
 						      <tbody class="table-border-bottom-0">
 						        <tr>
 						          <td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
-						          <td>[[ ${doc.tempId} ]]</td>
+						          <td th:attr="data-temp=${doc.tempId}">[[ ${doc.tempId} ]]</td>
 						          <td><span class="badge bg-label-primary me-1">[[ ${doc.docStatName} ]]</span></td>
 						          <td th:if="${doc.cmpltDt != null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
 						          <td th:if="${doc.cmpltDt == null}">-</td>
@@ -59,6 +64,8 @@
 						    </table>
 						  </div>
 						</div>
+						
+						<!-- 미정... -->
 						<div class="card col-4" style="background-color: rgba(67,89,113, 0.025);">
 						  <h5 class="card-header">업무정보</h5>
 						  <div class="table-responsive">
@@ -84,6 +91,8 @@
 						</div>
 					</div>
                 </div>
+                
+                <!-- 결재라인.  -->
                 <div class="d-flex justify-content-end m-3 row">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
 						<th:block th:if="${apr.aprSq == doc.nowLine}">
@@ -109,6 +118,8 @@
 			  			</th:block>
 					</th:block>
                 </div>
+                
+                <!-- 문서내용.  -->
                 <div class="mt-3">
                 	<label for="cntn" class="col-md-2 col-form-label">내용</label>
 	                <div class="d-flex justify-content-end mt-3 row">
@@ -123,11 +134,16 @@
 		            </div>
 		            <br>
                    	<div class="col-md-12">
-                   		<div>
-                   			<textarea class="form-control" readonly>
-                   			 [[ ${doc.cntn} ]]
-                   			</textarea>
-                   		</div>
+                   	
+                   		<!-- template fragment -->
+						<div id="temparea">
+						<th:block th:replace="approval/temp/template :: TempCust"></th:block>
+						</div>
+						
+						<!-- cntn textarea -->
+						<textarea name="cntn" id="cntn" class="form-control" cols="40"
+									readonly>[[ ${doc.cntn} ]]</textarea><br>
+									
                     </div>
                 </div>
                 <div class="mt-3 text-end">
@@ -153,10 +169,34 @@
 	<script>
 		document.addEventListener("DOMContentLoaded", function(e){
 			
+			/* 내용표시 */
+			$('div#temparea').hide();			
+			let temp = document.querySelector('td[data-temp]').dataset.temp;
+			
+			if(temp != 'TP001' || temp != 'TP002' || temp != 'TP003') {
+				let tempPath = $('textarea#cntn').val();
+				$('div#temparea').show();
+				$('textarea#cntn').hide(); 
+				$.ajax({
+					url : 'files/' + tempPath,
+					dataType: "html",
+					success: function(html) {
+						$('div#custTemp').html(html);
+						$('#custTemp').find('*').attr('contentEditable', 'false');
+            	    },
+            	    error: function(err){
+            	    	console.log('ERR : ', err);
+            	    }
+				})
+			}
+			
+			
+			/* 상신 및 결재진행 시작 */
 			let goApr = document.getElementById('gotoapr');
 			let aprOk = document.getElementById('aprok');
 			let aprNg = document.getElementById('aprng');
-
+			
+			// 상신.
 			if(goApr != null) {
 				goApr.addEventListener('click', function(e) {
 					let obj = getObj('goApr');
@@ -190,6 +230,7 @@
 				});
 			} // goApr
 			
+			// 결재.
 			if(aprOk != null) {
 				aprOk.addEventListener('click', function(e) {
 				console.log('시작');
@@ -228,7 +269,7 @@
 				})
 			} // aprOk
 			
-			
+			// 반려.
 			if(aprNg != null) {
 				aprNg.addEventListener('click', function(e) {
 				console.log('시작');
@@ -268,6 +309,7 @@
 					.catch(err => console.error(err))	
 				})
 			} // aprNg
+			/* 상신 및 결재진행 끝 */
 			
 		}); // end
 		
