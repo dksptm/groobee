@@ -24,6 +24,7 @@ public interface EmailService {
 	public EmailVO deleteEmail(EmailVO emailVo);
 	
 	// 휴지통 전체조회
+	//휴지통의 메일종류(발신,수신) 구분하기.
 	public List<EmailVO> wastedList();
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념

@@ -6,7 +6,6 @@
  	<select id="selectInboxAll" resultType="EmailVO">
   		SELECT REC_EMAIL_NO
                ,SEN_EMAIL_NO
-               ,RECP_DT
                ,RECP
                ,RECP_TYPE
                ,READ_DT

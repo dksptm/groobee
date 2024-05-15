@@ -94,6 +94,8 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public List<EmailVO> wastedList() {
+		
+		
 		return emailMapper.wastedList();
 	}
 
