@@ -59,6 +59,7 @@
 		WHERE doc_no = #{docNo}
 	</select>
 	
+	<!-- 문서등록. -->
 	<insert id="insertDoc" parameterType="DocVO">
 		INSERT INTO doc
 				(
@@ -88,11 +89,39 @@
 			     )
 	</insert>
 	
+	<!-- 문서등록 위한 PK. -->
 	<select id="getDocNo" resultType="docVO">
 		SELECT NVL(MAX(doc_no), 0) + 1 as docNo
 		FROM doc	
 	</select>
 	
+	<!-- 문서의 첨부파일 등록. -->
+	<insert id="insertDocFile" parameterType="DocFileVO">
+		<selectKey keyProperty="fileNo"
+				   resultType="Integer"
+				   order="BEFORE">
+			SELECT NVL(MAX(file_no), 0) + 1
+			FROM doc_file
+		</selectKey>
+		INSERT INTO doc_file
+		        (
+		            file_no
+		            ,doc_no
+		            ,save_name
+		            ,upl_name
+		            ,upl_emp      
+		        )
+		  VALUES
+		        (
+		         #{fileNo}
+		        ,#{docNo}
+		        ,#{saveName}
+		        ,#{saveName}
+		        ,#{uplEmp}
+		        )	
+	</insert>
+	
+	<!-- 문서수정 -->
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc
 		SET draft = draft

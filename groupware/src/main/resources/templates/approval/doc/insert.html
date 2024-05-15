@@ -84,9 +84,8 @@
 					<div>
 						<input type="file" name="docFiles" id="docFiles" multiple>
 						<!-- uploadFiles : UploadController의 매개변수이름(달라도 된다고 함..) -->
-						<button type="button" class="uploadBtn">UPLOAD</button>
+						<!-- <button type="button" class="uploadBtn">UPLOAD</button> -->
 					</div>
-					
 					
 					<!-- 
 					<div class="d-flex justify-content-end mt-3 row">
@@ -96,6 +95,7 @@
 						</div>
 					</div><br>
 					 -->
+					 
 					<div class="col-md-12">
 						
 						<!-- template fragment -->
@@ -184,9 +184,9 @@
 				trs.each(function(idx,tr){
 					let get = $(tr);
 					
-					let creatInputSq = $('<span><input name="aprs[' + (idx+1) + '].aprSq" />번째 결재자</span>');
-					let creatInputEmp = $('<input name="aprs[' + (idx+1) + '].aprEmp" type="hidden" />');
-					let creatInputEmpName = $('<input type="text" /><br>');
+					let creatInputSq = $('<span><input name="aprs[' + (idx+1) + '].aprSq" readonly />번째 결재자</span>');
+					let creatInputEmp = $('<input name="aprs[' + (idx+1) + '].aprEmp" type="hidden" readonly />');
+					let creatInputEmpName = $('<input type="text" readonly /><br>');
 					
 					creatInputSq.find('input').val(get.find('td').eq(1).text());
 					creatInputEmp.val(get.data('emp'));
@@ -230,8 +230,11 @@
 					 	if(fileList.length != 0) {
 					 		okFile = await saveFile(fileList);
 					 		console.log('첨부파일완료');
-					 		okFile.forEach(ele => {
+					 		okFile.forEach((ele,idx) => {
 					 			alert('ele=>' + ele);
+						        let fPath = $('<input name="files[' + (idx) + '].saveName" type="hidden" />');
+						        fPath.val(ele);
+						    	$('#docFiles').append(fPath);
 					 		})
 					 	}
 					 	
@@ -292,10 +295,8 @@
 			return new Promise((resolve, reject) => {
 				// FormData() 인스턴스.
 			    let formData = new FormData(); 
-			 	let fileInfo = {
-			 		
-			 	}
-				// formData에 담기(파일이 있는 경우만)
+
+				// formData에 담기
 			    for(let file of fileList) {
 			        formData.append('uploadFiles', file);
 			    }					
@@ -309,9 +310,6 @@
 			        data: formData,
 			    })
 			    .done(response => {
-			        for(let file of response){
-			            console.log(file);
-			        }
 			        resolve(response);
 			    })
 			    .fail(err => {
@@ -320,6 +318,7 @@
 			    });
 			})// promise.
 		}
+		
 		
 		
 		

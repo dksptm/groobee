@@ -74,7 +74,6 @@ public class DocController {
 	// 문서작성 저장.
 	@PostMapping("docInsert")
 	public String docInsertProcess(DocVO docVO) {
-		System.out.println("이것은 내용이다!!!!!!!-------------" + docVO.getCntn());
 		int docNo = docService.docInfoInsert(docVO);
 		if(docNo != -1) {
 			return "redirect:docInfo?docNo=" + docNo;

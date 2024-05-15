@@ -93,7 +93,7 @@
                 </div>
                 
                 <!-- 결재라인.  -->
-                <div class="d-flex justify-content-end m-3 row">
+                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
 						<th:block th:if="${apr.aprSq == doc.nowLine}">
 						<div class="card col-1" style="width: 10rem;background-color: skyblue;">
@@ -149,17 +149,19 @@
                 <div class="mt-3 text-end">
 					<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn btn-primary">목록</button>
 					<!-- 아래 버튼은 로그인정보에 따라 다름 -->
-					<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == 'KHJ22214'}">
+					<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
 						<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
 						<button type="button" class="btn btn-info" id="gotoapr">상신</button>
 						<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
 							    class="btn btn-danger">삭제</button>
 					</th:block>
+					<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
-						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == 'KHJ22212'}">
+						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == session.id}">
 							<button type="button" class="btn btn-warning" id="aprok">결재</button>
 							<button type="button" class="btn btn-danger" id="aprng">반려</button>
 					 	</th:block>
+					</th:block>
 					</th:block>
                 </div>
 			</div>
@@ -173,7 +175,7 @@
 			$('div#temparea').hide();			
 			let temp = document.querySelector('td[data-temp]').dataset.temp;
 			
-			if(temp != 'TP001' || temp != 'TP002' || temp != 'TP003') {
+			if(temp != 'TP001' && temp != 'TP002' && temp != 'TP003') {
 				let tempPath = $('textarea#cntn').val();
 				$('div#temparea').show();
 				$('textarea#cntn').hide(); 
@@ -199,6 +201,13 @@
 			// 상신.
 			if(goApr != null) {
 				goApr.addEventListener('click', function(e) {
+					
+					let finChk = document.querySelector('div[data-fl]').dataset.fl;
+					if(finChk <= 1) {
+						alert('결재자가 없습니다.\n다시확인해주세요.');
+						return;
+					}
+					
 					let obj = getObj('goApr');
 					
 					if(obj == null) {
@@ -206,7 +215,7 @@
 						return;
 					}
 					
-					let url = `/doc/${obj.docNo}/${obj.aprEmp}`;
+					let url = `/aprGo/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
@@ -223,7 +232,8 @@
 							location.href = "/docInfo?docNo=" + obj.docNo;
 						} else {
 							alert('상신실패!');
-							location.href = "/docList";
+							//location.href = "/docList";
+							console.log(ret);
 						}
 					})
 					.catch(err => console.error(err))				
@@ -241,7 +251,7 @@
 						return;
 					}
 					
-					let url = `/aprOk/${obj.docNo}/${obj.aprEmp}`;
+					let url = `/aprOk/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
@@ -280,7 +290,7 @@
 						return;
 					}
 					
-					let url = `/aprNg/${obj.docNo}/${obj.aprEmp}`;
+					let url = `/aprNg/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
