@@ -71,7 +71,6 @@ public class UploadServiceImpl implements UploadService {
 		String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 		// LocalDate를 문자열로 포멧
 		String folderPath = ftype + str.replace("/", File.separator);
-		System.out.println(folderPath);
 
 		File uploadPathFoler = new File(uploadPath, folderPath);
 		// File newFile= new File(dir,"파일명");
