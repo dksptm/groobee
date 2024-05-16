@@ -23,7 +23,6 @@
 							<tbody>
 								<th:block th:each="Email : ${inboxList}">
 								<tr th:onclick="|location.href='@{/inboxInfo(recp=${Email.recp})}'|">
-									<td>[[ ${Email.recpDt} ]]</td>
 									<td>[[ ${Email.title} ]]</td>
 									<td>[[ ${Email.sender} ]]</td>
 									<td>[[ ${Email.fileNo} ]]</td>
