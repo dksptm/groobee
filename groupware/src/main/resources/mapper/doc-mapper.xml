@@ -109,6 +109,8 @@
 		            ,doc_no
 		            ,save_name
 		            ,upl_name
+		            ,file_ext
+		            ,file_size
 		            ,upl_emp      
 		        )
 		  VALUES
@@ -116,7 +118,9 @@
 		         #{fileNo}
 		        ,#{docNo}
 		        ,#{saveName}
-		        ,#{saveName}
+		        ,#{uplName}
+		        ,#{fileExt}
+		        ,#{fileSize}
 		        ,#{uplEmp}
 		        )	
 	</insert>

@@ -34,14 +34,13 @@
 					<input th:field="*{title}" class="form-control" type="text" />
 				</div>
 				
-				<!-- 모달버튼  -->
-				<div class="d-flex justify-content-end mt-3">
-					<button type="button" class="btn btn-primary doc-modal-btn" 
-							data-bs-toggle="modal" data-bs-target="#selectapr">
-					  		결재라인 선택
-					</button>
-				</div>
-				<!-- Modal -->
+				<!-- 모달버튼(결재자) -->
+				<button type="button" class="btn btn-primary doc-modal-btn-apr" 
+						data-bs-toggle="modal" data-bs-target="#selectapr">
+				  		결재라인 선택
+				</button>
+				
+				<!-- 모달영역 : 결재자선택 -->
 				<div class="modal fade" id="selectapr" tabindex="-1">
 				  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
 				    <div class="modal-content">
@@ -52,30 +51,65 @@
 						<div class="modal-body"></div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-							<button type="button" class="btn btn-primary selbtn">선택완료</button>
+							<button type="button" class="btn btn-primary selbtn" data-bs-dismiss="modal">선택완료</button>
 						</div>
 				    </div>
 				  </div>
 				</div>
-				<!-- 모달끝 -->
 				
-				<div class="mt-3 text-end">
-					<span>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" readonly /></span>
-					<br>
-					<span><input type="number" name="aprs[0].aprSq" value="1" readonly />번째 결재자</span>
+				<!-- 모달버튼(참조자)  -->
+				<button type="button" class="btn btn-primary doc-modal-btn-refs" data-bs-toggle="modal" 
+						data-bs-target="#docModalRefs">
+  					참조자 선택
+				</button>
+				
+				<!-- 모달영역 : 참조자선택 -->
+				<div class="modal fade" id="docModalRefs" tabindex="-1">
+				  <div class="modal-dialog modal-xl" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">참조자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary getRefs-btn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				
+				
+				<!-- 선택한 결재자와 참조자 보이는 영역. -->
+				<div class="row justify-content-end">
 					
-					<!-- 로그인 구현되면 아래정보 변경. -->
-					<input type="text" name="aprs[0].aprEmp" th:value="${session.id}" readonly />
-					<br>
-					<!-- <div id="sel">
-						<th:block th:each="apr,aprStat : ${doc.aprs}">
-						<p><input type="text" class="form-control" th:name="|aprs[${aprStat.index}].aprEmp|" id="apr.aprEmp" ></p>
-						<p><input type="number" class="form-control" name="apr.aprSq" id="apr.aprSq" ></p>
-						</th:block>
-					</div> -->
+					<!-- 선택한 결재자 -->
+					<div class="col-8 mt-3 text-end">
+						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" readonly /></p>
+						<p>
+							<input type="number" name="aprs[0].aprSq" value="1" readonly />번째 결재자
+							<input type="text" name="aprs[0].aprEmp" th:value="${session.id}" readonly />
+						</p>
+						
+						<!-- <div id="sel">
+							<th:block th:each="apr,aprStat : ${doc.aprs}">
+							<p><input type="text" class="form-control" th:name="|aprs[${aprStat.index}].aprEmp|" id="apr.aprEmp" ></p>
+							<p><input type="number" class="form-control" name="apr.aprSq" id="apr.aprSq" ></p>
+							</th:block>
+						</div> -->
+						
+						<!-- 선택한 결재자 보여주는 공간 -->
+						<span id="selaprs"></span>
+					</div>
 					
-					<!-- 선택한 결재자 보여주는 공간 -->
-					<span id="selaprs"></span>
+					<!-- 선택한 결재자 -->
+					<div class="col-3 mt-3 text-start">
+						<p>참조자</p>
+						
+						<!-- 선택한 참조자 보여주는 공간 -->
+						<div id="getRefs"></div>
+					</div>
 				</div>
 				
 				<div class="mt-3">
@@ -166,10 +200,10 @@
 				}
 			})// 템플릿 선택.
 			
-			// 모달열기.
-			$('.doc-modal-btn').on('click', function(e) {
+			// 모달열기 - 결재자.
+			$('.doc-modal-btn-apr').on('click', function(e) {
 				let dept = $('input[name="deptId"]').val();
-				$('#selectapr .modal-body').load("getMyEmps?deptId="+ dept);
+				$('#selectapr .modal-body').load("getDeptEmps?deptId="+ dept);
 				$('#selectapr').modal();
 			})
 			
@@ -184,22 +218,31 @@
 				trs.each(function(idx,tr){
 					let get = $(tr);
 					
-					let creatInputSq = $('<span><input name="aprs[' + (idx+1) + '].aprSq" readonly />번째 결재자</span>');
-					let creatInputEmp = $('<input name="aprs[' + (idx+1) + '].aprEmp" type="hidden" readonly />');
-					let creatInputEmpName = $('<input type="text" readonly /><br>');
+					let creatInputTag = $(`<p>
+											<input name="aprs[${(idx+1)}].aprSq" type="text"
+											 value="${get.find('td').eq(1).text()}" readonly />번째 결재자
+											<input name="aprs[${(idx+1)}].aprEmp" type="hidden"
+											 value="${get.data('emp')}" readonly />
+											<input name="aprs[${(idx+1)}].aprName" type="text"
+											 value="${get.find('td').eq(2).text()}" readonly />
+										   </p>`);
 					
-					creatInputSq.find('input').val(get.find('td').eq(1).text());
-					creatInputEmp.val(get.data('emp'));
-					creatInputEmpName.val(get.find('td').eq(2).text());
-					
-					spanTag.append(creatInputSq);
-					spanTag.append(creatInputEmp);
-					spanTag.append(creatInputEmpName);
-					
+					spanTag.append(creatInputTag);
 					ctn++;
 				});
 				$('#finalLine').val(++ctn);
 			})
+			
+			// 모달열기 - 참조자.
+			$('.doc-modal-btn-refs').on('click', function(e) {
+				let cust = $('input[name="custNo"]').val();
+				$('#docModalRefs .modal-body').load("getCustEmps?custNo="+ cust);
+				$('#docModalRefs').modal();				
+			})
+			
+			// 모달에서 선택한 참조자 가져오기.
+			$('.getRefs-btn').on('click', getDocRefs);
+			
 			
 			// 작성완료 버튼.
 			$('#docInsertForm').submit(async function(e){
@@ -230,12 +273,29 @@
 					 	if(fileList.length != 0) {
 					 		okFile = await saveFile(fileList);
 					 		console.log('첨부파일완료');
+					 		
+					 		okFile.forEach((ele,idx) => {
+					 			fileInfo = ele.split(':::');
+					 			let fUpl = $('<input name="files[' + (idx) + '].uplName" type="hidden" />');
+					 			fUpl.val(fileInfo[0]);
+					 			let fExt = $('<input name="files[' + (idx) + '].fileExt" type="hidden" />');
+					 			fExt.val(fileInfo[1]);
+					 			let fSize = $('<input name="files[' + (idx) + '].fileSize" type="hidden" />');
+					 			fSize.val(fileInfo[2]);
+					 			let fSave = $('<input name="files[' + (idx) + '].saveName" type="hidden" />');
+					 			fSave.val(fileInfo[3]);
+					 			$('#docFiles').append(fUpl, fExt, fSize, fSave);
+					 		})
+					 		
+					 		/*
 					 		okFile.forEach((ele,idx) => {
 					 			alert('ele=>' + ele);
 						        let fPath = $('<input name="files[' + (idx) + '].saveName" type="hidden" />');
 						        fPath.val(ele);
 						    	$('#docFiles').append(fPath);
 					 		})
+					 		*/
+					 		
 					 	}
 					 	
 					 	alert('문서등록 완료.');
@@ -265,6 +325,28 @@
 			return true;
 		}
 		
+		// 결재자 모달 함수(참조자 가져오기 함수)
+		function getDocRefs() {
+			let trs = $('#refslist > tbody > tr');
+			let divTag = $('#getRefs');
+			
+			divTag.children().remove();
+			
+			trs.each(function(idx,tr){
+				let get = $(tr);
+				
+				let creatInputTag = $(`<p>
+										<input name="refs[${(idx)}].empId" type="hide"
+											   value="${get.data('emp')}" readonly />
+										<span>${get.find('td').eq(1).text()}
+										      ${get.find('td').eq(2).text()}
+										      ${get.find('td').eq(3).text()}</span>
+									   </p>`);
+				divTag.append(creatInputTag);			
+			})
+		}
+		
+		
 		// 저장경로 가져와서 내용(cntn)에 담기.
 		const getPath = (cntnTemp) => { // 파라미터로 파일리스트 받기(위 okPath)
 			// 결과를 프로미즈 객체에 담기.
@@ -289,6 +371,7 @@
 			})
 		}
 		
+		/* 
 		// 첨부파일 저장하기.
 		const saveFile = (fileList) => { // 파라미터로 파일리스트 받기(위 okFile)
 			// 결과를 프로미즈 객체에 담기.
@@ -304,6 +387,36 @@
 				// 아작스로 파일업로드하고 경로리턴받기.
 			    $.ajax({
 			        url: 'uploadsAjax',    
+			        type: 'POST',
+			        processData: false, 
+			        contentType: false,
+			        data: formData,
+			    })
+			    .done(response => {
+			        resolve(response);
+			    })
+			    .fail(err => {
+			        alert('첨부파일 저장 중 오류');
+			        reject(err);
+			    });
+			})// promise.
+		}
+		 */
+		 
+		const saveFile = (fileList) => { // 파라미터로 파일리스트 받기(위 okFile)
+			// 결과를 프로미즈 객체에 담기.
+			return new Promise((resolve, reject) => {
+				// FormData() 인스턴스.
+			    let formData = new FormData(); 
+
+				// formData에 담기
+			    for(let file of fileList) {
+			        formData.append('uploadFiles', file);
+			    }					
+				
+				// 아작스로 파일업로드하고 경로리턴받기.
+			    $.ajax({
+			        url: 'uploadFiles',    
 			        type: 'POST',
 			        processData: false, 
 			        contentType: false,

@@ -42,6 +42,7 @@ public class DocServiceImpl implements DocService {
 				file.setUplEmp(docVO.getDeptId());
 				docMapper.insertDocFile(file);
 			});
+			System.out.println("docVO ===> " + docVO);
 			return docVO.getDocNo();
 		} else {			
 			return -1;

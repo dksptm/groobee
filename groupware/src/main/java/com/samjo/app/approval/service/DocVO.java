@@ -3,6 +3,8 @@ package com.samjo.app.approval.service;
 import java.util.Date;
 import java.util.List;
 
+import com.samjo.app.emp.service.EmpVO;
+
 import lombok.Data;
 
 @Data
@@ -32,5 +34,8 @@ public class DocVO {
     
     // 첨부파일 리스트.
     private List<DocFileVO> files;
+    
+    // 참조자 리스트.
+    private List<EmpVO> refs;
     
 }

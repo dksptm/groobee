@@ -25,7 +25,8 @@ public class EmpVO {
 	private String empTel;
 	private String emailAddr;
 	
-	// jobs.
+	// 직급명, 부서명
 	private String jobTitle;
+	private String deptName;
 	 
 }
