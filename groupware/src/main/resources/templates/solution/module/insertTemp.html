@@ -73,7 +73,7 @@
 					<!-- 파일업로드 태그 -->
 					<div style="display: none;" id="docupload">
 						<div class="test">
-							<input name="uploadFiles2" id="uploadFiles2" type="file" multiple>
+							<input name="uploadFiles2" id="uploadFiles2" type="file">
 							<button class="btn btn-secondary mx-2 uploadBtn2">업로드</button>
 						</div>
 						<h4 style="display: none;" class="test2">=템플릿 미리보기=</h4>
@@ -87,7 +87,7 @@
 
 					<script>
 					
-					//업로드or직접입력 선택 반영
+					//업로드or직접입력 선택시 입력창에 반영
 						$(".inserttype").on("change", function(e) {
 							if ($(".inserttype").val() == "input") {
 								$("#doctype").css('display', 'block');
@@ -154,16 +154,23 @@
 					              	   $('div.test2').append(imgTag);
 					                 } */
 					                 //
-					                 
+					            	 for(let filePath of result){
+						                 let path = filePath.split(":::");
+						                 console.log(path);
+						                 console.log(path[0]);
+						                 console.log(path[1]);
+						                 console.log(path[2]);
+						                 console.log(path[3]);
 					                 //특정요소 안에 html 파일의 태그를 추가.
 					                 $.ajax({  //C:\upload	  ┌>실제경로
-					                	    url: 'files/' + result,	// HTML 파일 가져올 경로
+					                	    url: 'files/' + path[3],	// HTML 파일 가져올 경로
 					                	    dataType: "html",
 					                	    success: function (html){
 					                	    	$('div.upload-sample').html(html); // HTML 코드 붙여넣기
 					                	    	$('.test2').css('display', 'block');
 					                	    }
 					                	});
+										}
 					             },
 					             error: function(reject){	
 					                 console.log(reject);
@@ -185,7 +192,9 @@
 				                } else if (copyTag.is('textarea')) {
 				                	copyTag.text(value);
 				                } else if (copyTag.is('select')) {
-				                	copyTag.val(value);
+				                	copyTag.children().removeAttr('selected');
+				                	let selectIdx = $(this).children('option:selected').index();
+				                	copyTag.children().eq(selectIdx).attr('selected', 'selected');
 				                }
 							});
 
