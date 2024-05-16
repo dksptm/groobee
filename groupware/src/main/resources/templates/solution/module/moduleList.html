@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">모듈 전체조회</h5>
+				<div class="card-body">
+					<!-- 모듈 목록 출력 -->
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>모듈번호</th>
+									<th>모듈명</th>
+									<th>모듈상태</th>
+									<th>모듈상세설명</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="ModuleVO : ${list}">
+									<tr>
+										<td>[[ ${ModuleVO.modId} ]]</td>
+										<td>[[ ${ModuleVO.modName} ]]</td>
+										<td th:if="${ModuleVO.modStat == '1A1a'}"
+											class="table-success">[[ ${ModuleVO.modStat} ]]</td>
+										<td th:if="${ModuleVO.modStat == '1A2a'}" class="table-danger">[[
+											${ModuleVO.modStat} ]]</td>
+										<td th:if="${ModuleVO.modStat == '1A3a'}" class="table-secondary">[[
+											${ModuleVO.modStat} ]]</td>	
+										<td>[[ ${ModuleVO.modInfo} ]]</td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<!-- 모듈 등록 버튼 -->
+					<div class="d-flex align-items-end flex-column mb-3">
+						<button type="button"
+							th:onclick="|location.href='@{/insertSolTemp}'|"
+							class="btn btn-primary mt-auto p-2">새 템플릿 등록</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>

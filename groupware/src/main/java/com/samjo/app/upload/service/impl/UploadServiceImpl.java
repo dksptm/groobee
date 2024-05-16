@@ -34,7 +34,8 @@ public class UploadServiceImpl implements UploadService {
 			
 			String originalName = uploadFile.getOriginalFilename();
 			String fileName = originalName.substring(originalName.lastIndexOf("//") + 1);
-			
+			String fileSize = String.valueOf(uploadFile.getSize());
+
 			System.out.println("fileName : " + fileName);
 			
 			// 날짜 폴더 생성
@@ -56,11 +57,22 @@ public class UploadServiceImpl implements UploadService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			filetype = originalName.substring(originalName.lastIndexOf(".") + 1);
+			
+			String test = "";
+			test = originalName + ":::" + filetype + ":::" + fileSize + ":::" + setImagePath(uploadFileName);
+			
 			// DB에 해당 경로 저장
-
+			
 			// 1) 사용자가 업로드할 때 사용한 파일명
-			// 2) 실제 서버에 업로드할 때 사용한 경로
-			fileList.add(setImagePath(uploadFileName));
+			//fileList.add(originalName);
+			// 2) 업로드된 파일 유형
+			//fileList.add(filetype);
+			// 3) 업로드된 파일 사이즈
+			//fileList.add(fileSize);
+			// 4) 실제 서버에 업로드할 때 사용한 경로
+			//fileList.add(setImagePath(uploadFileName));
+			fileList.add(test);
 		}
 
 		return fileList;
