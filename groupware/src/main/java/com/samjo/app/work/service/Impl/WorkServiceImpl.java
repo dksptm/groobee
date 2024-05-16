@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.work.mapper.WorkMapper;
+import com.samjo.app.work.service.WorkPageDTO;
 import com.samjo.app.work.service.WorkService;
 import com.samjo.app.work.service.WorkVO;
 
@@ -19,16 +20,17 @@ public class WorkServiceImpl implements WorkService{
 	public List<WorkVO> workList() {
 		return workMapper.selectAllList();
 	}
+	// 전체 데이터 수
+	@Override
+	public int workcount() {
+		return workMapper.workcount();
+	}
+	// 조회 조건
+	@Override
+	public WorkPageDTO page(WorkPageDTO workPageDTO) {
+		return workMapper.page(workPageDTO);
+	}
 
-	@Override
-	public WorkVO getWorkId() {
-		return workMapper.getWork();
-	}
-	
-	@Override
-	public int insertwork(WorkVO workVO) {
-		return workMapper.insertwork(workVO);
-	}
 	
 	
 	
