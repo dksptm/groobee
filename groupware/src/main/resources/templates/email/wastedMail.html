@@ -16,6 +16,7 @@
 									<th>종류</th> <!-- 발신,수신 분류 -->
 									<th>시간</th>
 									<th>메일 제목</th>
+									<th>발신자</th>									
 									<th>선택</th>
 								</tr>
 							</thead>
@@ -31,14 +32,67 @@
 									<td>[[ ${Email.recpDt} ]]</td>
 									<td>[[ ${Email.title} ]]</td>
 									<td>[[ ${Email.sender} ]]</td>
-									<!--  <td>[[ ${Email.fileNo} ]]</td> 여기는 첨부 있을 경우에만 이미지를 붙여주기-->
-									<td>[[ ${doc.draft} ]]</td>
+									<td>
+									<img th:if=${EmailVO.fileNo} src = "/assets/img/filecheck/첨부파일체크.png"> <!-- 의도 : 첨부파일 유무에 따라 이미지 출력or NOT. -->							
+									</td>
+									<td><input type="checkbox"></td> 
 									<td><span class="badge bg-label-primary me-1">빈공간1</span></td>
 									<td>빈공간2</td>
 								</tr>
 								</th:block>
 							</tbody>
 						</table>
+						
+										<!-- 모달버튼  -->
+						<div class="d-flex justify-content-end mt-3">
+							<button type="button" class="btn btn-primary doc-modal-btn" 
+									data-bs-toggle="modal" data-bs-target="#selectapr">
+							  		복원하기
+							</button>
+						</div>
+						<!-- Modal -->
+						<div class="modal fade" id="selectapr" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+						  <div class="modal-dialog modal-xl" role="document">
+						    <div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalScrollableTitle">선택한 메일을 복원합니다.</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body"></div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-primary selbtn">확인</button>
+								</div>
+						    </div>
+						  </div>
+						</div>
+						<!-- 모달끝 -->
+						
+								<!-- 모달버튼  -->
+						<div class="d-flex justify-content-end mt-3">
+							<button type="button" class="btn btn-primary doc-modal-btn" 
+									data-bs-toggle="modal" data-bs-target="#selectapr">
+							  		영구삭제
+							</button>
+						</div>
+						<!-- Modal -->
+						<div class="modal fade" id="selectapr" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+						  <div class="modal-dialog modal-xl" role="document">
+						    <div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalScrollableTitle">선택한 메일을 영구삭제합니다.</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body"></div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-primary selbtn">확인</button>
+								</div>
+						    </div>
+						  </div>
+						</div>
+						<!-- 모달끝 -->
+						
 					</div>
 					<!-- 페이징 -->
 					<div>
@@ -70,6 +124,8 @@
 			</div>
 		</div>
 	</th:block>
-	
+	<script>
+
+	</script>
 </body>
 </html>

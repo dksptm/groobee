@@ -51,7 +51,7 @@
   	<update id="goWaste">
 	  	UPDATE email
 		SET email_stat = '3B2b'
-		WHERE sen_email_no = 
+		WHERE sen_email_no = #{senEmailNo}<!-- 선택한 메일의 번호..파라미터로 넘어오는. -->
   	</update>
   	
   	 <select id="countWasted">
@@ -69,5 +69,11 @@
     WHERE s.email_stat = '3B2b'
           AND i.email_stat = '3B2b'
 	</select>
+	
+	<update id="restoreMail">
+	  	UPDATE email
+		SET email_stat = '3B1b'
+		WHERE sen_email_no = #{senEmailNo}<!-- 선택한 메일의 번호..파라미터로 넘어오는. -->
+  	</update>
   	
   </mapper>
