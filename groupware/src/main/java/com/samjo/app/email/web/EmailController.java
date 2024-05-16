@@ -55,10 +55,11 @@ public class EmailController {
 		//내 경우 emp레퍼런스랑 다르게, 세션에서 계정 id를 받아와서 보내는사람 칸에 자동입력 시켜야함
 		HttpSession session = req.getSession();
 		//세션에서 로그인한 계정의 id를 받아온다.
-		String logId = (String)session.getAttribute("logId");
+		String empId = (String)session.getAttribute("empId");
 		EmailVO emailVO = new EmailVO();
-		emailVO.setSender(logId);
-		model.addAttribute("email", emailVO);
+		emailVO.setSender(empId);
+		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
+//		model.addAttribute("empId", "test01");
 	return "email/emailWrite";
 	}
 	
