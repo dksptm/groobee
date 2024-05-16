@@ -1,6 +1,7 @@
 package com.samjo.app.project.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectService {
 	// 프로젝트 조회
@@ -19,12 +20,14 @@ public interface ProjectService {
 	
 	
 	// 협력업체 조회
-	public List<CoopCoVO> CoopCoAllList();
+	public List<ProjectVO> CoopCoAllList();
 	// 협력업체 등록
-	public int coopInsert(CoopCoVO coopCoVO);
+	public int coopInsert(ProjectVO projectVO);
 	// 협력업체 단건조회
-	public CoopCoVO coopInfo(CoopCoVO coopCoVO);
-	
-	
-
+	public ProjectVO coopInfo(ProjectVO projectVO);
+	// 협력업체 수정
+	public Map<String, Object> coopUpdate(ProjectVO projectVO);
+	// 협력업체 삭제
+	public Map<String, Object> coopDelete(ProjectVO projectVO);
+	//public int coopDelete(ProjectVO projectVO);	
 }

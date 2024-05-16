@@ -2,7 +2,8 @@ package com.samjo.app.project.mapper;
 
 import java.util.List;
 
-import com.samjo.app.project.service.CoopCoVO;
+import org.apache.ibatis.annotations.Param;
+
 import com.samjo.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
@@ -12,7 +13,7 @@ public interface ProjectMapper {
 	// 프로젝트 단건조회
 	public ProjectVO selectPrjt(ProjectVO projectVO);
 	// 프로젝트 등록
-	public int prjtInsert(ProjectVO projectVO);
+	public int insertPrjt(ProjectVO projectVO);
 	// 프로젝트 수정
 	//public int prjtUpdate(ProjectVO projectVO);
 	// 프로젝트 삭제
@@ -24,16 +25,14 @@ public interface ProjectMapper {
 	public List<ProjectVO> selectReguAllList();
 
 	// 협력업체 조회
-	public List<CoopCoVO> selectCoopCoAllList();
+	public List<ProjectVO> selectCoopCoAllList();
 	// 협력업체 등록
-	public int coopInsert(CoopCoVO coopCoVO);
+	public int insertCoop(ProjectVO projectVO);
 	// 협력업체 단건
-	public CoopCoVO selectCoop(CoopCoVO coopCoVO);
-
-	
+	public ProjectVO selectCoop(ProjectVO projectVO);
 	// 협력업체 수정
-	// public int coopCoUpdate(CoopCoVO coopCoVO);
+	public int updateCoop(ProjectVO projectVO);
 	// 협력업체 삭제
-	// public int deleteCoopCo(@Param()int coopCoNo);
+	 public int deleteCoop(@Param("cNo")int coopCoNo);
 
 }

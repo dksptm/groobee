@@ -6,7 +6,7 @@
 	<th:block layout:fragment="Content">
 		<div class="container">
 			<form name="insertForm" th:action="@{/prjt/insert}" method="post"
-				th:object="${projects}">
+				th:object="${projects}" id="prjtForm">
 				
 				<select class="form-select" th:field="*{prjtId}">
                         <option value="prjtTop" th:location="@{/prjt/insert}">프로젝트 등록</option>
@@ -16,7 +16,7 @@
 				<table id="form" class="table">
 					<tr>
 						<th>프로젝트ID</th>
-						<td><input type="text" th:field="*{prjtId}"></td>
+						<td><input type="text" th:field="*{prjtId}" readonly></td>
 					</tr>
 					<tr>
 						<th>프로젝트명</th>
@@ -36,7 +36,10 @@
 					</tr>
 					<tr>
 						<th>총괄책임자</th>
-						<td><input type="text" th:field="*{respMngrId}"></td>
+						<td><input type="text" th:field="*{respMngrId}"><div>
+						<button type="button" class="btn btn-primary" id="repMngrIdBtn">등록</button>
+						</div></td>
+						
 					</tr>
 					<tr>
 						<th>개요</th>
@@ -47,14 +50,35 @@
 						<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
 					</tr>
 				</table>
-				<div>
-					<button type="submit">저장</button>
-					<button type="button">취소</button>
+				<div style=" text-align: center;">
+					<button type="button" class="btn btn-primary" id="prjtInsertBtn" >저장</button>
+					<button type="button" class="btn btn-secondary">취소</button>
 				</div>
 			</form>
 		</div>
+		
 		<script>
-			document.querySelector('form[name="insertForm"]').addEventListener(
+			$(function(){
+				$('#prjtInsertBtn').on('click', function(){
+					let formData = $('prjtForm').serialize();
+					console.log(formData);
+					
+					$.ajax({
+						type: 'POST',
+						url : '/prjtInsert',
+						data : formData,
+						success : function(data){
+							alert('프로젝트 등록에 성공했습니다.');
+							location.reload();
+						},
+						error : function(err){
+							alert('프로젝트 등록에 실패했습니다.');
+						}
+					});
+				});
+			});
+			
+	/* 		document.querySelector('form[name="insertForm"]').addEventListener(
 					'submit', prjtInsert);
 
 			function prjtInsert(event) {
@@ -68,6 +92,14 @@
 				}
 				alert('프로젝트등록이 완료되었습니다.');
 				insertForm.submit();
-			}
+			}  */
 		</script>
 </html>
+
+
+
+
+
+
+
+

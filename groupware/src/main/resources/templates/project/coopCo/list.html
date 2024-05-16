@@ -16,7 +16,7 @@
 				<option value="">내용</option>
 			</select> 
 			<input type="text">
-			<button type="button">검색</button>
+			<button type="button" class="btn btn-primary">검색</button>
 			<br> 
 			<select>
 				<option value="">업체명순</option>
@@ -31,20 +31,28 @@
 						<th>담당자</th>
 						<th>연락처</th>
 						<th>내용</th>
+						<th class="tdHide">주소</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" b>
+					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" >
+						<td class="tdHide">[[ ${coop.coopCoNo}]]</td>
 						<td>[[ ${coop.coName}]]</td>
 						<td>[[ ${coop.pic}]]</td>
 						<td>[[ ${coop.coTel}]]</td>
 						<td>[[ ${coop.cntn}]]</td>
-
+						<td class="tdHide">[[ ${coop.custAddr}]]</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-
+		
+    		<div  style=" text-align: end;">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
+    		</div>
+		
+		
+		 
 		<!-- 행클릭 상세화면 모달 -->
 		<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -69,14 +77,8 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> 
 
-		<!-- 등록버튼 클릭 등록모달 -->
-		<div class="row">
-    		<div class="col-6">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
-    		</div>
-		</div>
 		<!-- 등록모달 -->
 		<div class="modal fade" id="coopInModal" tabindex="-1"
 			aria-labelledby="coopInModal" aria-hidden="true">
@@ -91,8 +93,8 @@
 						<form id="coopForm">
 							<div class="mb-3">
 								<label for="coName" class="form-label">업체명</label> <input
-									type="text" class="form-control" id="coopCoName"
-									name="coopCoName" required>
+									type="text" class="form-control" id="coName"
+									name="coName" required>
 							</div>
 							<div class="mb-3">
 								<label for="pic" class="form-label">담당자</label> <input
@@ -100,21 +102,22 @@
 							</div>
 							<div class="mb-3">
 								<label for="coTel" class="form-label">연락처</label> <input
-									type="text" class="form-control" id="coTel" name="coTel"
-									required>
+									type="text" class="form-control" id="coTel" name="coTel" required>
+							</div>
+							<div class="mb-3">
+								<label for="custAddr" class="form-label">주소</label>
+								<textarea class="form-control" id="custAddr" name="custAddr" required></textarea>
 							</div>
 							<div class="mb-3">
 								<label for="cntn" class="form-label">내용</label>
 								<textarea class="form-control" id="cntn" name="cntn" required></textarea>
 							</div>
 						</form>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="modalInsertBtn">등록</button>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+						</div>
 					</div>
-
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="btn-register">등록</button>
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">취소</button>
 				</div>
 			</div>
 		</div>
@@ -122,14 +125,20 @@
 
 		<script>
 		$(function() {
-				$('.btn-register').on('click', function() {
+			
+			// 주소는 리스트에서 안보이게.
+				$('.tdHide').hide();
+				
+			
+				// 등록모달
+				$('#modalInsertBtn').on('click', function() {
 					let formData = $('#coopForm').serialize(); 
-
+					console.log(formData);
 					$.ajax({
 						type : 'POST',
 						url : '/coopInsert',
 						data : formData,
-						success : function(response) {
+						success : function(data) {
 							alert('협력업체 등록에 성공했습니다.');
 							location.reload();
 						},
@@ -137,48 +146,71 @@
 							alert('협력업체 등록에 실패했습니다.');
 						}
 					});
+					
 				});
+				
 			});
-
-			
 		
 
+		
+			// 상세화면모달
 			$(function() {
-			    // 행 클릭이벤
+			    // 행 클릭이벤트
 			    $('tr').on('click', function() {
 			        // 클릭한 행의 데이터 
-			        let coName = $(this).find('td:eq(0)').text(); 
-			        let pic = $(this).find('td:eq(1)').text();
-			        let coTel = $(this).find('td:eq(2)').text();
-			        let cntn = $(this).find('td:eq(3)').text();
+			        let coName = $(this).find('td:eq(1)').text(); 
+			        let pic = $(this).find('td:eq(2)').text();
+			        let coTel = $(this).find('td:eq(3)').text();
+			        let cntn = $(this).find('td:eq(4)').text();
 			        let custAddr = $(this).find('td:eq(5)').text();
-			        
 			        // 모달 내부에 데이터
 			        $('#detailModal').find('#coName').text(coName);
 			        $('#detailModal').find('#pic').text(pic);
 			        $('#detailModal').find('#coTel').text(coTel);
 			        $('#detailModal').find('#custAddr').text(custAddr);
 			        $('#detailModal').find('#cntn').text(cntn);
-			        
 			        // 모달 표시
 			        $('#detailModal').modal('show');
 			    });
 			});
 			
-			
-			
-			$(function() {
-				// 수정 버튼 
-				$('#editBtn').on('click', function() {
-					alert('수정되었습니다.');
-				});
 
+			// 상세모달에 수정, 삭제
+			$(function() {
+				$('#editBtn').on('click', function() {
+					
+					alert('수정되었습니다.');
+					location.reload();
+				});
+					
 				// 삭제 버튼
+				let cno ='${coop.coopCoNo}';
+				console.log(cno);
 				$('#deleteBtn').on('click', function() {
-					alert('삭제되었습니다.');
+					
+					
+					
+					$.ajax({
+						type  : 'GET',
+						url : '/coopDelete',
+						data : formData,
+						dataType: 'json',
+						contentType:'application/json; charset=utf-8',
+			         
+						success : function(result) {
+							alert('협력업체 삭제에 성공했습니다.');
+							location.reload();
+						},
+						error : function(err) {
+							alert('협력업체 삭제에 실패했습니다.');
+							location.reload();
+						}
+					});
 				});
 			});
+			
+			
 		</script>
 	</th:block>
 </html>
-
+				

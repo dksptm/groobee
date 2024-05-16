@@ -8,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.samjo.app.project.service.CoopCoVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
+
 
 @Controller
 public class ProjectController {
@@ -35,7 +35,7 @@ public class ProjectController {
 	public String prjtInfo(ProjectVO projectVO, Model model) {
 		ProjectVO findVO = projectService.prjtInfo(projectVO);
 		model.addAttribute("projects", findVO);
-		return "project/prjt/info";
+		return "project/prjt/list";
 	}
 	
 	// 프로젝트 등록
@@ -53,38 +53,36 @@ public class ProjectController {
 		if(pId > -1) {
 			uri = "redirect:prjtInfo?prjtId=" + pId;
 		} else {
-			uri = "project/prjt/list";
+			uri = "prjtAllList";
 		}
 		return uri;
 	}
 	
-	
+
 	// 협력업체 전체 조회
 	@GetMapping("coopAllList")
 	public String coopAllList(Model model) {
-		List<CoopCoVO> list = projectService.CoopCoAllList();
+		List<ProjectVO> list = projectService.CoopCoAllList();
 		model.addAttribute("coopCo", list);
 		return "project/coopCo/list";
 	}
 	// 협력업체 단건조회.
 	@GetMapping("coopInfo")
-	public String coopInfo(CoopCoVO coopCoVO, Model model) {
-		CoopCoVO findVO = projectService.coopInfo(coopCoVO);
+	public String coopInfo(ProjectVO projectVO, Model model) {
+		ProjectVO findVO = projectService.coopInfo(projectVO);
 		model.addAttribute("coopCo", findVO);
-		return "project/coopCo/info";
+		return "project/coopCo/list";
 	}
-	
-	 
 	// 협력업체 등록
 	@GetMapping("coopInsert")
 	public String coopInsertForm(Model model) {
-		model.addAttribute("coopCo", new CoopCoVO());
-		return "project/coopCo/insert";
+		model.addAttribute("coopCo", new ProjectVO());
+		return "project/coopCo/list";
 	}
 	
 	@PostMapping("coopInsert")
-	public String coopInsertProcess(CoopCoVO coopCoVO) {
-		int cNo =  projectService.coopInsert(coopCoVO);
+	public String coopInsertProcess(ProjectVO projectVO) {
+		int cNo =  projectService.coopInsert(projectVO);
 		String uri = null;
 		
 		if(cNo > -1) {
@@ -95,11 +93,16 @@ public class ProjectController {
 		return uri;
 	}
 	
+	// 협력업체 수정
+	
 
-
-
-
-
+	// 협력업체 삭제
+	@GetMapping("coopDelete")
+	public String coopDelete(ProjectVO projectVO) {
+		projectService.coopDelete(projectVO);
+		return "redirect:coopAllList";
+	}
+	
 
 
 
