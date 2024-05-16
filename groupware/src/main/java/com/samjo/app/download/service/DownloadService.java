@@ -4,5 +4,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface DownloadService {
 
-	public ResponseEntity<Object> downloadFile(String type, String format, String year, String month, String day,String fileId);
+	public ResponseEntity<Object> downloadFile(String type, String format, String year, String month, String day, String fileId);
 }
