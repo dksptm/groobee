@@ -9,7 +9,8 @@
 		<div class="container">
 			<br>
 			<h4>협력업체 조회</h4>
-			<br> <select>
+			<br> 
+			<select>
 				<option value="">업체명</option>
 				<option value="">담당자</option>
 				<option value="">내용</option>
@@ -33,45 +34,151 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="coop : ${coopCo}">
-						<td>[[ ${coop.coopCoNo}]]</td>
+					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" b>
+						<td>[[ ${coop.coName}]]</td>
 						<td>[[ ${coop.pic}]]</td>
 						<td>[[ ${coop.coTel}]]</td>
 						<td>[[ ${coop.cntn}]]</td>
+
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		
-		<!-- 모달을 열기 위한 버튼 -->
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-			data-bs-target="#exampleModal">등록</button>
 
-		<!-- Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1"
-			aria-labelledby="exampleModal" aria-hidden="true">
+		<!-- 행클릭 상세화면 모달 -->
+		<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
-				<div class="modal-content">
+				<div class=" modal-content">
+				
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">협력 업체 등록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
+						<h5 class="modal-title" id="detailModalLabel">협력업체 상세</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-					
-					
+						<!-- 상세 정보 -->
+						<p> 업체명: <span id="coName"></span></p>
+						<p> 연락처: <span id="coTel"></span></p>
+						<p> 담당자: <span id="pic"></span></p>
+						<p> 주소: <span id="custAddr"></span></p>
+						<p> 내용: <span id="cntn"></span></p>
 					</div>
 					<div class="modal-footer">
-
-						<button type="button" class="btn btn-primary">등록</button>
-						<button type="button" class="btn btn-secondary"data-bs-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="editBtn">수정</button>
+						<button type="button" class="btn btn-danger" id="deleteBtn">삭제</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
+		<!-- 등록버튼 클릭 등록모달 -->
+		<div class="row">
+    		<div class="col-6">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
+    		</div>
+		</div>
+		<!-- 등록모달 -->
+		<div class="modal fade" id="coopInModal" tabindex="-1"
+			aria-labelledby="coopInModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="coopInModalLabel">협력 업체 등록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="coopForm">
+							<div class="mb-3">
+								<label for="coName" class="form-label">업체명</label> <input
+									type="text" class="form-control" id="coopCoName"
+									name="coopCoName" required>
+							</div>
+							<div class="mb-3">
+								<label for="pic" class="form-label">담당자</label> <input
+									type="text" class="form-control" id="pic" name="pic" required>
+							</div>
+							<div class="mb-3">
+								<label for="coTel" class="form-label">연락처</label> <input
+									type="text" class="form-control" id="coTel" name="coTel"
+									required>
+							</div>
+							<div class="mb-3">
+								<label for="cntn" class="form-label">내용</label>
+								<textarea class="form-control" id="cntn" name="cntn" required></textarea>
+							</div>
+						</form>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" id="btn-register">등록</button>
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">취소</button>
+				</div>
+			</div>
+		</div>
+
+
 		<script>
+		$(function() {
+				$('.btn-register').on('click', function() {
+					let formData = $('#coopForm').serialize(); 
+
+					$.ajax({
+						type : 'POST',
+						url : '/coopInsert',
+						data : formData,
+						success : function(response) {
+							alert('협력업체 등록에 성공했습니다.');
+							location.reload();
+						},
+						error : function(err) {
+							alert('협력업체 등록에 실패했습니다.');
+						}
+					});
+				});
+			});
+
 			
+		
+
+			$(function() {
+			    // 행 클릭이벤
+			    $('tr').on('click', function() {
+			        // 클릭한 행의 데이터 
+			        let coName = $(this).find('td:eq(0)').text(); 
+			        let pic = $(this).find('td:eq(1)').text();
+			        let coTel = $(this).find('td:eq(2)').text();
+			        let cntn = $(this).find('td:eq(3)').text();
+			        let custAddr = $(this).find('td:eq(5)').text();
+			        
+			        // 모달 내부에 데이터
+			        $('#detailModal').find('#coName').text(coName);
+			        $('#detailModal').find('#pic').text(pic);
+			        $('#detailModal').find('#coTel').text(coTel);
+			        $('#detailModal').find('#custAddr').text(custAddr);
+			        $('#detailModal').find('#cntn').text(cntn);
+			        
+			        // 모달 표시
+			        $('#detailModal').modal('show');
+			    });
+			});
+			
+			
+			
+			$(function() {
+				// 수정 버튼 
+				$('#editBtn').on('click', function() {
+					alert('수정되었습니다.');
+				});
+
+				// 삭제 버튼
+				$('#deleteBtn').on('click', function() {
+					alert('삭제되었습니다.');
+				});
+			});
 		</script>
+	</th:block>
 </html>
 
