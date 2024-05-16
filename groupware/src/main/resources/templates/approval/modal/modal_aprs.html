@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <div class="d-flex justify-content-between">
-	<table class="table" id="list">
+	<table class="table" id="list1">
 		<thead>
 			<tr>
 				<th>선택</th>
@@ -15,7 +15,7 @@
 			<th:block th:each="emp : ${dept.emps}">
 			<!-- 로그인 구현되면 아래정보 변경. -->
 			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != session.id}">
-				<td><input type="checkbox" name="chk-list"></td>
+				<td><input type="checkbox" name="chk-list1"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>
 				<td>[[ ${emp.jobTitle} ]]</td>
@@ -24,9 +24,9 @@
 		</tbody>
 	</table>
 	<div class="mx-3 row align-items-center">
-		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes">
+		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes1">
 			<span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
-		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no">
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no1">
 			<span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
 	</div>
 	<table class="table" id="aprlist">
@@ -46,18 +46,18 @@
 <script>
 $(function(){
 
-	$('#list > tbody, #aprlist > tbody').on('click', 'tr' , function(e){
+	$('#list1 > tbody, #aprlist > tbody').on('click', 'tr' , function(e){
 		let checkbox = $(this).find("input[type='checkbox']");
 		checkbox.prop("checked", !checkbox.prop("checked"));
 	});
 
-	$('#list > tbody, #aprlist > tbody').on('click', 'input[type="checkbox"]' , function(e){
+	$('#list1 > tbody, #aprlist > tbody').on('click', 'input[type="checkbox"]' , function(e){
 		let checkbox = $(this)
 		checkbox.prop("checked", !checkbox.prop("checked"));
 	});
 	
-	$('#yes').on('click', function(){
-		let checkbox = $("input[name=chk-list]:checked");
+	$('#yes1').on('click', function(){
+		let checkbox = $("input[name=chk-list1]:checked");
 		
 		checkbox.each(function(idx){
 			let chk = $(this);
@@ -70,7 +70,7 @@ $(function(){
 			let job = td.eq(3).text();
 
 			$('#aprlist > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
-						+'<td><input type="checkbox" name="d-chk-list" /></td>'
+						+'<td><input type="checkbox" name="d-chk-list1" /></td>'
 						+'<td></td>'
 						+'<td>'+ name +'</td>'
 						+'<td>'+ job +'</td>'
@@ -79,8 +79,8 @@ $(function(){
 		})
 		resq();
 	})
-	$('#no').on('click', function(){
-		let checkbox = $("input[name=d-chk-list]:checked");
+	$('#no1').on('click', function(){
+		let checkbox = $("input[name=d-chk-list1]:checked");
 		
 		checkbox.each(function(idx){
 			let chk = $(this);
@@ -92,8 +92,8 @@ $(function(){
 			let name = td.eq(2).text();
 			let job = td.eq(3).text();
 
-			$('#list > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
-						+'<td><input type="checkbox" name="chk-list" /></td>'
+			$('#list1 > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
+						+'<td><input type="checkbox" name="chk-list1" /></td>'
 						+'<td>'+ dept +'</td>'
 						+'<td>'+ name +'</td>'
 						+'<td>'+ job +'</td>'
@@ -111,9 +111,6 @@ function resq() {
     });
 }
 
-function tableSort() {
-	
-}
 
 </script>
 

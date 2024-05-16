@@ -34,5 +34,9 @@ public interface ProjectMapper {
 	public int updateCoop(ProjectVO projectVO);
 	// 협력업체 삭제
 	 public int deleteCoop(@Param("cNo")int coopCoNo);
+	 
+	// 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명.
+	public List<ProjectVO> selectTasks(@Param("cno")String custNo);
+	// 효주 끝.
 
 }

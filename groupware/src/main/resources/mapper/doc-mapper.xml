@@ -136,6 +136,22 @@
 		    ,final_line = #{finalLine}
 		WHERE doc_no = #{docNo}
 	</update>
+	
+	<!-- 문서와 업무 연결. -->
+	<insert id="insertTaskDoc" parameterType="map">
+		INSERT INTO task_doc
+			(
+				doc_no
+				,task_no
+				,cust_no
+			)
+		  VALUES
+			(
+				#{dno}
+				,#{tno}
+				,#{cno}
+			)
+	</insert>
 
 </mapper>
   

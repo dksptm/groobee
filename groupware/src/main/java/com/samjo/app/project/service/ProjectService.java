@@ -3,6 +3,8 @@ package com.samjo.app.project.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface ProjectService {
 	// 프로젝트 조회
 	public List<ProjectVO> PrjtAllList();
@@ -30,4 +32,8 @@ public interface ProjectService {
 	// 협력업체 삭제
 	public Map<String, Object> coopDelete(ProjectVO projectVO);
 	//public int coopDelete(ProjectVO projectVO);	
+	
+	// 효주 - 업무공통 간략조회.
+	public List<ProjectVO> myCustTasks(String custNo);
+	// 효주 끝.
 }

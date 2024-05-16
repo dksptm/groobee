@@ -17,4 +17,9 @@ public interface AprMapper {
 	public void updateAprOk(AprVO aprVO);
 	// 반려하기.
 	public void updateAprNg(AprVO aprVO);
+	
+	// 참조자 등록(DocService에서 사용).
+	public int insertRef(@Param("dno")Integer docNo, 
+							@Param("eid")String empId, @Param("cno")String custNo);
+
 }

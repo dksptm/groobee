@@ -26,7 +26,7 @@ public class DeptController {
 	public String deptEmps(@RequestParam String deptId, Model model) {
 		DeptVO findDept = deptService.myDeptEmps(deptId);
 		model.addAttribute("dept", findDept);
-		return "approval/doc/modal_aprs";
+		return "approval/modal/modal_aprs";
 	}
 
 	@GetMapping("getCustEmps")

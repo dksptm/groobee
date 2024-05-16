@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
@@ -47,4 +48,15 @@ public class TaskController {
 			model.addAttribute("projects", list);
 			return "project/regu/list";
 		}
+		
+		
+		//효주 -----
+		@GetMapping("getMyTasks")
+		public String getMyTasks(@RequestParam String custNo, Model model) {
+			List<ProjectVO> list = projectService.myCustTasks(custNo);
+			model.addAttribute("tasks", list);
+			return "approval/modal/modal_tasks";
+		}
+		//---- 효주.
+		
 }

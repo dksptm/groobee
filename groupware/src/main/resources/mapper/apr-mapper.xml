@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.AprMapper">
 
+	<!-- 결재자 등록. -->
 	<insert id="insertApr" parameterType="AprVO">
 		<selectKey keyProperty="aprNo"
 				   resultType="Integer"
@@ -35,6 +36,7 @@
 		        )
 	</insert>
 	
+	<!-- 문서의 결재자리스트 가져오기. -->
 	<select id="selectDocApr" resultType="AprVO">
 		SELECT apr_no
 		       ,doc_no
@@ -51,6 +53,7 @@
 		ORDER BY apr_sq
 	</select>
 	
+	<!-- 상신하기 프로시저. -->
 	<update id="updateMyApr" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			go_apr(
@@ -61,6 +64,7 @@
 		}	
 	</update>
 	
+	<!-- 결재하기 프로시저. -->
 	<update id="updateAprOk" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			apr_ok(
@@ -71,6 +75,7 @@
 		}
 	</update>
 	
+	<!-- 반려하기 프로시저. -->
 	<update id="updateAprNg" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			apr_ng(
@@ -81,6 +86,23 @@
 			)
 		}	
 	</update>
+	
+	<!-- 참조자 등록 -->
+	<insert id="insertRef" parameterType="map">
+		INSERT INTO doc_rece
+			(
+				doc_no
+				,emp_id
+				,cust_no
+			)
+		  VALUES
+			(
+				#{dno}
+				,#{eid}
+				,#{cno}
+			)	
+	</insert>
+	
 
 </mapper>
   

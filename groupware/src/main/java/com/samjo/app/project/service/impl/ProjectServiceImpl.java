@@ -108,4 +108,11 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
+	// 효주 - 업무간단조회
+	@Override
+	public List<ProjectVO> myCustTasks(String custNo) {
+		return projectMapper.selectTasks(custNo);
+	}
+	// 효주 끝.
+	
 }
