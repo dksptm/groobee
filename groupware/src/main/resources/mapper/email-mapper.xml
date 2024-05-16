@@ -7,7 +7,7 @@
   		SELECT REC_EMAIL_NO
                ,SEN_EMAIL_NO
                ,RECP
-               ,RECP_TYPE
+               ,REFER
                ,READ_DT
                ,EMAIL_STAT
                ,CUST_NO
