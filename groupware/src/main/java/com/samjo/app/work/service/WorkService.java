@@ -7,9 +7,12 @@ public interface WorkService {
 	// 근태 전체 조회
 	public List<WorkVO> workList();
 	
-	public WorkVO getWorkId();
+	// 전체 페이지 수
+	public int workcount();
 	
-	// 근태등록(임시)
-	public int insertwork(WorkVO workVO);
+	// 조회 조건들
+	public WorkPageDTO page(WorkPageDTO workPageDTO); 
+	
+
 	
 }

@@ -3,30 +3,64 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
-  <select id="selectAllList" resultType="WorkVO">
-SELECT 
- 	  sysdate,
-      j.emp_no,
-      j.emp_name,
-      i.wk_in,
-      i.wk_out,
-       (select sub_code_name
-        from sub_code
-        where sub_code_id = i.wk_yn) wk_yn, 
-       (select sub_code_name
-        from sub_code
-        where sub_code_id = i.wk_stat) wk_stat,
-      (select sub_code_name
-        from sub_code
-        where sub_code_id = i.wk_site) wk_site
-FROM emp j join wk i
-            on j.emp_id = i.emp_id
+  <select id="selectAllList" resultType="WorkVO" parameterType="WorkPageDTO">
+SELECT t.*
+FROM (SELECT f.*
+      FROM (SELECT w.*
+            FROM (SELECT rownum rn,
+                         e.*
+                  FROM (SELECT
+                               i.dt,
+                               j.emp_no,
+                               j.emp_name,
+                               i.wk_in,
+                               i.wk_out,
+                               (select sub_code_name
+                               from sub_code
+                               where sub_code_id = wk_yn) wk_yn,
+                               (select sub_code_name
+                               from sub_code
+                               where sub_code_id = wk_stat) wk_stat,
+                               (select sub_code_name
+                               from sub_code
+                               where sub_code_id = wk_site) wk_site
+                               FROM emp j join wk i
+                                            on j.emp_id = i.emp_id
+                         ORDER BY dt) e
+                    WHERE rownum <![CDATA[<=]]> (${page} * 5) ) w) f
+            WHERE   wk_yn   = ${wkYN} and
+                    wk_stat = ${wkStat} and
+                    wk_site = ${wkSite}
+            <if test="!oneDate.equals('') and !oneDate.equals(null) and
+                      !twoDate.equals('') and !twoDate.equals(null)">
+                   AND dt Between to_date(${oneDate}, 'YY/MM/DD')
+                              AND to_date(${twoDate}, 'YY/MM/DD')
+            </if>
+            <if test="!oneDate.equals('') and !oneDate.  equals(null)">
+                  AND dt <![CDATA[>=]]> to_date(${oneDate}, 'YY/MM/DD')
+            </if>
+            <if test="!twoDate.equals('') and !twoDate.equals(null)">
+                  AND dt <![CDATA[<=]]> to_date(${twoDate}, 'YY/MM/DD')
+            </if>
+            ) t
+WHERE t.rn > (${page} -1) * 5
   </select>
-  <insert id="inserWork" parameterType="WorkVO">
-  
-  </insert>
-
-  
+	<!-- 페이징 위한 count. -->
+ 	<select id="workcount">
+		SELECT count(*)
+		FROM wk
+	</select>
+	
+	<!-- 출근을 입력하기위해... 중복이 안됨. -->
+	<!-- <update id="" parameterType="">
+	
+	</update> -->
+	
+	<!-- 퇴근을 입력하기위해... 중복이됨.-->
+	<!-- <update id="" parameterType="">
+	
+	</update>
+   -->
   
   </mapper>
   
