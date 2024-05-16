@@ -9,6 +9,7 @@ import lombok.Data;
 public class DocVO {
 	private Integer docNo;
 	private String draft;
+	private String custNo;
 	private String deptId;
 	private String title;
 	private String cntn;
@@ -28,4 +29,8 @@ public class DocVO {
     
     // 결재자 리스트.
     private List<AprVO> aprs;
+    
+    // 첨부파일 리스트.
+    private List<DocFileVO> files;
+    
 }

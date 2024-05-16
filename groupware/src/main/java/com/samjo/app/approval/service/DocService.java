@@ -19,4 +19,5 @@ public interface DocService {
 	public List<DocVO> docList(SearchVO searchVO);
 	// 전체페이지
 	public int count();
+	
 }

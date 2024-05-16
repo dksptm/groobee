@@ -34,7 +34,13 @@ public class DocServiceImpl implements DocService {
 		if(result == 1) {
 			docVO.getAprs().forEach(apr -> {
 				apr.setDocNo(docVO.getDocNo());
+				apr.setCustNo(docVO.getCustNo());
 				aprMapper.insertApr(apr);
+			});
+			docVO.getFiles().forEach(file -> {
+				file.setDocNo(docVO.getDocNo());
+				file.setUplEmp(docVO.getDeptId());
+				docMapper.insertDocFile(file);
 			});
 			return docVO.getDocNo();
 		} else {			

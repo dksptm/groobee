@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/">
 
-<div class="row">
-	<div class="col-5">
+<div class="d-flex justify-content-between">
 	<table class="table" id="list">
 		<thead>
 			<tr>
@@ -15,7 +14,7 @@
 		<tbody>
 			<th:block th:each="emp : ${dept.emps}">
 			<!-- 로그인 구현되면 아래정보 변경. -->
-			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != 'KHJ22214'}">
+			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != session.id}">
 				<td><input type="checkbox" name="chk-list"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>
@@ -24,24 +23,24 @@
 			</th:block>
 		</tbody>
 	</table>
+	<div class="mx-3 row align-items-center">
+		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes">
+			<span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no">
+			<span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
 	</div>
-	<div class="col-1 align-self-center">
-		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes"><span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
-		<p> </p>
-		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no"><span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
-	</div>
-	<div class="col-5">
 	<table class="table" id="aprlist">
-		<tbody>
+		<thead>
 			<tr>
 				<th>선택</th>
 				<th>순서</th>
 				<th>이름</th>
 				<th>직급명</th>
 			</tr>
+		</thead>
+		<tbody>
 		</tbody>
 	</table>
-	</div>
 </div>
 
 <script>
@@ -107,14 +106,15 @@ $(function(){
 })//end
 
 function resq() {
-    $('#aprlist > tbody > tr:not(:first-child)').each(function(index) {
+    $('#aprlist > tbody > tr').each(function(index) {
         $(this).children().eq(1).text(index + 2);
     });
 }
 
+function tableSort() {
+	
+}
+
 </script>
-
-
-
 
 </html>
