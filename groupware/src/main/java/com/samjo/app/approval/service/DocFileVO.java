@@ -12,8 +12,8 @@ public class DocFileVO {
 	private String saveName;
 	private String uplName; 
 	private String fileExt; 
-	private Integer fileSize; 
+	private Long fileSize; 
 	private Date fileDt;   
 	private String uplEmp; 
-	
+
 }

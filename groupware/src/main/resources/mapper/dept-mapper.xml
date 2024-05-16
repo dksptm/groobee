@@ -3,7 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.emp.mapper.DeptMapper">
-
+	
+	<!-- 한 부서에 소속된 사원들 가져오는 Map 정의 -->
 	<resultMap type="DeptVO" id="deptMap">
 		<id property="deptId" column="dept_id" />
 		<result property="deptName" column="dept_name" />
@@ -15,6 +16,7 @@
 		</collection>
 	</resultMap>
 
+	<!-- 로그인한 사원의 deptId로 해당 부서의 사원목록 가져오기.  -->
 	<select id="selectMyDept" resultMap="deptMap">
 		SELECT dt.dept_id
 		       ,dt.dept_name
@@ -29,6 +31,24 @@
 		WHERE dt.dept_id = #{did}
 		ORDER BY job_no
 	</select>
+	
+	<!-- 한 회의사의 모든 사원 목록. -->
+	<select id="selectEmps" resultType="EmpVO">
+		SELECT e.emp_id
+		      ,e.dept_id
+		      ,e.job_no
+		      ,dt.dept_name
+		      ,e.emp_name
+		      ,j.job_title
+		FROM emp e JOIN dept dt
+		            ON(e.dept_id = dt.dept_id)
+		           JOIN jobs j
+		            ON(e.job_no = j.job_no)
+		WHERE dt.cust_no = #{cno}
+		ORDER BY dt.dept_id, e.job_no	
+	</select>
+	
+	
 
 </mapper>
   

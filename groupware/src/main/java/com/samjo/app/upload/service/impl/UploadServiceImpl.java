@@ -31,18 +31,18 @@ public class UploadServiceImpl implements UploadService {
 
 		for (MultipartFile uploadFile : uploadFiles) {
 			String filetype = uploadFile.getContentType() + "/";
-
+			
 			String originalName = uploadFile.getOriginalFilename();
 			String fileName = originalName.substring(originalName.lastIndexOf("//") + 1);
-
+			
 			System.out.println("fileName : " + fileName);
-
+			
 			// 날짜 폴더 생성
 			String folderPath = makeFolder(filetype);
 			// UUID
 			String uuid = UUID.randomUUID().toString();
 			// 저장할 파일 이름 중간에 "_"를 이용하여 구분
-
+			
 			String uploadFileName = folderPath + File.separator + uuid + "_" + fileName;
 
 			String saveName = uploadPath + File.separator + uploadFileName;
