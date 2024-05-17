@@ -46,22 +46,24 @@ public class EmailController {
 		return "email/inboxInfo";
 	}
 	
-	//Insert에 Get / Post 둘다 매핑하는 이유 
-	//=> 처음 작성페이지에서는 빈값이 넘어옴 Get
-	//=> 폼 작성후 보낼때는 데이터를 리퀘스트바디에 싣고 넘어가야 함 Post
+	// 메일작성
+	// Insert에 Get / Post 둘다 매핑하는 이유 
+	// => 처음 작성페이지에서는 빈값이 넘어옴 Get
+	// => 폼 작성후 보낼때는 데이터를 리퀘스트바디에 싣고 넘어가야 함 Post
 	@GetMapping("emailWrite")
 	public String empInsertForm(Model model, HttpServletRequest req) {
 		//내 경우 emp레퍼런스랑 다르게, 세션에서 계정 id를 받아와서 보내는사람 칸에 자동입력 시켜야함
 		HttpSession session = req.getSession();
 		//세션에서 로그인한 계정의 id를 받아온다.
-		String logId = (String)session.getAttribute("logId");
+		String empId = (String)session.getAttribute("empId");
 		EmailVO emailVO = new EmailVO();
-		emailVO.setSender(logId);
-		model.addAttribute("email", emailVO);
+		emailVO.setSender(empId);
+		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
+//		model.addAttribute("empId", "test01");
 	return "email/emailWrite";
 	}
 	
-	//내 경우, 여기에서 작성한 데이터를 1:1로 받는 형식이다.
+	// 내 경우, 여기에서 작성한 데이터를 1:1로 받는 형식이다.
 	@PostMapping("emailSend")
 	public String emailSend(EmailVO emailVO) {
 		int eId = emailService.emailInsert(emailVO);
@@ -98,7 +100,7 @@ public class EmailController {
 	// 주소록(그냥 해당고객사 전체사원 일부정보 가리고 출력하기로 해서.. 좀만 더 생각해보기)
 	// 많이 어려울것 같지는 않다
 	
-	// 휴지통 목록조회
+	// 휴지통 전체조회
 	@GetMapping("wastedList")
 	public String wastedmail(SearchVO searchVO, Model model) {
 		if(searchVO.getPage() == 0) {

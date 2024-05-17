@@ -103,5 +103,11 @@ public class EmailServiceImpl implements EmailService {
 	public int countWasted() {
 		return emailMapper.countWasted();
 	}
+
+	@Override
+	public List<EmailVO> restoreMail() {
+		return emailMapper.restoreMail();
+	}
 	
+
 }
