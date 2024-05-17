@@ -35,7 +35,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" >
+					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" data-coop-co-no="[[ ${coop.coopCoNo}]]">
 						<td class="tdHide">[[ ${coop.coopCoNo}]]</td>
 						<td>[[ ${coop.coName}]]</td>
 						<td>[[ ${coop.pic}]]</td>
@@ -184,12 +184,10 @@
 				});
 					
 				// 삭제 버튼
-				let cno ='${coop.coopCoNo}';
-				console.log(cno);
 				$('#deleteBtn').on('click', function() {
 					
-					
-					
+					//let coopCoNo = $.(this).(coop-co-no);
+					//console.log(cno);
 					$.ajax({
 						type  : 'GET',
 						url : '/coopDelete',
