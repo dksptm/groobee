@@ -20,11 +20,13 @@ public class WorkServiceImpl implements WorkService{
 	public List<WorkVO> workList() {
 		return workMapper.selectAllList();
 	}
+	
 	// 전체 데이터 수
 	@Override
 	public int workcount() {
 		return workMapper.workcount();
 	}
+	
 	// 조회 조건
 	@Override
 	public WorkPageDTO page(WorkPageDTO workPageDTO) {

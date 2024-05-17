@@ -8,17 +8,17 @@ import lombok.Data;
 public class EmailVO {
 	
 	// email TABLE
-	private Integer senEmailNo;
+	private String senEmailNo;
 	private String sender;
 	private String title;
 	private String cntn;
 	private Date sentDt;
 	private String emailStat;
-	private Integer chainMailNo;
+	private String chainMailNo;
 	private String custNo;
 	
 	// inbox TABLE
-	private Integer recEmailNo;
+	private String recEmailNo;
 	private String recp;
 	private String mailRefer;
 	//private String recpType; //수신자,참조자 구별하는건데 이거 없애고 걍 참조자 필드 추가.

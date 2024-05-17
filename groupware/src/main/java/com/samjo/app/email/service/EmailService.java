@@ -48,6 +48,9 @@ public interface EmailService {
 	//전체 페이징(휴지통)
 	public int countWasted();
 	
+	//휴지통 복원
+	public List<EmailVO> restoreMail();
+	
 	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
 	// public List<EmpVO> getEmpList();
 }
