@@ -186,12 +186,12 @@
 				// 삭제 버튼
 				$('#deleteBtn').on('click', function() {
 					
-					//let coopCoNo = $.(this).(coop-co-no);
+					let coopCoNo = $.(this).data('coop-co-no');
 					//console.log(cno);
 					$.ajax({
 						type  : 'GET',
 						url : '/coopDelete',
-						data : formData,
+						data : {coopCoNo: coopCoNo},
 						dataType: 'json',
 						contentType:'application/json; charset=utf-8',
 			         
