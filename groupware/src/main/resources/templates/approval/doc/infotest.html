@@ -23,9 +23,30 @@
 			
 			<!-- 상신/수정/목록/삭제 버튼 -->
 			<div class="m-3 text-end">
-				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
+				<!-- 목록 버튼 -->
+				<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn btn-primary">목록</button>
+				<!-- 상신전 상태 & 작성자=로그인한사람 -->
+				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
+					<button type="button" class="btn btn-info" id="gotoapr">상신</button>
+					<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
+					<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
+							    class="btn btn-danger">삭제</button>
+				</th:block>
+				<!-- 상신전 상태 & 작성자=로그인한사람 -->
+				<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
+				<th:block th:each="apr,aprStat : ${doc.aprs}">
+				<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == session.id}">
+				<button type="button" class="btn btn-warning" id="aprok">결재</button>
+				<button type="button" class="btn btn-danger" id="aprng">반려</button>
+				</th:block>
+				</th:block>
+				</th:block>
+			
+			
+			
+				<button type="button" class="btn rounded-pill btn-primary btn-lg">수정</button>
 				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
-						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
+						class="btn rounded-pill btn-secondary btn-lg">목록</button>
 			</div>
 			
 			<div class="card-body row">
