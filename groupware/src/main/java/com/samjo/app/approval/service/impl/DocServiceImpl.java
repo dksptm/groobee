@@ -12,6 +12,8 @@ import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.approval.service.TempVO;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
+import com.samjo.app.project.service.ProjectVO;
 
 @Service
 public class DocServiceImpl implements DocService {
@@ -76,9 +78,24 @@ public class DocServiceImpl implements DocService {
 	public DocVO docInfo(DocVO docVO) {
 		docVO = docMapper.selectDoc(docVO);
 		docVO.setAprs(aprMapper.selectDocApr(docVO.getDocNo()));
+		//docVO.setRefs(aprMapper.selectDocRefs(docVO.getDocNo()));
+		docVO.setFiles(docMapper.selectDocFile(docVO.getDocNo()));
+		System.out.println(docVO.getRefs());
 		return docVO;
 	}
-
+	
+	// 단건조회 - 참조자 가져오기.
+	@Override
+	public List<EmpVO> docRefs(Integer docNo) {
+		return aprMapper.selectDocRefs(docNo);
+	}
+	
+	// 문서단건조회 - 업무가져오기.
+	@Override
+	public List<ProjectVO> docTasks(Integer docNo) {
+		return docMapper.selectDocTasks(docNo);
+	}
+	
 	// 문서수정.
 	@Override
 	public int docInfoUpdate(DocVO docVO) {
@@ -91,7 +108,7 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectDocAll(searchVO);
 	}
 	
-	// 문서전체조회 - 전체페이지.
+	// 문서전체조회 - 전체페이지 수.
 	@Override
 	public int count() {
 		return docMapper.count();
@@ -108,5 +125,6 @@ public class DocServiceImpl implements DocService {
 	public List<TempVO> getCustTemps() {
 		return tempMapper.selectCustTemps();
 	}
+
 
 }

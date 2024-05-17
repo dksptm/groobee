@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.samjo.app.approval.service.AprService;
 import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.approval.service.TempVO;
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
+import com.samjo.app.project.service.ProjectVO;
 
 @Controller
 public class DocController {
@@ -52,7 +55,12 @@ public class DocController {
 		session.setAttribute("cust", "C001");
 		
 		DocVO findVO = docService.docInfo(docVO);
+		List<EmpVO> emps = docService.docRefs(docVO.getDocNo());
+		List<ProjectVO> tasks = docService.docTasks(docVO.getDocNo());
 		model.addAttribute("doc", findVO);
+		model.addAttribute("tasks", tasks);
+		model.addAttribute("emps", emps);
+		
 		return "approval/doc/info";
 	}
 	
@@ -87,12 +95,22 @@ public class DocController {
 	public String docUpdateForm(@RequestParam Integer no, Model model) {
 		session.setAttribute("id", "E005");
 		session.setAttribute("dept", "D002");
+		session.setAttribute("cust", "C001");
 		
 		DocVO docVO = new DocVO();
 		docVO.setDocNo(no);
 		DocVO findVO = docService.docInfo(docVO);
 		model.addAttribute("doc", findVO);
-		return "approval/doc/update";
+		
+		List<TempVO> temps = docService.getCustTemps();
+		List<EmpVO> emps = docService.docRefs(docVO.getDocNo());
+		List<ProjectVO> tasks = docService.docTasks(docVO.getDocNo());
+		model.addAttribute("temps", temps);
+		model.addAttribute("emps", emps);
+		model.addAttribute("tasks", tasks);
+		
+		System.out.println(findVO);
+		return "approval/doc/updateTest2";
 	}
 	
 	// 문서수정 반영.

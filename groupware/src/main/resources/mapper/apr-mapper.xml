@@ -87,7 +87,7 @@
 		}	
 	</update>
 	
-	<!-- 참조자 등록 -->
+	<!-- 참조자 등록 (doc_rece 테이블)-->
 	<insert id="insertRef" parameterType="map">
 		INSERT INTO doc_rece
 			(
@@ -102,6 +102,19 @@
 				,#{cno}
 			)	
 	</insert>
+	
+	<!-- 한 문서의 참조자 리스트. -->
+	<select id="selectDocRefs" resultType="EmpVO">
+		SELECT  d.dept_name
+       			,e.emp_name
+       			,dc.emp_id
+		FROM doc_rece dc JOIN emp e
+		                  ON(dc.emp_id = e.emp_id)
+		                 JOIN dept d
+		                  ON(e.dept_id = d.dept_id)
+		WHERE dc.doc_no = #{dno}
+		ORDER BY d.dept_id, e.job_no	
+	</select>
 	
 
 </mapper>
