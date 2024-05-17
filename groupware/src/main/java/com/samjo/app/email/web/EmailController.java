@@ -10,11 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
+import com.samjo.app.emp.service.EmpVO;
 
 @Controller
 public class EmailController {
@@ -59,9 +62,22 @@ public class EmailController {
 		EmailVO emailVO = new EmailVO();
 		emailVO.setSender(empId);
 		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
-//		model.addAttribute("empId", "test01");
+		//model.addAttribute("empId", "test01");
 	return "email/emailWrite";
 	}
+	
+	// 주소록 가져와서 모달창에 뿌려주기 위한.(페이지가 아닌 데이터를 리턴하기 위한.)
+	@ResponseBody
+	public List<EmpVO> getEmpList(@RequestBody EmpVO empVO, HttpServletRequest req) {
+		HttpSession session = req.getSession();
+		String myCustNo = (String) session.getAttribute("custNo");
+		EmpVO myEmpVO = new EmpVO();
+		//사용자 세션의 custNo 정보를 담은 EmpVO를 파라미터로 SQL(Mapper)로 전달한다, 페이지는 전달 X
+		myEmpVO.setCustNo(myCustNo);
+		
+		return emailService.getEmpList(myEmpVO);
+	}
+	
 	
 	// 내 경우, 여기에서 작성한 데이터를 1:1로 받는 형식이다.
 	@PostMapping("emailSend")
@@ -97,8 +113,17 @@ public class EmailController {
 		return "email/emailInfo";
 	}
 	
-	// 주소록(그냥 해당고객사 전체사원 일부정보 가리고 출력하기로 해서.. 좀만 더 생각해보기)
-	// 많이 어려울것 같지는 않다
+	// 주고받은메일(ChainMailNo)로 엮인 메일들을 조회하는.
+	@ResponseBody
+	public List<EmailVO> ChainMailList(@RequestBody EmailVO emailVO, HttpServletRequest req) {
+		//수신 상세화면에서, 답신을 눌렀을 경우 chain_mail_no를 부여?
+		//아니면, 메일 생성시 자동(selectKey)로 생성?
+		EmailVO chainMailVO = new EmailVO();
+		HttpSession session = req.getSession();
+		// 예상대로 로직 구상부터 만만찮다. 일단 여기까지 ㅠ(0517)
+		return emailService.chainMailList();
+	}
+	
 	
 	// 휴지통 전체조회
 	@GetMapping("wastedList")
@@ -112,5 +137,7 @@ public class EmailController {
 		model.addAttribute("pageDTO", pageDTO);
 		return "email/wastedMail";
 	}
+	
+	
 	
 }
