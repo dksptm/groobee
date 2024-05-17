@@ -2,6 +2,8 @@ package com.samjo.app.email.service;
 
 import java.util.List;
 
+import com.samjo.app.emp.service.EmpVO;
+
 public interface EmailService {
 	// 받은메일 전체조회
 	public List<EmailVO> inboxList();
@@ -52,5 +54,5 @@ public interface EmailService {
 	public List<EmailVO> restoreMail();
 	
 	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
-	// public List<EmpVO> getEmpList();
+	public List<EmpVO> getEmpList(EmpVO empVO);
 }

@@ -3,6 +3,7 @@ package com.samjo.app.email.mapper;
 import java.util.List;
 
 import com.samjo.app.email.service.EmailVO;
+import com.samjo.app.emp.service.EmpVO;
 
 // Service 인터페이스와 1:1 매치가 되는 구조가 되어버렸는데, 다른 조원은 어떤지 확인해보기
 // 네이밍도 어떻게 했는지 살펴보기
@@ -13,7 +14,7 @@ public interface EmailMapper {
 	// 받은메일 상세조회
 	public EmailVO selectInbox(EmailVO emailVo);
 	
-	// 메일 작성
+	// 메일 발송(emailSend)
 	public int insertEmail(EmailVO emailVo);
 	
 	// 보낸메일 전체조회
@@ -53,5 +54,5 @@ public interface EmailMapper {
 	public List<EmailVO> restoreMail();
 	
 	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
-	// public List<EmpVO> getEmpList();
+	public List<EmpVO> getEmpList(EmpVO empVO);
 }

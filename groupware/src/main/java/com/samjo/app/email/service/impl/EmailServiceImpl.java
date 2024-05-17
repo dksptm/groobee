@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.samjo.app.email.mapper.EmailMapper;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
+import com.samjo.app.emp.service.EmpVO;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -33,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.selectInbox(emailVo);
 	}
 	
-	//메일 작성
+	//메일 발송
 	@Override
 	public int emailInsert(EmailVO emailVo) {
 		return emailMapper.insertEmail(emailVo);
@@ -107,6 +108,11 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public List<EmailVO> restoreMail() {
 		return emailMapper.restoreMail();
+	}
+
+	@Override
+	public List<EmpVO> getEmpList(EmpVO empVO) {
+		return emailMapper.getEmpList(empVO);
 	}
 	
 
