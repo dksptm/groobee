@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.samjo.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
-
+	// 프로젝트 상위 //
 	// 프로젝트 조회
 	public List<ProjectVO> selectPrjtAllList();
 	// 프로젝트 단건조회
@@ -18,12 +18,23 @@ public interface ProjectMapper {
 	//public int prjtUpdate(ProjectVO projectVO);
 	// 프로젝트 삭제
 	// public int deletePrjt(@Param()int prjtId);
-
+	
+	// 프로젝트 하위 - 프로젝트업무 //
+	// 프로젝트 업무 조회
+	public List<ProjectVO> selectTaskAllList();
+	// 프로젝트 업무 등록
+	public int insertTask(ProjectVO projectVO);
+	// 프로젝트 단건조회
+	public ProjectVO selectTask(ProjectVO projectVO);
+		
+		
+	// 상시업무 //
 	// 상시(주기적) 업무 등록
 	public int reguInsert(ProjectVO projectVO);
 	// 상시(주기적) 업무 조회
 	public List<ProjectVO> selectReguAllList();
-
+	
+	
 	// 협력업체 조회
 	public List<ProjectVO> selectCoopCoAllList();
 	// 협력업체 등록
@@ -33,7 +44,7 @@ public interface ProjectMapper {
 	// 협력업체 수정
 	public int updateCoop(ProjectVO projectVO);
 	// 협력업체 삭제
-	 public int deleteCoop(@Param("cNo")int coopCoNo);
+	 public int deleteCoop(@Param("coopCoNo")int coopCoNo);
 	 
 	// 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명.
 	public List<ProjectVO> selectTasks(@Param("cno")String custNo);

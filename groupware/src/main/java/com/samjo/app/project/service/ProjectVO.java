@@ -28,6 +28,7 @@ public class ProjectVO {
 	private String crePerd;
 	private String active;
 	private Date fileDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private String respEmpId;
 	
 	//프로젝트
@@ -56,6 +57,7 @@ public class ProjectVO {
 	private String deptName;
 	private String cmplt;
 	
+	private String empName;
 	// 업무문서
 	private String docNo;
 
