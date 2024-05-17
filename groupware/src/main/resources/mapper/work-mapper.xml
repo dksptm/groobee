@@ -27,23 +27,23 @@ FROM (SELECT f.*
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
                          ORDER BY dt) e
-                    WHERE rownum <![CDATA[<=]]> (${page} * 5) ) w) f
-            WHERE   wk_yn   = ${wkYN} and
-                    wk_stat = ${wkStat} and
-                    wk_site = ${wkSite}
+                    WHERE rownum <![CDATA[<=]]> (#{page} * 5) ) w) f
+            WHERE   wk_yn   = #{wkYN} and
+                    wk_stat = #{wkStat} and
+                    wk_site = #{wkSite}
             <if test="!oneDate.equals('') and !oneDate.equals(null) and
                       !twoDate.equals('') and !twoDate.equals(null)">
-                   AND dt Between to_date(${oneDate}, 'YY/MM/DD')
-                              AND to_date(${twoDate}, 'YY/MM/DD')
+                   AND dt Between to_date(#{oneDate}, 'YY/MM/DD')
+                              AND to_date(#{twoDate}, 'YY/MM/DD')
             </if>
             <if test="!oneDate.equals('') and !oneDate.  equals(null)">
-                  AND dt <![CDATA[>=]]> to_date(${oneDate}, 'YY/MM/DD')
+                  AND dt <![CDATA[>=]]> to_date(#{oneDate}, 'YY/MM/DD')
             </if>
             <if test="!twoDate.equals('') and !twoDate.equals(null)">
-                  AND dt <![CDATA[<=]]> to_date(${twoDate}, 'YY/MM/DD')
+                  AND dt <![CDATA[<=]]> to_date(#{twoDate}, 'YY/MM/DD')
             </if>
             ) t
-WHERE t.rn > (${page} -1) * 5
+WHERE t.rn > (#{page} -1) * 5
   </select>
 	<!-- 페이징 위한 count. -->
  	<select id="workcount">
