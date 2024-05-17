@@ -12,4 +12,6 @@ public interface AprService {
 	public Map<String, Object> aprOk(AprVO aprVO);
 	// 반려하기.
 	public Map<String, Object> aprNg(AprVO aprVO);
+	
+	// 
 }

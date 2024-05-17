@@ -2,188 +2,236 @@
 <html xmlns:th="https://www.thymeleaf.org/"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate="~{common/layouts/default_layout}">
-<body>
 
 <th:block layout:fragment="Content">
-	<div class="d-flex justify-content-center">
-		<div class="card my-4 col-10" style="background-color: rgba(67,89,113, 0.05);">
-			<h5 class="card-header display-5" id="ttttt">문서조회</h5>
+
+	<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row flex-xl-nowrap">
+	<div class="DocSearch-content col-12 container-p-y">
+		<div class="row m-3 p-3">
+			<h2 class="m-0 p-0 doc-page-title">문서조회</h2>
+		</div>
+		<hr>
+		<div class="m-3 p-3 shadow-lg rounded">
 			
 			<p>로그인Id <input type="text" th:value="${session.id}" name="draft" readonly />
 			부서ID <input type="text" th:value="${session.dept}" name="deptId" readonly />
 			회사ID <input type="text" th:value="${session.cust}" name="custNo" readonly /></p>
+			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
+			<hr>
 			
-			<div class="card-body">
-				<div class="mt-3 row">
-					<label class="col-md-2 col-form-label">제목</label>
-                    <div class="col-md-10">
-                    	<input th:value="${doc.title}" class="form-control" type="text" readonly />
-                    </div>
-                </div>
-                <div class="mt-3 row">
-					<div class="d-flex justify-content-between tab-content doc-example-content">
-					
-						<!-- 문서정보.  -->
-						<div class="card col-7" style="background-color: rgba(67,89,113, 0.025);">
-						  <h5 class="card-header">문서정보</h5>
-						  <div class="table-responsive">
-						  	<table class="table card-table">
-						      <thead>
-						        <tr class="table-primary">
-						          <th>문서번호</th>
-						          <th>문서종류</th>
-						          <th>결재상태</th>
-						          <th>완료일자</th>
-						        </tr>
-						      </thead>
-						      <tbody class="table-border-bottom-0">
-						        <tr>
-						          <td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
-						          <td th:attr="data-temp=${doc.tempId}">[[ ${doc.tempId} ]]</td>
-						          <td><span class="badge bg-label-primary me-1">[[ ${doc.docStatName} ]]</span></td>
-						          <td th:if="${doc.cmpltDt != null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
-						          <td th:if="${doc.cmpltDt == null}">-</td>
-						        </tr>
-						      </tbody>
-						      <thead>
-						        <tr class="table-primary">
-						          <th>작성자</th>
-						          <th>부서</th>
-						          <th th:text="${doc.draftStat == '4A1a' ? '작성일자' : '상신일자'}"></th>
-						          <th>작성상태</th>
-						        </tr>
-						      </thead>
-						      <tbody class="table-border-bottom-0">
-						        <tr>
-						          <td th:attr="data-draft=${doc.draft}">[[ ${doc.draftName} ]]</td>
-						          <td>[[ ${doc.deptName} ]]</td>
-						          <td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
-						          <td><span class="badge bg-label-primary me-1">[[ ${doc.draftStatName} ]]</span></td>
-						        </tr>
-						      </tbody>
-						    </table>
-						  </div>
-						</div>
-						
-						<!-- 미정... -->
-						<div class="card col-4" style="background-color: rgba(67,89,113, 0.025);">
-						  <h5 class="card-header">업무정보</h5>
-						  <div class="table-responsive">
-						    <table class="table card-table">
-						      <thead>
-						        <tr>
-						          <th>관련업무</th>
-						          <th>담당부서</th>
-						        </tr>
-						      </thead>
-						      <tbody class="table-border-bottom-0">
-						        <tr>
-						          <td><span class="fw-medium">A업무</span></td>
-						          <td>경영지원부</td>
-						        </tr>
-						        <tr>
-						          <td><span class="fw-medium">B업무</span></td>
-						          <td>기획부</td>
-						        </tr>
-						      </tbody>
-						    </table>
-						  </div>
-						</div>
-					</div>
-                </div>
-                
-                <!-- 결재라인.  -->
-                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}">
-					<th:block th:each="apr,aprStat : ${doc.aprs}">
-						<th:block th:if="${apr.aprSq == doc.nowLine}">
-						<div class="card col-1" style="width: 10rem;background-color: skyblue;">
-			  				<ul class="list-group list-group-flush"
-			  					th:attr="data-apr=${apr.aprEmp}">
-			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
-			    				<li class="list-group-item">[[ ${apr.aprCode} ]]
-			    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
-			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
-			  				</ul>
-			  			</div>
-		  				</th:block>
-		  				<th:block th:unless="${apr.aprSq == doc.nowLine}">
-						<div class="card" style="width: 10rem;">
-			  				<ul class="list-group list-group-flush">
-			    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
-			    				<li class="list-group-item">[[ ${apr.aprCode} ]]
-			    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
-			    				<li class="list-group-item card-footer">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
-			  				</ul>
-						</div>
-			  			</th:block>
-					</th:block>
-                </div>
-                
-                <!-- 문서내용.  -->
-                <div class="mt-3">
-                	<label for="cntn" class="col-md-2 col-form-label">내용</label>
-	                <div class="d-flex justify-content-end mt-3 row">
-		                <div class="col-4">
-		                	<div class="input-group">
-		                		<span class="input-group-text"><font style="vertical-align: inherit;">첨부파일</font></span>
-								<div class="form-control">
-									<a href="/assets/img/main/main.jpg" download>다운로드</a>
-				                </div>
-				            </div>
-			        	</div>	
-		            </div>
-		            <br>
-                   	<div class="col-md-12">
-                   	
-                   		<!-- template fragment -->
-						<div id="temparea">
-						<th:block th:replace="approval/temp/template :: TempCust"></th:block>
-						</div>
-						
-						<!-- cntn textarea -->
-						<textarea name="cntn" id="cntn" class="form-control" cols="40"
-									readonly>[[ ${doc.cntn} ]]</textarea><br>
-									
-                    </div>
-                </div>
-                <div class="mt-3 text-end">
-					<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn btn-primary">목록</button>
-					<!-- 아래 버튼은 로그인정보에 따라 다름 -->
-					<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
-						<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
-						<button type="button" class="btn btn-info" id="gotoapr">상신</button>
-						<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
-							    class="btn btn-danger">삭제</button>
-					</th:block>
-					<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
+			<!-- ------------------------- 상신/수정/목록/삭제 버튼 START ------------------------- -->
+			<div class="card-body text-end mx-4">
+				<!-- 목록 버튼 -->
+				<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn rounded-pill btn-primary">목록</button>
+				<!-- 상신전 상태 & 작성자=로그인한사람 -->
+				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
+					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상신</button>
+					<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" 
+							class="btn rounded-pill btn-success">수정</button>
+					<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
+							    class="btn rounded-pill btn-danger">삭제</button>
+				</th:block>
+				<!-- 위 조건 아니면서, 현재 결재자인 사람. -->
+				<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
 						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == session.id}">
 							<button type="button" class="btn btn-warning" id="aprok">결재</button>
 							<button type="button" class="btn btn-danger" id="aprng">반려</button>
-					 	</th:block>
+						</th:block>
 					</th:block>
-					</th:block>
-                </div>
-			</div>
-		</div>
-	</div>
+				</th:block>
+			</div> 
+			<!-- ------------------------- 상신/수정/목록/삭제 버튼 END ------------------------- -->
+			
+			<div class="card-body row">
+				<!-- ------------------------- 문서정보 나오는 탭 START ------------------------- -->
+				<div class="nav-align-top">
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item">
+							<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+				                	data-bs-target="#navs-top-home" 
+				                	aria-controls="navs-top-home" aria-selected="true">문서 정보</button>
+						</li>
+						<li class="nav-item">
+				            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+				            		data-bs-target="#navs-top-profile"
+				                	aria-controls="navs-top-profile" aria-selected="false">참조자 목록</button>
+				        </li>
+				        <li class="nav-item">
+				            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" 
+				            		data-bs-target="#navs-top-messages"
+				                	aria-controls="navs-top-messages" aria-selected="false">관련 업무</button>
+				        </li>
+					</ul>
+					<div class="tab-content text-center">
+						<div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+			                <table class="table table-bordered">
+			                	<tr>
+			                		<th>문서번호</th>
+			                			<td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
+			                		<th>부서</th>
+			                			<td>[[ ${doc.deptName} ]]</td>
+			                		<th th:text="${doc.draftStat == '4A1a' ? '작성일자' : '상신일자'}"></th>
+			                			<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+			                		<th>결재상태</th>
+			                			<td><span class="badge bg-label-primary me-1">[[ ${doc.docStatName} ]]</span></td>
+			                	</tr>
+			                	<tr>
+			                		<th>문서종류</th>
+			                			<td th:attr="data-temp=${doc.tempId}">[[ ${doc.tempId} ]]</td>
+			                		<th>작성자</th>
+			                			<td th:attr="data-draft=${doc.draft}">[[ ${doc.draftName} ]]</td>
+			                		<th>완료일자</th>
+			                			<td th:if="${doc.cmpltDt == null}">-</td>
+			                			<td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+			                		<th>작성상태</th>
+			                			<td><span class="badge bg-label-primary me-1">[[ ${doc.draftStatName} ]]</span></td>
+			                	</tr>
+			                </table>
+						</div>
 
+						<div class="tab-pane fade col-6" id="navs-top-profile" role="tabpanel">
+							<table class="table table-bordered">
+								<th:block th:each="emp : ${emps}">
+								<tr>
+									<th>부서</th>
+									<td>[[ ${emp.deptName} ]]</td>
+									<th>이름</th>
+									<td th:attr="data-ref=${emp.empId}">[[ ${emp.empName} ]]</td>
+								</tr>
+								</th:block>
+							</table>
+						</div>
+						
+						<div class="tab-pane fade col-6" id="navs-top-messages" role="tabpanel">
+							<table class="table table-bordered">
+								<th:block th:each="task : ${tasks}">
+								<tr>
+									<th>부서</th>
+										<td>[[ ${task.deptName} ]]</td>
+									<th>업무</th>
+										<td>[[ ${task.taskName} ]]</td>
+								</tr>
+								</th:block>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- ------------------------- 문서정보 나오는 탭 END ------------------------- -->
+				
+				<!-- ------------------------- 결재라인 START --------------------------->
+				<div class="mt-3">
+	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}">
+						<th:block th:each="apr,aprStat : ${doc.aprs}">
+							<th:block th:if="${apr.aprSq == doc.nowLine}">
+							<div class="card col-1" style="width: 10rem;background-color: skyblue;">
+				  				<ul class="list-group list-group-flush"
+				  					th:attr="data-apr=${apr.aprEmp}">
+				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
+				    				<li class="list-group-item">[[ ${apr.aprCode} ]]
+				    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
+				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
+				  				</ul>
+				  			</div>
+			  				</th:block>
+			  				<th:block th:unless="${apr.aprSq == doc.nowLine}">
+							<div class="card" style="width: 10rem;">
+				  				<ul class="list-group list-group-flush">
+				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
+				    				<li class="list-group-item">[[ ${apr.aprCode} ]]
+				    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
+				    				<li class="list-group-item card-footer">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
+				  				</ul>
+							</div>
+				  			</th:block>
+						</th:block>
+	                </div>
+				</div>
+				<!-- ------------------------- 결재라인 START --------------------------->
+				
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
+				<div class="d-flex justify-content-end">
+					<div class="col-5 text-end">
+  						<label for="formFileLg" class="form-label">첨부파일</label>
+  						<div class="form-control form-control" id="formFileLg">
+  							<th:block th:each="file,fstat : ${doc.files}">
+								<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
+						 			<span>[[ ${file.uplName} ]]</span>
+								</a><br>
+							</th:block>
+  						</div>
+					</div>
+					<!-- <input type="file" name="docFiles" id="docFiles" multiple> -->
+					<!-- uploadFiles : UploadController의 매개변수이름(달라도 된다고 함..) -->
+					<!-- <button type="button" class="uploadBtn">UPLOAD</button> -->
+				</div>
+				
+				<div class="col-12 mt-3">
+	    			<input type="text" class="form-control border border-3 border-secondary text-center" th:value="${doc.title}" 
+	    				   aria-describedby="basic-addon14" readonly />
+				</div>
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
+				
+				<!-- ---------------------------- 내용영역 START ---------------------------- -->
+				<div class="mt-3">
+					<div class="col-md-12">
+						
+						<!-- template fragment -->
+						<div id="temparea" style="display:none;">
+							<th:block th:replace="approval/temp/template :: TempCust"></th:block>
+						</div>
+						
+						<!-- PTO fragment -->
+						<div id="tempPTO" style="display:none;">
+							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
+						</div>
+						
+						<!-- PTO fragment -->
+						<div id="tempEXT" style="display:none;">
+							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
+						</div>
+						 
+						<!-- cntn textarea -->
+						<div style="display:none;" id="textArea">
+							<textarea id="cntn" name="cntn" class="form-control border border-3" rows="20" readonly>[[ ${doc.cntn} ]]
+							</textarea>
+						</div>
+					</div>
+				</div>
+				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+			</div>
+		</div> 
+	</div>
+	</div>
+	</div>
+	
+	<script th:src="@{/js/approval.js}"></script>
 	<script>
-		document.addEventListener("DOMContentLoaded", function(e){
+		$(function(){
 			
-			/* 내용표시 */
-			$('div#temparea').hide();			
+			// 테이블 꾸미기
+			$('.tab-content th').addClass('table-secondary');
+			
+			// 내용 표시.
 			let temp = document.querySelector('td[data-temp]').dataset.temp;
+			console.log(temp)
 			
-			if(temp != 'TP001' && temp != 'TP002' && temp != 'TP003') {
+			if(temp == 'TP001') {
+				$('div#tempEXT').show();
+			} else if(temp == 'TP002') {
+				$('div#tempPTO').show();
+			} else if (temp == 'TP003') {
+				$('#textArea').show();
+			} else {
 				let tempPath = $('textarea#cntn').val();
-				$('div#temparea').show();
-				$('textarea#cntn').hide(); 
+				console.log(tempPath);
+				$('#temparea').show();
 				$.ajax({
 					url : 'files/' + tempPath,
 					dataType: "html",
 					success: function(html) {
-						$('div#custTemp').html(html);
+						$('#custTemp').html(html);
 						$('#custTemp').find('*').attr('contentEditable', 'false');
             	    },
             	    error: function(err){
@@ -192,13 +240,12 @@
 				})
 			}
 			
-			
-			/* 상신 및 결재진행 시작 */
+			/* 상신 및 결재진행 START */
 			let goApr = document.getElementById('gotoapr');
 			let aprOk = document.getElementById('aprok');
 			let aprNg = document.getElementById('aprng');
 			
-			// 상신.
+			// 1.상신.
 			if(goApr != null) {
 				goApr.addEventListener('click', function(e) {
 					
@@ -240,7 +287,7 @@
 				});
 			} // goApr
 			
-			// 결재.
+			// 2. 결재.
 			if(aprOk != null) {
 				aprOk.addEventListener('click', function(e) {
 				console.log('시작');
@@ -279,7 +326,7 @@
 				})
 			} // aprOk
 			
-			// 반려.
+			// 3. 반려.
 			if(aprNg != null) {
 				aprNg.addEventListener('click', function(e) {
 				console.log('시작');
@@ -319,10 +366,11 @@
 					.catch(err => console.error(err))	
 				})
 			} // aprNg
-			/* 상신 및 결재진행 끝 */
+			/* 상신 및 결재진행 END */
 			
-		}); // end
+		})// end.
 		
+		// 객체가져오는 함수.
 		function getObj(aprBtn) {
 			let docNo = document.querySelector('td[data-dno]').dataset.dno;
 			let aprEmp = '';
@@ -339,9 +387,11 @@
 				return null;
 			}
 		}
- 
+		
 	</script>
+	
 </th:block>
 
-</body>
+
+
 </html>

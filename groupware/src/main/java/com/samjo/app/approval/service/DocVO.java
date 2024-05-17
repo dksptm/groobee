@@ -35,6 +35,6 @@ public class DocVO {
     
     // 참조자 리스트, 업무 리스트.
     private List<String> refs; // 참조자의 empId만 필요.
-    private List<Integer> tasks;
+    private List<Integer> tasks; // 업무번호.
     
 }

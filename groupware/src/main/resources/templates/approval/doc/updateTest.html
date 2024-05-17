@@ -9,11 +9,11 @@
 	<div class="row flex-xl-nowrap">
 	<div class="DocSearch-content col-12 container-p-y">
 		<div class="row m-3 p-3">
-			<h2 class="m-0 p-0 doc-page-title">문서조회</h2>
+			<h2 class="m-0 p-0 doc-page-title">문서수정</h2>
 		</div>
 		<hr>
 		<div class="row m-3 p-3 bg-white shadow-lg rounded">
-		<div>
+		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}">
 
 			<p>로그인Id <input type="text" th:value="${session.id}" name="draft" readonly />
 			부서ID <input type="text" th:value="${session.dept}" name="deptId" readonly />
@@ -21,48 +21,103 @@
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
 			
-			<!-- 상신/수정/목록/삭제 버튼 -->
+			<!-- 작성완료/취소 버튼 -->
 			<div class="m-3 text-end">
-				<!-- 목록 버튼 -->
-				<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn btn-primary">목록</button>
-				<!-- 상신전 상태 & 작성자=로그인한사람 -->
-				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
-					<button type="button" class="btn btn-info" id="gotoapr">상신</button>
-					<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" class="btn btn-success">수정</button>
-					<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
-							    class="btn btn-danger">삭제</button>
-				</th:block>
-				<!-- 상신전 상태 & 작성자=로그인한사람 -->
-				<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
-				<th:block th:each="apr,aprStat : ${doc.aprs}">
-				<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == session.id}">
-				<button type="button" class="btn btn-warning" id="aprok">결재</button>
-				<button type="button" class="btn btn-danger" id="aprng">반려</button>
-				</th:block>
-				</th:block>
-				</th:block>
-			
-			
-			
-				<button type="button" class="btn rounded-pill btn-primary btn-lg">수정</button>
+				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
 				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
-						class="btn rounded-pill btn-secondary btn-lg">목록</button>
+						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
 			</div>
 			
 			<div class="card-body row">
 			
 				<!-- 결재자 공간 -->
 				<div class="border border-3 p-3 col-4 input-tag-css">
+					<!-- 모달버튼 : 결재자 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-apr" 
+							data-bs-toggle="modal" data-bs-target="#selectapr">결재자 선택</button>
+					<!-- 결재자 리스트 -->
+					<div class="mt-3">
+						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" style="border:none;width:50px; background: transparent;" readonly /></p>
+						<p>
+							<input type="number" name="aprs[0].aprSq" value="1" style="border:none;width:50px; background: transparent;" readonly />번
+							<input type="text" name="aprs[0].aprEmp" th:value="${session.id}" style="border:none;width:50px; background: transparent;" readonly />
+						</p>
+						<span id="selaprs"><!-- 선택한 결재자 보여주는 공간 --></span>
+					</div>		
 				</div>
 				
 				<!-- 참조자 공간 -->
 				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 참조자  -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
+							data-bs-target="#docModalRefs">참조자 선택</button>
+					<!-- 참조자 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getRefs"><!-- 선택한 참조자 보여주는 공간 --></div>
+					</div>
 				</div>
 				
-				<!-- 업무 공간 -->
+				<!-- 업무선택 공간 -->
 				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 업무선택 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" data-bs-toggle="modal"
+							data-bs-target="#docModalTasks">업무 선택</button>
+					<!-- 관련업무 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
+					</div>
 				</div>
 				
+				<!-- -------------------------------- 모달영역 START -------------------------------- -->
+				<!-- 모달영역 : 결재자선택 -->
+				<div class="modal fade" id="selectapr" tabindex="-1">
+				  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalScrollableTitle">결재자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary selbtn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 참조자선택 -->
+				<div class="modal fade" id="docModalRefs" tabindex="-1">
+				  <div class="modal-dialog modal-xl" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">참조자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary getRefs-btn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 업무선택 -->
+				<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-scrollable" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">관련업무 선택</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body"></div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+								<button type="button" class="btn btn-primary getTasks-btn" data-bs-dismiss="modal">선택완료</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- -------------------------------- 모달영역 END -------------------------------- -->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
 				<div class="col-8 mt-3 p-0">
@@ -88,8 +143,10 @@
 				
 				<!-- ---------------------------- 내용영역 START ---------------------------- -->
 				<div class="p-0 mt-3">
-					<div class="card p-0 text-center cntn-slide" style="background: transparent;">
-					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br></div>
+					<div class="card p-0 text-center cntn-slide">
+					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br>
+					</div>
+					
 					<div class="col-md-12">
 						
 						<!-- template fragment -->
@@ -115,8 +172,7 @@
 				</div>
 				<!-- ---------------------------- 내용영역 END ---------------------------- -->
 			</div>
-		</div>
-			
+		</form>
 		</div>
 	</div>
 	</div>

@@ -125,6 +125,19 @@
 		        )	
 	</insert>
 	
+	<!-- 한 문서의 첨부파일 가져오기 -->
+	<select id="selectDocFile" resultType="DocFileVO">
+		SELECT file_no
+		       ,doc_no
+		       ,save_name
+		       ,upl_name
+		       ,file_size
+		       ,file_ext
+		FROM doc_file
+		WHERE doc_no = #{dno}
+		ORDER BY file_no	
+	</select>	
+	
 	<!-- 문서수정 -->
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc
@@ -152,6 +165,20 @@
 				,#{cno}
 			)
 	</insert>
+	
+	<!-- 한 문서의 업무 가져오기 -->
+	<select id="selectDocTasks" resultType="ProjectVO">
+		SELECT td.task_no
+		       ,tc.task_name
+		       ,d.dept_name
+		       ,tc.dept_id
+		FROM task_doc td JOIN task_common tc
+		                  ON(td.task_no = tc.task_no)
+		                 JOIN dept d
+		                  ON(tc.dept_id = d.dept_id)
+		WHERE td.doc_no = #{dno}
+		ORDER BY dept_id, td.task_no DESC	
+	</select>
 
 </mapper>
   

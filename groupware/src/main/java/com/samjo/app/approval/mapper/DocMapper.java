@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.samjo.app.approval.service.DocFileVO;
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.project.service.ProjectVO;
 
 public interface DocMapper {
 	// 문서등록
@@ -24,10 +25,16 @@ public interface DocMapper {
 	
 	// 첨부파일 등록
 	public int insertDocFile(DocFileVO docFile);
+	// 한 문서의 첨부파일 조회
+	public List<DocFileVO> selectDocFile(@Param("dno")Integer docNo);
 	
 	// 업무와 연결(문서-업무 테이블)
 	public int insertTaskDoc(@Param("dno")Integer docNo, 
 			@Param("tno")Integer taskNo, @Param("cno")String custNo);
+	// 한 문서의 업무 조회
+	public List<ProjectVO> selectDocTasks(@Param("dno")Integer docNo);
 	
+	// 한 직원이 작성한 문서.
+	public List<DocVO> selectEmpDocs(@Param("eid")String empId);
 	
 }	
