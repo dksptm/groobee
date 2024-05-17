@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/">
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <th:block th:fragment="HeaderFragment">
 	<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -23,9 +24,10 @@
 			<ul class="navbar-nav flex-row align-items-center ms-auto">
 				<!-- User -->
 				<i class="bx bx-user me-2"></i>
-				<div class="user" th:text="${session.loginType}+님"></div>
+				<div class="user" sec:authentication="name">
+				</div>
 				&emsp;
-				<form action="/" method="get">
+				<form th:action="@{/logout}" method="post">
 					<input type="submit" value="로그아웃" class="btn btn-dark">
 				</form>
 			</ul>

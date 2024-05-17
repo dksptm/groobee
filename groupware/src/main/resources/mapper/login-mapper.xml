@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.samjo.app.security.mapper.LoginMapper">
+
+	<resultMap id="loginResult" type="LoginVO">
+		<id property="empId" column="emp_id" />
+		<result property="pw" column="pw" />
+		<result property="empName" column="emp_name" />
+		<result property="custNo" column="cust_no" />
+		<result property="ctNo" column="ct_no" />
+		<result property="deptId" column="dept_id" />
+		<result property="jobNo" column="job_no" />
+		<result property="permId" column="perm_id" />
+		<result property="empStat" column="emp_stat" />
+		<collection property="roleMod" javaType="java.util.List" ofType="String" >
+			<result column="mod_id" />
+		</collection>
+	</resultMap>
+
+	<select id="getUserInfo" parameterType="String" resultMap="loginResult">
+		SELECT e.emp_id,
+		       e.pw,
+		       e.emp_name,
+		       e.cust_no,
+		       e.ct_no,
+		       e.dept_id,
+		       e.job_no,
+		       e.emp_stat,
+		       j.perm_id,
+		       m.mod_id		       
+		FROM emp e JOIN jobs j  ON (e.job_no = j.job_no)
+		           JOIN use_mod m ON (e.cust_no = m.cust_no)
+		WHERE m.mod_use_stat = '1B1b'
+		AND   e.emp_id = #{username}
+	</select>
+</mapper>
