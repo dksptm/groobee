@@ -1,6 +1,5 @@
 package com.samjo.app.work.service;
 
-import java.util.Date;
 
 import lombok.Data;
 
@@ -9,10 +8,6 @@ public class WorkPageDTO {
 	private int page;
 	private int startPage, endPage;
 	private boolean prev, next;
-	
-	private String wk_yn, wk_stat, wk_site;
-	
-	private Date oneDate, twoDate;
 	
 	
 	public WorkPageDTO (int page, int totalCnt) {
