@@ -5,60 +5,66 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="container">
-			<form name="insertForm" th:action="@{/insert}" method="post"
-				th:object="${projects}">
-				<label for="title" class="col-md-2 col-form-label">프로젝트 등록</label>
-				<select class="form-select" th:field="*{prjtId}">
-                        <option value="prjtTop" th:location="@{/prjt/insert}">프로젝트 등록</option>
-                        <option value="prjtBottom" >프로젝트 업무등록</option>
-                        <option value="prjtRegu" th:location="@{/regu/insert}">상시업무 등록</option>
-                    </select>
+			<form name="insertForm" th:action="@{/regu/insert}" method="post" th:object="${projects}">
+				<br><br><br>
+                    <div style=" text-align: center;">
+                    	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
+                    	<button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
+                    	<button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
+                    </div>  
+                  
 				<table id="form" class="table">
-					<tr>
-						<th>업무명</th>
-						<td><input type="text" th:field="*{prjtId}"></td>
-					</tr>
-					<tr>
-						<th>업무번호</th>
-						<td><input type="text" th:field="*{prjtName}"></td>
-					</tr>
-					<tr>
-						<th>부서명</th>
-						<td><input type="text" th:field="*{deptName}"></td>
-					</tr>
-					<tr>
-						<th>책임자</th>
-						<td><input type="date" th:field="*{prjtStartDt}"></td>
-					</tr>
-					<tr>
-						<th>시작일</th>
-						<td><input type="date" th:field="*{prjtDueDT}"></td>
-					</tr>
-					<tr>
-						<th>총괄책임자</th>
-						<td><input type="text" th:field="*{respMngrId}"></td>
-						<button type="button">등록</button>
-					</tr>
-					<tr>
-						<th>담당자</th>
-						<td><input type="text" th:field="*{pic}"></td>
-						<button type="button">등록</button>
-					</tr>
-					<tr>
-						<th>개요</th>
-						<td><input type="text" th:field="*{smry}"></td>
-					</tr>
-					<tr>
-						<th>목적</th>
-						<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
-					</tr>
+						<h3> 상시업무등록</h3>
+						<tr>
+							<th>업무명</th>
+							<td><input type="text" th:field="*{prjtId}"></td>
+						</tr>
+						<tr>
+							<th>업무번호</th>
+							<td><input type="text" th:field="*{prjtName}"></td>
+						</tr>
+						<tr>
+							<th>부서명</th>
+							<td><input type="text" th:field="*{deptName}"></td>
+						</tr>
+						<tr>
+							<th>책임자</th>
+							<td><input type="text" th:field="*{respMngrId}">
+							<button type="button" class="btn btn-primary">선택</button></td>
+						</tr>
+						<tr>
+							<th>담당자</th>
+							<td><input type="text" th:field="*{respMngrId}">
+							<button type="button" class="btn btn-primary">선택</button></td>
+						</tr>
+						<tr>
+							<th>시작일</th>
+							<td><input type="date" th:field="*{prjtDueDT}"></td>
+						</tr>
+						<tr>
+							<th>생성주기</th>
+							<td>
+								<select class="form-select" style="width:100px" th:field="*{prjtId}" >
+									<option value="day">매일</option>
+			                        <option value="week">매주</option>
+			                        <option value="month">매달</option>
+			                    </select>  
+	                    		<input type="time" th:field="*{prjtDueDT}">
+							</td>
+						</tr>
+						<tr>
+							<th>업무목적</th>
+							<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+						</tr>
 				</table>
-				<div>
-					<button type="submit">저장</button>
-					<button type="button">취소</button>
-				</div>
-			</form>
+					<div style=" text-align: center;">
+						<button type="submit" class="btn btn-primary">저장</button>
+						<button type="button" class="btn btn-primary">취소</button>
+					</div>
+				</form>
 		</div>
+
+
 		<script>
 			document.querySelector('form[name="insertForm"]').addEventListener(
 					'submit', prjtInsert);

@@ -4,9 +4,11 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.project.mapper.ProjectMapper">
 
-	<!-- 프로젝트 전체 조회 -->
+	<!-- 프로젝트(상위), 프로젝트(하위), 업무공통(효주) // 협력업체, 상시업무는 task-mapper에 -->
+	
+	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
-		SELECT        p.prjt_name
+		SELECT p.prjt_name 
 		      ,t.task_name
 		      ,t.task_no
 		      ,e.dept_name
@@ -14,13 +16,13 @@
 		      ,p.prjt_due_dt
 		      ,p.purpose
 		      ,p.smry
-		FROM prjt p join task_common t 
-		             on p.prjt_id = t.standard_no
-		             join task_emps e
-		             on t.task_no = e.task_no
-		</select>
+		FROM prjt p JOIN task_common t 
+		             ON (p.prjt_id = t.standard_no)
+		             JOIN task_emps e
+		             ON (t.task_no = e.task_no)
+	</select>
 	
-	<!-- 프로젝트 단건 -->
+	<!-- 프로젝트(상위) 단건 -->
 	<select id="selectPrjt" resultType="ProjectVO">
 		SELECT    p.prjt_name
 			      ,t.task_name
@@ -37,7 +39,7 @@
 		ORDER BY p.prjt_id
 	</select>
 	
-	<!-- 프로젝트 등록 -->
+	<!-- 프로젝트(상위) 등록 -->
 	<insert id="insertPrjt" parameterType="ProjectVO"> 
 			<selectKey keyProperty="prjtId" order="BEFORE"
 			resultType="string">
@@ -52,7 +54,8 @@
 							,prjt_due_dt
 							,smry
 							,purpose
-							,resp_mngr_id)
+							,resp_mngr_id
+							,cust_no)
 					VALUES (#{prjtId}
 							,#{prjtName}
 							,#{prjtStat}
@@ -74,77 +77,35 @@
 		SELECT 1 FROM DUAL
 	</insert>
 	
-	
-	<!-- 협력업체 전체 조회 -->
-	<select id="selectCoopCoAllList" resultType="ProjectVO">
-		SELECT coop_co_no
-		       ,task_no
-		       ,co_name
-		       ,co_tel
-		       ,pic
-		       ,cust_addr
-		       ,cntn
-		FROM coop_co
-		ORDER BY coop_co_no
+	<!-- 프로젝트(하위) 전체 조회 -->
+	<select id="selectTaskAllList" resultType="ProjectVO">
+	SELECT        t.task_no
+			      ,t.task_name
+			      ,t.task_start_dt
+			      ,t.task_due_dt
+	              ,e.task_emp_id
+	FROM task_common t JOIN task_emps e
+			       ON (t.task_no = e.task_no)
+	ORDER BY t.task_no
 	</select>
-	
-	<!-- 협력업체 등록 -->
-		<insert id="insertCoop" parameterType="ProjectVO"> 
-			<selectKey keyProperty="coopCoNo" order="BEFORE"
-			resultType="Integer">
-			SELECT NVL(MAX(coop_co_no),0) +1 
-			FROM coop_co
-		</selectKey>
-		INSERT INTO coop_co (coop_co_no
-                     ,task_no 
-                     ,co_name 
-                     ,co_tel  
-                     ,pic 
-                     ,cust_addr 
-                     ,cntn)
-		VALUES ( #{coopCoNo}
-				,#{taskNo}
-				,#{coName}
-				,#{coTel}
-				,#{pic}
-				,#{custAddr}
-				,#{cntn}
-		)
-	</insert>
-	
-	<!-- 협력업체 단건 -->
-	<select id="selectCoop" resultType="ProjectVO">
-		SELECT coop_co_no
-		       ,task_no
-		       ,co_name
-		       ,co_tel
-		       ,pic
-		       ,cust_addr
-		       ,cntn
-		FROM coop_co
-		WHERE coop_co_no =#{coopCoNo}
-		</select>
-		
-	<!-- 협력업체 수정 -->
-	
-	<!-- 협력업체 삭제 -->
-	<delete id="deleteCoop" parameterType="int">
-		DELETE FROM coop_co
-		WHERE coop_co_no = {coopCoNo}
-	</delete>
-	
-	<!-- 상시(주기적) 업무 조회 -->
-	<select id="selectReguAllList" resultType="ProjectVO">
-	SELECT 			t.task_no
-			       ,t.task_name
-			       ,r.regu_id
-			       ,r.cre_perd
-			       ,r.active
-			       ,t.task_start_dt
-	FROM 	task_common t 
-		         JOIN regu_stad r 
-		         ON to_char(t.task_no) = r.regu_id
-	</select>
+	<!-- 프로젝트(하위) 단건 -->
+	<select id="selectTask" resultType="ProjectVO">
+		SELECT p.prjt_id    
+	        ,p.prjt_name
+	        ,p.prjt_stat
+	        ,e.dept_name
+	        ,t.task_start_dt
+	        ,t.task_due_dt
+	        ,m.emp_name
+	        ,p.purpose
+        	,p.smry
+		FROM  task_common t JOIN task_emps e
+			              ON t.task_no = e.task_no
+	               	 JOIN prjt p 
+	                     ON p.prjt_id = t.standard_no
+	               	 JOIN emp m
+	                    ON m.emp_id = p.resp_mngr_id
+     </select>
 	
 	<!-- 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명. -->
 	<select id="selectTasks" resultType="ProjectVO">

@@ -2,31 +2,31 @@
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
-<body>
+
+
 	<th:block layout:fragment="Content">
 
 		<div class="container">
 			<br>
 			<h4>상시(주기적) 업무 조회</h4>
-		 	
 			<br>
 			<select>
-				<option value="">업무번호</option>
-				<option value="">업무명</option>
+				<option value="업무번호">업무번호</option>
+				<option value="업무명">업무명</option>
 			</select> 
 				<input type="text">
 				<button type="button">검색</button>
 				<br>
-				<select>
-				<option value="">매일</option>
-				<option value="">매주</option>
-				<option value="">매월</option>
+			<select>
+				<option value="매일">매일</option>
+				<option value="매주">매주</option>
+				<option value="매월">매월</option>
 			</select> 
 			<select>
-				<option value="">업무번호순</option>
-				<option value="">업무명순</option>
-				<option value="">등록일순</option>
-				<option value="">참여인원순</option>
+				<option value="업무번호순">업무번호순</option>
+				<option value="업무명순">업무명순</option>
+				<option value="등록일순">등록일순</option>
+				<option value="참여인원순">참여인원순</option>
 			</select>
 			
 			<table class="table">
@@ -41,15 +41,21 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="info : ${projects}">
-						<td>[[ ${info.taskNo}]]</td>
-						<td>[[ ${info.taskName}]]</td>
-						<td>[[ ${#dates.format(info.taskStartDt, "yyyy/MM/dd")}]]</td>
-						<td>[[ ${info.taskName}]]</td>
-						<td>[[ ${info.taskName}]]</td>
-						<td>[[ ${info.active}]]</td>
+					<tr th:each="regu : ${projects}" >
+						<td th:text="${regu.reguId}" />
+						<td>[[ ${regu.taskName}]]</td>
+						<td>[[ ${#dates.format(regu.taskStartDt, "yyyy/MM/dd")}]]</td>
+						<td>[[ ${regu.crePerd}]]</td>
+						<td>[[ ${regu.taskName}]]</td>
+						<td>[[ ${regu.active}]]</td>
+						
 					</tr>
 				</tbody>
 			</table>
 		</div>
+			<script>
+		
+			</script>
+		
+	</th:block>
 </html>

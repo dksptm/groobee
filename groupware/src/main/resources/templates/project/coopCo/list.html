@@ -11,17 +11,17 @@
 			<h4>협력업체 조회</h4>
 			<br> 
 			<select>
-				<option value="">업체명</option>
-				<option value="">담당자</option>
-				<option value="">내용</option>
+				<option value="업체명">업체명</option>
+				<option value="담당자">담당자</option>
+				<option value="내용">내용</option>
 			</select> 
 			<input type="text">
 			<button type="button" class="btn btn-primary">검색</button>
 			<br> 
 			<select>
-				<option value="">업체명순</option>
-				<option value="">담당자순</option>
-				<option value="">내용순</option>
+				<option value="업체명순">업체명순</option>
+				<option value="담당자순">담당자순</option>
+				<option value="내용순">내용순</option>
 			</select>
 
 			<table class="table">
@@ -35,7 +35,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" data-coop-co-no="[[ ${coop.coopCoNo}]]">
+					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" data-coop-co-no="${coop.coopCoNo}">
 						<td class="tdHide">[[ ${coop.coopCoNo}]]</td>
 						<td>[[ ${coop.coName}]]</td>
 						<td>[[ ${coop.pic}]]</td>
@@ -52,18 +52,16 @@
     		</div>
 		
 		
-		 
+		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 행클릭 상세화면 모달 -->
 		<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class=" modal-content">
-				
 					<div class="modal-header">
 						<h5 class="modal-title" id="detailModalLabel">협력업체 상세</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<!-- 상세 정보 -->
 						<p> 업체명: <span id="coName"></span></p>
 						<p> 연락처: <span id="coTel"></span></p>
 						<p> 담당자: <span id="pic"></span></p>
@@ -121,7 +119,7 @@
 				</div>
 			</div>
 		</div>
-
+		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
 		$(function() {
@@ -182,18 +180,22 @@
 					alert('수정되었습니다.');
 					location.reload();
 				});
-					
+				
+				let cNo = $(this).data('data-coop-co-no');
+				console.log(cNo);
+				
 				// 삭제 버튼
 				$('#deleteBtn').on('click', function() {
 					
-					let coopCoNo = $.(this).data('coop-co-no');
-					//console.log(cno);
+					let coopCoNo = $(this).data('coop-co-no');
+					console.log(coopCoNo);
+					
 					$.ajax({
 						type  : 'GET',
 						url : '/coopDelete',
 						data : {coopCoNo: coopCoNo},
 						dataType: 'json',
-						contentType:'application/json; charset=utf-8',
+					
 			         
 						success : function(result) {
 							alert('협력업체 삭제에 성공했습니다.');

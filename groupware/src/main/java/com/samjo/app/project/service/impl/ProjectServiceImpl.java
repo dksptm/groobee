@@ -45,12 +45,27 @@ public class ProjectServiceImpl implements ProjectService {
 	   }
 	 */
 	
+	
+	
+	@Override // 프로젝트(하위)업무 전체조회
+	public List<ProjectVO> taskAllList() {
+		return projectMapper.selectTaskAllList();
+	}
+	@Override // 프로젝트(하위)업무 단건조회
+	public ProjectVO taskInfo(ProjectVO projectVO) {
+		return projectMapper.selectTask(projectVO);
+	}
+	@Override // 프로젝트(하위) 등록
+	public int taskInsert(ProjectVO projectVO) {
+		return projectMapper.insertTask(projectVO);
+	}
 
+	
+	
 	@Override // 상시(주기적)업무 등록
 	public int reguInsert(ProjectVO projectVO) {
 		return projectMapper.reguInsert(projectVO);
 	}
-	
 	@Override // 상시(주기적)업무 조회
 	public List<ProjectVO> reguAllList() {
 		return projectMapper.selectReguAllList();
@@ -63,18 +78,15 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<ProjectVO> CoopCoAllList() {
 		return projectMapper.selectCoopCoAllList();
 	}
-	
 	@Override // 협력업체 등록
 	public int coopInsert(ProjectVO projectVO) {
 		System.out.println("협력업체:"+ projectVO);
 		return projectMapper.insertCoop(projectVO);
 	}
-	
 	@Override // 협력업체 단건
 	public ProjectVO coopInfo(ProjectVO projectVO) {
 		return projectMapper.selectCoop(projectVO);
 	}
-	
 	@Override // 협력업체 수정
 	public Map<String, Object> coopUpdate(ProjectVO projectVO) {
 		// js -> let map = {}; 
@@ -93,7 +105,6 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		return map;
 	}
-
 	@Override // 협력업체 삭제
 	/*public int coopDelete(ProjectVO projectVO) {
 		return projectMapper.deleteCoop(projectVO);
@@ -114,5 +125,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectTasks(custNo);
 	}
 	// 효주 끝.
+
+
 	
 }

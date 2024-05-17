@@ -22,6 +22,7 @@ public class ProjectController {
 		this.projectService = projectService;
 	}
 	
+	
 	// 프로젝트 전체 조회
 	@GetMapping("prjtAllList")
 	public String prjtAllList(Model model) {
@@ -58,53 +59,50 @@ public class ProjectController {
 		return uri;
 	}
 	
-
-	// 협력업체 전체 조회
-	@GetMapping("coopAllList")
-	public String coopAllList(Model model) {
-		List<ProjectVO> list = projectService.CoopCoAllList();
-		model.addAttribute("coopCo", list);
-		return "project/coopCo/list";
-	}
-	// 협력업체 단건조회.
-	@GetMapping("coopInfo")
-	public String coopInfo(ProjectVO projectVO, Model model) {
-		ProjectVO findVO = projectService.coopInfo(projectVO);
-		model.addAttribute("coopCo", findVO);
-		return "project/coopCo/list";
-	}
-	// 협력업체 등록
-	@GetMapping("coopInsert")
-	public String coopInsertForm(Model model) {
-		model.addAttribute("coopCo", new ProjectVO());
-		return "project/coopCo/list";
-	}
 	
-	@PostMapping("coopInsert")
-	public String coopInsertProcess(ProjectVO projectVO) {
-		int cNo =  projectService.coopInsert(projectVO);
-		String uri = null;
-		
-		if(cNo > -1) {
-			uri = "redirect:coopInfo?coopCoNo=" + cNo;
-		} else {
-			uri = "coopAllList";			
-		}
-		return uri;
-	}
 	
-	// 협력업체 수정
+	// 프로젝트(하위) 업무 전체조회
+	@GetMapping("taskAllList")
+	public String taskAllList(Model model) {
+				List<ProjectVO> list = projectService.taskAllList();
+				model.addAttribute("task", list);
+				return "project/task/list";
+			}
+	// 프로젝트(하위) 업무 등록
+	@GetMapping("taskInsert")
+	public String taskInsertForm(Model model) {
+				model.addAttribute("task", new ProjectVO());
+				return "project/task/insert";
+			}
+			
+	@PostMapping("taskInsert")
+	public String taskInsertProcess(ProjectVO projectVO) {
+				int tNo = projectService.taskInsert(projectVO);
+				String uri = null;
+				
+				if(tNo > -1) {
+					uri = "redirect:taskInfo?taskNo=" + tNo;
+				} else {
+					uri = "taskAllList";
+				}
+				return uri;
+			}
+			
+	// 프로젝트프로젝트(하위) 업무 단건
+	@GetMapping("taskInfo")
+	public String taskInfo(ProjectVO projectVO, Model model) {
+				ProjectVO findVO = projectService.taskInfo(projectVO);
+				model.addAttribute("task", findVO);
+				return "project/task/info";
+			}
+			
+			
+
+	// 프로젝트 업무조회
+	// 프로젝트 업무 수정
+	//
+
 	
-
-	// 협력업체 삭제
-	@GetMapping("coopDelete")
-	public String coopDelete(ProjectVO projectVO) {
-		projectService.coopDelete(projectVO);
-		return "redirect:coopAllList";
-	}
 	
-
-
-
 
 }

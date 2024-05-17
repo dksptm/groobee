@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+	<div class="container">
+			<br>
+			<h4>프로젝트 업무관리</h4>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>업무번호</th>
+						<th>업무명</th>
+						<th>시작일</th>
+						<th>마감일</th>
+						<th>참여인원</th>
+						<th>진행도</th>
+						<th>진행상황</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="task : ${task}">
+						<td>[[ ${task.taskNo}]]</td>
+						<td>[[ ${task.taskName}]]</td>
+						<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
+						<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")}]]</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+</html>
