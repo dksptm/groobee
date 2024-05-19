@@ -1,6 +1,5 @@
 package com.samjo.app.work.web;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +23,26 @@ public class WorkControll {
 	
 	@GetMapping("worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
+		
+		if(worksearchVO.getOneDate() == null ) {
+			worksearchVO.setOneDate(new Date());
+			
+		}
+		/*
+		 * if(worksearchVO.getTwoDate() == null ) { worksearchVO.setTwoDate(new Date());
+		 * }
+		 */
+			
+			
+		if(worksearchVO.getWkYn() == null) {
+			worksearchVO.setWkYn("근무일");
+		}
+		if(worksearchVO.getWkSite() == null) {
+			worksearchVO.setWkSite("내근");
+		}
+		if(worksearchVO.getWkStat() == null) {
+			worksearchVO.setWkStat("정상근무");
+		}
 		if(worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);
 		}
