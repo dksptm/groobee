@@ -23,7 +23,7 @@ public class AprServiceImpl implements AprService {
 	@Override
 	public Map<String, Object> goToApr(AprVO aprVO) {
 		Map<String, Object> map = new HashMap<>();
-		aprMapper.updateMyApr(aprVO);
+		aprMapper.updateAprGo(aprVO);
 		map.put("OUT", aprVO.getResult());
 		return map;
 	}
@@ -46,5 +46,6 @@ public class AprServiceImpl implements AprService {
 		map.put("OUT", aprVO.getResult());
 		return map;
 	}
+
 
 }

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+
+	<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row flex-xl-nowrap">
+	<div class="DocSearch-content col-12 container-p-y">
+		<div class="row m-3 p-3">
+			<h2 class="m-0 p-0 doc-page-title">문서작성</h2>
+		</div>
+		<hr>
+		<div class="row m-3 p-3 bg-white shadow-lg rounded">
+		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}">
+		
+			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
+			<hr>
+			
+			<!-- 작성완료/취소 버튼 -->
+			<div class="m-3 text-end">
+				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
+				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
+						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
+			</div>
+			
+			<div class="card-body row">
+			
+				<!-- 결재자 공간 -->
+				<div class="border border-3 p-3 col-4 input-tag-css">
+					<!-- 모달버튼 : 결재자 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-apr" 
+							data-bs-toggle="modal" data-bs-target="#selectapr">결재자 선택</button>
+					<!-- 결재자 리스트 -->
+					<div class="mt-3">
+						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" style="border:none;width:50px; background: transparent;" readonly /></p>
+						<p>
+							<input type="number" name="aprs[0].aprSq" value="1" style="border:none;width:50px; background: transparent;" readonly />번
+							<input type="text" name="aprs[0].aprEmp" th:value="${#authentication.principal.empId}" style="border:none;width:50px; background: transparent;" readonly />
+						</p>
+						<span id="selaprs"><!-- 선택한 결재자 보여주는 공간 --></span>
+					</div>		
+				</div>
+				
+				<!-- 참조자 공간 -->
+				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 참조자  -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
+							data-bs-target="#docModalRefs">참조자 선택</button>
+					<!-- 참조자 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getRefs"><!-- 선택한 참조자 보여주는 공간 --></div>
+					</div>
+				</div>
+				
+				<!-- 업무선택 공간 -->
+				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 업무선택 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" data-bs-toggle="modal"
+							data-bs-target="#docModalTasks">업무 선택</button>
+					<!-- 관련업무 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
+					</div>
+				</div>
+				
+				<!-- -------------------------------- 모달영역 START -------------------------------- -->
+				<!-- 모달영역 : 결재자선택 -->
+				<div class="modal fade" id="selectapr" tabindex="-1">
+				  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalScrollableTitle">결재자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary selbtn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 참조자선택 -->
+				<div class="modal fade" id="docModalRefs" tabindex="-1">
+				  <div class="modal-dialog modal-xl" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">참조자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary getRefs-btn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 업무선택 -->
+				<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-scrollable" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">관련업무 선택</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body"></div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+								<button type="button" class="btn btn-primary getTasks-btn" data-bs-dismiss="modal">선택완료</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- -------------------------------- 모달영역 END -------------------------------- -->
+				
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
+				<div class="col-8 mt-3 p-0">
+	    			<input type="text" class="form-control border border-3" th:field="*{title}" 
+	    				   aria-describedby="basic-addon14" placeholder="제목을 입력하세요." />
+				</div>
+				<div class="col-4 p-0 mt-3">
+					<select class="form-select border border-3" th:field="*{tempId}">
+						<option value="no-data">템플릿옵션을 선택하세요.</option>
+						<th:block th:each="temp : ${temps}">
+		                <option th:value="${temp.tempNo}" th:attr="data-temp=${temp.tempImg}">
+		                    		[[ ${temp.tempName} ]]</option>
+	                    </th:block>
+					</select>
+				</div>
+				
+				<div class="p-0 mt-3">
+					<input type="file" name="docFiles" id="docFiles" multiple>
+					<!-- uploadFiles : UploadController의 매개변수이름(달라도 된다고 함..) -->
+					<!-- <button type="button" class="uploadBtn">UPLOAD</button> -->
+				</div>
+				
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
+				
+				<!-- ---------------------------- 내용영역 START ---------------------------- -->
+				<div class="p-0 mt-3">
+					<div class="card p-0 text-center cntn-slide">
+					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br>
+					</div>
+					
+					<div class="col-md-12">
+						
+						<!-- template fragment -->
+						<div id="temparea">
+							<th:block th:replace="approval/temp/template :: TempCust"></th:block>
+						</div>
+						
+						<!-- PTO fragment -->
+						<div id="tempPTO" style="display:none;">
+							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
+						</div>
+						
+						<!-- PTO fragment -->
+						<div id="tempEXT" style="display:none;">
+							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
+						</div>
+						 
+						<!-- cntn textarea -->
+						<textarea name="cntn" id="cntn" class="form-control border border-3" rows="20"
+									placeholder="여기에 내용을 입력하세요"></textarea><br>
+									
+					</div>
+				</div>
+				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>
+	</div>
+	
+	<script></script>
+	
+	<script>
+		
+		$(function(){
+			
+			// input태그정리
+			$('.input-tag-css input').css('border','none').css('width','50px').css('background','transparent');
+			
+			// custTemp, cntn 숨기기
+			$('div#temparea').hide();
+			$('textarea#cntn').hide();
+			$('#finalLine').val(1);
+			
+			// 템플릿 선택.
+			$('#tempId').on('change', function(e){
+				
+				$('.cntn-slide').slideUp();
+				// custTemp 초기화, 숨기기.
+				$('div#custTemp').html('');
+				$('div#temparea').slideUp();
+				// cntn 초기화, 숨기기.
+				$('textarea#cntn').html('');
+				$('textarea#cntn').slideUp();
+				// 휴가원,지출결의 숨기기
+				$('#tempPTO').hide();
+				$('#tempEXT').hide();
+				
+				// 옵션값 확인하기
+				let opt = $('#tempId option:selected');
+				console.log(opt.val());
+				
+				// 옵션값 - 1.선택안함
+				if(opt.val() == 'no-data') {
+					$('.cntn-slide').slideDown();
+					return;
+				}
+				
+				if(opt.val() == 'TP002') {
+					$('#tempPTO').show();
+					return;
+				}
+				
+				if(opt.val() == 'TP001') {
+					$('#tempEXT').show();
+					return;
+				}
+				
+				// 옵션값 - 2.기안문선택 / 3.템플릿선택
+				let tempPath = $('#tempId option:selected').data('temp');
+				if(tempPath == 'no-path') {
+					$('textarea#cntn').slideDown();
+				} else {
+					$('div#temparea').slideDown();
+					$.ajax({
+						url : 'files/' + tempPath,
+						dataType: "html",
+						success: function(html) {
+							$('div#custTemp').html(html);
+	            	    },
+	            	    error: function(err){
+	            	    	console.log('ERR : ', err);
+	            	    }
+					})
+				}
+			})// 템플릿 선택.
+			
+			// 모달열기 - 결재자.
+			$('.doc-modal-btn-apr').on('click', function(e) {
+				let dept = $('input[name="deptId"]').val();
+				$('#selectapr .modal-body').load("getDeptEmps?deptId="+ dept);
+				$('#selectapr').modal();
+			})
+			
+			// 모달에서 선택된 결재자를 가져오기.
+			let ctn;
+			$('.selbtn').on('click', function(e) {
+				let trs = $('#aprlist > tbody > tr');
+				let spanTag = $('#selaprs');
+				spanTag.children().remove();
+				ctn = 0;
+				
+				trs.each(function(idx,tr){
+					let get = $(tr);
+					
+					let creatInputTag = $(`<p>
+											<input name="aprs[${(idx+1)}].aprSq" type="text"
+											 value="${get.find('td').eq(1).text()}" readonly />번
+											<input name="aprs[${(idx+1)}].aprEmp" type="hidden"
+											 value="${get.data('emp')}" readonly />
+											<input name="aprs[${(idx+1)}].aprName" type="text"
+											 value="${get.find('td').eq(2).text()}" readonly />
+										   </p>`);
+					
+					spanTag.append(creatInputTag);
+					ctn++;
+				});
+				$('#finalLine').val(++ctn);
+				$('.input-tag-css input').css('border','none').css('width','50px').css('background','transparent');
+			})
+			
+			// 모달열기 - 참조자.
+			$('.doc-modal-btn-refs').on('click', function(e) {
+				let cust = $('input[name="custNo"]').val();
+				$('#docModalRefs .modal-body').load("getCustEmps?custNo="+ cust);
+				$('#docModalRefs').modal();				
+			})
+			
+			// 모달에서 선택한 참조자 가져오기.
+			$('.getRefs-btn').on('click', getDocRefs);
+			
+			// 모달열기 - 업무.
+			$('.doc-modal-btn-tasks').on('click', function(e) {
+				let cust = $('input[name="custNo"]').val();
+				$('#docModalTasks .modal-body').load("getMyTasks?custNo="+ cust);
+				$('#docModalTasks').modal();				
+			})
+			
+			// 모달에서 업무 가져오기.
+			$('.getTasks-btn').on('click', getDocTsks);
+			
+			// 작성완료 버튼.
+			$('#docInsertForm').submit(async function(e){
+				// submit 중지.
+				e.preventDefault();
+				const submitDoc = this;
+				
+				// 필수입력 확인.
+				if(!docCheck()) return;
+				
+				// 문서등록.
+				//  1.작성한 템플릿을 저장하고 내용(cntn)에 경로입력.=>getPath()
+				//  2.첨부파일을 저장.=>saveFile();
+				if(confirm('저장할까요?')) {
+					try {
+						
+						let cntnTemp = $('div#custTemp').html();
+						let okPath;
+						if(cntnTemp != '') {
+							okPath = await getPath(cntnTemp);
+							$('textarea#cntn').val(okPath);
+							console.log('템플릿완료');
+						}
+						
+						let fileInput = document.querySelector('input#docFiles');
+						let fileList = fileInput.files;
+					 	let okFile;
+					 	if(fileList.length != 0) {
+					 		okFile = await saveFile(fileList);
+					 		console.log('첨부파일완료');
+					 		
+					 		okFile.forEach((ele,idx) => {
+					 			fileInfo = ele.split(':::');
+					 			let fUpl = $('<input name="files[' + (idx) + '].uplName" type="hidden" />');
+					 			fUpl.val(fileInfo[0]);
+					 			let fExt = $('<input name="files[' + (idx) + '].fileExt" type="hidden" />');
+					 			fExt.val(fileInfo[1]);
+					 			let fSize = $('<input name="files[' + (idx) + '].fileSize" type="hidden" />');
+					 			fSize.val(fileInfo[2]);
+					 			let fSave = $('<input name="files[' + (idx) + '].saveName" type="hidden" />');
+					 			fSave.val(fileInfo[3]);
+					 			$('#docFiles').append(fUpl, fExt, fSize, fSave);
+					 		})
+					 		
+					 	}
+					 	
+					 	alert('문서등록 완료.');
+			            this.submit();
+			        
+					} catch (error) {
+			            console.error(error);
+			            alert('작업 중 오류가 발생했습니다.');
+			        }
+				}
+			})// 작성완료버튼.
+			
+		})// end.
+		
+		// 필수입력 항목선택.
+		function docCheck(e) {
+			if($('#title').val() == '') {
+				alert('제목은 필수입력 항목입니다.');
+				$('#title').focus();
+				return false;
+			}
+			if($('#tempId').val() == 'no-data') {
+				alert('템플릿을 선택해주세요.');
+				$('#tempId').focus();
+				return false;
+			}
+			return true;
+		}
+		
+		// 참조자 모달 함수(참조자 가져오기 함수)
+		function getDocRefs() {
+			let trs = $('#refslist > tbody > tr');
+			let divTag = $('#getRefs');
+			divTag.children().remove();
+			
+			trs.each(function(idx,tr){
+				let get = $(tr);
+				
+				let creatTag = $(`<p>
+									<input name="refs[${(idx)}]" type="hidden"
+										   value="${get.data('emp')}" readonly />
+									<span>${get.find('td').eq(1).text()}
+									      ${get.find('td').eq(2).text()}
+									      ${get.find('td').eq(3).text()}</span>
+								  </p>`);
+				divTag.append(creatTag);			
+			})
+		}
+		
+		// 업무연결 모달 함수.
+		function getDocTsks() {
+			let trs = $('#list3 > tbody input[name=chk-list3]:checked').closest('tr');
+			let divTag = $('#getTasks');
+			divTag.children().remove();
+			
+			trs.each(function(idx,tr) {
+				let get = $(tr);
+				let data = get.data('task');
+				let creatTag = $(`<p>
+									<input name="tasks[${(idx)}]" type="hidden"
+										   value="${get.data('task')}" readonly />
+									<span>${get.find('td').eq(0).text()} 
+									      ${get.find('td').eq(1).text()}</span>
+								  </p>`);
+				divTag.append(creatTag);
+			});
+		}
+		
+		// 저장경로 가져와서 내용(cntn)에 담기.
+		const getPath = (cntnTemp) => { // 파라미터로 파일리스트 받기(위 okPath)
+			// 결과를 프로미즈 객체에 담기.
+			return new Promise((resolve, reject) => {
+				// 파일이름 정의.
+	    		let fileName = '테스트' + $('input[name="docNo"]').val();
+				// 아작스로 파일업로드하고 경로리턴받기.
+			    $.ajax({
+			        url: 'uploadsHtml',    
+			        type: 'POST',
+			        data: JSON.stringify({ tags: cntnTemp, fileName: fileName }),
+			        dataType: 'text',
+			        contentType: 'application/json;charset=UTF-8'
+			    })
+			    .done(response => {
+			        resolve(response);
+			    })
+			    .fail(err => {
+			        alert('템플릿 저장 중 오류.');
+			        reject(err);
+			    });
+			})
+		}
+		
+		const saveFile = (fileList) => { // 파라미터로 파일리스트 받기(위 okFile)
+			// 결과를 프로미즈 객체에 담기.
+			return new Promise((resolve, reject) => {
+				// FormData() 인스턴스.
+			    let formData = new FormData(); 
+
+				// formData에 담기
+			    for(let file of fileList) {
+			        formData.append('uploadFiles', file);
+			    }					
+				
+				// 아작스로 파일업로드하고 경로리턴받기.
+			    $.ajax({
+			        url: 'uploadFiles',    
+			        type: 'POST',
+			        processData: false, 
+			        contentType: false,
+			        data: formData,
+			    })
+			    .done(response => {
+			        resolve(response);
+			    })
+			    .fail(err => {
+			        alert('첨부파일 저장 중 오류');
+			        reject(err);
+			    });
+			})// promise.
+		}
+
+	</script>
+	
+</th:block>
+
+
+
+</html>

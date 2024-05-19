@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.samjo.app.approval.mapper.AprMapper;
 import com.samjo.app.approval.mapper.DocMapper;
 import com.samjo.app.approval.mapper.TempMapper;
+import com.samjo.app.approval.service.DocFileVO;
 import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.approval.service.TempVO;
@@ -32,6 +33,7 @@ public class DocServiceImpl implements DocService {
 	// 문서작성.
 	@Override
 	public int docInfoInsert(DocVO docVO) {
+		
 		// 문서테이블 등록.
 		int result = docMapper.insertDoc(docVO);
 		
@@ -43,14 +45,19 @@ public class DocServiceImpl implements DocService {
 				apr.setCustNo(docVO.getCustNo());
 				aprMapper.insertApr(apr);
 			});
+			// 2.휴가원 등록.
+			  if(docVO.getPto() != null) {
+				  docVO.getPto().setDocNo(docVO.getDocNo());
+				  int ret = tempMapper.insertPto(docVO.getPto());
+				  System.out.println("ret==>"+ret);
+			  }
+			 
 			// 2.첨부파일 정보등록.
-			if(docVO.getFiles() != null) {
-				docVO.getFiles().forEach(file -> {
-					file.setDocNo(docVO.getDocNo());
-					file.setUplEmp(docVO.getDeptId());
-					docMapper.insertDocFile(file);
-				});				
-			}
+			/*
+			 * if(docVO.getFiles() != null) { docVO.getFiles().forEach(file -> {
+			 * file.setDocNo(docVO.getDocNo()); file.setUplEmp(docVO.getDeptId());
+			 * docMapper.insertDocFile(file); }); }
+			 */
 			// 3.참조자 등록.
 			if(docVO.getRefs() != null) {
 				docVO.getRefs().forEach(ref -> {
@@ -63,8 +70,9 @@ public class DocServiceImpl implements DocService {
 					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
 				});				
 			}
-			
 			System.out.println("docVO ===> " + docVO);
+			
+			
 			// 5.문서번호 리턴.
 			return docVO.getDocNo();
 			
@@ -124,6 +132,27 @@ public class DocServiceImpl implements DocService {
 	@Override
 	public List<TempVO> getCustTemps() {
 		return tempMapper.selectCustTemps();
+	}
+
+	// 문서조회 - 한 emp가 작성한 모든문서.
+	@Override
+	public List<DocVO> empDocList(String empId) {
+		return docMapper.selectEmpDocs(empId);
+	}
+
+	@Override
+	public List<DocVO> getMyAprList(String empId) {
+		return docMapper.selectMyApr(empId);
+	}
+
+	@Override
+	public int testInsert(TempVO temp) {
+		return docMapper.testInsert(temp);
+	}
+
+	@Override
+	public int fileInsert(DocFileVO fileVO) {
+		return docMapper.insertDocFile(fileVO);
 	}
 
 

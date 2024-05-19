@@ -4,44 +4,40 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-	<!-- CKEditor -->
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-	
-	
-	
+
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
 	<div class="DocSearch-content col-12 container-p-y">
+		
 		<div class="row m-3 p-3">
 			<h2 class="m-0 p-0 doc-page-title">문서조회</h2>
 		</div>
 		<hr>
+		
 		<div class="m-3 p-3 shadow-lg rounded">
-			
-			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
-			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
-			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
+		<form th:action="@{/docUpdate}" method="post" th:object="${doc}" class="card my-4 col-10">	
+			<p>로그인Id <input type="text" th:value="${session.id}" name="draft" readonly />
+			부서ID <input type="text" th:value="${session.dept}" name="deptId" readonly />
+			회사ID <input type="text" th:value="${session.cust}" name="custNo" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
-			<p>토큰 -> <input type="text" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" style="width:300px;"></p>
 			
 			<!-- ------------------------- 상신/수정/목록/삭제 버튼 START ------------------------- -->
 			<div class="card-body text-end mx-4">
 				<!-- 목록 버튼 -->
 				<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn rounded-pill btn-primary">목록</button>
 				<!-- 상신전 상태 & 작성자=로그인한사람 -->
-				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
-					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상신</button>
+				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == session.id}">
+					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">wjwk</button>
 					<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" 
 							class="btn rounded-pill btn-success">수정</button>
 					<button type="button" th:onclick="|location.href='@{/docDelete(docNo=${doc.docNo})}'|" 
 							    class="btn rounded-pill btn-danger">삭제</button>
 				</th:block>
 				<!-- 위 조건 아니면서, 현재 결재자인 사람. -->
-				<th:block th:if="${doc.docStat == '4B2b' and doc.draft != #authentication.principal.empId}">
+				<th:block th:unless="${doc.draftStat == '4A1a' and doc.draft == session.id}">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
-						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == #authentication.principal.empId}">
+						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == session.id}">
 							<button type="button" class="btn btn-warning" id="aprok">결재</button>
 							<button type="button" class="btn btn-danger" id="aprng">반려</button>
 						</th:block>
@@ -108,6 +104,8 @@
 								</tr>
 								</th:block>
 							</table>
+							<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
+									data-bs-target="#docModalRefs">참조자 선택</button>
 						</div>
 						
 						<div class="tab-pane fade col-6" id="navs-top-messages" role="tabpanel">
@@ -157,6 +155,21 @@
 				<!-- ------------------------- 결재라인 START --------------------------->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
+				<div class="col-8 mt-3 p-0">
+	    			<input type="text" class="form-control border border-3" th:field="*{title}" 
+	    				   aria-describedby="basic-addon14" />
+				</div>
+				
+				<div class="col-4 p-0 mt-3">
+					<select class="form-select border border-3" th:field="*{tempId}">
+						<option value="no-data">템플릿옵션을 선택하세요.</option>
+						<th:block th:each="temp : ${temps}">
+		                <option th:value="${temp.tempNo}" th:attr="data-temp=${temp.tempImg}">
+		                    		[[ ${temp.tempName} ]]</option>
+	                    </th:block>
+					</select>
+				</div>
+				
 				<div class="d-flex justify-content-end">
 					<div class="col-5 text-end">
   						<label for="formFileLg" class="form-label">첨부파일</label>
@@ -170,18 +183,16 @@
 					</div>
 				</div>
 				
-				<div class="col-12 mt-3">
-	    			<input type="text" class="form-control border border-3 border-secondary text-center" th:value="${doc.title}" 
-	    				   aria-describedby="basic-addon14" readonly />
-				</div>
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
 				
 				<!-- ---------------------------- 내용영역 START ---------------------------- -->
 				<div class="mt-3">
 					<div class="col-md-12">
-						 
-						<!-- cntn textarea -->
-						<textarea id="cntn" th:text="${doc.cntn}"></textarea>
+						
+						<!-- template fragment -->
+						<div id="temparea" style="display:none;">
+							<th:block th:replace="approval/temp/template :: TempCust"></th:block>
+						</div>
 						
 						<!-- PTO fragment -->
 						<div id="tempPTO" style="display:none;">
@@ -192,220 +203,142 @@
 						<div id="tempEXT" style="display:none;">
 							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
 						</div>
-						
+						 
+						<!-- cntn textarea -->
+						<div style="display:none;" id="textArea">
+							<textarea id="cntn" name="cntn" class="form-control border border-3" rows="20" readonly>[[ ${doc.cntn} ]]
+							</textarea>
+						</div>
 					</div>
 				</div>
 				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+				
+				<!-- -------------------------------- 모달영역 START -------------------------------- -->
+				<!-- 모달영역 : 결재자선택 -->
+				<div class="modal fade" id="selectapr" tabindex="-1">
+				  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalScrollableTitle">결재자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary selbtn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 참조자선택 -->
+				<div class="modal fade" id="docModalRefs" tabindex="-1">
+				  <div class="modal-dialog modal-xl" role="document">
+				    <div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">참조자 선택</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary getRefs-btn" data-bs-dismiss="modal">선택완료</button>
+						</div>
+				    </div>
+				  </div>
+				</div>
+				<!-- 모달영역 : 업무선택 -->
+				<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-scrollable" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">관련업무 선택</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body"></div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+								<button type="button" class="btn btn-primary getTasks-btn" data-bs-dismiss="modal">선택완료</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- -------------------------------- 모달영역 END -------------------------------- -->
 			</div>
+			</form>	
 		</div> 
 	</div>
 	</div>
 	</div>
 	
-	<script th:src="@{/js/approval.js}"></script>
+	<!-- <script th:src="@{/js/approval.js}"></script> -->
+	
 	<script>
+	
 		$(function(){
-			
-			ClassicEditor
-            .create(document.querySelector('#cntn'),{toolbar:[]})
-            .then(editor => {
-            	editor.enableReadOnlyMode('#cntn');
-            })
-            .catch(error => {
-                console.error(error);
-            });
 			
 			// 테이블 꾸미기
 			$('.tab-content th').addClass('table-secondary');
 			
 			// 내용 표시.
 			let temp = document.querySelector('td[data-temp]').dataset.temp;
-			let dno = document.querySelector('td[data-dno]').dataset.dno;
-			console.log(temp);
-			
+			console.log(temp)
 			
 			if(temp == 'TP001') {
 				$('div#tempEXT').show();
 			} else if(temp == 'TP002') {
 				$('div#tempPTO').show();
-				getPtoInfo(dno);
+			} else if (temp == 'TP003') {
+				$('#textArea').show();
+			} else {
+				let tempPath = $('textarea#cntn').val();
+				console.log(tempPath);
+				$('#temparea').show();
+				$.ajax({
+					url : 'files/' + tempPath,
+					dataType: "html",
+					success: function(html) {
+						$('#custTemp').html(html);
+            	    },
+            	    error: function(err){
+            	    	console.log('ERR : ', err);
+            	    }
+				})
 			}
 			
+			// 모달열기 - 참조자.
+			$('.doc-modal-btn-refs').on('click', function(e) {
+				let cust = $('input[name="custNo"]').val();
+				console.log(cust);
+				$('#docModalRefs .modal-body').load("getCustEmps?custNo="+ cust);
+				$('#docModalRefs').modal();				
+			})
 			
-			/* -------------- 상신 및 결재진행 START ---------------- */
-			let goApr = document.getElementById('gotoapr');
-			let aprOk = document.getElementById('aprok');
-			let aprNg = document.getElementById('aprng');
+			// 모달에서 선택한 참조자 가져오기.
+			//$('.getRefs-btn').on('click', aprService.getDocRefs());
 			
-			const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-		    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-			// 1.상신.
-			if(goApr != null) {
-				goApr.addEventListener('click', function(e) {
-					
-					let finChk = document.querySelector('div[data-fl]').dataset.fl;
-					if(finChk <= 1) {
-						alert('결재자가 없습니다.\n다시확인해주세요.');
-						return;
-					}
-					
-					let obj = getObj('goApr');
-					
-					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
-						return;
-					}
-					
-					let url = `/aprGo/${obj.docNo}`;
-					console.log(url);
-					
-					fetch(url, {
-						method : 'PUT',
-						body : JSON.stringify(obj),
-						headers : {
-							'Content-type' : 'application/json',
-							[header]: token // [헤더네임]:토큰번호로 CSRF 토큰을 헤더에 포함
-						}
-					})
-					.then(res => res.json())
-					.then(ret => {
-						if(ret.OUT == 'Y'){
-							alert('상신완료!');
-							location.href = "/docInfo?docNo=" + obj.docNo;
-						} else {
-							alert('상신실패!');
-							//location.href = "/docList";
-							console.log(ret);
-						}
-					})
-					.catch(err => console.error(err))				
-				});
-			} // goApr
-			
-			// 2. 결재.
-			if(aprOk != null) {
-				aprOk.addEventListener('click', function(e) {
-				console.log('시작');
-					let obj = getObj('aprOk');
-					
-					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
-						return;
-					}
-					
-					let url = `/aprOk/${obj.docNo}`;
-					console.log(url);
-					
-					fetch(url, {
-						method : 'PUT',
-						body : JSON.stringify(obj),
-						headers : {
-							'Content-type' : 'application/json',
-							[header]: token
-						}
-					})
-					.then(res => res.json())
-					.then(ret => {
-						console.log(ret);
-						if(ret.OUT == 'GO_NEXT'){
-							alert('결재완료!\n다음결재자에게 전달됩니다.');
-							location.href = "/docInfo?docNo=" + obj.docNo;
-						} else if(ret.OUT == 'APR_CMPLT') {
-							alert('결재완료!\n해당 문서가 최종결재 완료되었습니다.');
-							location.href = "/docInfo?docNo=" + obj.docNo;
-						} else {
-							alert('결재실패!');
-							location.href = "/docList";
-						} 
-					})
-					.catch(err => console.error(err))	
-				})
-			} // aprOk
-			
-			// 3. 반려.
-			if(aprNg != null) {
-				aprNg.addEventListener('click', function(e) {
-				console.log('시작');
-					let obj = getObj('aprNg');
-					
-					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
-						return;
-					}
-					
-					let url = `/aprNg/${obj.docNo}`;
-					console.log(url);
-					
-					fetch(url, {
-						method : 'PUT',
-						body : JSON.stringify(obj),
-						headers : {
-							'Content-type' : 'application/json',
-							[header]: token
-						}
-					})
-					.then(res => res.json())
-					.then(ret => {
-						console.log(ret);
-						if(ret.OUT == 'OK') {
-							alert('반려완료!\n기안자에게 알립니다.');
-							console.log(ret);
-							//location.href = "docInfo?docNo=" + obj.docNo;
-						} else if(ret.OUT == 'NG') {
-							alert('반려실패!\n다시확인해주세요.');
-							console.log(ret);
-							//location.href = "/docList";
-						} else {
-							alert('오류!');
-							//location.href = "/docList";
-						} 
-					})
-					.catch(err => console.error(err))	
-				})
-			} // aprNg
-			/* -------------- 상신 및 결재진행 END ---------------- */
 			
 		})// end.
-		
-		// 객체가져오는 함수.
-		function getObj(aprBtn) {
-			let docNo = document.querySelector('td[data-dno]').dataset.dno;
-			let aprEmp = '';
-			if(aprBtn == 'goApr') {
-				aprEmp = document.querySelector('td[data-draft]').dataset.draft;
-			} else if (aprBtn == 'aprOk' || aprBtn == 'aprNg') {
-				aprEmp = document.querySelector('ul[data-apr]').dataset.apr;
-			}
-
-			if(docNo != '' && aprEmp != ''){
-				let obj = {docNo, aprEmp};
-				return obj;
-			} else {
-				return null;
-			}
+	
+		const getDocRefs = () => {
+			let trs = $('#refslist > tbody > tr');
+			let divTag = $('#getRefs');
+			divTag.children().remove();
+			
+			trs.each(function(idx,tr){
+				let get = $(tr);
+				
+				let creatTag = $(`<p>
+									<input name="refs[${(idx)}]" type="hidden"
+										   value="${get.data('emp')}" readonly />
+									<span>${get.find('td').eq(1).text()}
+									      ${get.find('td').eq(2).text()}
+									      ${get.find('td').eq(3).text()}</span>
+								  </p>`);
+				divTag.append(creatTag);			
+			})
 		}
 		
-		// CK에디터 읽기전용으로 바꾸는 함수
-		function enableReadOnlyMode(editor) {
-		    editor.isReadOnly = true;
-		    editor.fire('readOnlyModeEnabled', { featureId: 'my-feature-id' });
-		}
 		
-		//
-		function getPtoInfo(dno) {
-			$.ajax({
-	            url: '/pto/' + dno, // 엔드포인트 URL
-	            type: 'GET',
-	            success: function(response) {
-	                console.log(response); 
-	            },
-	            error: function(xhr, status, error) {
-	                console.error('Error:', error);
-	                alert('Error fetching data.');
-	            }
-	        });
-		}
 		
 	</script>
 	

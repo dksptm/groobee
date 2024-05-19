@@ -3,7 +3,7 @@
 
 <th:block th:fragment="TempPTO">		
 
-	<div id="pto" class="border border-3 w-95 py-5 mt-3" contentEditable="true">		
+	<div id="pto" class="border border-3 w-95 py-5 mt-3" contentEditable="true">	
 		<div class="container">
 		<div class="row section">
 			<div class="text-center" contenteditable="false">
@@ -16,19 +16,19 @@
 					<tbody>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">작성일</td>
-							<td>날짜 고정</td>
+							<td data-td="now"></td>
 						</tr>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">신청자</td>
-							<td>이름가져오기</td>
+							<td data-td="name"></td>
 						</tr>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">부서</td>
-							<td>부서가져오기</td>
+							<td data-td="dept"></td>
 						</tr>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">문서번호</td>
-							<td>문서번호 가져오기</td>
+							<td data-td="dno"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -44,10 +44,11 @@
 								신청내용</td>
 							<td class="bg-light font-weight-bold text-center col-">휴가종류</td>
 							<td colspan="2">
-								<select class="form-select border border-3">
+								<select class="form-select border border-3" name="pto.ptoType" id="ptoType">
 									<option>휴가종류 선택</option>
-									<option>111</option>
-									<option>옵션들 가져오기</option>
+									<option value="4C1c">연차</option>
+									<option value="4C2c">오전반차</option>
+									<option value="4C3c">오후반차</option>
 								</select>
 							</td>
 						</tr>
@@ -55,15 +56,19 @@
 							<td class="bg-light font-weight-bold text-center col-2" contenteditable="false">날짜선택
 							</td>
 							<td class="text-end">
-								<input type="date" class="form-control col-6" />
-								<input type="time" class="form-control col-6" />부터</td>
+								<input type="date" class="form-control col-6" id="sdt" />
+								<input type="time" class="form-control col-6" id="stime" readonly />부터
+								<!-- <label for="ptoStartDt">시작 날짜 및 시간:</label>
+								<input id="ptoStartDt" type="datetime-local" class="form-control col-6" />부터</td> -->
 							<td class="text-end">
-								<input type="date" class="form-control col-6" />
-								<input type="time" class="form-control col-6" />까지</td>
+								<input type="date" class="form-control col-6" id="edt" />
+								<input type="time" class="form-control col-6" id="etime" readonly />까지</td>
+								<!-- <label for="ptoEndDt">종료 날짜 및 시간:</label>
+								<input id="ptoEndDt" type="datetime-local" class="form-control col-6" />까지</td> -->
 						</tr>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-2" contenteditable="false">사유</td>
-							<td colspan="2"><textarea class="form-control-plaintext">내용입력</textarea></td>
+							<td colspan="2"><textarea name="pto.reason" class="form-control-plaintext">내용입력</textarea></td>
 						</tr>
 						<tr>
 							<td colspan="4">

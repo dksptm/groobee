@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+
+
+	<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row flex-xl-nowrap">
+	<div class="DocSearch-content col-12 container-p-y">
+		<div class="mt-3 pt-3">
+			<h2 class="m-0 p-0">문서함</h2>
+			<br>
+			<p> 내가 작성한 문서를 조회하는 화면입니다. (작성중, 상신완료, 반려문서 등)</p>
+			<hr>
+		</div>
+		
+		<div class="mt-3 pt-3">
+			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			<hr>
+		</div>
+		
+		<div class="mt-3 pt-3">
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover text-center bg-white">
+					<thead >
+						<tr class="table-dark">
+							<th>문서번호</th>
+							<th>작성일자</th>
+							<th>제목</th>
+							<th>업무명</th>
+							<th>작성상태</th>
+							<th>문서상태</th>
+							<th>결재상황</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="doc : ${list}">
+						<tr th:onclick="|location.href='@{/docInfo(docNo=${doc.docNo})}'|">
+							<td>[[ ${doc.docNo} ]]</td>
+							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+							<td>[[ ${doc.title} ]]</td>
+							<td>[[ ${doc.task} ]]</td>
+							<td>[[ ${doc.draftStatName} ]]</td>
+							<td>[[ ${doc.docStatName} ]]</td>
+							<td th:if="${doc.draftStat == '4A1a'}">-</td>
+							<td th:unless="${doc.draftStat == '4A1a'}"> [[ ${doc.curApr} ]]</td>
+						</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			<div>
+			<!-- 페이징공간 -->
+			
+			</div>
+			
+		</div>
+		
+	</div>
+	</div>
+	</div>
+	
+</th:block>
+
+
+
+</html>

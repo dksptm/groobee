@@ -54,7 +54,7 @@
 	</select>
 	
 	<!-- 상신하기 프로시저. -->
-	<update id="updateMyApr" parameterType="AprVO" statementType="CALLABLE">
+	<update id="updateAprGo" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			go_apr(
 				#{docNo, mode=IN, jdbcType=INTEGER},

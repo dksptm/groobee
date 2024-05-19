@@ -11,5 +11,35 @@
 		FROM temp
 		ORDER BY temp_no
 	</select>
+	
+	<insert id="insertPto" parameterType="TempVO">
+		INSERT INTO doc_pto
+		        (
+		            doc_no
+		            ,pto_type
+		            ,pto_start_dt
+		            ,pto_end_dt
+		            ,reason
+		        )
+		  VALUES
+		        (
+		            #{docNo}
+		            ,#{ptoType}
+		            ,TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI')
+		            ,TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI')
+		            ,#{reason}
+		        )	
+	
+	</insert>
+	
+	<select id="selectPto" resultType="TempVO">
+		SELECT doc_no
+		       ,pto_type
+		       ,pto_start_dt
+		       ,pto_end_dt
+		       ,reason
+		FROM doc_pto
+		WHERE doc_no = #{dno}	
+	</select>
 
 </mapper>
