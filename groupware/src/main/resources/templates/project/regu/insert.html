@@ -25,6 +25,12 @@
 						</tr>
 						<tr>
 							<th>부서명</th>
+							<td><select class="form-select" style="width:100px" th:field="*{deptName}" >
+									<option value=""></option>
+			                    </select>  </td>
+						</tr>
+						<tr>
+							<th>부서참여인원</th>
 							<td><input type="text" th:field="*{deptName}"></td>
 						</tr>
 						<tr>
@@ -55,6 +61,10 @@
 						<tr>
 							<th>업무목적</th>
 							<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+						</tr>
+						<tr>
+							<th>내용</th>
+							<td><textarea cols="50" th:field="*{smry}"></textarea></td>
 						</tr>
 				</table>
 					<div style=" text-align: center;">

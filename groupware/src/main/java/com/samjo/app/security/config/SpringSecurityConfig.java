@@ -36,7 +36,7 @@ public class SpringSecurityConfig {
 
 //			http.formLogin().defaultSuccessUrl("/all");
 //			http.logout();
-		http.csrf();// .disable();
+		http.csrf().disable();;// .disable();
 
 		return http.build();
 	}

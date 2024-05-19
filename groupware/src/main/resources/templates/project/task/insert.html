@@ -1,20 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>상시업무등록</title>
+</head>
 <body>
-	<th:block layout:fragment="Content">
-		<div class="container">
-			<form name="insertForm" th:action="@{/task/insert}" method="post"
-				th:object="${projects}" id="prjtForm">
-				 <br><br><br>    
-                    <div style=" text-align: center;">
-                    	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
-                    	<button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
-                    	<button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
-                    </div>                       
-				</form>
-		<script>
-		</script>
+    <th:block layout:fragment="Content">
+        <div class="container">
+            <form name="insertForm" th:action="@{/task/insert}" method="post" th:object="${projects}">
+                <br><br><br>
+                <div style="text-align: center;">
+                    <button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
+                    <button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
+                    <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
+                </div>
+
+                <table id="form" class="table">
+                    <h3>상시업무등록</h3>
+                    <tr>
+                        <th>업무명</th>
+                        <td><input type="text" th:field="*{taskName}"></td>
+                    </tr>
+                    <tr>
+                        <th>업무번호</th>
+                        <td><input type="text" th:field="*{taskNo}"></td>
+                    </tr>
+                    <tr>
+                        <th>부서명</th>
+                        <td>
+                            <select class="form-select" style="width:100px" th:field="*{deptName}">
+                                <option value="">선택</option>
+                                <!-- 부서 목록을 동적으로 추가 -->
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>부서참여인원</th>
+                        <td><input type="text" th:field="*{deptParticipants}"></td>
+                    </tr>
+                    <tr>
+                        <th>책임자</th>
+                        <td>
+                            <input type="text" th:field="*{respMngrId}" readonly>
+                            <button type="button" class="btn btn-primary">선택</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>담당자</th>
+                        <td>
+                            <input type="text" th:field="*{}" readonly>
+                            <button type="button" class="btn btn-primary">선택</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>시작일</th>
+                        <td><input type="date" th:field="*{taskStartDT}"></td>
+                    </tr>
+                    <tr>
+                        <th>마감일</th>
+                        <td>
+                            <input type="date" th:field="*{taskDueDT}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>업무목적</th>
+                        <td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+                    </tr>
+                    <tr>
+                        <th>내용</th>
+                        <td><textarea cols="50" th:field="*{smry}"></textarea></td>
+                    </tr>
+                </table>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="button" class="btn btn-secondary">취소</button>
+                </div>
+            </form>
+        </div>
+    </th:block>
+</body>
 </html>
 
+
+		

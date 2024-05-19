@@ -7,11 +7,6 @@
 		<div class="container">
 			<form name="insertForm" th:action="@{/prjt/insert}" method="post"
 				th:object="${projects}" id="prjtForm">   
-				<!-- <select class="form-select" th:field="*{prjtId}">
-                        <option value="프로젝트등록" th:location="@{/project/prjt/insert}">프로젝트 등록</option>
-                        <option value="프로젝트업무등록" th:onclick="|location.href='@{/project/regu/insert}'|" >프로젝트 업무등록</option>
-                        <option value="상시업무등록" th:onclick="|location.href='@{/reguInsert}'|"> 상시업무 등록</option>
-                    </select> -->
 				 <br><br><br>    
                     <div style=" text-align: center;">
                     	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>

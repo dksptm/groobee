@@ -1,16 +1,22 @@
 package com.samjo.app.project.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
+
+
 @Controller
 public class TaskController {
 	
@@ -48,6 +54,37 @@ public class TaskController {
 			}
 			return uri;
 		}
+		
+		// 상시 단건
+		@GetMapping("reguInfo")
+		public String reguInfo(ProjectVO projectVO, Model model) {
+			ProjectVO findVO = projectService.coopInfo(projectVO);
+			model.addAttribute("coopCo", findVO);
+			return "project/regu/list";
+		}
+		
+		// 상시 수정
+		@PostMapping("reguUpdate")
+		public String reguUpdateForm(@RequestParam String reguId, Model model) {
+			ProjectVO projectVO = new ProjectVO();
+			projectVO.setReguId(reguId);
+			
+			ProjectVO findVO = projectService.reguInfo(projectVO);
+			model.addAttribute("reguInfo", findVO);
+			return "project/regu/list";
+		}
+		/*@ResponseBody
+		public Map<String, Object> reguUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
+			return projectService.reguUpdate(projectVO);
+		}*/
+		
+		// 상시 삭제 
+		@GetMapping("reguDelete")
+		public String reguDelete(ProjectVO projectVO) {
+			projectService.reguDelete(projectVO);
+		return "redirect:reguAllList";
+		}
+		
 	
 		
 		// 협력업체 전체 조회
@@ -85,21 +122,41 @@ public class TaskController {
 		}
 		
 		// 협력업체 수정
+		@PostMapping("coopUpdate")
+		public String coopUpdateForm(@RequestParam Integer coopCoNo, Model model) {
+			ProjectVO projectVO = new ProjectVO();
+			projectVO.setCoopCoNo(coopCoNo);
+			
+			ProjectVO findVO = projectService.coopInfo(projectVO);
+			model.addAttribute("coopInfo", findVO);
+			return "project/coopCo/list";
+		}
 		
-
+		@ResponseBody
+		public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
+			return projectService.coopUpdate(projectVO);
+		}
+		
 		// 협력업체 삭제
 		@GetMapping("coopDelete")
 		public String coopDelete(ProjectVO projectVO) {
 			projectService.coopDelete(projectVO);
-			return "redirect:coopAllList";
+		return "redirect:coopAllList";
 		}
 		
-		
-		
-		
-		
-		
-		
+		/*public String coopDelete(ProjectVO projectVO, Model model) {
+		    Map<String, Object> deletionResult = projectService.coopDelete(projectVO);
+		    if (deletionResult.containsKey("coopCoNo")) {
+		        Long deletedCoopCoNo = (Long) deletionResult.get("coopCoNo");
+		        // 삭제 성공한 경우에 대한 처리 (예: 메시지 표시)
+		        model.addAttribute("deletedCoopCoNo", deletedCoopCoNo);
+		        model.addAttribute("message", "협력업체 삭제에 성공했습니다.");
+		    } else {
+		        // 삭제 실패한 경우에 대한 처리 (예: 메시지 표시)
+		        model.addAttribute("message", "협력업체 삭제에 실패했습니다.");
+		    }
+		    return "redirect:coopAllList";
+		}*/
 		
 		
 		

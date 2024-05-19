@@ -14,8 +14,9 @@ public interface ProjectService {
 	// 프로젝트 등록
 	public int prjtInsert(ProjectVO projectVO);
 	// 프로젝트 수정
-	//public int prjtupdate(ProjectVO projectVO);
+	public Map<String, Object> prjtUpdate(ProjectVO projectVO);
 	// 프로젝트 삭제
+	public Map<String, Object> prjtDelete(ProjectVO projectVO);
 	
 	// 프로젝트 하위 - 프로젝트업무 //
 	// 프로젝트 업무 조회 
@@ -25,9 +26,9 @@ public interface ProjectService {
 	// 프로젝트 업무 등록
 	public int taskInsert(ProjectVO projectVO);
 	// 프로젝트 업무 수정
-	
+	public Map<String, Object> taskUpdate(ProjectVO projectVO);
 	// 프로젝트 업무 삭제
-	
+	public Map<String, Object> taskDelete(ProjectVO projectVO);
 	
 	
 	// 상시(주기적)업무 등록
@@ -35,11 +36,11 @@ public interface ProjectService {
 	// 상시(주기적)업무 조회
 	public List<ProjectVO> reguAllList();
 	// 상시(주기적)업무 단건 조회
-
+	public ProjectVO reguInfo(ProjectVO projectVO);
 	// 상시(주기적)업무 수정
-	
+	public Map<String, Object> reguUpdate(ProjectVO projectVO);
 	// 상시(주기적)업무 삭제
-	
+	public Map<String, Object> reguDelete(ProjectVO projectVO);
 	
 	
 	// 협력업체 조회
@@ -57,4 +58,6 @@ public interface ProjectService {
 	// 효주 - 업무공통 간략조회.
 	public List<ProjectVO> myCustTasks(String custNo);
 	// 효주 끝.
+	
+	
 }

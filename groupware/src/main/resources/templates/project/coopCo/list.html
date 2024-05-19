@@ -9,16 +9,13 @@
 		<div class="container">
 			<br>
 			<h4>협력업체 조회</h4>
-			<br> 
-			<select>
+			<br> <select>
 				<option value="업체명">업체명</option>
 				<option value="담당자">담당자</option>
 				<option value="내용">내용</option>
-			</select> 
-			<input type="text">
+			</select> <input type="text">
 			<button type="button" class="btn btn-primary">검색</button>
-			<br> 
-			<select>
+			<br> <select>
 				<option value="업체명순">업체명순</option>
 				<option value="담당자순">담당자순</option>
 				<option value="내용순">내용순</option>
@@ -35,7 +32,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal" data-bs-target="#detailModal" data-coop-co-no="${coop.coopCoNo}">
+					<tr th:each="coop : ${coopCo}" data-bs-toggle="modal"
+						data-bs-target="#detailModal"
+						th:data-coop-co-no="${coop.coopCoNo}" th:data-co-name="${coop.coName}" th:data-pic="${coop.pic}"
+						th:data-co-tel="${coop.coTel}" th:data-cntn="${coop.cntn}" th:data-cust-addr="${coop.custAddr}" >
 						<td class="tdHide">[[ ${coop.coopCoNo}]]</td>
 						<td>[[ ${coop.coName}]]</td>
 						<td>[[ ${coop.pic}]]</td>
@@ -46,27 +46,40 @@
 				</tbody>
 			</table>
 		</div>
-		
-    		<div  style=" text-align: end;">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
-    		</div>
-		
-		
+
+		<div style="text-align: end;">
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+				data-bs-target="#coopInModal">등록</button>
+		</div>
+
+
 		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 행클릭 상세화면 모달 -->
-		<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+		<div class="modal fade" id="detailModal" tabindex="-1"
+			aria-labelledby="detailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class=" modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="detailModalLabel">협력업체 상세</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<p> 업체명: <span id="coName"></span></p>
-						<p> 연락처: <span id="coTel"></span></p>
-						<p> 담당자: <span id="pic"></span></p>
-						<p> 주소: <span id="custAddr"></span></p>
-						<p> 내용: <span id="cntn"></span></p>
+						<p>
+							업체명: <span id="coName"></span>
+						</p>
+						<p>
+							연락처: <span id="coTel"></span>
+						</p>
+						<p>
+							담당자: <span id="pic"></span>
+						</p>
+						<p>
+							주소: <span id="custAddr"></span>
+						</p>
+						<p>
+							내용: <span id="cntn"></span>
+						</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" id="editBtn">수정</button>
@@ -75,7 +88,42 @@
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
+
+		<!-- 수정 모달 -->
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+			aria-labelledby="editModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="detailModalLabel">협력업체 수정</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p>
+							업체명: <input type="text" id="editCoName" name="coName">
+						</p>
+						<p>
+							연락처: <input type="text" id="editCoTel" name="coTel">
+						</p>
+						<p>
+							담당자: <input type="text" id="editPic" name="pic">
+						</p>
+						<p>
+							주소: <input type="text" id="editCustAddr" name="custAddr">
+						</p>
+						<p>
+							내용: <input type="text" id="editCntn" name="cntn">
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="editModalBtn">저장</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<!-- 등록모달 -->
 		<div class="modal fade" id="coopInModal" tabindex="-1"
@@ -91,8 +139,8 @@
 						<form id="coopForm">
 							<div class="mb-3">
 								<label for="coName" class="form-label">업체명</label> <input
-									type="text" class="form-control" id="coName"
-									name="coName" required>
+									type="text" class="form-control" id="coName" name="coName"
+									required>
 							</div>
 							<div class="mb-3">
 								<label for="pic" class="form-label">담당자</label> <input
@@ -100,11 +148,13 @@
 							</div>
 							<div class="mb-3">
 								<label for="coTel" class="form-label">연락처</label> <input
-									type="text" class="form-control" id="coTel" name="coTel" required>
+									type="text" class="form-control" id="coTel" name="coTel"
+									required>
 							</div>
 							<div class="mb-3">
 								<label for="custAddr" class="form-label">주소</label>
-								<textarea class="form-control" id="custAddr" name="custAddr" required></textarea>
+								<textarea class="form-control" id="custAddr" name="custAddr"
+									required></textarea>
 							</div>
 							<div class="mb-3">
 								<label for="cntn" class="form-label">내용</label>
@@ -113,7 +163,7 @@
 						</form>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary" id="modalInsertBtn">등록</button>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+							<button type="button" class="btn btn-secondary"data-bs-dismiss="modal">취소</button>
 						</div>
 					</div>
 				</div>
@@ -122,15 +172,34 @@
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
+	
+		// 상세화면모달
 		$(function() {
-			
-			// 주소는 리스트에서 안보이게.
+			$('tr').on('click', function() {
+				// 클릭한 행의 데이터 
+				let coName = $(this).find('td:eq(1)').text();
+				let pic = $(this).find('td:eq(2)').text();
+				let coTel = $(this).find('td:eq(3)').text();
+				let cntn = $(this).find('td:eq(4)').text();
+				let custAddr = $(this).find('td:eq(5)').text();
+				// 모달 내부 데이터
+				$('#detailModal').find('#coName').text(coName);
+				$('#detailModal').find('#pic').text(pic);
+				$('#detailModal').find('#coTel').text(coTel);
+				$('#detailModal').find('#custAddr').text(custAddr);
+				$('#detailModal').find('#cntn').text(cntn);
+				// 모달 표시
+				$('#detailModal').modal('show');
+			});
+		});
+		
+			$(function() {
+				// 주소는 리스트에서 안보이게.
 				$('.tdHide').hide();
-				
-			
+
 				// 등록모달
 				$('#modalInsertBtn').on('click', function() {
-					let formData = $('#coopForm').serialize(); 
+					let formData = $('#coopForm').serialize();
 					console.log(formData);
 					$.ajax({
 						type : 'POST',
@@ -144,73 +213,139 @@
 							alert('협력업체 등록에 실패했습니다.');
 						}
 					});
-					
-				});
-				
-			});
-		
 
-		
-			// 상세화면모달
+				});
+
+			});
+
+			
+			// 수정폼모달
 			$(function() {
-			    // 행 클릭이벤트
-			    $('tr').on('click', function() {
-			        // 클릭한 행의 데이터 
-			        let coName = $(this).find('td:eq(1)').text(); 
-			        let pic = $(this).find('td:eq(2)').text();
-			        let coTel = $(this).find('td:eq(3)').text();
-			        let cntn = $(this).find('td:eq(4)').text();
-			        let custAddr = $(this).find('td:eq(5)').text();
-			        // 모달 내부에 데이터
-			        $('#detailModal').find('#coName').text(coName);
-			        $('#detailModal').find('#pic').text(pic);
-			        $('#detailModal').find('#coTel').text(coTel);
-			        $('#detailModal').find('#custAddr').text(custAddr);
-			        $('#detailModal').find('#cntn').text(cntn);
-			        // 모달 표시
-			        $('#detailModal').modal('show');
-			    });
+				$('#editBtn').click(function() {
+					
+					let detailModal = $('#detailModal');
+					$('#editCoName').val(detailModal.find('#coName').text());
+					$('#editCoTel').val(detailModal.find('#coTel').text());
+					$('#editPic').val(detailModal.find('#pic').text());
+					$('#editCustAddr').val(detailModal.find('#custAddr').text());
+					$('#editCntn').val(detailModal.find('#cntn').text());
+
+					detailModal.modal('hide');
+					$('#editModal').modal('show');
+				}); 
 			});
 			
-
-			// 상세모달에 수정, 삭제
 			$(function() {
-				$('#editBtn').on('click', function() {
-					
-					alert('수정되었습니다.');
-					location.reload();
+				let selectedRow;  
+			 // 수정 폼에서 저장 버튼 
+			    $('.editModalBtn').click(function() {
+			        selectedRow = $(this).closest('tr');
+			        let coName = selectedRow.find('td:eq(0)').text();
+			        let coTel = selectedRow.find('td:eq(1)').text();
+			        let pic = selectedRow.find('td:eq(2)').text();
+			        let custAddr = selectedRow.find('td:eq(3)').text();
+			        let cntn = selectedRow.find('td:eq(4)').text();
+
+			        // 모달에 정보 채우기
+			        $('#editCoName').val(coName);
+			        $('#editCoTel').val(coTel);
+			        $('#editPic').val(pic);
+			        $('#editCustAddr').val(custAddr);
+			        $('#editCntn').val(cntn);
+
+			        // 모달 열기
+			        $('#editModal').modal('show');
+			    });
+			 
+	
+				// 저장 버튼 클릭 시 수정된 정보 전송
+				$('#editModalBtn').click(function() {
+				
+					let editedData = {
+						coName: $('#editCoName').val(),
+						coTel: $('#editCoTel').val(),
+						pic: $('#editPic').val(),
+						custAddr: $('#editCustAddr').val(),
+						cntn: $('#editCntn').val()
+					};
+			        
+			        $.ajax({
+			            url: 'coopUpdate', 
+			            type: 'POST',
+			            data: JSON.stringify(editedData),
+			            contentType: 'application/json',
+			            success: function(response) {
+			               
+			                //업데이트
+			                selectedRow.find('td:eq(0)').text(editedData.coName);
+				            selectedRow.find('td:eq(1)').text(editedData.coTel);
+				            selectedRow.find('td:eq(2)').text(editedData.pic);
+				            selectedRow.find('td:eq(3)').text(editedData.custAddr);
+				            selectedRow.find('td:eq(4)').text(editedData.cntn);
+
+			                //모달 닫기
+			                $('#editModal').modal('hide');
+			            },
+			            error: function(xhr, status, error) {
+			                console.error("수정에러", error);
+			                console.log(xhr);
+			            }
+			        });
+				 });
+			});
+			    
+
+			/* // 삭제 버튼
+			$('#deleteBtn').on('click', function() {
+			    let coopCoNo = $(this).data('coop-co-no');
+			    console.log(coopCoNo);
+
+			    $.ajax({
+			        type: 'GET',
+			        url: '/coopDelete',
+			        data: { coopCoNo: coopCoNo },
+			        dataType: 'json',
+			        success: function(result) {
+			            alert('협력업체 삭제에 성공했습니다.');
+			            location.reload();
+			        },
+			        error: function(err) {
+			            alert('협력업체 삭제에 실패했습니다.');
+			            location.reload();
+			        }
+			    });
+			}); */
+
+			$(function() {
+				$('#detailModal').on('show.bs.modal', function(event) {
+					let button = $(event.relatedTarget); // 클릭된 버튼
+					let coopCoNo = button.data('coop-co-no'); // data-coop-co-no 값 가져오기
+
+					// 모달 내 삭제 버튼에 coopCoNo 값을 설정
+					$('#deleteBtn').data('coop-co-no', coopCoNo);
 				});
-				
-				let cNo = $(this).data('data-coop-co-no');
-				console.log(cNo);
-				
-				// 삭제 버튼
+
+				// 삭제 버튼 클릭 이벤트
 				$('#deleteBtn').on('click', function() {
-					
-					let coopCoNo = $(this).data('coop-co-no');
-					console.log(coopCoNo);
-					
+				 	let coopCoNo = $(this).data('coop-co-no');
+					console.log(coopCoNo); // 값을 제대로 가져왔는지 확인
+
 					$.ajax({
-						type  : 'GET',
-						url : '/coopDelete',
-						data : {coopCoNo: coopCoNo},
-						dataType: 'json',
-					
-			         
+						type : 'GET',
+						url : '/coopDelete?coopCoNo=' + coopCoNo,
+						dataType : 'json',
 						success : function(result) {
 							alert('협력업체 삭제에 성공했습니다.');
 							location.reload();
 						},
-						error : function(err) {
+						error : function(error) {
 							alert('협력업체 삭제에 실패했습니다.');
 							location.reload();
 						}
 					});
 				});
 			});
-			
-			
 		</script>
 	</th:block>
 </html>
-				
+

@@ -1,12 +1,16 @@
 package com.samjo.app.project.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
@@ -59,6 +63,28 @@ public class ProjectController {
 		return uri;
 	}
 	
+	//  프로젝트 수정
+	@PostMapping("prjtUpdate")
+	public String prjtUpdateForm(@RequestParam String prjtId, Model model) {
+		ProjectVO projectVO = new ProjectVO();
+		projectVO.setPrjtId(prjtId);
+		
+		ProjectVO findVO = projectService.coopInfo(projectVO);
+		model.addAttribute("prjtInfo", findVO);
+		return "project/prjt/list";
+	}
+	
+	@ResponseBody
+	public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
+		return projectService.coopUpdate(projectVO);
+	}
+	
+	// 프로젝트 삭제  
+	@GetMapping("prjtDelete")
+	public String prjtDelete(ProjectVO projectVO) {
+		projectService.prjtDelete(projectVO);
+	return "redirect:prjtAllList";
+	}
 	
 	
 	// 프로젝트(하위) 업무 전체조회
@@ -88,7 +114,7 @@ public class ProjectController {
 				return uri;
 			}
 			
-	// 프로젝트프로젝트(하위) 업무 단건
+	// 프로젝트(하위) 업무 단건
 	@GetMapping("taskInfo")
 	public String taskInfo(ProjectVO projectVO, Model model) {
 				ProjectVO findVO = projectService.taskInfo(projectVO);
@@ -96,13 +122,27 @@ public class ProjectController {
 				return "project/task/info";
 			}
 			
-			
-
-	// 프로젝트 업무조회
-	// 프로젝트 업무 수정
-	//
-
+	// 프로젝트(하위) 업무 수정  
+	@PostMapping("taskUpdate")
+	public String taskUpdateForm(@RequestParam Integer taskNo, Model model) {
+		ProjectVO projectVO = new ProjectVO();
+		projectVO.setTaskNo(taskNo);
+		
+		ProjectVO findVO = projectService.taskInfo(projectVO);
+		model.addAttribute("taskInfo", findVO);
+		return "project/task/list";
+	}
+	@ResponseBody
+	public Map<String, Object> taskUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
+		return projectService.taskUpdate(projectVO);
+	}
 	
+	// 프로젝트(하위) 업무 삭제  
+	@GetMapping("taskDelete")
+	public String empDelete(ProjectVO projectVO) {
+		projectService.taskDelete(projectVO);
+		return "redirect:taskAllList";
+	}
 	
 
 }
