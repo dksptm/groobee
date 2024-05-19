@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}"
-	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
@@ -11,6 +10,18 @@
 				<div class="card-body">
 					<!-- 템플릿 목록 출력 -->
 					<p th:text="${session.loginType}"></p>
+
+					<!-- 특정권한 보유 여부 확인.(권한명이 아닌 권한값체크) -->
+					<th:block sec:authorize="hasAuthority('1D1d')">
+						<!-- 태그 사용 -->
+						<p sec:authentication="name" />
+						<p sec:authentication="principal.empId" />
+							
+						<!-- th:if -->
+						<p th:if="${#authentication.principal.empStat} == '1D1d'">if Test</p>
+					</th:block>
+					
+					<!-- 태그내 사용 -->
 					<p>아이디 : [[${#authentication.principal.empId}]]</p>
 					<p>이름 : [[${#authentication.name}]]</p>
 					<p>고객번호 : [[${#authentication.principal.custNo}]]</p>
@@ -19,6 +30,7 @@
 					<p>직급ID : [[${#authentication.principal.jobNo}]]</p>
 					<p>재직상태 : [[${#authentication.principal.empStat}]]</p>
 					<p>권한ID : [[${#authentication.principal.permId}]]</p>
+					
 					<!-- 템플릿 등록 버튼 -->
 					<div class="d-flex align-items-end flex-column mb-3">
 						<button type="button"

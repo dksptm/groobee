@@ -22,6 +22,7 @@ public class SpringSecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests()
+				.antMatchers("/assets/**", "/js/**").permitAll() // 정적 리소스 접근 허용
 //								 인가경로			인가대상
 				.antMatchers("/", "/introduce").permitAll()
 //				.antMatchers("/user/**").hasRole("USER") //ROLE_USER
@@ -32,11 +33,14 @@ public class SpringSecurityConfig {
 				/*
 				 * permitAll -> 모든대상허용, hasRole -> 특정롤요구, hasAnyrole -> 복수의 특정롤요구(LIKE),
 				 */
-				.and().formLogin().defaultSuccessUrl("/").and().logout().logoutSuccessUrl("/");
+				.and()
+					.formLogin()
+					.defaultSuccessUrl("/")
+				.and()
+					.logout()
+					.logoutSuccessUrl("/");
 
-//			http.formLogin().defaultSuccessUrl("/all");
-//			http.logout();
-		http.csrf();// .disable();
+		http.csrf();
 
 		return http.build();
 	}
