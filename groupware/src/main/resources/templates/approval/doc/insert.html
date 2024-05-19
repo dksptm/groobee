@@ -152,8 +152,9 @@
 					
 					<div class="col-md-12">
 						
-						
+						<div id="textArea" style="hight:500px;">
 						<textarea name="cntn" id="cntn"></textarea>
+						</div>
 						
 						<!-- PTO fragment -->
 						<div id="tempPTO" style="display:none;">
@@ -186,6 +187,8 @@
 		
 		// 템플릿 선택.
 		$('#tempId').on('change', tempChange);
+		
+		// 템플릿 중 휴가원 선택.
 		$('#ptoType').on('change',function(e){
 			let type = $('#ptoType option:selected').val();
 			console.log(type);
@@ -237,23 +240,25 @@
 			e.preventDefault();
 			const submitDoc = this;
 			
+			let temp = document.querySelector('#tempId').value;
+			if(temp == "TP002") {
+				ptoSubmit();
+			}
+
 			// 필수입력 확인.
 			if(!docCheck()) return;
 			
 			// 
 			if(confirm('저장할까요?')) {
 				try{
-					// 지출결의서, 휴가원은 여기에...
-					ptoSubmit();
-					
 					// 나머지 템플릿은 알아서 저장됨
-					
 					// 파일저장.
 					let dno = $('input[name="docNo"]').val();
 					let eid = $('input[name="draft"]').val();
 					let fileInput = document.querySelector('input#docFiles');
 					let fileList = fileInput.files;
 					let okFile;
+					console.log(fileList.length);
 					if(fileList.length != 0) {
 				 		okFile = await saveFile(fileList, dno, eid); // js파일.
 				 		console.log('첨부파일완료');

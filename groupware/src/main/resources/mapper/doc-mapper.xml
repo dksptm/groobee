@@ -30,14 +30,6 @@
 		</collection>
 	</resultMap>
 
-	<!-- 테스트 -->
-	<insert id="testInsert" parameterType="TempVO">
-		INSERT INTO test(content)
-		VALUES(#{content})
-	
-	</insert>
-	
-
 	<!-- 전체목록 : 나중에 cust id 및 열람가능 문서로 제한해야함. -->
 	<select id="selectDocAll" parameterType="searchVO" resultType="DocVO">
 		SELECT rn
@@ -199,12 +191,13 @@
 	<!-- 문서수정 -->
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc
-		SET draft = draft
-		    ,title = #{title}
+		SET title = #{title}
 		    <if test="cntn != null and !cntn.equals('')">
 		    ,cntn = #{cntn}
 		    </if>
 		    ,final_line = #{finalLine}
+		    ,draft_dt = sysdate
+		    ,temp_id = #{tempId}
 		WHERE doc_no = #{docNo}
 	</update>
 	
@@ -223,6 +216,11 @@
 				,#{cno}
 			)
 	</insert>
+	
+	<delete id="deleteTaskDoc">
+		DELETE task_doc
+		WHERE doc_no = #{dno}
+	</delete>
 	
 	<!-- 한 문서의 업무 가져오기 -->
 	<select id="selectDocTasks" resultType="ProjectVO">

@@ -77,7 +77,7 @@
 			                		<th>문서번호</th>
 			                			<td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
 			                		<th>부서</th>
-			                			<td>[[ ${doc.deptName} ]]</td>
+			                			<td th:attr="data-dept=${doc.deptId}">[[ ${doc.deptName} ]]</td>
 			                		<th th:text="${doc.draftStat == '4A1a' ? '작성일자' : '상신일자'}"></th>
 			                			<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 			                		<th>결재상태</th>
@@ -180,8 +180,10 @@
 				<div class="mt-3">
 					<div class="col-md-12">
 						 
+						<div id="textArea">
 						<!-- cntn textarea -->
 						<textarea id="cntn" th:text="${doc.cntn}"></textarea>
+						</div>
 						
 						<!-- PTO fragment -->
 						<div id="tempPTO" style="display:none;">
@@ -227,6 +229,7 @@
 			if(temp == 'TP001') {
 				$('div#tempEXT').show();
 			} else if(temp == 'TP002') {
+				$('#textArea').hide();
 				$('div#tempPTO').show();
 				getPtoInfo(dno);
 			}
@@ -392,13 +395,28 @@
 		    editor.fire('readOnlyModeEnabled', { featureId: 'my-feature-id' });
 		}
 		
-		//
+		// 휴가원 정보가져오기.
 		function getPtoInfo(dno) {
+			$('div#pto').find('input, textarea, select, option').prop('disabled',true);
+			$('td[data-td="name"]').text($('td[data-draft]').text());
+			$('td[data-td="dept"]').text($('td[data-dept]').text());
+			$('td[data-td="dno"]').text($('td[data-dno]').text());
+			
 			$.ajax({
 	            url: '/pto/' + dno, // 엔드포인트 URL
 	            type: 'GET',
 	            success: function(response) {
-	                console.log(response); 
+	                console.log(response);
+	                
+	                $('#ptoType').val(response.ptoType).prop("selected",true);
+                	$('#sdt').val(response.ptoStartDt.split(" ")[0]);
+                	$('#stime').val(response.ptoStartDt.split(" ")[1]);
+                	$('#edt').val(response.ptoEndDt.split(" ")[0]);
+                	$('#etime').val(response.ptoEndDt.split(" ")[1]);
+                	$('textarea[name="pto.reason"]').val(response.reason);
+	                for(let key in response){
+	                	console.log(key,'->',response[key]);
+	                }
 	            },
 	            error: function(xhr, status, error) {
 	                console.error('Error:', error);

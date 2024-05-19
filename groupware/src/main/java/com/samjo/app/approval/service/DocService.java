@@ -8,8 +8,6 @@ import com.samjo.app.project.service.ProjectVO;
 
 public interface DocService {
 	
-	// 테스트
-	public int testInsert(TempVO temp);
 	// 파일등록
 	public int fileInsert(DocFileVO fileVO);
 	

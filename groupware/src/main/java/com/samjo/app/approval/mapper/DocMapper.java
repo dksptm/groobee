@@ -14,8 +14,6 @@ public interface DocMapper {
 	//테스트
 	public int testInsert(TempVO temp);
 	
-	// 문서전체
-	public List<DocVO> selectDocAll(SearchVO searchVO);
 	// 문서등록
 	public int insertDoc(DocVO docVO);
 	// 문서등록 - 문서번호 조회.
@@ -26,10 +24,15 @@ public interface DocMapper {
 	
 	// 단건조회
 	public DocVO selectDoc(DocVO docVO);
+	// 한 문서의 업무 조회
+	public List<ProjectVO> selectDocTasks(@Param("dno")Integer docNo);
 	
+	// 문서전체
+	public List<DocVO> selectDocAll(SearchVO searchVO);
 	// 문서전체-페이징
 	public int count();
-	
+	// 한 직원이 작성한 문서.
+	public List<DocVO> selectEmpDocs(@Param("eid")String empId);
 	// 내가 현재 결재해야할 문서리스트.
 	public List<DocVO> selectMyApr(@Param("eid")String empId);
 
@@ -41,10 +44,9 @@ public interface DocMapper {
 	// 업무와 연결(문서-업무 테이블)
 	public int insertTaskDoc(@Param("dno")Integer docNo, 
 			@Param("tno")Integer taskNo, @Param("cno")String custNo);
-	// 한 문서의 업무 조회
-	public List<ProjectVO> selectDocTasks(@Param("dno")Integer docNo);
+	// 업무-문서 삭제.
+	public int deleteTaskDoc(@Param("dno")Integer docNo);
 	
-	// 한 직원이 작성한 문서.
-	public List<DocVO> selectEmpDocs(@Param("eid")String empId);
+	
 	
 }	

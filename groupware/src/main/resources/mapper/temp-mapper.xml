@@ -3,7 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.TempMapper">
-
+	
+	<!-- 템플릿 목록가져오기. -->
 	<select id="selectCustTemps" resultType="TempVO">
 		SELECT temp_no
 		       ,temp_name
@@ -12,6 +13,7 @@
 		ORDER BY temp_no
 	</select>
 	
+	<!-- "휴가원" 등록하기. -->
 	<insert id="insertPto" parameterType="TempVO">
 		INSERT INTO doc_pto
 		        (
@@ -32,6 +34,21 @@
 	
 	</insert>
 	
+	<update id="updatePto" parameterType="TempVO">
+		UPDATE doc_pto
+		SET pto_type = #{ptoType}
+		    ,pto_start_dt = TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI')
+		    ,pto_end_dt = TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI')
+		    ,reason = #{reason}
+		WHERE doc_no = #{docNo}
+	</update>
+	
+	<delete id="deletePto">
+		DELETE doc_pto
+		WHERE doc_no = #{dno}
+	</delete>
+	
+	<!-- "휴가원" 정보가져오기. -->
 	<select id="selectPto" resultType="TempVO">
 		SELECT doc_no
 		       ,pto_type
@@ -41,5 +58,6 @@
 		FROM doc_pto
 		WHERE doc_no = #{dno}	
 	</select>
+	
 
 </mapper>

@@ -33,10 +33,9 @@ public class DocServiceImpl implements DocService {
 	// 문서작성.
 	@Override
 	public int docInfoInsert(DocVO docVO) {
-		
+		System.out.println("docVO ===> " + docVO);
 		// 문서테이블 등록.
 		int result = docMapper.insertDoc(docVO);
-		
 		// 문서등록 완료 시.
 		if(result == 1) {
 			// 1.결재자 등록.
@@ -46,7 +45,7 @@ public class DocServiceImpl implements DocService {
 				aprMapper.insertApr(apr);
 			});
 			// 2.휴가원 등록.
-			  if(docVO.getPto() != null) {
+			  if(docVO.getPto().getTempNo() != null) {
 				  docVO.getPto().setDocNo(docVO.getDocNo());
 				  int ret = tempMapper.insertPto(docVO.getPto());
 				  System.out.println("ret==>"+ret);
@@ -80,7 +79,14 @@ public class DocServiceImpl implements DocService {
 			return -1; 
 		}
 	}
-
+	
+	// 문서작성 - 미리 번호가져오기.
+	@Override
+	public DocVO getDocNo() {
+		return docMapper.getDocNo();
+	}
+		
+		
 	// 문서단건조회.
 	@Override
 	public DocVO docInfo(DocVO docVO) {
@@ -88,7 +94,7 @@ public class DocServiceImpl implements DocService {
 		docVO.setAprs(aprMapper.selectDocApr(docVO.getDocNo()));
 		//docVO.setRefs(aprMapper.selectDocRefs(docVO.getDocNo()));
 		docVO.setFiles(docMapper.selectDocFile(docVO.getDocNo()));
-		System.out.println(docVO.getRefs());
+		//System.out.println(docVO.getRefs());
 		return docVO;
 	}
 	
@@ -107,7 +113,53 @@ public class DocServiceImpl implements DocService {
 	// 문서수정.
 	@Override
 	public int docInfoUpdate(DocVO docVO) {
-		return docMapper.updateDoc(docVO);
+		// 문서테이블 수정.
+		int result = docMapper.updateDoc(docVO);
+		System.out.println("결재자들--" + docVO.getAprs());
+		System.out.println("마지막라인--"+docVO.getFinalLine());
+		// 문서수정 완료 시.
+		if(result == 1) {
+			// 1.결재자 삭제 후 재등록
+			docVO.getAprs().forEach(apr -> {
+				apr.setDocNo(docVO.getDocNo());
+				apr.setCustNo(docVO.getCustNo());
+				aprMapper.deleteApr(docVO.getDocNo());
+				aprMapper.insertApr(apr);
+			});
+			// 2.휴가원 수정 또는 삭제.
+			if(docVO.getPto().getTempNo() != null) {
+				int ret = tempMapper.updatePto(docVO.getPto());
+				System.out.println("update-ret==>"+ret);
+			} else {
+				int ret = tempMapper.deletePto(docVO.getDocNo());
+				System.out.println("delete-ret==>"+ret);
+			}
+			// 2.첨부파일 정보등록.
+			/*
+			 * if(docVO.getFiles() != null) { docVO.getFiles().forEach(file -> {
+			 * file.setDocNo(docVO.getDocNo()); file.setUplEmp(docVO.getDeptId());
+			 * docMapper.insertDocFile(file); }); }
+			 */
+			// 3.참조자 기존참조자 삭제 후 재등록.
+			if(docVO.getRefs() != null) {
+				aprMapper.deleteRef(docVO.getDocNo());
+				docVO.getRefs().forEach(ref -> {
+					aprMapper.insertRef(docVO.getDocNo(), ref, docVO.getCustNo());
+				});				
+			}
+			// 4.기존 연결업무 삭제 후 재등록.
+			if(docVO.getTasks() != null) {
+				docMapper.deleteTaskDoc(docVO.getDocNo());
+				docVO.getTasks().forEach(task -> {
+					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
+				});				
+			}
+			System.out.println("docVO ===> " + docVO);
+			// 5.문서번호 리턴.
+			return docVO.getDocNo();
+		} else {
+			return -1;
+		}
 	}
 
 	// 문서전체조회.
@@ -122,11 +174,7 @@ public class DocServiceImpl implements DocService {
 		return docMapper.count();
 	}
 
-	// 문서작성 - 미리 번호가져오기.
-	@Override
-	public DocVO getDocNo() {
-		return docMapper.getDocNo();
-	}
+	
 
 	// 문서작성 - 템플릿 전체조회.
 	@Override
@@ -139,17 +187,14 @@ public class DocServiceImpl implements DocService {
 	public List<DocVO> empDocList(String empId) {
 		return docMapper.selectEmpDocs(empId);
 	}
-
+	
+	// 문서조회 - 한 emp가 결재해야할 문서목록.
 	@Override
 	public List<DocVO> getMyAprList(String empId) {
 		return docMapper.selectMyApr(empId);
 	}
-
-	@Override
-	public int testInsert(TempVO temp) {
-		return docMapper.testInsert(temp);
-	}
-
+	
+	// 문서등록 전 파일등록.
 	@Override
 	public int fileInsert(DocFileVO fileVO) {
 		return docMapper.insertDocFile(fileVO);

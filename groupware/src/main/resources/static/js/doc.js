@@ -14,7 +14,9 @@ const tempChange = function() {
 	$('.cntn-slide').slideUp();
 	// 휴가원,지출결의 숨기기
 	$('#tempPTO').hide();
+	$('div#pto').find('input, textarea, select, option').val('');
 	$('#tempEXT').hide();
+	$('#textArea').hide();
 	
 	// 옵션값 확인하기.
 	let opt = $('#tempId option:selected');
@@ -45,6 +47,7 @@ const tempChange = function() {
 	}
 	
 	// 옵션값 그 외.
+	$('#textArea').show();
 	if (!editor) {
         console.log('에디터 없음');
         ClassicEditor
@@ -58,7 +61,7 @@ const tempChange = function() {
                 console.error(error);
             });
     } else {
-    	editor.setData('')
+    	editor.setData('');
         getHtml();
         console.log('에디터 이미 있음');
     }
@@ -168,16 +171,23 @@ function docCheck(e) {
 		$('#tempId').focus();
 		return false;
 	}
+	if($('#tempId').val() == 'TP002') {
+		if($('#ptoType').val() == '' || $('#sdt').val() == '' || $('#edt').val() ==''){
+			alert('휴가원은 휴가종류, 시작/종료날짜\n모두 선택해야 합니다.');
+			return false;
+		}
+	}
 	return true;
 }
 
 /* 휴가원 */
 function ptoForm() {
-	$('td[data-td="now"]').text(getNow());
+	$('#sdt').val(getNow());
+	$('#edt').val(getNow());
 	$('td[data-td="name"]').text($('input[name="draftName"]').val());
 	$('td[data-td="dept"]').text($('input[name="deptId"]').val());
 	$('td[data-td="dno"]').text($('input[name="docNo"]').val());
-	
+		
 	console.log('휴가원세팅끝');
 	
 }

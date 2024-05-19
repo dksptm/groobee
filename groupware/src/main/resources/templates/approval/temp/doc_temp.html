@@ -3,7 +3,7 @@
 
 <th:block th:fragment="TempPTO">		
 
-	<div id="pto" class="border border-3 w-95 py-5 mt-3" contentEditable="true">	
+	<div id="pto" class="border border-1 border-black w-95 py-5 mt-3 bg-white" contentEditable="true">	
 		<div class="container">
 		<div class="row section">
 			<div class="text-center" contenteditable="false">
@@ -14,10 +14,6 @@
 			<div class="col-6">
 				<table class="table table-bordered">
 					<tbody>
-						<tr>
-							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">작성일</td>
-							<td data-td="now"></td>
-						</tr>
 						<tr>
 							<td class="bg-light font-weight-bold text-center col-4" contenteditable="false">신청자</td>
 							<td data-td="name"></td>
@@ -45,7 +41,7 @@
 							<td class="bg-light font-weight-bold text-center col-">휴가종류</td>
 							<td colspan="2">
 								<select class="form-select border border-3" name="pto.ptoType" id="ptoType">
-									<option>휴가종류 선택</option>
+									<option value="no-data">휴가종류 선택</option>
 									<option value="4C1c">연차</option>
 									<option value="4C2c">오전반차</option>
 									<option value="4C3c">오후반차</option>
