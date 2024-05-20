@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.service.PageDTO;
@@ -76,17 +77,12 @@ public class EmailController {
 	}
 	
 	
-	// 내 경우, 여기에서 작성한 데이터를 1:1로 받는 형식이다.
-	@PostMapping("emailSend")
-	public String emailSend(EmailVO emailVO) {
-		int eId = emailService.emailInsert(emailVO);
-		String uri = null;
-		if(eId > -1) {
-			uri = "redirect:empInfo?employeeId=" + eId;
-		} else {
-			uri = "email/emailSend";
-		}
-	return uri;
+	@PostMapping("emailSend") // 0520 작업중
+	public String emailSend(@RequestParam EmailVO emailVO) {
+		EmailVO sendVO = new EmailVO();
+		sendVO.getSender();
+		emailService.emailInsert(sendVO);
+	return "redirect:email/email";
 	}
 	
 	// 보낸메일 전체조회

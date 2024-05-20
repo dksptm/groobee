@@ -11,17 +11,17 @@
     <th:block layout:fragment="Content">
         <div class="container mt-4">
             <h3 class="mb-4">메일 작성</h3>
-            <form name="insertForm" th:action="@{/emailInsert}" method="post" th:object="${EmailVO}" id="emailInsertForm">
+            <form name="insertForm" th:action="@{/emailSend}" method="post" th:object="${EmailVO}" id="emailInsertForm">
                 <div class="mb-3 row">
                     <label for="sender" class="col-sm-2 col-form-label">발신자</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" th:value="${empId}" name="sender" id="sender" readonly>
+                        <input type="text" th:value="${#authentication.principal.empId}" readonly>
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="recp" class="col-sm-2 col-form-label">수신자</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:value="${recp}" name="recp" id="recp">
+                        <input type="text" class="form-control" name="recp" id="recp">
                     </div>
                     <div class="col-sm-2">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#selectrecp">주소록</button>
@@ -30,7 +30,7 @@
                 <div class="mb-3 row">
                     <label for="refer" class="col-sm-2 col-form-label">참조자</label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" th:field="*{refer}" id="refer">
+                        <input type="text" class="form-control" name="refer" id="refer">
                     </div>
                     <div class="col-sm-2">
                         <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#selectrefer">주소록</button>
@@ -39,17 +39,23 @@
                 <div class="mb-3 row">
                     <label for="title" class="col-sm-2 col-form-label">제목</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" th:field="*{title}" id="title">
+                        <input type="text" class="form-control" name="title" id="title">
                     </div>
                 </div>
+                
+                <div class="p-0 mt-3">
+					<input type="file" name="emailFile" id="emailFile" multiple>
+				<div id="files"></div>
+				</div>
+                
                 <div class="mb-3 row">
                     <label for="cntn" class="col-sm-2 col-form-label">내용</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" th:field="*{cntn}" id="cntn" rows="10"></textarea>
+                        <textarea class="form-control" name="cntn" id="cntn" rows="10"></textarea>
                     </div>
                 </div>
                 <div class="text-center">
-                    <button type="submit" id="prjtInsertBtn" class="btn btn-primary">발송</button>
+                    <button type="submit" id="emailInsertBtn" class="btn btn-primary">발송</button>
                     <button type="button" id="cancel" class="btn btn-secondary">취소</button>
                 </div>
             </form>
@@ -93,28 +99,25 @@
         </div>
     </th:block>
 <script>
-$('#emailInsertForm').submit(function(e) {
-	e.preventDefault();
-	// 폼 요소를 변수 submitMail에 저장 
-	const submitMail = this;
-	if(!emailCheck()) return;
-	
-	if(confirm('발송하시겠습니까?')) {
-		try {	
-			let cntn
-			this.submit();	
-		}
-	}
-})
+document.querySelector('form[name="insertForm"]')
+.addEventListener('submit', emailSend);
 
-function emailCheck(e) {
-	if($('#title').val() == '') {
-		alert('제목은 필수입력값입니다.');
-		$('#title').focus();
-		return false;
-	}
-	return true;
+function emailSend(event){
+event.preventDefault();
+
+let recp = document.getElementById('recp';)
+let title = document.getElementById('title');
+if(recp.value == ''){
+	alert('수신자가 없습니다.');
+	recp.focus();
+return;
+} else if(title.value ==''){
+	alert('제목은 필수입니다')
 }
+alert('완료되었습니다.');
+insertForm.submit();
+}
+
 </script>
 
 </body>

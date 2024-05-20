@@ -20,19 +20,31 @@
         		AND    RECP = #{empId}) <!-- 이 조건이 여기 붙는게 맞나?.. -->
         WHERE a.rn > (#{page} - 1) * 5 <!-- 추후 로그인 구현되면 테스트 해 보기. -->
   	</select>
-
-  	<insert id="insertEmail" parameterType="EmailVO">
-  		<selectKey keyProperty="senEmailNo"
-  				   resultType="Integer"
-  				   order="BEFORE">
-  			SELECT NVL(MAX(sen_email_no),0) + 1
-  			FROM email	   
-  		</selectKey> 
-  		<!-- 화면에서 넘겨받은 EmailVO 객체 내부의 필드들을 두 테이블에 나눠 담는 쿼리 -->
-  		<!-- 프로시저 CALL 하는 쿼리 집어넣기( 0517 오후 고민 중..) -->
-  		
-  	</insert>
   	
+  	<!-- 
+  	<insert id="insertEmail" parameterType="EmailVO">
+
+  		<selectKey keyProperty="senEmailNo"
+  				   resultType="string"
+  				   order="BEFORE">
+  			SELECT 'sen' || seq_email_no.nextval AS senEmailNo FROM dual
+  		</selectKey>
+  		<selectKey keyProperty="chainMailNo"
+  				   resultType="string"
+  				   order="BEFORE">
+  		    SELECT 'cno' || seq_chain_no.nextval AS chainMailNo FROM dual  		
+  		</selectKey>
+  		<selectKey keyProperty="recEmailNo"
+  				   resultType="string"
+  				   order="BEFORE">
+  			SELECT 'rno' || seq_inbox_no.nextval  AS recEmailNo FROM dual
+  		</selectKey>
+  		 INSERT ALL
+     		INTO email (sen_email_no, sender, title, cntn, sent_dt, email_stat, chain_Mail_No, cust_no) 
+     		VALUES (#{senEmailNo}, #{sender}, #{title}, #{cntn}, sysdate, default, #{chainMailNo}, #{custNo])
+     		INTO inbox (rec_email_no, sen_email_no, recp, refer, email_stat,  cust_no, file_no) 
+  	</insert>
+     		VALUES (#{recEmailNo}, #{senEmailNo}, #{recp}, #{refer}, default, #{custNo}, null) <!-- file_no는 if를 써야됨. -->
   	<select id="count">
   		SELECT count(*)
   		FROM INBOX
