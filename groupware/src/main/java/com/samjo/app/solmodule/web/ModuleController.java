@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.samjo.app.solmodule.service.ModuleService;
 import com.samjo.app.solmodule.service.ModuleVO;
@@ -19,22 +20,30 @@ public class ModuleController {
 	public ModuleController(ModuleService moduleservice) {
 		this.moduleservice = moduleservice;
 	}
+	
 	// 모듈 전체조회
-	@GetMapping("/solModule")
+	@GetMapping("solModList")
 	public String moddulePage(Model model) {
 		List<ModuleVO> list = moduleservice.modList();
 		model.addAttribute("list", list);
 		return "solution/module/moduleList";
 	}
 
+	// 모듈 등록
+	@GetMapping("insertSolMod")
+	public String InsertMod() {
+		
+		return "solution/module/insertModule";
+	}
+
 	// 템플릿 전체조회
-	@GetMapping("/soltemplate")
-	public String templatePage() {
-		return "solution/module/template";
+	@GetMapping("solTempList")
+	public String tempList() {
+		return "solution/module/templateList";
 	}
 
 	// 템플릿 등록
-	@GetMapping("/insertSolTemp")
+	@GetMapping("insertSolTemp")
 	public String InsertTemplate() {
 		return "solution/module/insertTemp";
 	}
