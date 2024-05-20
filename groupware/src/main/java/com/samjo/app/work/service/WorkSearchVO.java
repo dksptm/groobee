@@ -14,8 +14,9 @@ public class WorkSearchVO {
 	private String wkSite;
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date oneDate;
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date twoDate;
+	/*
+	 * @DateTimeFormat(pattern = "yyyy/MM/dd") private Date twoDate;
+	 */
 	
 	
 }
