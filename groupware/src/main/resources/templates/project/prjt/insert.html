@@ -5,7 +5,7 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="container">
-			<form name="insertForm" th:action="@{/prjt/insert}" method="post"
+			<form name="insertForm" th:action="@{/prjtInsert}" method="post"
 				th:object="${projects}" id="prjtForm">   
 				 <br><br><br>    
                     <div style=" text-align: center;">
@@ -37,7 +37,7 @@
 					</tr>
 					<tr>
 						<th>총괄책임자</th>
-						<td><input type="text" th:field="*{respMngrId}" placeholder="목록에서 선택해주세요">
+						<td><input type="text" th:field="*{empdName}" placeholder="목록에서 선택해주세요">
 						<button type="button" class="btn btn-primary" id="respMngrId" data-bs-toggle="modal" data-bs-target="#respModal">등록</button>
 						</td>
 					</tr>
@@ -55,8 +55,7 @@
 					<button type="button" class="btn btn-secondary" >취소</button>
 				</div>
 			</form>
-	
-</div>
+		</div>
 
 		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 총괄책임자 등록 모달창 -->

@@ -97,17 +97,17 @@ public class ProjectController {
 	// 프로젝트(하위) 업무 등록
 	@GetMapping("taskInsert")
 	public String taskInsertForm(Model model) {
-				model.addAttribute("task", new ProjectVO());
-				return "project/task/insert";
+			model.addAttribute("task", new ProjectVO());
+			return "project/task/insert";
 			}
 			
 	@PostMapping("taskInsert")
 	public String taskInsertProcess(ProjectVO projectVO) {
-				int tNo = projectService.taskInsert(projectVO);
+				int taskNo = projectService.taskInsert(projectVO);
 				String uri = null;
 				
-				if(tNo > -1) {
-					uri = "redirect:taskInfo?taskNo=" + tNo;
+				if(taskNo > -1) {
+					uri = "redirect:taskInfo?taskNo=" + taskNo;
 				} else {
 					uri = "taskAllList";
 				}

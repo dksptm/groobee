@@ -25,8 +25,8 @@
   	
 	<!-- 상시(주기적)업무 삭제 -->  
 	<delete id="deleteRegu" parameterType="int">
-		DELETE FROM coop_co
-		WHERE coop_co_no = #{coopCoNo}
+		DELETE FROM regu_stad
+		WHERE regu_id = #{reguId}
 	</delete>
 	  
 	<!-- 협력업체 전체 조회 -->
@@ -49,13 +49,14 @@
 			SELECT NVL(MAX(coop_co_no),0) +1 
 			FROM coop_co
 	</selectKey>
-		INSERT INTO coop_co (coop_co_no
-                     ,task_no 
-                     ,co_name 
-                     ,co_tel  
-                     ,pic 
-                     ,cust_addr 
-                     ,cntn)
+		INSERT INTO coop_co (
+						coop_co_no
+	                     ,task_no 
+	                     ,co_name 
+	                     ,co_tel  
+	                     ,pic 
+	                     ,cust_addr 
+	                     ,cntn)
 		VALUES ( #{coopCoNo}
 				,#{taskNo}
 				,#{coName}

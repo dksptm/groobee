@@ -15,7 +15,7 @@ public class ProjectVO {
 	private String taskPurpose;
 	private String taskCntn;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date taskStartDt;
+	private Date taskStartDT;
 	private Date taskDueDt;
 	private String taskType;
 	private String standardNo;

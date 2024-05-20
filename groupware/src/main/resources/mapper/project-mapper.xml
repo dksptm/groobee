@@ -46,14 +46,13 @@
 			SELECT NVL(MAX(prjt_id),0) +1 
 			FROM prjt
 		</selectKey>
-		
-		INSERT ALL INTO prjt (prjt_id
-							,prjt_name
-							,prjt_stat
-							,prjt_start_dt
-							,prjt_due_dt
-							,smry
-							,purpose
+		INSERT ALL INTO prjt (prjt_id 
+							,prjt_name 
+							,prjt_stat 
+							,prjt_start_dt 
+							,prjt_due_dt 
+							,smry 
+							,purpose 
 							,resp_mngr_id
 							,cust_no)
 					VALUES (#{prjtId}
@@ -63,21 +62,29 @@
 							,#{prjtDueDT}
 							,#{smry}
 							,#{purpose}
-							,#{respMngrId})
-		INTO dept (dept_id
-					,dept_name
-					,cust_no
-					, dept_loc
-					, dept_mngr)
-		VALUES(#{deptId}
+							,#{respMngrId}
+							,#{custNo})
+		INTO task_emps (task_no
+					, task_emp_id
+					, dept_id
+					, cmplt
+					, cust_no)
+		VALUES(#{taskNo}
 				,#{deptName}
-				,#{custNo}
-				,#{deptLoc}
+				,#{taskEmpId}
+				,#{taskEmpId}
 				,#{deptMngr})
 		SELECT 1 FROM DUAL
 	</insert>
+	<!-- 프로젝트(상위) 수정 -->
+		
+	<!-- 프로젝트(상위) 삭제-->
+	<delete id="deletePrjt" parameterType="int">
+		DELETE FROM prjt
+		WHERE prjt_id = #{prjtId}
+	</delete>
 	
-	<!-- 프로젝트(하위) 전체 조회 -->
+	<!-- 프로젝트(하위) 업무 전체 조회 -->
 	<select id="selectTaskAllList" resultType="ProjectVO">
 	SELECT        t.task_no
 			      ,t.task_name
@@ -107,6 +114,16 @@
 	               	 JOIN emp m
 	                    ON m.emp_id = p.resp_mngr_id
      </select>
+	<!-- 프로젝트(하위) 업무 등록 -->
+	
+	<!-- 프로젝트(상위) 업무 수정 -->
+	
+	<!-- 프로젝트(상위) 업무 삭제-->
+	<delete id="deleteTask" parameterType="int">
+		DELETE FROM task_common
+		WHERE task_no = #{taskNo}
+	</delete>	
+	
 	
 	<!-- 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명. -->
 	<select id="selectTasks" resultType="ProjectVO">
