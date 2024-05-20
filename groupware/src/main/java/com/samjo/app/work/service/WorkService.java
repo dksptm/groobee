@@ -1,6 +1,5 @@
 package com.samjo.app.work.service;
 
-import java.util.Date;
 import java.util.List;
 
 public interface WorkService {
@@ -12,11 +11,13 @@ public interface WorkService {
 	public List<WorkVO> workList(WorkSearchVO worksearchVO);
 	
 	// 출근버튼
-	public Date workin(); 
+	public int workin();
+	
 	// 퇴근버튼
-	public Date workout();
-	//출근 등록
-	public WorkVO insertWork(WorkVO workVO);
+	public int workout();
+	
+	// 출근등록
+	public int insertWork();
 	
 	// 관리자 페이지 전체조회
 	public List<WorkVO> managerWorkList(WorkSearchVO worksearchVO);

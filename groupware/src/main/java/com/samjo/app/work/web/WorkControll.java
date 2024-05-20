@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.work.service.WorkPageDTO;
 import com.samjo.app.work.service.WorkSearchVO;
@@ -23,9 +24,11 @@ public class WorkControll {
 	
 	@GetMapping("worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
+		Date date = new Date();
+		//SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 		
 		if(worksearchVO.getOneDate() == null ) {
-			worksearchVO.setOneDate(new Date());
+			worksearchVO.setOneDate(date);
 			
 		}
 		/*
@@ -41,7 +44,7 @@ public class WorkControll {
 			worksearchVO.setWkSite("내근");
 		}
 		if(worksearchVO.getWkStat() == null) {
-			worksearchVO.setWkStat("정상근무");
+			worksearchVO.setWkStat("결근");
 		}
 		if(worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);
@@ -53,7 +56,10 @@ public class WorkControll {
 		return "work/worklist";
 	}
 	
-	
+	/*
+	 * @ResponseBody public int workinsert(WorkVO workVO) { return ; }
+	 */
+		
 	 
 	
 	

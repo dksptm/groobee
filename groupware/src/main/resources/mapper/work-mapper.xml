@@ -28,10 +28,10 @@ FROM (SELECT f.*
                                             on j.emp_id = i.emp_id
                          ORDER BY dt) e
                     WHERE rownum <![CDATA[<=]]> (#{page} * 5) ) w) f
-           WHERE    wk_yn   = #{wkYN} and
+           WHERE    wk_yn   = #{wkYn} and
                     wk_stat = #{wkStat} and
                     wk_site = #{wkSite} and
-                         dt <![CDATA[>=]]> to_date(#{oneDate}, 'YY/MM/DD')
+                         dt <![CDATA[<=]]> #{oneDate}
                                 
             ) t
 WHERE t.rn > (#{page} -1) * 5
@@ -67,10 +67,10 @@ WHERE t.rn > (#{page} -1) * 5
                                             on j.emp_id = i.emp_id
                          ORDER BY dt) e
                     WHERE rownum <![CDATA[<=]]> (#{page} * 5) ) w) f
-           WHERE    wk_yn   = #{wkYN} and
+           WHERE    wk_yn   = #{wkYn} and
                     wk_stat = #{wkStat} and
                     wk_site = #{wkSite} and
-                         dt <![CDATA[>=]]> to_date(#{oneDate}, 'YY/MM/DD')
+                         dt <![CDATA[>=]]> #{oneDate}
                                 
             ) t
      WHERE t.rn > (#{page} -1) * 5
@@ -85,20 +85,22 @@ WHERE t.rn > (#{page} -1) * 5
 	
 	</update>
    -->
-<!--    <insert id="" >
-   insert into wk(
+    <insert id="workinsert" >
+insert into wk(
                emp_id,
                dt,
+               wk_in,
                wk_yn,
                wk_stat,
                wk_site)
 values (
                'AAA1001',
                sysdate,
+			   sysdate
                '2A1a',
-               '2B2b',
+               '2B1b',
                '2C1c')
-   </insert> -->
+   </insert>
   
   </mapper>
   

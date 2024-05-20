@@ -2,32 +2,44 @@
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
+
 <body>
 	<th:block layout:fragment="Content">
+	
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-11">
+				<div>
+					<h5 id="time"></h5>
+					<button type="button" class="btn btn-primary">출근</button>
+					<button type="button" class="btn btn-primary">퇴근</button>
+				</div>
 				<form name="pageform" th:action="@{/worklist}" method="GET"
-					th:object="{filter}">
+					th:object="${filter}">
 					<div>
-						<br> <input th:field="*{oneDate}" type="Date">
+						<br> <input id="oneDate" th:field="*{oneDate}" type="Date">
 						     <!-- <input th:field="*{twoDate}" type="Date"> -->
-						<!-- <button type="button" class="btn btn-primary">검색</button> -->
+							
+							<select th:field="*{wkYn}" class="form-select" id="WkYn">
+										<option value="근무일" selected>근무일</option>
+										<option value="연차">연차</option>
+										<option value="오전반차">오전반차</option>
+										<option value="오후반차">오후반차</option>
+								</select>
+							<select th:field="*{wkStat}" class="form-select" id="wkStat">
+										<option value="정상근무" selected>정상근무</option>
+										<option value="오후반차">결근</option>
+										<option value="오후반차">지각</option>
+										<option value="오후반차">조퇴</option>
+								</select>
+							<select th:field="*{wkSite}" class="form-select" id="wkSite">
+										<option value="내근" selected>내근</option>
+										<option value="외근">외근</option>
+								</select>
+							<button type="button" class="btn btn-primary" id="fliter">검색</button>
 						</div>
+						</form>
 						<br>
-						<!-- <div style="float:right"> 필터
-		<label>
-			<select  class="form-select" id="floatingSelectGrid">
-				<option selected value="사번">사번</option>
-				<option value="emp_no">사원명</option>
-				<option value="wk_no">출근</option>
-				<option value="wk_out">퇴근</option>
-				<option value="wk_yn">내근</option>
-				<option value="wk_stsat">근무상태</option>
-				<option value="sk_site">근무여부</option>
-			</select>
-		</label>
-		<br>
-		</div> -->
+	
 					
 					<div id="page">
 						<table class="table table-striped-columns">
@@ -37,22 +49,9 @@
 								<th>사원명</th>
 								<th>출근시간</th>
 								<th>퇴근시간</th>
-								<th><select th:field="*{wkYn}" class="form-select" id="floatingSelectGrid">
-										<option value="근무일" selected>근무일</option>
-										<option value="연차">연차</option>
-										<option value="오전반차">오전반차</option>
-										<option value="오후반차">오후반차</option>
-								</select></th>
-								<th><select th:field="*{wkStat}" class="form-select" id="floatingSelectGrid">
-										<option value="정상근무" selected>정상근무</option>
-										<option value="오후반차">결근</option>
-										<option value="오후반차">지각</option>
-										<option value="오후반차">조퇴</option>
-								</select></th>
-								<th><select th:field="*{wkSite}" class="form-select" id="floatingSelectGrid">
-										<option value="내근" selected>내근</option>
-										<option value="외근">외근</option>
-								</select></th>
+								<th>근무지</th>
+								<th>근무상태</th>
+								<th>근무여부</th>
 							</tr>
 							<tr th:each="info : ${list}">
 								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
@@ -69,29 +68,31 @@
 	<div>
 	 <nav aria-label="Page navigation">
   <ul class="pagination">
-  	<th:block th:if="${workpageDTO.prev}">
+  	<th:block th:if="${filter.prev}">
     <li class="page-item prev disabled">
-      <a class="page-link" th:href="|worklist?page=${workpageDTO.startPage - 1 }|"><i class="bx bx-chevron-left"></i></a>
+      <a class="page-link" th:href="|worklist?page=${filter.startPage - 1 }|"><i class="bx bx-chevron-left"></i></a>
     </li>
     </th:block>
-    <th:block th:each="num : ${#numbers.sequence(1, workpageDTO.endPage)}">
-	<li class="page-item" th:attrappend="class=${num ==  workpageDTO.page ? 'active' : ' '}">
+    <th:block th:each="num : ${#numbers.sequence(1, filter.endPage)}">
+	<li class="page-item" th:attrappend="class=${num ==  filter.page ? 'active' : ' '}">
 		<a th:href="|worklist?page=${num}|" class="page-link">[[${num}]]</a>
 	</li>
 	</th:block>
-	<th:block th:if="${workpageDTO.next}">
+	<th:block th:if="${filter.next}">
     <li class="page-item next">
-      <a class="page-link" th:href="|worklist?page=${workpageDTO.endPage + 1 }|"><i class="bx bx-chevron-right"></i></a>
+      <a class="page-link" th:href="|worklist?page=${filter.endPage + 1 }|"><i class="bx bx-chevron-right"></i></a>
     </li>
     </th:block>
   </ul>
 </nav>
 	</div>
-				</form>
+				
 			</div>
 		</div>
-	</th:block>
+
 </body>
 <script>
+
 </script>
+</th:block>
 </html>
