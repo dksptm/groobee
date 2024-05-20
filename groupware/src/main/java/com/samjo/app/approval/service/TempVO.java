@@ -12,6 +12,7 @@ public class TempVO {
     private String saveName;
     private String uplName;
     private String custNo;
+    private String tempImg;
     
     // 테스트용
     private String content;

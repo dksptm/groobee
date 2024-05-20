@@ -14,25 +14,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.samjo.app.approval.service.TempVO;
 import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.solmodule.service.ModuleService;
 import com.samjo.app.solmodule.service.ModuleVO;
+import com.samjo.app.upload.service.UploadService;
 
 @Controller
 public class ModuleController {
-
-	ModuleService moduleservice;
-
 	@Autowired
-	public ModuleController(ModuleService moduleservice) {
-		this.moduleservice = moduleservice;
-	}
-	
+	ModuleService moduleservice;
+	@Autowired
+	UploadService uploadservice;
+
 	// 모듈 전체조회
 	@GetMapping("solModList")
 	public String moddulePage(Model model) {
@@ -62,11 +64,22 @@ public class ModuleController {
 		return "solution/module/insertTemp";
 	}
 	
+	//템플릿 등록 처리
+	@PostMapping("insertSolTemp")
+	public String tempInsert(@ModelAttribute TempVO tempVO, 
+							 @RequestParam("file") MultipartFile[] uploadFiles,
+							 @RequestParam("imgSrc") String binaryData) {
+		moduleservice.saveImg(binaryData);
+		uploadservice.uploadFile(uploadFiles);
+		//moduleservice.tempInsert(tempVO);
+		System.out.println(tempVO);
+		return "";  
+	}
+	
 	//미리보기 이미지 저장
 	@ResponseBody
 	@RequestMapping(value = { "ImgSaveTest" }, method = RequestMethod.POST)
 	public ModelMap ImgSave(@RequestParam HashMap<Object, Object> param, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-		System.out.println("test: SAVEIMG");
 		ModelMap map = new ModelMap();
 		
 		String binaryData = request.getParameter("imgSrc");

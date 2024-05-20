@@ -16,4 +16,7 @@ public interface ModuleService {
 	
 	//템플릿 등록처리
 	public String tempInsert(TempVO tempVO);
+	
+	//이미지생성
+	public void saveImg(String binaryData);
 }

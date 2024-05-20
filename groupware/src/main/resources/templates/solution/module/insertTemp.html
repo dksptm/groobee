@@ -10,12 +10,12 @@
 				<h5 class="card-header">템플릿 등록</h5>
 				<div class="card-body">
 					<!-- 템플릿 등록/수정 -->
-					<form >
+					<form>
 						<div class="card-body">
 							<div class="mt-3 row">
 								<label for="title" class="col-md-2 col-form-label">템플릿번호</label>
 								<div class="col-md-5">
-									<input class="form-control" type="text" />
+									<input class="form-control" type="text" placeholder="자동 등록" disabled />
 								</div>
 							</div>
 							<div class="mt-3 row">
@@ -56,7 +56,8 @@
 																<td>[[ ${CustVO.custName} ]]</td>
 																<td>[[ ${CustVO.custNo} ]]</td>
 																<td>[[ ${CustVO.rep} ]]</td>
-																<td><input type="radio" name="check" th:value="${CustVO.custNo}"></td>
+																<td><input type="radio" name="check"
+																	th:value="${CustVO.custNo}"></td>
 															</tr>
 														</th:block>
 													</tbody>
@@ -73,21 +74,15 @@
 								</div>
 							</div>
 							<div class="mt-3 row">
-								<label for="title" class="col-md-2 col-form-label">템플릿번호</label>
-								<div class="col-md-5">
-									<input class="form-control" type="text" />
-								</div>
-							</div>
-							<div class="mt-3 row">
 								<label for="title" class="col-md-2 col-form-label">템플릿명</label>
 								<div class="col-md-5">
-									<input class="form-control" type="text" />
+									<input class="form-control tempname" type="text" />
 								</div>
 							</div>
 							<div class="mt-3 row">
 								<label for="cntn" class="col-md-2 col-form-label">설명</label>
 								<div class="col-md-5">
-									<textarea class="form-control"></textarea>
+									<textarea class="form-control tempinfo"></textarea>
 								</div>
 							</div>
 							<div class="mt-3 col-2">
@@ -98,41 +93,11 @@
 									<option value="upload">업로드</option>
 								</select>
 							</div>
+							<div class="mt-3 col-12 tempdiv"></div>
 						</div>
 					</form>
 
-					<!-- 직접입력 태그 -->
-					<div style="display: none;" id="doctype">
-						<div class="mt-3">템플릿HTML명</div>
-						<div class="col-md-5">
-							<input class="form-control inputTemp" id="filename" type="text" />
-						</div>
-						<div class="mt-3">템플릿HTML입력</div>
-						<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
-						<h4 style="display: none;" class="tempPre">=템플릿 미리보기=</h4>
-						<div style="display: none;"
-							class="tempPre template p-3 border border-dark"></div>
-
-						<!-- 템플릿 등록 버튼 -->
-						<div class="d-flex justify-content-center mb-3">
-							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlbtn">미리보기</button>
-							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
-						</div>
-					</div>
-
-					<!-- 파일업로드 태그 -->
-					<div style="display: none;" id="docupload">
-						<div class="test">
-							<input name="uploadFiles2" id="uploadFiles2" type="file">
-							<button class="btn btn-secondary mx-2 uploadBtn2">업로드</button>
-						</div>
-						<button type="button" class="btn btn-primary save_btn">이미지로 저장</button>
-						<h4 style="display: none;" class="test2">=템플릿 미리보기=</h4>
-						<div style="display: none;"
-							class="upload-sample p-3 test2 border border-dark"></div>
-					</div>
-
-					<!-- 작성완료 버튼 -->
+					<!--  작성완료 버튼 -->
 					<div class="mt-3 text-end">
 						<button type="submit"
 							class="commitbtn btn rounded-pill btn-primary">작성완료</button>
@@ -144,25 +109,100 @@
 					let header = $("meta[name='_csrf_header']").attr('content');
 					let token = $("meta[name='_csrf']").attr('content');
 					
+					//고객사 모달처리
+					//모달창에서 선택한 고객사번호를 input창에 입력.
+						$(".selectCust").on("click", function(e){
+							$(".custName").val($('input:radio:checked').val());
+						})
 					
 					
-					//이미지화 테스트
-					$(".save_btn").on("click", function() {
-						sreenShot($(".upload-sample"));
-					});
-					function sreenShot(target){
-						var t = target[0];
-						html2canvas(t).then(function(canvas) {
-							var myImg = canvas.toDataURL("image/png");
-							myImg = myImg.replace("data:image/png;base64,", "");
+					//업로드or직접입력 선택
+					//직접입력 Tag
+					let templateA = `
+						<div class="mt-3">템플릿HTML명</div>
+						<div class="col-md-5">
+							<input class="form-control inputTemp" id="filename" type="text" />
+						</div>
+						<div class="mt-3">템플릿HTML입력</div>
+						<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
+						<h4 style="display: none;" class="tempPre">=템플릿 미리보기=</h4>
+						<div style="display: none;"
+							class="tempPre template p-3 border border-dark"></div>
 
+						<!-- 템플릿 미리보기 버튼 -->
+						<div class="d-flex justify-content-center mb-3">
+							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlbtn">미리보기</button>
+							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
+						</div>
+					`;
+					//업로드 Tag
+					let templateB = `
+						<div class="test">
+							<input name="uploadFiles2" id="uploadFiles2" type="file">
+							<button class="btn btn-secondary mx-2 uploadBtn2">업로드</button>
+						</div>
+						<button type="button" class="btn btn-primary save_btn">이미지로 저장</button>
+						<h4 style="display: none;" class="test2">=템플릿 미리보기=</h4>
+						<div style="display: none;"	class="upload-sample p-3 test2 border border-dark"></div>
+					`;
+						$(".inserttype").on("change", function(e) {
+							if ($(".inserttype").val() == "input") {
+								$(".tempdiv").html(templateA);
+							} else if($(".inserttype").val() == "upload"){
+								$(".tempdiv").html(templateB);
+							} else{
+								$(".tempdiv").html('');
+							}
+						});
+
+						//직접입력값 미리보기 버튼
+						$(".tempdiv").on("click", "#htmlbtn", function(e) {
+							let tVal = $("#content").val()
+							let fileName = $("#filename").val();
+							$(".tempPre").css('display', 'block');
+							$(".template").html(tVal);
+						});
+						
+						//직접입력값 초기화
+						$(".tempdiv").on("click", "#htmlreset", function(e) {
+							console.log($(".inputTemp").val());
+							$(".inputTemp").val("");
+							$(".template").empty();
+						});
+						
+						//템플릿 등록 버튼
+						$(".commitbtn").on("click", function(e) {
+							e.preventDefault();
+							
+							let myImg = '';
+							html2canvas($(".upload-sample")).then(function(canvas) {
+								myImg = canvas.toDataURL("image/png");
+								myImg = myImg.replace("data:image/png;base64,", "");
+							});
+							
+							let formData = new FormData();
+							let fileInput = document.querySelector('input[name="uploadFiles2"]');
+							let fileList = fileInput.files;
+							for(let file of fileList){
+								formData.append('uploadFiles', file);
+							}
+							
+							//tempNo,tempName,tempInfo,saveName,uplName,custNo,tempImg;
+							let tempName = $('.tempname').val();
+							let tempInfo = $('.tempinfo').val();
+							let custNo = $('.custName').val();
+							
 							$.ajax({
-								url : 'ImgSave',
+								url : 'insertSolTemp',
 				             	beforeSend: function(xhr){
 							        xhr.setRequestHeader(header, token);
 							    },
 								type : 'POST',
 								data : {
+									'tempName' : tempName,
+									'tempInfo' : tempInfo,
+									'custNo' : custNo,
+									'file' : formData,
 									'imgSrc' : myImg
 								},
 								dataType : 'text',
@@ -174,48 +214,22 @@
 								}
 							});
 						});
-					}
-					
-					//고객사 모달처리
-					//모달창에서 선택한 고객사번호를 input창에 입력.
-						$(".selectCust").on("click", function(e){
-							console.log($('input:radio:checked').val());
-							$(".custName").val($('input:radio:checked').val());
-							
-						})
-					
-					//업로드or직접입력 선택시 입력창에 반영
-					
-						$(".inserttype").on("change", function(e) {
-							if ($(".inserttype").val() == "input") {
-								$("#doctype").css('display', 'block');
-								$("#docupload").css('display', 'none');
-							} else if($(".inserttype").val() == "upload"){
-								$("#docupload").css('display', 'block');
-								$("#doctype").css('display', 'none');
-							} else{
-								$("#docupload").css('display', 'none');
-								$("#doctype").css('display', 'none');
-							}
-						});
-
-						//직접입력값 미리보기 버튼
-						$("#htmlbtn").on("click", function(e) {
-							let tVal = $("#content").val()
-							let fileName = $("#filename").val();
-							$(".tempPre").css('display', 'block');
-							$(".template").html(tVal);
-						});
 						
-						//직접입력값 초기화
-						$("#htmlreset").on("click", function(e) {
-							console.log($(".inputTemp").val());
-							$(".inputTemp").val("");
-							$(".template").empty();
+						//이미지화 테스트
+						$(".save_btn").on("click", function() {
+							sreenShot($(".upload-sample"));
 						});
+						function sreenShot(target){
+							var t = target[0];
+							html2canvas(t).then(function(canvas) {
+								//var myImg = canvas.toDataURL("image/png");
+								myImg = myImg.replace("data:image/png;base64,", "");
+							});
+							return 
+						}
 						
 						//업로드 처리
-						document.querySelector('.uploadBtn2').addEventListener('click', function(e){
+						$('.tempdiv').on('click', '.uploadBtn2', function(e){
 							let formData = new FormData(); // 유사) jQuery.serialize() or jQuery.serializeArray()
 							// 1) Form 태그 내부의 데이터를 한번에 담음
 							// 2) Ajax를 이용해서 'Content-type:multipart/form-data'를 보내야 하는경우 사용
@@ -240,42 +254,14 @@
 					             data: formData,               
 					             success: function(result){
 					            	 console.log(result);
-					            	 /* img 업로드시 미리보기 기능
-					                 for(let image of result){
-					              	   let imgTag = $('<img/>').prop('src', 'images/'+ image)
-					              	   						   .css('width', '50%');
-					              	   $('div.test2').append(imgTag);
-					                 } */
-					                 //
-					            	 for(let filePath of result){
-						                 let path = filePath.split(":::");
-						                 console.log(path);
-						                 console.log(path[0]);
-						                 console.log(path[1]);
-						                 console.log(path[2]);
-						                 console.log(path[3]);
-					                 //특정요소 안에 html 파일의 태그를 추가.
-					                 $.ajax({  //C:\upload	  ┌>실제경로
-					                	    url: 'files/' + path[3],	// HTML 파일 가져올 경로
-					                	    dataType: "html",
-					                	    success: function (html){
-					                	    	$('div.upload-sample').html(html); // HTML 코드 붙여넣기
-					                	    	$('.test2').css('display', 'block');
-					                	    }
-					                	});
-										}
+					            	 
 					             },
 					             error: function(reject){	
 					                 console.log(reject);
 					             }
 					         });
 						})
-						
-						//템플릿 등록 버튼
-						$(".commitbtn").on("click", function(e) {
-							e.preventDefault();
-							
-						});
+
 					</script>
 				</div>
 			</div>
