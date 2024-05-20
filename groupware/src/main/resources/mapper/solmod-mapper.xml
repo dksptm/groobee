@@ -4,11 +4,43 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.solmodule.mapper.SolModMapper">
 
-	<!-- 전체목록 -->
+	<!-- 모듈 전체목록 -->
 	<select id="selectModAll" resultType="ModuleVO">
-		SELECT *
-		FROM mod
+		SELECT 	mod_id, 
+				mod_name, 
+				mod_stat, 
+				mod_info
+		FROM 	mod
 	</select>
 	
+	<!-- 고객사모달 -->
+	<select id="selectCustAll" resultType="CustVO">
+		SELECT 	cust_no, 
+				brn, 
+				cust_name, 
+				rep, 
+				cust_addr, 
+				cust_tel, 
+				pay_pic, 
+				pay_pic_tel
+		FROM 	cust
+	</select>
+	
+	<!-- 템플릿 등록 -->
+	<insert id="inserTemp" parameterType="TempVO">
+		INSERT INTO temp(temp_no,
+						 temp_name,
+						 temp_info,
+						 save_name,
+						 upl_name,
+						 cust_no)
+		VALUES(#{temp_no},
+			   #{temp_name},
+			   #{temp_info},
+			   #{save_name},
+			   #{upl_name},
+			   #{cust_no},
+			   #{temp_img})
+	</insert>	
 </mapper>
   

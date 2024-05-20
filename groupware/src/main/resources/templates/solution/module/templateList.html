@@ -8,6 +8,7 @@
 			<div class="card my-4 col-10">
 				<h5 class="card-header">템플릿 전체조회</h5>
 				<div class="card-body">
+					
 					<!-- 템플릿 목록 출력 -->
 					<div class="table-responsive">
 						<table class="table table-hover">
@@ -20,24 +21,19 @@
 								</tr>
 							</thead>
 							<tbody>
-								<th:block th:each="ModuleVO : ${list}">
+								<th:block th:each="TempVO : ${list}">
 									<tr>
-										<td>[[ ${ModuleVO.modId} ]]</td>
-										<td>[[ ${ModuleVO.modName} ]]</td>
-										<td th:if="${ModuleVO.modStat == '1A1a'}"
-											class="table-success">[[ ${ModuleVO.modStat} ]]</td>
-										<td th:if="${ModuleVO.modStat == '1A2a'}" class="table-danger">[[
-											${ModuleVO.modStat} ]]</td>
-										<td th:if="${ModuleVO.modStat == '1A3a'}" class="table-secondary">[[
-											${ModuleVO.modStat} ]]</td>	
-										<td>[[ ${ModuleVO.modInfo} ]]</td>
+										<td>[[ ${TempVO.tempNo} ]]</td>
+										<td>[[ ${TempVO.tempName} ]]</td>
+										<td>[[ ${TempVO.modStat} ]]</td>
+										<td>[[ ${TempVO.modInfo} ]]</td>
 									</tr>
 								</th:block>
 							</tbody>
 						</table>
 					</div>
 					<!-- 템플릿 등록 버튼 -->
-					<div class="d-flex align-items-end flex-column mb-3">
+					<div class="d-flex align-items-end flex-column mt-3">
 						<button type="button"
 							th:onclick="|location.href='@{insertSolTemp}'|"
 							class="btn btn-primary mt-auto p-2">템플릿 등록</button>
