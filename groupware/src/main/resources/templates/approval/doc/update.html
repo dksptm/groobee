@@ -7,8 +7,6 @@
 	<!-- CKEditor -->
 	<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 	
-	
-	
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
 	<div class="DocSearch-content col-12 container-p-y">
@@ -17,7 +15,7 @@
 		</div>
 		<hr>
 		<div class="m-3 p-3 shadow-lg rounded bg-white">
-		<form th:action="@{/docUpdate}" method="post" th:object="${doc}">
+		<form th:action="@{/docUpdate}" method="post" th:object="${doc}" enctype="multipart/form-data">
 			
 			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
@@ -122,15 +120,17 @@
 					<!-- 모달버튼 : 결재자 -->
 					<div class="d-flex justify-content-end">
 						<button type="button" class="mx-3 btn btn-outline-secondary doc-modal-btn-apr" 
-								data-bs-toggle="modal" data-bs-target="#selectapr">결재자 재선택</button></div>
+								data-bs-toggle="modal" data-bs-target="#selectapr">결재자 재선택</button>
+					</div>
+				</div>
 				<div class="mt-3">
-	                	<input type="hidden" name="finalLine" id="finalLine" />
-	                	<input type="hidden" name="aprs[0].aprSq" value="1" readonly />
-						<input type="hidden" name="aprs[0].aprEmp" th:value="${doc.draft}" readonly />
+	                	<input type="hidden" name="finalLine" id="finalLine" th:value="${doc.finalLine}" />
 	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}" id="selaprs">
 						<th:block th:each="apr,aprStat : ${doc.aprs}">
 							<th:block th:if="${apr.aprSq == doc.nowLine}">
 							<div class="card col-1" style="width: 10rem;background-color: skyblue;">
+								<input type="hidden" th:name="|aprs[${aprStat.index}].aprEmp|" th:value="${apr.aprEmp}" readonly />
+								<input type="hidden" th:name="|aprs[${aprStat.index}].aprSq|" th:value="${apr.aprSq}" readonly />
 				  				<ul class="list-group list-group-flush"
 				  					th:attr="data-apr=${apr.aprEmp}">
 				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
@@ -142,6 +142,8 @@
 			  				</th:block>
 			  				<th:block th:unless="${apr.aprSq == doc.nowLine}">
 							<div class="card" style="width: 10rem;">
+								<input type="hidden" th:name="|aprs[${aprStat.index}].aprEmp|" th:value="${apr.aprEmp}" readonly />
+								<input type="hidden" th:name="|aprs[${aprStat.index}].aprSq|" th:value="${apr.aprSq}" readonly />
 				  				<ul class="list-group list-group-flush">
 				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
 				    				<li class="list-group-item">[[ ${apr.aprCode} ]]
@@ -257,7 +259,7 @@
 					</div>
 				</div>
 				<!-- ---------------------------- 내용영역 END ---------------------------- -->
-			</div>
+			
 			</form>
 		</div> 
 	</div>

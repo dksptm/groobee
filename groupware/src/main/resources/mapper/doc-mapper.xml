@@ -58,9 +58,31 @@
 		SELECT count(*)
 		FROM doc
 	</select>
-
+	
+	<!-- 한 직원이 작성한 모든문서 -->
+	<select id="selectEmpDocs" resultType="DocVO">
+		SELECT
+		       d.doc_no
+		       ,d.title
+		       ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
+		       ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+		       ,get_codename(d.draft_stat) AS draft_stat_name
+		       ,get_codename(d.doc_stat) AS doc_stat_name
+		       ,NVL2(a.apr_yn, a.apr_name||' 결재'||get_codename(a.apr_yn), '-') AS cur_apr
+		       ,d.draft_dt
+		       ,d.draft_stat
+		       ,d.doc_stat
+		FROM doc d  LEFT OUTER JOIN task_doc td 
+								ON (d.doc_no = td.doc_no)
+					LEFT OUTER JOIN apr a 
+								ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+		WHERE d.draft = #{eid}
+		GROUP BY d.doc_no, d.title, draft_stat, doc_stat, d.draft_dt, a.apr_yn, a.apr_name
+		ORDER BY d.draft_dt DESC, d.doc_no
+	</select>
+	
 	<!-- 내가 현재 결재해야할 문서리스트. -->
-	<select id="selectMyApr" resultMap="docMap">
+	<select id="selectEmpApr" resultMap="docMap">
 		SELECT d.doc_no
 		       ,d.draft
 		       ,d.dept_id
@@ -79,6 +101,28 @@
 		WHERE d.doc_stat = '4B2b'
 		AND a.apr_emp = #{eid}
 		AND d.now_line = a.apr_sq
+	</select>
+	
+	<!-- 전체문서 중 결재진행 중 문서. -->
+	<select id="selectApring" parameterType="EmpVO">
+		SELECT
+		       d.doc_no
+		       ,get_deptname(d.dept_id) dept_name
+		       ,get_tempname(d.temp_id) temp_name
+		       ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
+		       ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+		       ,d.title
+		       ,d.draft_name
+		       ,NVL2(a.apr_yn, a.apr_name|| ' ' ||get_codename(a.apr_yn), '-') AS cur_apr
+		       ,d.draft_dt
+		FROM doc d  LEFT OUTER JOIN task_doc td 
+		                        ON (d.doc_no = td.doc_no)
+		            LEFT OUTER JOIN apr a 
+		                        ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+		WHERE d.cust_no = #{custNo}
+		AND d.doc_stat = '4B2b'
+		GROUP BY d.doc_no,  d.dept_id, d.temp_id, d.title, d.draft_name, a.apr_yn, a.apr_name, d.draft_dt
+		ORDER BY d.doc_no DESC, d.draft_dt	
 	</select>
 
 	<!-- 한 문서 상세정보. -->
@@ -105,6 +149,33 @@
 		           JOIN dept dt 
 		             ON(d.dept_id = dt.dept_id)
 		WHERE doc_no = #{docNo}
+	</select>
+	
+	<!-- 한 문서의 업무 가져오기 -->
+	<select id="selectDocTasks" resultType="ProjectVO">
+		SELECT td.task_no
+		       ,tc.task_name
+		       ,d.dept_name
+		       ,tc.dept_id
+		FROM task_doc td JOIN task_common tc
+		                  ON(td.task_no = tc.task_no)
+		                 JOIN dept d
+		                  ON(tc.dept_id = d.dept_id)
+		WHERE td.doc_no = #{dno}
+		ORDER BY dept_id, td.task_no DESC	
+	</select>
+	
+	<!-- 한 문서의 첨부파일 가져오기 -->
+	<select id="selectDocFile" resultType="DocFileVO">
+		SELECT file_no
+		       ,doc_no
+		       ,save_name
+		       ,upl_name
+		       ,file_size
+		       ,file_ext
+		FROM doc_file
+		WHERE doc_no = #{dno}
+		ORDER BY file_no	
 	</select>
 	
 	<!-- 문서등록. -->
@@ -175,32 +246,6 @@
 		        )	
 	</insert>
 	
-	<!-- 한 문서의 첨부파일 가져오기 -->
-	<select id="selectDocFile" resultType="DocFileVO">
-		SELECT file_no
-		       ,doc_no
-		       ,save_name
-		       ,upl_name
-		       ,file_size
-		       ,file_ext
-		FROM doc_file
-		WHERE doc_no = #{dno}
-		ORDER BY file_no	
-	</select>	
-	
-	<!-- 문서수정 -->
-	<update id="updateDoc" parameterType="DocVO">
-		UPDATE doc
-		SET title = #{title}
-		    <if test="cntn != null and !cntn.equals('')">
-		    ,cntn = #{cntn}
-		    </if>
-		    ,final_line = #{finalLine}
-		    ,draft_dt = sysdate
-		    ,temp_id = #{tempId}
-		WHERE doc_no = #{docNo}
-	</update>
-	
 	<!-- 문서와 업무 연결. -->
 	<insert id="insertTaskDoc" parameterType="map">
 		INSERT INTO task_doc
@@ -217,46 +262,23 @@
 			)
 	</insert>
 	
+	<!-- 문서수정 -->
+	<update id="updateDoc" parameterType="DocVO">
+		UPDATE doc
+		SET title = #{title}
+		    <if test="cntn != null and !cntn.equals('')">
+		    ,cntn = #{cntn}
+		    </if>
+		    ,final_line = #{finalLine}
+		    ,draft_dt = sysdate
+		    ,temp_id = #{tempId}
+		WHERE doc_no = #{docNo}
+	</update>
+	
 	<delete id="deleteTaskDoc">
 		DELETE task_doc
 		WHERE doc_no = #{dno}
 	</delete>
 	
-	<!-- 한 문서의 업무 가져오기 -->
-	<select id="selectDocTasks" resultType="ProjectVO">
-		SELECT td.task_no
-		       ,tc.task_name
-		       ,d.dept_name
-		       ,tc.dept_id
-		FROM task_doc td JOIN task_common tc
-		                  ON(td.task_no = tc.task_no)
-		                 JOIN dept d
-		                  ON(tc.dept_id = d.dept_id)
-		WHERE td.doc_no = #{dno}
-		ORDER BY dept_id, td.task_no DESC	
-	</select>
-	
-	<!-- 한 직원이 작성한 모든문서 -->
-	<select id="selectEmpDocs" resultType="DocVO">
-		SELECT
-		       d.doc_no
-		       ,d.title
-		       ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
-		       ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
-		       ,get_codename(d.draft_stat) AS draft_stat_name
-		       ,get_codename(d.doc_stat) AS doc_stat_name
-		       ,NVL2(a.apr_yn, a.apr_name||' 결재'||get_codename(a.apr_yn), '-') AS cur_apr
-		       ,d.draft_dt
-		       ,d.draft_stat
-		       ,d.doc_stat
-		FROM doc d  LEFT OUTER JOIN task_doc td 
-								ON (d.doc_no = td.doc_no)
-					LEFT OUTER JOIN apr a 
-								ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
-		WHERE d.draft = #{eid}
-		GROUP BY d.doc_no, d.title, draft_stat, doc_stat, d.draft_dt, a.apr_yn, a.apr_name
-		ORDER BY d.draft_dt DESC, d.doc_no
-	</select>
-
 </mapper>
   

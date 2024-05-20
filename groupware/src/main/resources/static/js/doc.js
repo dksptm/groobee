@@ -14,7 +14,7 @@ const tempChange = function() {
 	$('.cntn-slide').slideUp();
 	// 휴가원,지출결의 숨기기
 	$('#tempPTO').hide();
-	$('div#pto').find('input, textarea, select, option').val('');
+	$('div#pto').find('input, textarea').val('');
 	$('#tempEXT').hide();
 	$('#textArea').hide();
 	
@@ -99,6 +99,16 @@ const getDocAprs = () => {
 	let trs = $('#aprlist > tbody > tr');
 	let spanTag = $('#selaprs');
 	spanTag.children().remove();
+	let drf = $('input[name="draft"]').val();
+	let drfn = $('td[data-draft]').text();
+	spanTag.append($(`<p>
+						<input name="aprs[0].aprSq" type="text"
+						 value="1" readonly />번
+						<input name="aprs[0].aprEmp" type="hidden"
+						 value="${drf}" readonly />
+						<input name="aprs[0].aprName" type="text"
+						 value="${drfn}" readonly />
+					   </p>`))
 	let ctn = 0;
 	
 	trs.each(function(idx,tr){
@@ -235,8 +245,9 @@ function getNow(){
 }
 
 /* 파일저장 (FileInfoController) */
+/*
 const saveFile = (fileList, dno, eid) => { 
-	/* 아작스 결과를 프로미즈 객체 담기 */
+	// 아작스 결과를 프로미즈 객체 담기 
 	return new Promise((resolve, reject) => {
 
 	    let formData = new FormData(); 
@@ -267,3 +278,4 @@ const saveFile = (fileList, dno, eid) => {
 	})
 	console.log('프로미즈 객체 끝');
 }
+*/
