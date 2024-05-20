@@ -14,7 +14,7 @@
 		<tbody>
 			<th:block th:each="emp : ${emps}">
 			<!-- 로그인 구현되면 아래정보 변경. -->
-			<tr th:if="${emp.empId != session.id}" th:attr="data-emp=${emp.empId}">
+			<tr th:if="${emp.empId != #authentication.principal.empId}" th:attr="data-emp=${emp.empId}">
 				<td><input class="form-check-input" type="checkbox" name="chk-list2"></td>
 				<td>[[ ${emp.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>

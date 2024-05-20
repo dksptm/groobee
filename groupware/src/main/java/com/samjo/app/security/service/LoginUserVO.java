@@ -44,6 +44,7 @@ public class LoginUserVO implements UserDetails {
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return loginVO.getEmpName();
+		//return loginVO.getEmpId();
 	}
 
 	@Override

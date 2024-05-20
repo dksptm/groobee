@@ -10,10 +10,14 @@ import com.samjo.app.emp.service.EmpVO;
 public interface AprMapper {
 	// 결재자등록(DocService에서 사용).
 	public int insertApr(AprVO aprVO);
+	// 결재자수정
+	public int deleteApr(@Param("dno")Integer docNo);
+	
 	// 결재자 리스트.
 	public List<AprVO> selectDocApr(@Param("dno")Integer docNo);
+	
 	// 상신하기(프로시저는 void사용).
-	public void updateMyApr(AprVO aprVO);
+	public void updateAprGo(AprVO aprVO);
 	// 결재하기.
 	public void updateAprOk(AprVO aprVO);
 	// 반려하기.
@@ -22,6 +26,8 @@ public interface AprMapper {
 	// 참조자 등록(DocService에서 사용).
 	public int insertRef(@Param("dno")Integer docNo, 
 							@Param("eid")String empId, @Param("cno")String custNo);
+	// 참조자 삭제
+	public int deleteRef(@Param("dno")Integer docNo);
 	// 참조자 가져오기.
 	public List<EmpVO> selectDocRefs(@Param("dno")Integer docNo);
 

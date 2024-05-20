@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<div class="container">
+
+<form th:action="@{/aaa}" method="post" th:object="${temp}">
+
+	<textarea name="content" id="editor">This is some sample content.</textarea>
+	<button type="submit">INSERT</button>
+
+</form>
+<script>
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			toolbar: [
+                'heading', '|',
+                'bold', 'italic', '|',
+                'fontSize', '|'
+            ],
+            fontSize: {
+                options: [
+                    'tiny',
+                    'small',
+                    'default',
+                    'big',
+                    'huge'
+                ]
+            }
+		})
+		.then( editor => {
+			console.log('Editor was initialized', editor);
+		})
+		.catch( error => {
+	        console.error( error );
+		});
+</script>
+
+
+</div>
+
+</th:block>
+</html>

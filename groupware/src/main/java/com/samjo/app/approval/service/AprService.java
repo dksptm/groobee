@@ -13,5 +13,4 @@ public interface AprService {
 	// 반려하기.
 	public Map<String, Object> aprNg(AprVO aprVO);
 	
-	// 
 }

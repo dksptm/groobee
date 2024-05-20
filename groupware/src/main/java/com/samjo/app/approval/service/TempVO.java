@@ -10,4 +10,13 @@ public class TempVO {
     private String tempName;
     private String tempImg;
     
+    // 테스트용
+    private String content;
+    
+    // pto
+    private Integer docNo;
+	private String ptoType;
+	private String ptoStartDt;
+	private String ptoEndDt;
+	private String reason;
 }

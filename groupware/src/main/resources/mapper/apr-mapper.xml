@@ -53,8 +53,14 @@
 		ORDER BY apr_sq
 	</select>
 	
+	<!-- 결재자 수정 -->
+	<delete id="deleteApr">
+		DELETE apr
+		WHERE doc_no = #{dno}
+	</delete>	
+	
 	<!-- 상신하기 프로시저. -->
-	<update id="updateMyApr" parameterType="AprVO" statementType="CALLABLE">
+	<update id="updateAprGo" parameterType="AprVO" statementType="CALLABLE">
 		{CALL
 			go_apr(
 				#{docNo, mode=IN, jdbcType=INTEGER},
@@ -102,6 +108,12 @@
 				,#{cno}
 			)	
 	</insert>
+	
+	<!-- 참조자 삭제 -->
+	<delete id="deleteRef">
+		DELETE doc_rece
+		WHERE doc_no = #{dno}
+	</delete>	
 	
 	<!-- 한 문서의 참조자 리스트. -->
 	<select id="selectDocRefs" resultType="EmpVO">

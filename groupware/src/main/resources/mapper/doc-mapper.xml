@@ -4,6 +4,32 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.approval.mapper.DocMapper">
 
+	<!-- 한 문서에 소속된 업무들 가져오는 Map 정의 -->
+	<resultMap type="DocVO" id="docMap">
+		<id property="docNo" column="doc_no" />
+		<result property="deptId" column="dept_id" />
+		<result property="deptName" column="dept_name" />
+		<result property="draft" column="draft" />
+		<result property="draftName" column="draft_name" />
+		<result property="title" column="title" />
+		<result property="cntn" column="cntn" />		
+		<result property="draftDt" column="draft_dt" />		
+		<result property="draftStat" column="draft_stat" />
+		<result property="docStat" column="doc_stat" />
+		<result property="cmpltDt" column="cmplt_dt" />
+		<result property="tempId" column="temp_id" />
+		<result property="tempName" column="temp_name" />
+		<result property="curApr" column="cur_apr" />
+		<collection property="taskList" ofType="ProjectVO">
+			<id property="taskNo" column="task_no"/>
+			<result property="taskName" column="task_name"/>
+		</collection>
+		<collection property="aprs" ofType="AprVO">
+			<id property="aprNo" column="apr_no"/>
+			<result property="aprCode" column="apr_code"/>
+		</collection>
+	</resultMap>
+
 	<!-- 전체목록 : 나중에 cust id 및 열람가능 문서로 제한해야함. -->
 	<select id="selectDocAll" parameterType="searchVO" resultType="DocVO">
 		SELECT rn
@@ -31,6 +57,28 @@
 	<select id="count">
 		SELECT count(*)
 		FROM doc
+	</select>
+
+	<!-- 내가 현재 결재해야할 문서리스트. -->
+	<select id="selectMyApr" resultMap="docMap">
+		SELECT d.doc_no
+		       ,d.draft
+		       ,d.dept_id
+		       ,td.task_no
+		       ,get_tempname(d.temp_id) AS temp_name
+		       ,get_deptname(d.dept_id) AS dept_name
+		       ,NVL2(td.task_no, get_taskname(td.task_no), '-') task_name
+		       ,d.title
+		       ,d.draft_name
+		       ,get_codename(a.apr_yn) cur_apr
+		       ,d.draft_dt 
+		FROM doc d LEFT OUTER JOIN task_doc td 
+		                        ON (d.doc_no = td.doc_no)
+		                      JOIN apr a 
+		                        ON(d.doc_no = a.doc_no)
+		WHERE d.doc_stat = '4B2b'
+		AND a.apr_emp = #{eid}
+		AND d.now_line = a.apr_sq
 	</select>
 
 	<!-- 한 문서 상세정보. -->
@@ -65,6 +113,7 @@
 				(
 					doc_no
 	                ,draft
+	                ,draft_name
 	                ,cust_no
 	                ,dept_id
 	                ,title
@@ -78,6 +127,7 @@
 	  	  		(
 	  	  			#{docNo}
 			        ,#{draft}
+			        ,#{draftName}
 			        ,#{custNo}
 			        ,#{deptId}
 			        ,#{title}
@@ -141,12 +191,13 @@
 	<!-- 문서수정 -->
 	<update id="updateDoc" parameterType="DocVO">
 		UPDATE doc
-		SET draft = draft
-		    ,title = #{title}
+		SET title = #{title}
 		    <if test="cntn != null and !cntn.equals('')">
 		    ,cntn = #{cntn}
 		    </if>
 		    ,final_line = #{finalLine}
+		    ,draft_dt = sysdate
+		    ,temp_id = #{tempId}
 		WHERE doc_no = #{docNo}
 	</update>
 	
@@ -166,6 +217,11 @@
 			)
 	</insert>
 	
+	<delete id="deleteTaskDoc">
+		DELETE task_doc
+		WHERE doc_no = #{dno}
+	</delete>
+	
 	<!-- 한 문서의 업무 가져오기 -->
 	<select id="selectDocTasks" resultType="ProjectVO">
 		SELECT td.task_no
@@ -178,6 +234,28 @@
 		                  ON(tc.dept_id = d.dept_id)
 		WHERE td.doc_no = #{dno}
 		ORDER BY dept_id, td.task_no DESC	
+	</select>
+	
+	<!-- 한 직원이 작성한 모든문서 -->
+	<select id="selectEmpDocs" resultType="DocVO">
+		SELECT
+		       d.doc_no
+		       ,d.title
+		       ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
+		       ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+		       ,get_codename(d.draft_stat) AS draft_stat_name
+		       ,get_codename(d.doc_stat) AS doc_stat_name
+		       ,NVL2(a.apr_yn, a.apr_name||' 결재'||get_codename(a.apr_yn), '-') AS cur_apr
+		       ,d.draft_dt
+		       ,d.draft_stat
+		       ,d.doc_stat
+		FROM doc d  LEFT OUTER JOIN task_doc td 
+								ON (d.doc_no = td.doc_no)
+					LEFT OUTER JOIN apr a 
+								ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+		WHERE d.draft = #{eid}
+		GROUP BY d.doc_no, d.title, draft_stat, doc_stat, d.draft_dt, a.apr_yn, a.apr_name
+		ORDER BY d.draft_dt DESC, d.doc_no
 	</select>
 
 </mapper>
