@@ -18,6 +18,10 @@ public interface DocService {
 	public List<DocVO> getMyAprList(String empId);
 	// 전체문서 중 결재진행중인 문서리스트
 	public List<DocVO> getIngDocList(EmpVO empVO);
+	// 전체문서 중 완료 문서리스트
+	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO);
+	// 			- 전체페이지
+	public int countCmplt(EmpVO empVO);
 	
 	// 단건조회
 	public DocVO docInfo(DocVO docVO);

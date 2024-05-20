@@ -104,7 +104,7 @@
 	</select>
 	
 	<!-- 전체문서 중 결재진행 중 문서. -->
-	<select id="selectApring" parameterType="EmpVO">
+	<select id="selectIngDocs" parameterType="EmpVO" resultType="DocVO">
 		SELECT
 		       d.doc_no
 		       ,get_deptname(d.dept_id) dept_name
@@ -124,7 +124,63 @@
 		GROUP BY d.doc_no,  d.dept_id, d.temp_id, d.title, d.draft_name, a.apr_yn, a.apr_name, d.draft_dt
 		ORDER BY d.doc_no DESC, d.draft_dt	
 	</select>
-
+	
+	<!-- 전체문서 중 완료된 문서 -->
+	<select id="selectCmpltDocs" resultType="DocVO">
+		SELECT 
+			   	a.rn
+			  	,a.doc_no
+			  	,a.dept_name
+			  	,a.temp_name
+			  	,a.task
+			  	,a.title
+			  	,a.draft_name
+			  	,a.doc_stat_name
+			    ,a.draft_dt
+		FROM    
+				(SELECT ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
+				        ,d.doc_no
+				        ,get_deptname(d.dept_id) dept_name
+				        ,get_tempname(d.temp_id) temp_name
+				        ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
+				         ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+				        ,d.title
+				        ,d.draft_name
+				        ,get_codename(d.doc_stat) AS doc_stat_name
+				        ,d.draft_dt
+				FROM doc d LEFT OUTER JOIN task_doc td 
+				                        ON (d.doc_no = td.doc_no)
+				           LEFT OUTER JOIN apr a 
+				                        ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+				WHERE d.cust_no = #{emp.custNo} 
+				AND (d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
+				GROUP BY d.doc_no
+					     ,d.dept_id
+					     ,d.temp_id
+					     ,d.title
+					     ,d.draft_name
+					     ,d.doc_stat
+					     ,d.draft_dt) a
+		WHERE a.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND a.rn > (#{sch.page} - 1) * 5
+	</select>
+	
+	<select id="countCmplt" parameterType="EmpVO" resultType="int">
+		SELECT  COUNT(*)
+		FROM
+				(SELECT 
+				         d.doc_no
+				         ,MIN(td.task_no)
+				 FROM doc d LEFT OUTER JOIN task_doc td 
+				                        ON (d.doc_no = td.doc_no)
+				            LEFT OUTER JOIN apr a 
+				                        ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+				 WHERE d.cust_no = #{custNo}
+				 AND (d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
+				 GROUP BY d.doc_no)
+	</select>		
+		
+		
 	<!-- 한 문서 상세정보. -->
 	<select id="selectDoc" resultType="DocVO">
 		SELECT d.doc_no

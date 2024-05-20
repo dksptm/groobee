@@ -60,6 +60,18 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectIngDocs(empVO);
 	}
 	
+	// 문서조회 - 전체문서 중 최종결재완료,반려 문서목록.
+	@Override
+	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO) {
+		return docMapper.selectCmpltDocs(empVO, searchVO);
+	}
+	
+	// 		 - 전체페이지.
+	@Override
+	public int countCmplt(EmpVO empVO) {
+		return docMapper.countCmplt(empVO);
+	}
+
 	// 문서단건조회.
 	@Override
 	public DocVO docInfo(DocVO docVO) {

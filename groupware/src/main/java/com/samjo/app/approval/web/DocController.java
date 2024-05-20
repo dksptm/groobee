@@ -98,6 +98,31 @@ public class DocController {
         }
 	}
 	
+	// 전체문서 중 결재완료/반려 문서.
+	@GetMapping("docCmplt")
+	public String docCmplt(SearchVO searchVO, Model model, Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+            LoginUserVO loginUserVO = (LoginUserVO) principal;
+            String empId = loginUserVO.getEmpId();
+            String custNo = loginUserVO.getCustNo();
+            String deptId = loginUserVO.getDeptId();
+            String permId = loginUserVO.getPermId();	
+            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO));
+            List<DocVO> list = docService.getCmpltDocList(empVO,searchVO);
+            model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            return "approval/list/cmplt";
+        } else {
+        	System.out.println("Not principal instanceof LoginUserVO");
+        	return "test/test";
+        }
+	}
+	
 	// 문서 상세정보.
 	@GetMapping("docInfo")
 	public String docInfo(DocVO docVO, Model model) {

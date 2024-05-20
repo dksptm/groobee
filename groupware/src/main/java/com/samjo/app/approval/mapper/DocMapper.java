@@ -22,6 +22,10 @@ public interface DocMapper {
 	public List<DocVO> selectEmpApr(@Param("eid")String empId);
 	// 결재진행중인 문서리스트.(--추후 권한별 리스트출력)
 	public List<DocVO> selectIngDocs(EmpVO empVO);
+	// 완료된 문서리스트(최종결재완료 또는 반려문서)
+	public List<DocVO> selectCmpltDocs(@Param("emp")EmpVO empVO, @Param("sch")SearchVO searchVO);
+	// 		-전체count.
+	public int countCmplt(EmpVO empVO);
 	
 	
 	// 단건조회
