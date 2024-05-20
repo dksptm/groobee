@@ -15,8 +15,8 @@
 					th:object="{filter}">
 					<div>
 						<br> <input th:field="*{oneDate}" type="Date">
-						     <input th:field="*{twoDate}" type="Date">
-						<button type="button" class="btn btn-primary">검색</button>
+						     <!-- <input th:field="*{twoDate}" type="Date"> -->
+						<!-- <button type="button" class="btn btn-primary">검색</button> -->
 						</div>
 						<br>
 						<!-- <div style="float:right"> 필터
@@ -55,8 +55,8 @@
 										<option value="오후반차">조퇴</option>
 								</select></th>
 								<th><select th:field="*{wkSite}" class="form-select" id="floatingSelectGrid">
-										<option value="오전반차" selected>오전반차</option>
-										<option value="오후반차">오후반차</option>
+										<option value="내근" selected>내근</option>
+										<option value="외근">외근</option>
 								</select></th>
 							</tr>
 							<tr th:each="info : ${list}">
