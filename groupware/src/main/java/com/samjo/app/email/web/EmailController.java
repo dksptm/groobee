@@ -78,11 +78,10 @@ public class EmailController {
 	
 	
 	@PostMapping("emailSend") // 0520 작업중
-	public String emailSend(@RequestParam EmailVO emailVO) {
-		EmailVO sendVO = new EmailVO();
-		sendVO.getSender();
-		emailService.emailInsert(sendVO);
-	return "redirect:email/email";
+	public String emailSend(@RequestBody EmailVO emailVO) {
+		//리퀘스트 바디(교제 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
+		emailService.emailInsert(emailVO);
+		return "redirect:email/emailList";
 	}
 	
 	// 보낸메일 전체조회

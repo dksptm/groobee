@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
- 	<select id="selectInboxAll" resultType="EmailVO"> <!-- RESULTTYPE 2개 있어도 되나..? -->
+ 	<select id="selectInboxAll" resultType="EmailVO">
   		SELECT  RN
   		       ,REC_EMAIL_NO
                ,SEN_EMAIL_NO
@@ -16,35 +16,26 @@
         		       ROWNUM RN,
         		       INBOX.*
         		FROM   INBOX
-        		WHERE  ROWNUM <![CDATA[<=]]> (#{page} * 5)) a
-        		AND    RECP = #{empId}) <!-- 이 조건이 여기 붙는게 맞나?.. -->
-        WHERE a.rn > (#{page} - 1) * 5 <!-- 추후 로그인 구현되면 테스트 해 보기. -->
+        		WHERE  ROWNUM <![CDATA[<=]]> (#{page} * 5)
+        		AND    RECP = #{empId})
+         ) a
+        WHERE a.rn > (#{page} - 1) * 5
   	</select>
   	
-  	<!-- 
-  	<insert id="insertEmail" parameterType="EmailVO">
+  <insert id="insertEmail" parameterType="map" statementType="CALLABLE">
+    <![CDATA[
+    CALL insert_email(
+        #{sender, mode=IN, jdbcType=VARCHAR},
+        #{title, mode=IN, jdbcType=VARCHAR},
+        #{cntn, mode=IN, jdbcType=VARCHAR},
+        #{recp, mode=IN, jdbcType=VARCHAR},
+        #{refer, mode=IN, jdbcType=VARCHAR},
+        #{custNo, mode=IN, jdbcType=VARCHAR}
+    )
+    ]]>
+</insert>
 
-  		<selectKey keyProperty="senEmailNo"
-  				   resultType="string"
-  				   order="BEFORE">
-  			SELECT 'sen' || seq_email_no.nextval AS senEmailNo FROM dual
-  		</selectKey>
-  		<selectKey keyProperty="chainMailNo"
-  				   resultType="string"
-  				   order="BEFORE">
-  		    SELECT 'cno' || seq_chain_no.nextval AS chainMailNo FROM dual  		
-  		</selectKey>
-  		<selectKey keyProperty="recEmailNo"
-  				   resultType="string"
-  				   order="BEFORE">
-  			SELECT 'rno' || seq_inbox_no.nextval  AS recEmailNo FROM dual
-  		</selectKey>
-  		 INSERT ALL
-     		INTO email (sen_email_no, sender, title, cntn, sent_dt, email_stat, chain_Mail_No, cust_no) 
-     		VALUES (#{senEmailNo}, #{sender}, #{title}, #{cntn}, sysdate, default, #{chainMailNo}, #{custNo])
-     		INTO inbox (rec_email_no, sen_email_no, recp, refer, email_stat,  cust_no, file_no) 
-  	</insert>
-     		VALUES (#{recEmailNo}, #{senEmailNo}, #{recp}, #{refer}, default, #{custNo}, null) <!-- file_no는 if를 써야됨. -->
+  	
   	<select id="count">
   		SELECT count(*)
   		FROM INBOX
@@ -98,7 +89,7 @@
 	<update id="restoreMail" parameterType="EmailVO">
 	  	UPDATE email
 		SET email_stat = '3B1b'
-		WHERE sen_email_no = #{senEmailNo}<!-- 선택한 메일의 번호..파라미터로 넘어오는. -->
+		WHERE sen_email_no = #{senEmailNo}
   	</update>
   	
   	<!-- 주소록 조회. 세션의 id와 같은 고객사에 속하는 사원들의 일부 정보를 가린 채 Select -->
