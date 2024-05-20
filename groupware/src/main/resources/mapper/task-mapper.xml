@@ -5,7 +5,6 @@
 <mapper namespace="com.samjo.app.project.mapper.ProjectMapper">
   <!-- 상시업무, 협력업체 -->
   
-  
   <!-- 상시(주기적) 업무 조회 -->
 	<select id="selectReguAllList" resultType="ProjectVO">
 	SELECT 			t.task_no
@@ -20,10 +19,16 @@
 	
 	<!-- 상시(주기적)업무 등록 -->
   	
-  
-  
-  
-  
+  	
+  	<!-- 상시(주기적)업무 수정 -->
+  	
+  	
+	<!-- 상시(주기적)업무 삭제 -->  
+	<delete id="deleteRegu" parameterType="int">
+		DELETE FROM coop_co
+		WHERE coop_co_no = #{coopCoNo}
+	</delete>
+	  
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO">
 		SELECT coop_co_no
@@ -38,12 +43,12 @@
 	</select>
 	
 	<!-- 협력업체 등록 -->
-		<insert id="insertCoop" parameterType="ProjectVO"> 
-			<selectKey keyProperty="coopCoNo" order="BEFORE"
+	<insert id="insertCoop" parameterType="ProjectVO"> 
+		<selectKey keyProperty="coopCoNo" order="BEFORE"
 			resultType="Integer">
 			SELECT NVL(MAX(coop_co_no),0) +1 
 			FROM coop_co
-		</selectKey>
+	</selectKey>
 		INSERT INTO coop_co (coop_co_no
                      ,task_no 
                      ,co_name 

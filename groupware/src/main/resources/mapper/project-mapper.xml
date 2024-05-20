@@ -88,6 +88,7 @@
 			       ON (t.task_no = e.task_no)
 	ORDER BY t.task_no
 	</select>
+	
 	<!-- 프로젝트(하위) 단건 -->
 	<select id="selectTask" resultType="ProjectVO">
 		SELECT p.prjt_id    
