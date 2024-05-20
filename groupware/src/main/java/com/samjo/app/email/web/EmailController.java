@@ -50,19 +50,16 @@ public class EmailController {
 	}
 	
 	// 메일작성
-	// Insert에 Get / Post 둘다 매핑하는 이유 
-	// => 처음 작성페이지에서는 빈값이 넘어옴 Get
-	// => 폼 작성후 보낼때는 데이터를 리퀘스트바디에 싣고 넘어가야 함 Post
 	@GetMapping("emailWrite")
 	public String empInsertForm(Model model, HttpServletRequest req) {
 		//내 경우 emp레퍼런스랑 다르게, 세션에서 계정 id를 받아와서 보내는사람 칸에 자동입력 시켜야함
 		HttpSession session = req.getSession();
 		//세션에서 로그인한 계정의 id를 받아온다.
-		String empId = (String)session.getAttribute("empId");
-		EmailVO emailVO = new EmailVO();
-		emailVO.setSender(empId);
-		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
-		//model.addAttribute("empId", "test01");
+//		String empId = (String)session.getAttribute("empId");
+//		EmailVO emailVO = new EmailVO();
+//		emailVO.setSender(empId);
+//		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
+		model.addAttribute("empId", "KHJ11111");
 	return "email/emailWrite";
 	}
 	
@@ -117,7 +114,7 @@ public class EmailController {
 	@ResponseBody
 	public List<EmailVO> ChainMailList(@RequestBody EmailVO emailVO, HttpServletRequest req) {
 		//수신 상세화면에서, 답신을 눌렀을 경우 chain_mail_no를 부여?
-		//아니면, 메일 생성시 자동(selectKey)로 생성?
+		//아니면, 메일 생성시 자동(selectKey)로 생성? > 이게 더 명확해 보임. 이거로 결정.
 		EmailVO chainMailVO = new EmailVO();
 		HttpSession session = req.getSession();
 		// 예상대로 로직 구상부터 만만찮다. 일단 여기까지 ㅠ(0517)
