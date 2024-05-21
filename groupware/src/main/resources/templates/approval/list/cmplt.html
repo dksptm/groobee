@@ -44,10 +44,16 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${doc.deptName} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
-							<td>[[ ${doc.taskCount} ]]
-								<th:block th:each="task : ${doc.taskList}"> 
-									<span>[[ ${task.taskName} ]]</span>
+							<td class="taskTitle">
+								<span th:text="${doc.taskCount != 0 ? doc.taskList[0].taskName : '-'}"></span>
+								<span th:text="${doc.taskCount > 1 ? '외' : ''}"></span>&ensp;
+								<span th:text="${doc.taskCount > 1 ? doc.taskCount - 1 : ''}"></span>
+								<div class="taskList" style="display:none;">
+								<th:block th:each="task : ${doc.taskList}">
+									<span>[[ ${task.deptName} ]]&ensp;[[ ${task.taskName} ]]</span>
+									<br>
 								</th:block>
+								</div>
 							</td>
 							<td>[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>

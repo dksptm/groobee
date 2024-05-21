@@ -49,7 +49,8 @@
 								<span th:text="${doc.taskCount > 1 ? doc.taskCount - 1 : ''}"></span>
 								<div class="taskList" style="display:none;">
 								<th:block th:each="task : ${doc.taskList}">
-									<p>[[ ${task.deptName} ]]&ensp;[[ ${task.taskName} ]]</p>
+									<span>[[ ${task.deptName} ]]&ensp;[[ ${task.taskName} ]]</span>
+									<br>
 								</th:block>
 								</div>
 							</td>
@@ -78,8 +79,10 @@
 <script>
 	$(function(){
 		
+		$('.taskList').slideDown();
+		
 		$('.taskTitle').hover(function(){
-			$('.taskList').toggle();
+			$('.taskList').slideToggle();
 		})
 		
 	})

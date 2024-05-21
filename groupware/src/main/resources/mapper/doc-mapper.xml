@@ -268,7 +268,12 @@
 				WHERE 
 						d.cust_no = #{emp.custNo} 
 				AND 
-						d.doc_stat = '4B3b' OR d.doc_stat = '4B4b'
+						(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
+						<choose>
+							<when test="sch.schTaskNo != 0">
+								AND td.task_no = #{sch.schTaskNo}
+							</when>
+						</choose>
 				GROUP BY 
 						 d.doc_no
 					    ,d.dept_id
