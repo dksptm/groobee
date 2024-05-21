@@ -123,24 +123,32 @@
 			SELECT NVL(MAX(task_no),0) +1 
 			FROM task_common
 		</selectKey>
-		INSERT  INTO task_common(task_no 
-			                    ,task_name 
-			                    ,task_start_dt
-			                    ,task_due_dt 
-			                    ,task_type 
-			                    ,standard_no
-			                    ,prjt_mat 
-			                    ,dept_id
-			                    ,cust_no)
-					VALUES (#{taskNo}
-							,#{taskName}
-							,#{taskStartDt}
-							,#{taskDueDt}
-							,#{taskType}
-							,#{standardNo}
-							,#{prjtMat}
-							,#{deptId}
-							,#{custNo})
+		INSERT INTO task_common (
+							    task_no,
+							    task_name,
+							    task_purpose,
+							    task_cntn,
+							    task_start_dt,
+							    task_due_dt,
+							    task_type,
+							    standard_no,
+							    prjt_mat,
+							    dept_id,
+							    cust_no
+							)
+							VALUES (
+							    '0001',
+							    'Task-09',
+							    '업무공통목적9',
+							    '업무공통내용9',
+							    TO_DATE('2023-10-01', 'YYYY-MM-DD'),
+							    TO_DATE('2023-10-30', 'YYYY-MM-DD'),
+							    '5A1a',
+							    'st01',
+							    '5B1b',
+							    (SELECT dept_id FROM dept WHERE dept_name = '개발부'),
+							    (SELECT emp_id FROM emp WHERE emp_name = '이아영')
+							)
 		</insert>
 	<!-- 프로젝트(상위) 업무 수정 -->
 	
