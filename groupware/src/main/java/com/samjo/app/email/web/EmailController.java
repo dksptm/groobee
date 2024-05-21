@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.service.PageDTO;
@@ -76,17 +77,12 @@ public class EmailController {
 	}
 	
 	
-	// 내 경우, 여기에서 작성한 데이터를 1:1로 받는 형식이다.
 	@PostMapping("emailSend")
 	public String emailSend(EmailVO emailVO) {
-		int eId = emailService.emailInsert(emailVO);
-		String uri = null;
-		if(eId > -1) {
-			uri = "redirect:empInfo?employeeId=" + eId;
-		} else {
-			uri = "email/emailSend";
-		}
-	return uri;
+		//리퀘스트 바디(교재 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
+		//수정. 그냥 폼데이터 받는걸로 변경
+		emailService.emailInsert(emailVO);
+		return "email/emailWrite";
 	}
 	
 	// 보낸메일 전체조회
@@ -113,11 +109,10 @@ public class EmailController {
 	// 주고받은메일(ChainMailNo)로 엮인 메일들을 조회하는.
 	@ResponseBody
 	public List<EmailVO> ChainMailList(@RequestBody EmailVO emailVO, HttpServletRequest req) {
-		//수신 상세화면에서, 답신을 눌렀을 경우 chain_mail_no를 부여?
-		//아니면, 메일 생성시 자동(selectKey)로 생성? > 이게 더 명확해 보임. 이거로 결정.
+		//메일 생성 시 자동으로 chain_mail_no가 생성됨
+		//아깝긴 한데 반드시 활용한다는 생각은 하지말자.
 		EmailVO chainMailVO = new EmailVO();
 		HttpSession session = req.getSession();
-		// 예상대로 로직 구상부터 만만찮다. 일단 여기까지 ㅠ(0517)
 		return emailService.chainMailList();
 	}
 	
