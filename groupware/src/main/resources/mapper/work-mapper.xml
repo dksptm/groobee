@@ -5,10 +5,10 @@
   <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
   <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
 SELECT t.*
-FROM (SELECT f.*
+FROM (SELECT rownum rn, 
+                     f.*
       FROM (SELECT w.*
-            FROM (SELECT rownum rn,
-                         e.*
+            FROM (SELECT e.*
                   FROM (SELECT
                                i.dt,
                                j.emp_no,
@@ -27,13 +27,11 @@ FROM (SELECT f.*
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
                          ORDER BY dt) e
-                    WHERE rownum <![CDATA[<=]]> (#{page} * 5) ) w) f
-           WHERE    wk_yn   = #{wkYn} and
-                    wk_stat = #{wkStat} and
-                    wk_site = #{wkSite} and
-                         dt <![CDATA[<=]]> #{oneDate}
-                                
-            ) t
+                    WHERE    wk_yn   = #{wkYn} and
+                             wk_stat = #{wkStat} and
+                             wk_site = #{wkSite} and
+                                   dt <![CDATA[<=]]>  #{oneDate} ) w
+            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
 WHERE t.rn > (#{page} -1) * 5
   </select>
 	<!-- 페이징 위한 count. -->

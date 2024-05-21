@@ -14,6 +14,7 @@ public class WorkSearchVO {
 	private String wkSite;
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date oneDate;
+	private int totalCnt;
 	/*
 	 * @DateTimeFormat(pattern = "yyyy/MM/dd") private Date twoDate;
 	 */

@@ -13,7 +13,7 @@
 						<button type="button" class="btn btn-primary test3">출근</button>
 						<button type="button" class="btn btn-primary">퇴근</button>
 					</div>
-					<form name="Listform" th:action="@{/worklist}" method="GET"
+					<form name="Listform" th:action="@{/worklist}" method="Get"
 						th:object="${filter}">
 						<div>
 							<br> <input id="oneDate" th:field="*{oneDate}" type="Date">
@@ -95,20 +95,18 @@
 			</div>
 		</div>
 
-
 		<script>
-			$('#filter').on('click', filterss);
-		
-
-			function filterss() {
-
-				let oneDate = $('#oneDate').val();
-				let wkYn = $('#wkYn').val();
-				let wkStat = $('#wkStat').val();
-				let wkSite = $('#wkSite').val();
-				let td = $(tr).children();
-				
+			$('#filter').on('click', filters);
+	
+			function filters() {
+				var oneDate = $('#oneDate').val();
+				var wkYn = $('#wkYn').val();
+				var wkStat = $('#wkStat').val();
+				var wkSite = $('#wkSite').val();
+				var tr = $('tbody').children('tr');
 				console.log(wkYn);
+				console.log(wkStat);
+				console.log(wkSite);
 				
 				$.ajax({
 					url:'worklist',
@@ -119,16 +117,15 @@
 						wkStat:  wkStat,
 						wkSite:  wkSite
 						},
-					success: function(e){
-						$('#infos').html('');
-						
-						
-						console.log('응답');
+					success: function(info){
+						  //$(tr).html('');
+						  
+						  
+						  
+						  
+						console.log('성공');
 					}
-					
 				})
-				
-
 			};
 		</script>
 	</th:block>
