@@ -13,14 +13,16 @@ public interface DocService {
 	// 전체페이지
 	public int count();
 	// 한 직원이 작성한 모든문서.
-	public List<DocVO> getMyDocList(String empId);	
+	public List<DocVO> getMyDocList(String empId, SearchVO searchVO);
+	public int countEmpDocs(String empId);
 	// 내가 현재 결재해야할 문서리스트.
-	public List<DocVO> getMyAprList(String empId);
+	public List<DocVO> getMyAprList(String empId, SearchVO searchVO);
+	public int countEmpApr(String empId);
 	// 전체문서 중 결재진행중인 문서리스트
-	public List<DocVO> getIngDocList(EmpVO empVO);
+	public List<DocVO> getIngDocList(EmpVO empVO, SearchVO searchVO);
+	public int countIng(EmpVO empVO);
 	// 전체문서 중 완료 문서리스트
 	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO);
-	// 			- 전체페이지
 	public int countCmplt(EmpVO empVO);
 	
 	// 단건조회

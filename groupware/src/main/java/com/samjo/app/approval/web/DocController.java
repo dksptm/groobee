@@ -48,13 +48,24 @@ public class DocController {
 	
 	// 한 직원이 작성한 문서 전체 조회.
 	@GetMapping("myDocList")
-	public String myDocList(Model model,  Authentication authentication) {
+	public String myDocList(SearchVO searchVO, Model model,  
+								Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
-            List<DocVO> list = docService.getMyDocList(empId);
+            List<DocVO> list = docService.getMyDocList(empId, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empId));
+            
             model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "myDocList");
+            
             return "approval/list/empDocs";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");
@@ -64,13 +75,24 @@ public class DocController {
 	
 	// 한 직원이 현재 결재해야할 문서리스트.
 	@GetMapping("myAprList")
-	public String myAprList(Model model, Authentication authentication) {
+	public String myAprList(SearchVO searchVO, Model model, 
+								Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
-            List<DocVO> list = docService.getMyAprList(empId);
+            List<DocVO> list = docService.getMyAprList(empId, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpApr(empId));
+            
             model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "myAprList");
+            
             return "approval/list/empAprs";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");
@@ -80,17 +102,28 @@ public class DocController {
 	
 	// 전체문서 중 결재진행 중 문서.
 	@GetMapping("docIng")
-	public String docIng(Model model, Authentication authentication) {
+	public String docIng(SearchVO searchVO, Model model, 
+							Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
             String custNo = loginUserVO.getCustNo();
             String deptId = loginUserVO.getDeptId();
             String permId = loginUserVO.getPermId();
+            
             EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
-            List<DocVO> list = docService.getIngDocList(empVO);
+            List<DocVO> list = docService.getIngDocList(empVO, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countIng(empVO));
+            
             model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "docIng");
+            
             return "approval/list/ing";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");
@@ -100,22 +133,28 @@ public class DocController {
 	
 	// 전체문서 중 결재완료/반려 문서.
 	@GetMapping("docCmplt")
-	public String docCmplt(SearchVO searchVO, Model model, Authentication authentication) {
+	public String docCmplt(SearchVO searchVO, Model model, 
+								Authentication authentication) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
             String custNo = loginUserVO.getCustNo();
             String deptId = loginUserVO.getDeptId();
             String permId = loginUserVO.getPermId();	
+            
             EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
             PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO));
             List<DocVO> list = docService.getCmpltDocList(empVO,searchVO);
+            
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "docCmplt");
+            
             return "approval/list/cmplt";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");

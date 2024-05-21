@@ -11,6 +11,7 @@
 		<div class="mt-3 pt-3">
 			<h2 class="m-0 p-0">완료 문서</h2>
 			<p class="mt-2">전체 문서 중 최종결재완료 또는 반려문서를 조회합니다.</p>
+			
 			<hr>
 		</div>
 		
@@ -54,9 +55,35 @@
 				</table>
 			</div>
 			<div>
-				<!-- 페이징공간 start -->				
-				<div id="pageArea">
-					<th:block th:replace="approval/list/page :: Page"></th:block>
+			<!-- 페이징공간 -->
+				<div>
+					<th:block th:if="${pageDTO.totalCnt} != 0">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<th:block th:if="${pageDTO.prev}">
+									<li class="page-item prev">
+										<a th:href="@{docCmplt?page={pageNum}(pageNum=${pageDTO.startPage - 1})}"
+										   class="page-link"><i class="bx bx-chevron-left"></i></a>
+									</li>
+								</th:block>
+								<th:block th:each="num : ${#numbers.sequence(1, pageDTO.endPage)}">
+									<li class="page-item "
+										th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
+										<a th:href="@{docCmplt?page={pageNum}(pageNum=${num})}" class="page-link">[[${num}]]</a>
+									</li>
+								</th:block>
+								<th:block th:if="${pageDTO.next}">
+									<li class="page-item next">
+										<a th:href="@{docCmplt?page={pageNum}(pageNum=${pageDTO.startPage + 1})}"
+										   class="page-link"><i class="bx bx-chevron-right"></i></a>
+									</li>
+								</th:block>
+							</ul>
+						</nav>
+					</th:block>
+					<th:block th:unless="${pageDTO.totalCnt} != 0">
+						<p>현재 완료된 등록된 문서가 없습니다.</p>
+					</th:block>
 				</div>
 			</div>
 			

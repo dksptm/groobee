@@ -35,8 +35,7 @@ public class DocServiceImpl implements DocService {
 	public List<DocVO> docList(SearchVO searchVO) {
 		return docMapper.selectDocAll(searchVO);
 	}
-	
-	// 문서전체조회 - 전체페이지 수.
+	//		- 전체페이지 수.
 	@Override
 	public int count() {
 		return docMapper.count();
@@ -44,29 +43,39 @@ public class DocServiceImpl implements DocService {
 
 	// 문서조회 - 한 emp가 작성한 모든문서.
 	@Override
-	public List<DocVO> getMyDocList(String empId) {
-		return docMapper.selectEmpDocs(empId);
+	public List<DocVO> getMyDocList(String empId, SearchVO searchVO) {
+		return docMapper.selectEmpDocs(empId, searchVO);
+	}
+	@Override
+	public int countEmpDocs(String empId) {
+		return docMapper.countEmpDocs(empId);
 	}
 	
 	// 문서조회 - 한 emp가 결재해야할 문서목록.
 	@Override
-	public List<DocVO> getMyAprList(String empId) {
-		return docMapper.selectEmpApr(empId);
+	public List<DocVO> getMyAprList(String empId, SearchVO searchVO) {
+		return docMapper.selectEmpApr(empId, searchVO);
+	}
+	@Override
+	public int countEmpApr(String empId) {
+		return docMapper.countEmpApr(empId);
 	}
 	
 	// 문서조회 - 전체문서 중 결재진행중 문서목록.
 	@Override
-	public List<DocVO> getIngDocList(EmpVO empVO) {
-		return docMapper.selectIngDocs(empVO);
+	public List<DocVO> getIngDocList(EmpVO empVO, SearchVO searchVO) {
+		return docMapper.selectIngDocs(empVO, searchVO);
+	}
+	@Override
+	public int countIng(EmpVO empVO) {
+		return docMapper.countIng(empVO);
 	}
 	
-	// 문서조회 - 전체문서 중 최종결재완료,반려 문서목록.
+	// 문서조회 - 전체문서 중 최종결재완료/반려 문서목록.
 	@Override
 	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO) {
 		return docMapper.selectCmpltDocs(empVO, searchVO);
 	}
-	
-	// 		 - 전체페이지.
 	@Override
 	public int countCmplt(EmpVO empVO) {
 		return docMapper.countCmplt(empVO);
@@ -79,7 +88,6 @@ public class DocServiceImpl implements DocService {
 		docVO.setAprs(aprMapper.selectDocApr(docVO.getDocNo()));
 		//docVO.setRefs(aprMapper.selectDocRefs(docVO.getDocNo()));
 		docVO.setFiles(docMapper.selectDocFile(docVO.getDocNo()));
-		//System.out.println(docVO.getRefs());
 		return docVO;
 	}
 	
@@ -98,11 +106,10 @@ public class DocServiceImpl implements DocService {
 	// 문서작성.
 	@Override
 	public int docInfoInsert(DocVO docVO) {
-		//System.out.println("docVO ===> " + docVO);
 		// 문서테이블 등록.
 		int result = docMapper.insertDoc(docVO);
-		// 문서등록 완료 시.
-		if(result == 1) {
+		// 연관테이블 등록.
+		if(result == 1) { // 문서등록 성공 시.
 			// 1.결재자 등록.
 			docVO.getAprs().forEach(apr -> {
 				apr.setDocNo(docVO.getDocNo());
@@ -116,12 +123,6 @@ public class DocServiceImpl implements DocService {
 				int ret = tempMapper.insertPto(docVO.getPto());
 				System.out.println("ret==>"+ret);
 			}
-			// 2.첨부파일 정보등록.
-			/*
-			 * if(docVO.getFiles() != null) { docVO.getFiles().forEach(file -> {
-			 * file.setDocNo(docVO.getDocNo()); file.setUplEmp(docVO.getDeptId());
-			 * docMapper.insertDocFile(file); }); }
-			 */
 			// 3.참조자 등록.
 			if(docVO.getRefs() != null) {
 				docVO.getRefs().forEach(ref -> {
@@ -137,7 +138,7 @@ public class DocServiceImpl implements DocService {
 			System.out.println("docVO ===> " + docVO);
 			// 5.문서번호 리턴.
 			return docVO.getDocNo();
-		} else {  // 문서등록 실패 시.		
+		} else {	// 문서등록 실패 시.		
 			return -1; 
 		}
 	}
@@ -184,12 +185,6 @@ public class DocServiceImpl implements DocService {
 				int ret = tempMapper.deletePto(docVO.getDocNo());
 				System.out.println("delete-ret==>"+ret);
 			}
-			// 2.첨부파일 정보등록.
-			/*
-			 * if(docVO.getFiles() != null) { docVO.getFiles().forEach(file -> {
-			 * file.setDocNo(docVO.getDocNo()); file.setUplEmp(docVO.getDeptId());
-			 * docMapper.insertDocFile(file); }); }
-			 */
 			// 3.참조자 기존참조자 삭제 후 재등록.
 			aprMapper.deleteRef(docVO.getDocNo());
 			if(docVO.getRefs() != null) {
@@ -204,7 +199,6 @@ public class DocServiceImpl implements DocService {
 					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
 				});				
 			}
-			//System.out.println("docVO ===> " + docVO);
 			// 5.문서번호 리턴.
 			return docVO.getDocNo();
 		} else {

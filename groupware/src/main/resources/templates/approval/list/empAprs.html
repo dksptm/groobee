@@ -45,11 +45,7 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
 							<td>[[ ${doc.deptName} ]]</td>
-							<th:block th:if="${#lists.size(doc.taskList) > 0}">
-							<td>[[ ${doc.taskList[0].taskName} ]]
-								<th:block th:if="${#lists.size(doc.taskList) > 1}">
-								 외</th:block></td>
-							</th:block>
+							<td>[[ ${doc.task} ]]</td>
 							<td>[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>
 							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
@@ -60,8 +56,10 @@
 				</table>
 			</div>
 			<div>
-			<!-- 페이징공간 -->
-			
+				<!-- 페이징공간 -->
+				<div id="pageArea">
+					<th:block th:replace="approval/list/page :: Page"></th:block>
+				</div>
 			</div>
 			
 		</div>
