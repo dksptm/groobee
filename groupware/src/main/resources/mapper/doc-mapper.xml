@@ -29,7 +29,7 @@
 		<collection property="taskList" column="doc_no" javaType="java.util.List" ofType="ProjectVO" select="docMapTaskList">
 			<id property="taskNo" column="task_no"/>
 			<result property="taskName" column="task_name"/>
-			<result property="deptName" column="task_dept_name"/>
+			<result property="deptName" column="dept_name"/>
 		</collection>
 	</resultMap>
 
@@ -63,27 +63,26 @@
 	</select>
 	
 	<!-- 한 직원이 작성한 모든문서 -->
-	<select id="selectEmpDocs" parameterType="map" resultType="DocVO">
+	<select id="selectEmpDocs" parameterType="map" resultMap="docMap">
 		SELECT 
-		        b.rn
-		        ,b.doc_no
-		        ,b.temp_name
-		        ,b.task
-		        ,b.title
-		        ,b.draft_stat_name
-		        ,b.doc_stat_name
-		        ,b.cur_apr
-		        ,b.draft_dt
+		         g.rn
+		        ,g.doc_no
+		        ,g.temp_name
+		        ,g.task_count
+		        ,g.title
+		        ,g.draft_stat_name
+		        ,g.doc_stat_name
+		        ,g.cur_apr
+		        ,g.draft_dt
 		FROM
 		        (SELECT 
 		                ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
 		                ,d.doc_no
-		                ,get_tempname(d.temp_id) AS temp_name
-		                ,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
-		                ||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+		                ,get_tempname(d.temp_id) 	AS temp_name
+		                ,COUNT(td.task_no)		 	AS task_count
 		                ,d.title
 		                ,get_codename(d.draft_stat) AS draft_stat_name
-				        ,get_codename(d.doc_stat) AS doc_stat_name
+				        ,get_codename(d.doc_stat)	AS doc_stat_name
 		                ,NVL2(a.apr_yn, a.apr_name|| ' ' ||get_codename(a.apr_yn), '-') AS cur_apr
 		                ,d.draft_dt 
 		        FROM	
@@ -100,9 +99,9 @@
 		                ,d.doc_stat
 		                ,a.apr_yn
 		                ,a.apr_name
-		                ,d.draft_dt     ) b
-		WHERE	b.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		b.rn > (#{sch.page} - 1) * 5
+		                ,d.draft_dt     ) g
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND		g.rn > (#{sch.page} - 1) * 5
 	</select>
 	
 	<!-- 위의 문서리스트(작성문서)의 카운트. -->
@@ -110,29 +109,29 @@
 		SELECT  COUNT(*)
 		FROM
 		        (SELECT d.doc_no
-		                ,MIN(td.task_no)
-		        FROM	doc d LEFT OUTER JOIN task_doc td 
+		                ,COUNT(td.task_no)
+		         FROM	doc d LEFT OUTER JOIN task_doc td 
 		                                   ON (d.doc_no = td.doc_no)
 		                                 JOIN apr a 
 		                                   ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
-		        WHERE	d.draft = #{eid}	
-		        GROUP BY d.doc_no)
+		         WHERE	d.draft = #{eid}	
+		       	 GROUP BY d.doc_no)
 	</select>
 
 	<!-- 내가 현재 결재해야할 문서리스트. -->
-	<select id="selectEmpApr" parameterType="map" resultType="DocVO">
+	<select id="selectEmpApr" parameterType="map" resultMap="docMap">
 		SELECT 
-				b.rn
-				,b.doc_no
-				,b.draft
-				,b.dept_id
-				,b.temp_name
-				,b.dept_name
-				,b.task
-				,b.title
-				,b.draft_name
-				,b.cur_apr
-				,b.draft_dt
+				 g.rn
+				,g.doc_no
+				,g.draft
+				,g.dept_id
+				,g.temp_name
+				,g.dept_name
+				,g.task_count
+				,g.title
+				,g.draft_name
+				,g.cur_apr
+				,g.draft_dt
 		FROM
 				(SELECT 
 						ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
@@ -141,11 +140,10 @@
 						,d.dept_id
 						,get_tempname(d.temp_id) AS temp_name
 						,get_deptname(d.dept_id) AS dept_name
-						,NVL2(MIN(td.task_no), get_taskname(MIN(td.task_no)), '-')
-						||' '|| DECODE(COUNT(td.task_no), 0, ' ', 1, ' ', '외') AS task
+						,COUNT(td.task_no)		 AS task_count
 						,d.title
 						,d.draft_name
-						,get_codename(a.apr_yn) cur_apr
+						,get_codename(a.apr_yn)  AS cur_apr
 						,d.draft_dt 
 				FROM	
 						doc d LEFT OUTER JOIN task_doc td 
@@ -155,7 +153,7 @@
 				WHERE	a.apr_emp = #{eid}	
 				AND		d.doc_stat = '4B2b'
 				GROUP BY 
-						d.doc_no
+						 d.doc_no
 						,d.draft
 						,d.dept_id
 						,d.temp_id
@@ -163,9 +161,9 @@
 						,d.title
 						,d.draft_name
 						,a.apr_yn
-						,d.draft_dt 	) b
-		WHERE	b.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		b.rn > (#{sch.page} - 1) * 5
+						,d.draft_dt 	) g
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND		g.rn > (#{sch.page} - 1) * 5
 	</select>
 
 	<!-- 위의 문서리스트(결재해야할 문서)의 카운트. -->
@@ -173,7 +171,7 @@
 		SELECT  COUNT(*)
 		FROM
 				(SELECT d.doc_no
-						,MIN(td.task_no)
+						,COUNT(td.task_no)
 				FROM	doc d LEFT OUTER JOIN task_doc td 
 				        				   ON (d.doc_no = td.doc_no)
 				                         JOIN apr a 
@@ -186,15 +184,15 @@
 	<!-- 전체문서 중 결재진행 중 문서. -->
 	<select id="selectIngDocs" parameterType="map" resultMap="docMap">
 		SELECT	
-				 k.rn
-				,k.doc_no
-				,k.dept_name
-				,k.temp_name
-				,k.task_count
-				,k.title
-				,k.draft_name
-				,k.cur_apr
-				,k.draft_dt
+				 g.rn
+				,g.doc_no
+				,g.dept_name
+				,g.temp_name
+				,g.task_count
+				,g.title
+				,g.draft_name
+				,g.cur_apr
+				,g.draft_dt
 		FROM
 				(SELECT
 						ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
@@ -221,9 +219,9 @@
 						,d.draft_name
 						,a.apr_yn
 						,a.apr_name
-						,d.draft_dt		) k
-		WHERE	k.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		k.rn > (#{sch.page} - 1) * 5
+						,d.draft_dt		) g
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND		g.rn > (#{sch.page} - 1) * 5
 	</select>
 
 	<!-- 위의 문서리스트(결재진행 중 문서)의 카운트. -->
@@ -244,15 +242,15 @@
 	<!-- 전체문서 중 완료된 문서 -->
 	<select id="selectCmpltDocs" parameterType="map" resultMap="docMap">
 		SELECT 
-			   	 k.rn
-			  	,k.doc_no
-			  	,k.dept_name
-			  	,k.temp_name
-			  	,k.task_count
-			  	,k.title
-			  	,k.draft_name
-			  	,k.doc_stat_name
-			    ,k.draft_dt
+			   	 g.rn
+			  	,g.doc_no
+			  	,g.dept_name
+			  	,g.temp_name
+			  	,g.task_count
+			  	,g.title
+			  	,g.draft_name
+			  	,g.doc_stat_name
+			    ,g.draft_dt
 		FROM    
 				(SELECT 
 						 ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
@@ -278,19 +276,20 @@
 					    ,d.title
 					    ,d.draft_name
 					    ,d.doc_stat
-					    ,d.draft_dt) k
-		WHERE 	k.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND 	k.rn > (#{sch.page} - 1) * 5
+					    ,d.draft_dt		) g
+		WHERE 	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND 	g.rn > (#{sch.page} - 1) * 5
 	</select>
 	
-	<select id="docMapTaskList" parameterType="int" resultType="ProjectVO">
+	<!-- resultmap의 collection의 select : taskList -->
+	<select id="docMapTaskList" resultType="ProjectVO">
 		SELECT
 		         td.task_no
-		        ,get_taskname(td.task_no) task_name
-		        ,get_deptname(t.dept_id)  task_dept_name
+		        ,get_taskname(td.task_no) AS task_name
+		        ,get_deptname(t.dept_id)  AS dept_name
 		FROM 
 		        task_doc td JOIN task_common t
-		                    ON (td.task_no = t.task_no)
+		                      ON (td.task_no = t.task_no)
 		WHERE	td.doc_no = #{doc_no}
 	</select>
 	
