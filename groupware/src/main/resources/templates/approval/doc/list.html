@@ -39,6 +39,7 @@
 					</div>
 					<!-- 페이징 -->
 					<div>
+					<th:block th:if="${pageDTO.totalCnt} != 0">
 						<nav aria-label="Page navigation">
 							<ul class="pagination justify-content-center">
 								<th:block th:if="${pageDTO.prev}">
@@ -61,6 +62,10 @@
 								</th:block>
 							</ul>
 						</nav>
+					</th:block>
+					<th:block th:unless="${pageDTO.totalCnt} != 0">
+						<p>현재 귀사에 등록된 문서가 없습니다.</p>
+					</th:block>
 					</div>
 					<!-- /페이징 -->
 				</div>

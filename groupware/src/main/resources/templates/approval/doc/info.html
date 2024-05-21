@@ -4,10 +4,6 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-	<!-- CKEditor -->
-	<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-	
-	
 	
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
@@ -354,7 +350,7 @@
 						if(ret.OUT == 'OK') {
 							alert('반려완료!\n기안자에게 알립니다.');
 							console.log(ret);
-							//location.href = "docInfo?docNo=" + obj.docNo;
+							location.href = "docInfo?docNo=" + obj.docNo;
 						} else if(ret.OUT == 'NG') {
 							alert('반려실패!\n다시확인해주세요.');
 							console.log(ret);

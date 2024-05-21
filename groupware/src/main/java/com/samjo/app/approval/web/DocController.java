@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.approval.service.DocService;
 import com.samjo.app.approval.service.DocVO;
@@ -18,15 +19,18 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.security.service.LoginUserVO;
+import com.samjo.app.upload.service.FileUploadService;
 
 @Controller
 public class DocController {
 	
 	DocService docService;
+	FileUploadService fileUploadService;
 	
 	@Autowired
-	public DocController(DocService docService) {
+	public DocController(DocService docService, FileUploadService fileUploadService) {
 		this.docService = docService;
+		this.fileUploadService = fileUploadService;
 	}
 
 	// 문서 전체조회.
@@ -44,13 +48,24 @@ public class DocController {
 	
 	// 한 직원이 작성한 문서 전체 조회.
 	@GetMapping("myDocList")
-	public String docList(Model model,  Authentication authentication) {
+	public String myDocList(SearchVO searchVO, Model model,  
+								Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
-            List<DocVO> list = docService.empDocList(empId);
+            List<DocVO> list = docService.getMyDocList(empId, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empId));
+            
             model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "myDocList");
+            
             return "approval/list/empDocs";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");
@@ -58,22 +73,93 @@ public class DocController {
         }
 	}
 	
-	// 로그인한 직원이 현재 결재해야할 문서리스트.
+	// 한 직원이 현재 결재해야할 문서리스트.
 	@GetMapping("myAprList")
-	public String aprList(Model model, Authentication authentication) {
+	public String myAprList(SearchVO searchVO, Model model, 
+								Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
             String empId = loginUserVO.getEmpId();
-            System.out.println("empId => " + empId);
-            List<DocVO> list = docService.getMyAprList(empId);
-            System.out.println("list =============> " + list + "============end.");
+            List<DocVO> list = docService.getMyAprList(empId, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpApr(empId));
+            
             model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "myAprList");
+            
             return "approval/list/empAprs";
         } else {
         	System.out.println("Not principal instanceof LoginUserVO");
         	return "test/test";
         }		
+	}
+	
+	// 전체문서 중 결재진행 중 문서.
+	@GetMapping("docIng")
+	public String docIng(SearchVO searchVO, Model model, 
+							Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+            LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
+            String empId = loginUserVO.getEmpId();
+            String custNo = loginUserVO.getCustNo();
+            String deptId = loginUserVO.getDeptId();
+            String permId = loginUserVO.getPermId();
+            
+            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
+            List<DocVO> list = docService.getIngDocList(empVO, searchVO);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countIng(empVO));
+            
+            model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "docIng");
+            
+            return "approval/list/ing";
+        } else {
+        	System.out.println("Not principal instanceof LoginUserVO");
+        	return "test/test";
+        }
+	}
+	
+	// 전체문서 중 결재완료/반려 문서.
+	@GetMapping("docCmplt")
+	public String docCmplt(SearchVO searchVO, Model model, 
+								Authentication authentication) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+            LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
+            String empId = loginUserVO.getEmpId();
+            String custNo = loginUserVO.getCustNo();
+            String deptId = loginUserVO.getDeptId();
+            String permId = loginUserVO.getPermId();	
+            
+            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO));
+            List<DocVO> list = docService.getCmpltDocList(empVO,searchVO);
+            
+            model.addAttribute("list", list);
+            model.addAttribute("pageDTO", pageDTO);
+            model.addAttribute("path", "docCmplt");
+            
+            return "approval/list/cmplt";
+        } else {
+        	System.out.println("Not principal instanceof LoginUserVO");
+        	return "test/test";
+        }
 	}
 	
 	// 문서 상세정보.
@@ -101,9 +187,15 @@ public class DocController {
 	
 	// 문서작성 저장.
 	@PostMapping("docInsert")
-	public String docInsertProcess(DocVO docVO) {
-		System.out.println("draftName =====>" + docVO.getDraftName());
+	public String docInsertProcess(DocVO docVO, MultipartFile[] filelist) {
+		//System.out.println("draftName =====>" + docVO.getDraftName());
 		int docNo = docService.docInfoInsert(docVO);
+		System.out.println("파일==> " + filelist.length);
+		System.out.println("파일==> " + filelist[0].isEmpty());
+		if(!filelist[0].isEmpty()) {
+			System.out.println("---파일입력---");
+			fileUploadService.uploadFileInfo(filelist, docVO.getDraft(), docVO.getDocNo() );
+		}
 		if(docNo != -1) {
 			return "redirect:docInfo?docNo=" + docNo;
 		}
@@ -133,7 +225,7 @@ public class DocController {
 	@PostMapping("docUpdate")
 	public String docUpdateProcess(DocVO docVO) {
 		int ret = docService.docInfoUpdate(docVO);
-		if(ret == 1) {
+		if(ret > 0) {
 			return "redirect:docInfo?docNo=" + docVO.getDocNo();
 		} else {
 			return "test/test";
