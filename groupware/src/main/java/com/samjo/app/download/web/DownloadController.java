@@ -15,6 +15,7 @@ public class DownloadController {
 	@Autowired
 	DownloadService downloadservice;
 
+
 	@GetMapping("/download/{type}/{format}/{year}/{month}/{day}/{fileName:.+}")
 	@ResponseBody
 	public ResponseEntity<Object> download(@PathVariable String type, 

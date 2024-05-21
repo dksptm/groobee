@@ -4,11 +4,66 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.solmodule.mapper.SolModMapper">
 
-	<!-- 전체목록 -->
+	<!-- 모듈 전체목록 -->
 	<select id="selectModAll" resultType="ModuleVO">
-		SELECT *
-		FROM mod
+		SELECT 	mod_id, 
+				mod_name, 
+				mod_stat, 
+				mod_info
+		FROM 	mod
+		ORDER BY mod_id
 	</select>
 	
+	<!-- 템플릿 전체목록 -->
+	<select id="selectTempAll" resultType="TempVO">
+		SELECT 	*
+		FROM 	temp
+		ORDER BY temp_no
+	</select>
+	
+	<!-- 템플릿 단건조회 -->
+	<select id="selectTemp" parameterType="String" resultType="TempVO">
+		SELECT 	*
+		FROM 	temp
+		WHERE temp_no = 'temp001'
+	</select>
+	
+	<!-- 고객사모달 -->
+	<select id="selectCustAll" resultType="CustVO">
+		SELECT 	cust_no, 
+				brn, 
+				cust_name, 
+				rep, 
+				cust_addr, 
+				cust_tel, 
+				pay_pic, 
+				pay_pic_tel
+		FROM 	cust
+	</select>
+	
+	<!-- 템플릿 등록 -->
+	<insert id="inserTemp" parameterType="TempVO">
+	<selectKey  keyProperty="tempNo"
+				resultType="String"
+				order="BEFORE">
+		SELECT 'temp' || LPAD(NVL(MAX(TO_NUMBER(SUBSTR(temp_no, -3))),0) +1, 3, '0') temp_no
+		FROM temp
+		WHERE temp_no LIKE 'temp' || '___'
+	</selectKey>
+		INSERT INTO temp(temp_no,
+						 temp_name,
+						 temp_info,
+						 save_name,
+						 upl_name,
+						 cust_no,
+						 temp_img)
+		VALUES(#{tempNo},
+			   #{tempName},
+			   #{tempInfo},
+			   #{saveName},
+			   #{uplName},
+			   #{custNo},
+			   #{tempImg})
+	</insert>	
 </mapper>
   

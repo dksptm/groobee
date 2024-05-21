@@ -8,6 +8,10 @@ public class TempVO {
 	// 실제경로, 호출경로 추가예정.
 	private String tempNo;
     private String tempName;
+    private String tempInfo;
+    private String saveName;
+    private String uplName;
+    private String custNo;
     private String tempImg;
     
     // 테스트용
