@@ -120,8 +120,8 @@
 			keyProperty="taskNo" 
 			resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(prjt_id),0) +1 
-			FROM prjt
+			SELECT NVL(MAX(task_no),0) +1 
+			FROM task_common
 		</selectKey>
 		INSERT  INTO task_common(task_no 
 			                    ,task_name 
