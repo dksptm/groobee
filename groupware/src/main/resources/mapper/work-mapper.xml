@@ -85,7 +85,7 @@ WHERE t.rn > (#{page} -1) * 5
 	
 	</update>
    -->
-    <insert id="workinsert" >
+    <insert id="workinsert">
 insert into wk(
                emp_id,
                dt,
