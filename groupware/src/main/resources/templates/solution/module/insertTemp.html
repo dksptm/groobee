@@ -96,7 +96,7 @@
 							</div>
 						</div>
 					</form>
-							<div class="mt-3 col-12 tempdiv"></div>
+					<div class="mt-3 col-12 tempdiv"></div>
 
 					<!--  작성완료 버튼 -->
 					<div class="mt-3 text-end">
@@ -112,10 +112,9 @@
 					
 					//고객사 모달처리
 					//모달창에서 선택한 고객사번호를 input창에 입력.
-						$(".selectCust").on("click", function(e){
-							$(".custName").val($('input:radio:checked').val());
-						})
-					
+					$(".selectCust").on("click", function(e){
+						$(".custName").val($('input:radio:checked').val());
+					})
 					
 					//업로드or직접입력 선택
 					//직접입력 Tag
@@ -169,144 +168,79 @@
 						});
 						
 						//템플릿 등록 버튼
-						$(".commitbtn").on("click", function(e) {
-							e.preventDefault();
-							
-							let formData = new FormData();
-							let fileInput = document.querySelector('input[name="uploadFiles2"]');
-							let fileList = fileInput.files;
-							for(let file of fileList){
-								formData.append('uploadFiles', file);
-							}
-							
-							//tempNo,tempName,tempInfo,saveName,uplName,custNo,tempImg;
-							let tempName = $('.tempname').val();
-							let tempInfo = $('.tempinfo').val();
-							let custNo = $('.custName').val();
-							
-							//파일업로드
-							$.ajax({
-					             url: 'uploadsAjax',
-					             beforeSend: function(xhr){
-								        xhr.setRequestHeader(header, token);
-								    },
-					             type: 'POST',
-					             processData: false,	
-					             contentType: false,	
-					             data: formData,               
-					             success: function(result){
-					            	 let path = '';
-					            	 for(let filePath of result){
-						                 path = filePath.split(":::");
-					            	 }
-				            	 	 let saveName = path[3];
-				            		 let uplName = saveName.split("/").pop();
-				            		 
-					                 //등록한 파일 미리보기 이미지 생성
-					                 $.ajax({   //C:\upload	  ┌>실제경로
-					                	    url: 'files/' + path[3],	// HTML 파일 가져올 경로
-					                	    dataType: "html",
-					                	    success: function (html){
-					                	    	$('.upload-sample').css('display', 'block');
-					                	    	$('div.upload-sample').html(html); // HTML 코드 붙여넣기
-					                	    	//$('.test2').css('visibility', 'hidden');
-					                	    	
-			            						var t = $('div.upload-sample')[0];
-			            						html2canvas(t).then(function(canvas) {
-		            							var myImg = canvas.toDataURL("image/png");
-		            							myImg = myImg.replace("data:image/png;base64,", "");
-	            								sreenShot($(".upload-sample"));
-		            							
-		            							function sreenShot(target){
-		            								var t = target[0];
-		            								html2canvas(t).then(function(canvas) {
-		            									var myImg = canvas.toDataURL("image/png");
-		            									myImg = myImg.replace("data:image/png;base64,", "");
-		            									
-		            									//템플릿 등록
-				            							$.ajax({
-				            								url : 'insertSolTemp', //'ImgSaveTest'
-				            				             	beforeSend: function(xhr){
-				            							        xhr.setRequestHeader(header, token);
-				            							    },
-				            								type : 'POST',
-				            								data : {
-				            									'imgSrc' : myImg,
-				            									'tempName' : tempName,
-				            									'tempInfo' : tempInfo,
-				            									'custNo' : custNo,
-				            									'saveName' : saveName,
-				            									'uplName' : uplName
-				            								},
-				            								dataType : 'text',
-				            								success : function(data) {
-				            									location.replace("/solTempList");
-				            									//console.log(data);
-				            								},
-				            								error : function(a, b, c) {
-				            									alert("error");
-				            								}
-				            							});
-		            								});
-	            								}
-		            							});
-				                	    }
-				                	});
-										
-					             },
-					             error: function(reject){	
-					                 console.log(reject);
-					             }
-					         });
-						});
+						$(".commitbtn").on("click", async function(e) {
+						    e.preventDefault();
+						    
+						    let formData = new FormData();
+						    let fileInput = document.querySelector('input[name="uploadFiles2"]');
+						    let fileList = fileInput.files;
+						    for(let file of fileList){
+						        formData.append('uploadFiles', file);
+						    }
+						    
+						    //템플릿 속성값 추가
+						    let tempName = $('.tempname').val();
+						    let tempInfo = $('.tempinfo').val();
+						    let custNo = $('.custName').val();
+						    
+						    try {
+						        // 파일 업로드
+						        let result = await $.ajax({
+						            url: 'uploadsAjax',
+						            beforeSend: function(xhr){
+						                xhr.setRequestHeader(header, token);
+						            },
+						            type: 'POST',
+						            processData: false,    
+						            contentType: false,    
+						            data: formData
+						        });
 						
-						//이미지화 테스트
-						$(".save_btn").on("click", function() {
-							sreenShot($(".upload-sample"));
-						});
-						function sreenShot(target){
-							var t = target[0];
-							html2canvas(t).then(function(canvas) {
-								//var myImg = canvas.toDataURL("image/png");
-								myImg = myImg.replace("data:image/png;base64,", "");
-							});
-							return 
-						}
+						        let path = '';
+						        for(let filePath of result){
+						            path = filePath.split(":::");
+						        }
+						        let saveName = path[3];
+						        let uplName = saveName.split("/").pop();
 						
-						//업로드 처리
-						$('.tempdiv').on('click', '.uploadBtn2', function(e){
-							let formData = new FormData(); // 유사) jQuery.serialize() or jQuery.serializeArray()
-							// 1) Form 태그 내부의 데이터를 한번에 담음
-							// 2) Ajax를 이용해서 'Content-type:multipart/form-data'를 보내야 하는경우 사용
-							
-							let fileInput = document.querySelector('input[name="uploadFiles2"]');
-							let fileList = fileInput.files;
+						        // 파일 미리보기 이미지 생성
+						        let html = await $.ajax({
+						            url: 'files/' + path[3],
+						            dataType: "html"
+						        });
+						        $('.upload-sample').css('display', 'block');
+						        $('div.upload-sample').html(html);
+						
+						        var t = $('div.upload-sample')[0];
+						        var canvas = await html2canvas(t);
+						        var myImg = canvas.toDataURL("image/png").replace("data:image/png;base64,", "");
+						
+						        // 템플릿 등록
+						        await $.ajax({
+						            url : 'insertSolTemp',
+						            beforeSend: function(xhr){
+						                xhr.setRequestHeader(header, token);
+						            },
+						            type : 'POST',
+						            data : {
+						                'imgSrc' : myImg,
+						                'tempName' : tempName,
+						                'tempInfo' : tempInfo,
+						                'custNo' : custNo,
+						                'saveName' : saveName,
+						                'uplName' : uplName
+						            },
+						            dataType : 'text'
+						        });
+						
+						        // 페이지 이동
+						        location.replace("/solTempList");
+						    } catch (error) {
+						        console.log("작업 중 오류 발생:", error);
+						    }
+						});
 
-							for(let file of fileList){
-								formData.append('uploadFiles', file);
-							}
-							
-					         $.ajax({
-					             url: 'uploadsAjax',	
-					             beforeSend: function(xhr){
-								        xhr.setRequestHeader(header, token);
-								    },
-					             type: 'POST',
-					             processData: false,	
-					             //기본값은 true, ajax 통신을 통해 데이터를 전송할 때, 기본적으로 key와 value값을 Query String으로 변환해서 전송.
-					             contentType: false,	
-					             // multipart/form-data타입을 사용하기위해 false 로 지정.
-					             data: formData,               
-					             success: function(result){
-					            	 console.log(result);
-					            	 
-					             },
-					             error: function(reject){	
-					                 console.log(reject);
-					             }
-					         });
-						})
-
+						
 					</script>
 				</div>
 			</div>

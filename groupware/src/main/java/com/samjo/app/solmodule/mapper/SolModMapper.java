@@ -21,6 +21,6 @@ public interface SolModMapper {
 	public List<TempVO> selectTempAll();
 	
 	//템플릿 상세조회
-	public TempVO selectTemp();
+	public TempVO selectTemp(String tempNo);
 	
 }

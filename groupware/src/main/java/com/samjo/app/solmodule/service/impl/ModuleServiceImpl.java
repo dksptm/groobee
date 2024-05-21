@@ -99,7 +99,7 @@ public class ModuleServiceImpl implements ModuleService{
 
 	@Override
 	public TempVO tempInfo(String tempNo) {
-		return solmodMapper.selectTemp();
+		return solmodMapper.selectTemp(tempNo);
 	}
 
 }
