@@ -44,7 +44,11 @@ public class DocServiceImpl implements DocService {
 	// 문서조회 - 한 emp가 작성한 모든문서.
 	@Override
 	public List<DocVO> getMyDocList(String empId, SearchVO searchVO) {
-		return docMapper.selectEmpDocs(empId, searchVO);
+		List<DocVO> list = docMapper.selectEmpDocs(empId, searchVO);
+		for(DocVO doc : list) {
+			System.out.println(doc.getTaskList());
+		}
+		return list;
 	}
 	@Override
 	public int countEmpDocs(String empId) {
