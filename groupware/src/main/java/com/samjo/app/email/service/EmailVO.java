@@ -20,7 +20,7 @@ public class EmailVO {
 	// inbox TABLE
 	private String recEmailNo;
 	private String recp;
-	private String mailRefer;
+	private String refer;
 	//private String recpType; //수신자,참조자 구별하는건데 이거 없애고 걍 참조자 필드 추가.
 	private Date readDt;
 	
@@ -32,4 +32,7 @@ public class EmailVO {
 	private String fileSize;
 	private Date fileDt;
 	private String uplEmp;
+	
+	
 }
+

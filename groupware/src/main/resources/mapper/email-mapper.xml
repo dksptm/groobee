@@ -22,7 +22,7 @@
         WHERE a.rn > (#{page} - 1) * 5
   	</select>
   	
-  <insert id="insertEmail" parameterType="map" statementType="CALLABLE">
+  <insert id="insertEmail" parameterType="emailVO" statementType="CALLABLE">
     <![CDATA[
     CALL insert_email(
         #{sender, mode=IN, jdbcType=VARCHAR},
