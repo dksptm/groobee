@@ -39,10 +39,6 @@
 					<!-- 결재자 리스트 -->
 					<div class="mt-3">
 						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" style="border:none;width:50px; background: transparent;" readonly /></p>
-						<p>
-							<input type="number" name="aprs[0].aprSq" value="1" style="border:none;width:50px; background: transparent;" readonly />번
-							<input type="text" name="aprs[0].aprEmp" th:value="${#authentication.principal.empId}" style="border:none;width:50px; background: transparent;" readonly />
-						</p>
 						<span id="selaprs"><!-- 선택한 결재자 보여주는 공간 --></span>
 					</div>		
 				</div>
