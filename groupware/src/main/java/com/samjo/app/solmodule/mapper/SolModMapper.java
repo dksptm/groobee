@@ -17,4 +17,10 @@ public interface SolModMapper {
 	//템플릿 등록처리
 	public int inserTemp(TempVO tempVO);
 	
+	//템플릿 전체조회
+	public List<TempVO> selectTempAll();
+	
+	//템플릿 상세조회
+	public TempVO selectTemp();
+	
 }

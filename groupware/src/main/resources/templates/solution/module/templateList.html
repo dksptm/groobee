@@ -8,30 +8,37 @@
 			<div class="card my-4 col-10">
 				<h5 class="card-header">템플릿 전체조회</h5>
 				<div class="card-body">
-					
+
 					<!-- 템플릿 목록 출력 -->
 					<div class="table-responsive">
-						<table class="table table-hover">
+						<!-- <table class="table table-hover">
 							<thead>
 								<tr>
 									<th>템플릿번호</th>
 									<th>템플릿명</th>
-									<th>템플릿상태</th>
-									<th>템플릿상세설명</th>
+									<th>템플릿설명</th>
+									<th>고객번호</th>
 								</tr>
 							</thead>
-							<tbody>
-								<th:block th:each="TempVO : ${list}">
-									<tr>
-										<td>[[ ${TempVO.tempNo} ]]</td>
-										<td>[[ ${TempVO.tempName} ]]</td>
-										<td>[[ ${TempVO.modStat} ]]</td>
-										<td>[[ ${TempVO.modInfo} ]]</td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
+							<tbody> -->
+						<div class="row">
+							<th:block th:each="TempVO : ${list}">
+								<div class="col-3 mb-2">
+									<div class="card" th:onclick="|location.href='@{solTempInfo/temp001}'|">
+										<div class="card-body">
+											<img style="height: 18rem;" th:src="@{|files/${TempVO.tempImg}|}"
+												 class="card-img-top" alt="...">
+											 <p class="card-text">[[ ${TempVO.tempNo} ]]</p>
+											<p class="card-text">[[ ${TempVO.tempName} ]]</p>
+										</div>
+									</div>
+								</div>
+							</th:block>
+						</div>
+						<!-- </tbody>
+						</table> -->
 					</div>
+
 					<!-- 템플릿 등록 버튼 -->
 					<div class="d-flex align-items-end flex-column mt-3">
 						<button type="button"
@@ -41,6 +48,11 @@
 				</div>
 			</div>
 		</div>
+		<script>
+		let template = `
+		
+		`;
+		</script>
 	</th:block>
 </body>
 </html>

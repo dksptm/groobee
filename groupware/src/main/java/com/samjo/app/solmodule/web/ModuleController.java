@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,15 +48,24 @@ public class ModuleController {
 	// 모듈 등록
 	@GetMapping("insertSolMod")
 	public String InsertMod() {
-		
 		return "solution/module/insertModule";
 	}
 
 	// 템플릿 전체조회
 	@GetMapping("solTempList")
-	public String tempList() {
+	public String tempList(Model model) {
+		List<TempVO> list = moduleservice.tempList();
+		model.addAttribute("list", list);
 		return "solution/module/templateList";
 	}
+	
+	@GetMapping("solTempInfo/{tempNo}")
+	public String tempInfo(@PathVariable String tempNo, Model model) {
+		TempVO tempVO = moduleservice.tempInfo(tempNo);
+		model.addAttribute("tempVO", tempVO);
+		return "solution/module/templateInfo";
+	}
+	
 
 	// 템플릿 등록 화면
 	@GetMapping("insertSolTemp")
@@ -66,17 +77,15 @@ public class ModuleController {
 	
 	//템플릿 등록 처리
 	@PostMapping("insertSolTemp")
-	public String tempInsert(@ModelAttribute TempVO tempVO, 
-							 @RequestParam("file") MultipartFile[] uploadFiles,
+	public String tempInsert(@ModelAttribute TempVO tempVO,
 							 @RequestParam("imgSrc") String binaryData) {
-		moduleservice.saveImg(binaryData);
-		uploadservice.uploadFile(uploadFiles);
-		//moduleservice.tempInsert(tempVO);
-		System.out.println(tempVO);
-		return "";  
+		System.out.println("tempVO : " + tempVO);
+		tempVO.setTempImg(moduleservice.saveImg(binaryData));
+		moduleservice.tempInsert(tempVO);
+		return "solution/module/templateList";  
 	}
 	
-	//미리보기 이미지 저장
+	//미리보기 이미지 저장 샘플
 	@ResponseBody
 	@RequestMapping(value = { "ImgSaveTest" }, method = RequestMethod.POST)
 	public ModelMap ImgSave(@RequestParam HashMap<Object, Object> param, final HttpServletRequest request, final HttpServletResponse response) throws Exception {

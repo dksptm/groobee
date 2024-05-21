@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">템플릿 상세조회</h5>
+				<div class="card-body">
+
+					<!-- 템플릿 목록 출력 -->
+					<div class="table-responsive">
+						<!-- <table class="table table-hover">
+							<thead>
+								<tr>
+									<th>템플릿번호</th>
+									<th>템플릿명</th>
+									<th>템플릿설명</th>
+									<th>고객번호</th>
+								</tr>
+							</thead>
+							<tbody> -->
+						<div class="row">
+							<div class="col-3 mb-2">
+								<div class="card" th:onclick="|location.href='@{#}'|">
+									<div class="card-body">
+										<img style="height: 18rem;" th:src="@{|/files/${tempVO.tempImg}|}"
+											 class="card-img-top" alt="...">
+									</div>
+								</div>
+							</div>
+							<div class="col-5 mb-2">
+								<table class="table">
+									<tr>
+										<th>템플릿번호 : </th>
+										<td>[[ ${tempVO.tempNo} ]]</td>
+									</tr>
+									<tr>
+										<th>템플릿이름 : </th>
+										<td>[[ ${tempVO.tempName} ]]</td>
+									</tr>
+									<tr>
+										<th>템플릿설명 : </th>
+										<td>[[ ${tempVO.tempInfo} ]]</td>
+									</tr>
+									<tr>
+										<th>고객사번호 : </th>
+										<td>[[ ${tempVO.CustNo} ]]</td>
+									</tr>
+									<tr>
+										<td>
+											<a href="/download\text\html\2024\05\21\1c03535c-51c3-47fe-87bc-e21cde2479f6_지출결의서.html">템플릿 다운로드</a>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<!-- </tbody>
+						</table> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		let template = `
+		
+		`;
+		</script>
+	</th:block>
+</body>
+</html>

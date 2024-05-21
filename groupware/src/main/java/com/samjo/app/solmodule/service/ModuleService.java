@@ -11,6 +11,9 @@ public interface ModuleService {
 	//모듈 전체조회
 	public List<ModuleVO> modList();
 	
+	//템플릿 전체조회
+	public List<TempVO> tempList();
+	
 	//고객사 목록조회
 	public List<CustVO> custList();
 	
@@ -18,5 +21,9 @@ public interface ModuleService {
 	public String tempInsert(TempVO tempVO);
 	
 	//이미지생성
-	public void saveImg(String binaryData);
+	public String saveImg(String binaryData);
+	
+	//템플릿 상세조회
+	public TempVO tempInfo(String tempNo);
+	
 }
