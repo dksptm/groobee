@@ -115,7 +115,33 @@
 	                    ON m.emp_id = p.resp_mngr_id
      </select>
 	<!-- 프로젝트(하위) 업무 등록 -->
-	
+	<insert id="insertTask" parameterType="ProjectVO"> 
+			<selectKey 
+			keyProperty="taskNo" 
+			resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(prjt_id),0) +1 
+			FROM prjt
+		</selectKey>
+		INSERT  INTO task_common(task_no 
+			                    ,task_name 
+			                    ,task_start_dt
+			                    ,task_due_dt 
+			                    ,task_type 
+			                    ,standard_no
+			                    ,prjt_mat 
+			                    ,dept_id
+			                    ,cust_no)
+					VALUES (#{taskNo}
+							,#{taskName}
+							,#{taskStartDt}
+							,#{taskDueDt}
+							,#{taskType}
+							,#{standardNo}
+							,#{prjtMat}
+							,#{deptId}
+							,#{custNo})
+		</insert>
 	<!-- 프로젝트(상위) 업무 수정 -->
 	
 	<!-- 프로젝트(상위) 업무 삭제-->

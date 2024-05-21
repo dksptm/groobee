@@ -12,7 +12,8 @@
 			<select>
 				<option value="업무번호">업무번호</option>
 				<option value="업무명">업무명</option>
-			</select> <input type="text">
+			</select> 
+			<input type="text">
 			<button type="button">검색</button>
 			<br> 
 			<select>
@@ -41,7 +42,8 @@
 				<tbody>
 					<tr th:each="regu : ${projects}">
 						<td th:text="${regu.reguId}" />
-						<td>[[ ${regu.taskName}]]</td>
+						<td th:text="${regu.taskNo}" />
+						<td th:text="${regu.taskName}" />
 						<td>[[ ${#dates.format(regu.taskStartDt, "yyyy/MM/dd")}]]</td>
 						<td>[[ ${regu.crePerd}]]</td>
 						<td>[[ ${regu.taskName}]]</td>
@@ -56,4 +58,5 @@
 		</script>
 
 	</th:block>
+	</body>
 </html>

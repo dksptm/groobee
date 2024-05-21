@@ -9,10 +9,10 @@
 	<select id="selectReguAllList" resultType="ProjectVO">
 	SELECT 			t.task_no
 			       ,t.task_name
+			       ,t.task_start_dt
 			       ,r.regu_id
 			       ,r.cre_perd
 			       ,r.active
-			       ,t.task_start_dt
 	FROM 	task_common t JOIN regu_stad r 
 			         ON (t.standard_no = r.regu_id)
 	</select>
