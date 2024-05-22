@@ -18,7 +18,7 @@
 			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
 			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			사원명 <input type="text" th:value="${#authentication.name}" name="draftName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
 			
@@ -117,12 +117,12 @@
 					<!-- 모달버튼 : 결재자 -->
 					<div class="d-flex justify-content-end">
 						<button type="button" class="mx-3 btn btn-outline-secondary doc-modal-btn-apr" 
-								data-bs-toggle="modal" data-bs-target="#selectapr">결재자 재선택</button>
+								data-bs-toggle="modal" data-bs-target="#docModalAprs">결재자 재선택</button>
 					</div>
 				</div>
 				<div class="mt-3">
 	                	<input type="hidden" name="finalLine" id="finalLine" th:value="${doc.finalLine}" />
-	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}" id="selaprs">
+	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}" id="getAprs">
 						<th:block th:each="apr,aprStat : ${doc.aprs}">
 							<th:block th:if="${apr.aprSq == doc.nowLine}">
 							<div class="card col-1" style="width: 10rem;background-color: skyblue;">
@@ -156,7 +156,7 @@
 				
 				<!-- -------------------------------- 모달영역 START -------------------------------- -->
 				<!-- 모달영역 : 결재자선택 -->
-				<div class="modal fade" id="selectapr" tabindex="-1">
+				<div class="modal fade" id="docModalAprs" tabindex="-1">
 				  <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
 				    <div class="modal-content">
 						<div class="modal-header">
@@ -166,7 +166,7 @@
 						<div class="modal-body"></div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-							<button type="button" class="btn btn-primary selbtn" data-bs-dismiss="modal">선택완료</button>
+							<button type="button" class="btn btn-primary getAprs-btn" data-bs-dismiss="modal">선택완료</button>
 						</div>
 				    </div>
 				  </div>
@@ -323,11 +323,11 @@
 			// 모달열기 - 결재자.
 			$('.doc-modal-btn-apr').on('click', function(e) {
 				let dept = $('input[name="deptId"]').val();
-				$('#selectapr .modal-body').load("getDeptEmps?deptId="+ dept);
-				$('#selectapr').modal();
+				$('#docModalAprs .modal-body').load("getDeptEmps?deptId="+ dept);
+				$('#docModalAprs').modal();
 			})
 			// 모달에서 - 선택한 결재자 가져오기.
-			$('.selbtn').on('click', getDocAprs);
+			$('.getAprs-btn').on('click', getDocAprs);
 			
 			// 모달열기 - 참조자.
 			$('.doc-modal-btn-refs').on('click', function(e) {
@@ -344,8 +344,8 @@
 				$('#docModalTasks .modal-body').load("getMyTasks?custNo="+ cust);
 				$('#docModalTasks').modal();				
 			})
-			// 모달에서 - 업무 가져오기.
-			$('.getTasks-btn').on('click', getDocTasks);
+			// 모달에서 - name부여.
+			$('.getTasks-btn').on('click', inTaskName);
 			
 			// 수정 버튼.
 			$('#docInsertForm').submit(async function(e){

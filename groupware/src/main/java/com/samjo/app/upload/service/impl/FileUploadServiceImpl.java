@@ -71,7 +71,6 @@ public class FileUploadServiceImpl implements FileUploadService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("-------------2----------------------");
 			// 필드 saveName 구하기.
 			saveName = setFilePath(uploadFileName);
 			// docfile 클래스에 넣기.

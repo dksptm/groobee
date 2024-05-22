@@ -13,19 +13,19 @@ const tempChange = function() {
 	// 안내메시지 숨기기.
 	$('.cntn-slide').slideUp();
 	// 휴가원,지출결의 숨기기
-	$('#tempPTO').hide();
+	$('#textArea').slideUp();
+	$('#tempEXT').slideUp();
+	$('#tempPTO').slideUp();
 	$('div#pto').find('input, textarea').val('');
-	$('#tempEXT').hide();
-	$('#textArea').hide();
 	
 	// 옵션값 확인하기.
 	let opt = $('#tempId option:selected');
 	
-	// 옵션값 선택안함/휴가원/지출결의
+	// 옵션값 선택안함
 	if(opt.val() == 'no-data' || opt.val() == 'TP001' || opt.val() == 'TP002' ) {
 		if(editor) {
 			editor.setData('');
-			$('#cntn').hide();
+			$('.cntn-slide').slideDown();
 		}
 	}
 	
@@ -36,18 +36,18 @@ const tempChange = function() {
 	}
 	
 	if(opt.val() == 'TP002') {
-		$('#tempPTO').show();
+		$('#tempPTO').slideDown();
 		ptoForm();
 		return;
 	}
 	
 	if(opt.val() == 'TP001') {
-		$('#tempEXT').show();
+		$('#tempEXT').slideDown();
 		return;
 	}
 	
 	// 옵션값 그 외.
-	$('#textArea').show();
+	$('#textArea').slideDown();
 	if (!editor) {
         console.log('에디터 없음');
         ClassicEditor
@@ -97,65 +97,70 @@ const getHtml = function() {
 /* 결재자 선택 모달 함수.*/
 const getDocAprs = () => {
 	let trs = $('#aprlist > tbody > tr');
-	let spanTag = $('#selaprs');
-	spanTag.children().remove();
-	let drf = $('input[name="draft"]').val();
-	let drfn = $('td[data-draft]').text();
-	spanTag.append($(`<p>
-						<input name="aprs[0].aprSq" type="text"
-						 value="1" readonly />번
-						<input name="aprs[0].aprEmp" type="hidden"
-						 value="${drf}" readonly />
-						<input name="aprs[0].aprName" type="text"
-						 value="${drfn}" readonly />
-					   </p>`))
+	let area = $('#getAprs');
 	let ctn = 0;
 	
-	trs.each(function(idx,tr){
-		let get = $(tr);
+	area.children().remove();
+	
+	let drf = $('input[name="draft"]').val();
+	let drfn = $('input[name="draftName"]').val();	
+	area.append($(`<p>
+					<input name="aprs[0].aprSq" type="text" value="1" readonly />번
+					<input name="aprs[0].aprEmp" type="hidden" value="${drf}" readonly />
+					<input name="aprs[0].aprName" type="text" value="${drfn}" readonly />
+				   </p>`))
+				   
+	trs.each(function(idx,ele){
+		let tr = $(ele);
 		
-		let creatInputTag = $(`<p>
-								<input name="aprs[${(idx+1)}].aprSq" type="text"
-								 value="${get.find('td').eq(1).text()}" readonly />번
-								<input name="aprs[${(idx+1)}].aprEmp" type="hidden"
-								 value="${get.data('emp')}" readonly />
-								<input name="aprs[${(idx+1)}].aprName" type="text"
-								 value="${get.find('td').eq(2).text()}" readonly />
-							   </p>`);
+			let creatTag = $(`<p>
+							<input name="aprs[${(idx+1)}].aprSq" type="text"
+							 value="${tr.find('td').eq(1).text()}" readonly />번
+							<input name="aprs[${(idx+1)}].aprEmp" type="hidden"
+							 value="${tr.data('emp')}" readonly />
+							<input name="aprs[${(idx+1)}].aprName" type="text"
+							 value="${tr.find('td').eq(2).text()}" readonly />
+						   </p>`);
 		
-		spanTag.append(creatInputTag);
+		area.append(creatTag);
 		ctn++;
 	});
+	
 	$('#finalLine').val(++ctn);
 	$('.input-tag-css input').css('border','none').css('width','50px').css('background','transparent');
-}
+	
+} // 결재자선택 end.
 
 /* 참조자 선택 모달 함수.*/
 const getDocRefs = () => {
 	let trs = $('#refslist > tbody > tr');
-	let divTag = $('#getRefs');
-	divTag.children().remove();
+	let area = $('#getRefs');
 	
-	trs.each(function(idx,tr){
-		let get = $(tr);
+	area.children().remove();
+	
+	trs.each(function(idx,ele){
+		let tr = $(ele);
 		
 		let creatTag = $(`<p>
 							<input name="refs[${(idx)}]" type="hidden"
-								   value="${get.data('emp')}" readonly />
-							<span>${get.find('td').eq(1).text()}
-							      ${get.find('td').eq(2).text()}
-							      ${get.find('td').eq(3).text()}</span>
+								   value="${tr.data('emp')}" readonly />
+							<span>${tr.find('td').eq(1).text()}&ensp;
+							      ${tr.find('td').eq(2).text()}&ensp;
+							      ${tr.find('td').eq(3).text()}</span>
 						  </p>`);
-		divTag.append(creatTag);			
+		area.append(creatTag);			
 	})
-}
+	
+}// 참조자선택 end.
 
-
-const getDocTasks = () => {
+/* 업무 -name부여 */
+const inTaskName = () => {
+	
 	let inputs = $('#getTasks').find('input');
 	inputs.each(function(i,e) {
 		e.setAttribute('name','tasks[' + i + ']');
 	});
+	
 }
 
 /* 필수입력 항목선택.*/
@@ -179,15 +184,13 @@ function docCheck(e) {
 	return true;
 }
 
-/* 휴가원 */
+/* 휴가원 세팅*/
 function ptoForm() {
 	$('#sdt').val(getNow());
 	$('#edt').val(getNow());
 	$('td[data-td="name"]').text($('input[name="draftName"]').val());
 	$('td[data-td="dept"]').text($('input[name="deptId"]').val());
 	$('td[data-td="dno"]').text($('input[name="docNo"]').val());
-		
-	console.log('휴가원세팅끝');
 	
 }
 
@@ -201,7 +204,7 @@ const ptoSubmit = () => {
 
 }
 
-/* 날짜포맷 */
+/* 날짜포맷(현재) */
 function getNow(){
 	let now = new Date();
 	let year = now.getFullYear();
@@ -215,6 +218,7 @@ function getNow(){
 	return date;
 }
 
+/* 날짜포맷(지정) */
 function getDate(data) {
 	let date = new Date(data);
 	let year = date.getFullYear();

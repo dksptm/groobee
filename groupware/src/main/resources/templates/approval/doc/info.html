@@ -20,7 +20,6 @@
 			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
-			<p>토큰 -> <input type="text" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" style="width:300px;"></p>
 			
 			<!-- ------------------------- 상신/수정/목록/삭제 버튼 START ------------------------- -->
 			<div class="card-body text-end mx-4">
@@ -200,7 +199,6 @@
 	</div>
 	</div>
 	
-	<script th:src="@{/js/approval.js}"></script>
 	<script>
 		$(function(){
 			

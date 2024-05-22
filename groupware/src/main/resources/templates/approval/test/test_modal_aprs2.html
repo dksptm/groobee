@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<style>
+.sortable tr {
+    cursor: move;
+}
+.table-container {
+  display: flex;
+}
+.table {
+  flex: 1;
+  margin: 0 10px;
+}
+.table tbody tr {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.table tbody td {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
+
+<div class="d-flex justify-content-between">
+	<table class="table" id="list1">
+		<thead>
+			<tr>
+				<th>선택</th>
+				<th>부서명</th>
+				<th>이름</th>
+				<th>직급명</th>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="emp : ${dept.emps}">
+			<tr th:if="${emp.empId != #authentication.principal.empId}"
+			    th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}">
+				<td><input type="checkbox" name="chk-list1" class="form-check-input"></td>
+				<td>[[ ${dept.deptName} ]]</td>
+				<td>[[ ${emp.empName} ]]</td>
+				<td>[[ ${emp.jobTitle} ]]</td>
+			</tr>
+			</th:block>
+		</tbody>
+	</table>
+	<div class="mx-3 row align-items-center">
+		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes1">
+			<span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no1">
+			<span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
+	</div>
+	<table class="table sortable" id="aprlist">
+		<thead>
+			<tr>
+				<th>선택</th>
+				<th>순서</th>
+				<th>이름</th>
+				<th>직급명</th>
+			</tr>
+		</thead>
+		<tbody><!-- 여기에 왼쪽에서 선택한 결재자들 추가됨 --></tbody>
+	</table>
+</div>
+
+<script>
+$(function(){
+
+	$('#list1 > tbody, #aprlist > tbody').on('click', 'tr' , function(e){
+		let checkbox = $(this).find("input[type='checkbox']");
+		checkbox.prop("checked", !checkbox.prop("checked"));
+	});
+
+	$('#list1 > tbody, #aprlist > tbody').on('click', 'input[type="checkbox"]' , function(e){
+		let checkbox = $(this)
+		checkbox.prop("checked", !checkbox.prop("checked"));
+	});
+	
+	$(".sortable tbody").sortable({
+        helper: fixHelper,
+        axis: "y",
+        update: function(event, ui) {
+            // 순번 부여.
+            resq();
+            console.log("Row order updated!");
+        }
+    }).disableSelection();
+	
+	
+	$('#yes1').on('click', function(){
+		let checkbox = $("input[name=chk-list1]:checked");
+		
+		checkbox.each(function(idx){
+			let chk = $(this);
+			let tr = chk.closest('tr');
+			let td = tr.children();
+			
+			let code = tr.data('emp');
+			let dept = tr.data('dept');
+			let name = td.eq(2).text();
+			let job = td.eq(3).text();
+
+			$('#aprlist > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
+						+'<td><input type="checkbox" name="d-chk-list1" /></td>'
+						+'<td></td>'
+						+'<td>'+ name +'</td>'
+						+'<td>'+ job +'</td>'
+						+'</tr>');
+			tr.remove();
+		})
+		resq();
+	})
+	
+	$('#no1').on('click', function(){
+		let checkbox = $("input[name=d-chk-list1]:checked");
+		
+		checkbox.each(function(idx){
+			let chk = $(this);
+			let tr = chk.closest('tr');
+			let td = tr.children();
+			
+			let code = tr.data('emp');
+			let dept = tr.data('dept');
+			let name = td.eq(2).text();
+			let job = td.eq(3).text();
+
+			$('#list1 > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
+						+'<td><input type="checkbox" name="chk-list1" /></td>'
+						+'<td>'+ dept +'</td>'
+						+'<td>'+ name +'</td>'
+						+'<td>'+ job +'</td>'
+						+'</tr>');
+			tr.remove();
+		})
+		resq();
+	})
+
+})//end
+
+function resq() {
+    $('#aprlist > tbody > tr').each(function(index) {
+        $(this).children().eq(1).text(index + 2);
+    });
+}
+
+var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+</script>
+
+</html>

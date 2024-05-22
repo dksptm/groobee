@@ -125,7 +125,6 @@ public class DocServiceImpl implements DocService {
 			if(docVO.getTempId().equals("TP002")) {
 				docVO.getPto().setDocNo(docVO.getDocNo());
 				int ret = tempMapper.insertPto(docVO.getPto());
-				System.out.println("ret==>"+ret);
 			}
 			// 3.참조자 등록.
 			if(docVO.getRefs() != null) {
@@ -139,7 +138,6 @@ public class DocServiceImpl implements DocService {
 					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
 				});				
 			}
-			System.out.println("docVO ===> " + docVO);
 			// 5.문서번호 리턴.
 			return docVO.getDocNo();
 		} else {	// 문서등록 실패 시.		

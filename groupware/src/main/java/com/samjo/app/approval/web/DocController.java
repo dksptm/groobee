@@ -201,7 +201,6 @@ public class DocController {
 	public String docInsertProcess(DocVO docVO, MultipartFile[] filelist) {
 		//System.out.println("draftName =====>" + docVO.getDraftName());
 		int docNo = docService.docInfoInsert(docVO);
-		System.out.println("파일==> " + filelist.length);
 		System.out.println("파일==> " + filelist[0].isEmpty());
 		if(!filelist[0].isEmpty()) {
 			System.out.println("---파일입력---");

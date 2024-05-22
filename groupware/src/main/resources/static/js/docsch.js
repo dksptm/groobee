@@ -2,7 +2,7 @@
 
 console.log('static/js/docsch.js');
 
-/* name부여 */
+/* 업무 name부여 */
 const schTaskName = () => {
 
 	let inputs = $('#getTasks').find('input');

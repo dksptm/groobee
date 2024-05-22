@@ -42,13 +42,13 @@ public class DocVO {
     private Integer taskCount;
     
     // 참조자 리스트
-    private List<EmpVO> refList;
+    private List<String> refs;  // insert : 참조자의 empId만 필요.
+    private List<EmpVO> refList;// select : 참조자의 정보필요.(부서,이름)
         
     // 휴가원
     private TempVO pto;
     
     // 참조자 리스트, 업무 리스트.
-    private List<String> refs; // 참조자의 empId만 필요.
     private List<Integer> tasks; // 업무번호.
     // 조회시 필요한 필드 추가.
     private String curApr;
