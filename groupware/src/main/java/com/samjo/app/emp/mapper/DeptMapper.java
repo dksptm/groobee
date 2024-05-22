@@ -12,4 +12,10 @@ public interface DeptMapper {
 	public DeptVO selectMyDept(@Param("did")String deptId);
 	// 한 회사의 모든 사원 목록.
 	public List<EmpVO> selectEmps(@Param("cno")String custNo);
+	
+	// 부서 전체 목록 - 진경
+	public List<DeptVO> selectDeptAll();
+	// 총책임자 목록
+	public List<EmpVO> respMngrList(@Param("custNo")String custNo);
+	
 }

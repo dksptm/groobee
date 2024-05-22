@@ -30,4 +30,16 @@ public class DeptServiceImpl implements DeptService {
 		return deptMappr.selectEmps(custNo);
 	}
 
+	
+	
+	@Override // 부서전체목록
+	public List<DeptVO> deptAllList() {
+		return deptMappr.selectDeptAll();
+	}
+
+	@Override // 프로젝트등록시 책임자 목록
+	public List<EmpVO> respMngrList(String custNo) {
+		return deptMappr.respMngrList(custNo);
+		}
+
 }

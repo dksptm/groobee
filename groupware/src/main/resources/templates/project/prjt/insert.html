@@ -5,8 +5,7 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="container">
-			<form name="insertForm" th:action="@{/prjt/insert}" method="post"
-				th:object="${projects}" id="prjtForm">   
+			<form name="insertForm" th:action="@{/prjt/insert}" method="post" th:object="${projects}" id="prjtForm">   
 				 <br><br><br>    
                     <div style=" text-align: center;">
                     	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
@@ -25,10 +24,6 @@
 						<td><input type="text" th:field="*{prjtName}"></td>
 					</tr>
 					<tr>
-						<th>부서명</th>
-						<td><input type="text" th:field="*{deptName}"></td>
-					</tr>
-					<tr>
 						<th>시작일</th>
 						<td><input type="date" th:field="*{prjtStartDt}"></td>
 					</tr>
@@ -37,9 +32,10 @@
 						<td><input type="date" th:field="*{prjtDueDt}"></td>
 					</tr>
 					<tr>
-						<th>총괄책임자</th>
-						<td><input type="text" th:field="*{empName}" placeholder="목록에서 선택해주세요">
-						<button type="button" class="btn btn-primary" id="respMngrId" data-bs-toggle="modal" data-bs-target="#respModal">등록</button>
+						<th>책임자</th>
+						<td>
+							<input type="text" th:field="*{respMngrId}" placeholder="버튼을 눌러 선택하세여">
+							<button type="button" class="btn btn-primary" id="respMngrId" data-bs-toggle="modal" data-bs-target="#respModal">선택</button>
 						</td>
 					</tr>
 					<tr>
@@ -60,7 +56,7 @@
 
 		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 총괄책임자 등록 모달창 -->
-				<div  class="modal fade" id="respModal" tabindex="-1" aria-labelledby="respModalLabel" aria-hidden="true">
+		<div  class="modal fade" id="respModal" tabindex="-1" aria-labelledby="respModalLabel" aria-hidden="true">
 			<div class="modal-dialog" style=" text-align: center;">
 				<div class=" modal-content">
 					<div class="modal-header">
@@ -77,22 +73,19 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>
-									<div class="form-check">
-									  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-									  <label class="form-check-label" for="flexRadioDefault2"> 
-									  </label></div>
-								
-								</td>
-							<tr>	
+							<th:block th:each="mngr : ${mngr}">
+								<tr>
+										<td>[[ ${mngr.deptName} ]]</td>
+										<td>[[ ${mngr.jobTitle} ]]</td>
+										<td>[[ ${mngr.empName} ]]</td>
+										<td>[[ ${mngr.custNo} ]]</td>
+										<td> <input class="form-radio-input" type="radio" name="mngrCheck"></td>
+								</tr>
+							</th:block>	
 						</tbody>
 					</table>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="InsertBtn">등록</button>
+						<button type="button" class="btn btn-primary" id="respInBtn">등록</button>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
@@ -104,21 +97,15 @@
 	  			<label class="form-check-label" for="flexRadioDefault1">
 	   				 Default radio
 	  			</label>
-				</div>
-					<div class="form-check">
-					  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-					  <label class="form-check-label" for="flexRadioDefault2">
-					    Default checked radio
-					  </label>
 				</div> -->
-</th:block>
+	</th:block>
 </body>
 
 		
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 		<script>
 			// 등록
-			$(function(){
+			/*$(function(){
 				$('#prjtInsertBtn').on('click', function(){
 					let formData = $('prjtForm').serialize();
 					console.log(formData);
@@ -136,11 +123,19 @@
 						}
 					});
 				});
-			});
+			});*/
 			
-			// 총괄책임자 선택 
+			// 책임자 라디오 버튼 선택시 인풋에 입력. 
+				$(function(){
+					
+				});
+			
+			
+			// 책임자 선택 등록  
 			$(function(){
-				$
+				$('#respInBtn').on('click', function(){
+					
+				})
 				
 			});
 
@@ -161,7 +156,9 @@
 				alert('프로젝트등록이 완료되었습니다.');
 				insertForm.submit();
 			}  */
-		</script>
+		
+	
+	</script>
 </html>
 
 

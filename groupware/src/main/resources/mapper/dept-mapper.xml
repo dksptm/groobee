@@ -49,6 +49,26 @@
 	</select>
 	
 	
-
+	<!-- 부서 전체 목록 -->
+	<select id="selectDeptAll" resultType="DeptVO">
+		SELECT dept_id
+		            ,cust_no
+		            ,dept_name
+		            ,dept_loc
+		            ,dept_info
+		            ,dept_mngr
+		FROM dept
+	</select>	
+	
+	<!-- 프로젝트 등록시 가져올 책임자 목록 -->	
+	<select id="respMngrList" resultType="EmpVO">
+		SELECT get_deptname(e.dept_id)
+					      ,e.emp_name
+					      ,j.job_title
+					      ,e.emp_id
+			FROM  emp e JOIN jobs j ON (e.job_no = j.job_no)
+			WHERE j.perm_id IN ('1C2c', '1C3c')
+			<!-- AND   e.cust_no = #{custNo} --> 
+	</select>
 </mapper>
   
