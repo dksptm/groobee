@@ -40,7 +40,7 @@ public class ProjectVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date prjtStartDt;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date prjtDueDT;
+	private Date prjtDueDt;
 	private String respMngrId;
 	
 	

@@ -12,9 +12,9 @@
                     	<button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
                     	<button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
                     </div>  
-                  
+                  <br>
 				<table id="form" class="table">
-						<h3> 상시업무등록</h3>
+						<h3>상시업무 등록</h3>
 						<tr>
 							<th>업무명</th>
 							<td><input type="text" th:field="*{prjtId}"></td>
@@ -26,12 +26,14 @@
 						<tr>
 							<th>부서명</th>
 							<td><select class="form-select" style="width:100px" th:field="*{deptName}" >
-									<option value=""></option>
-			                    </select>  </td>
+									<option value="">선택</option>
+                               		 <!-- 부서 목록을 추가 -->
+			                    </select>  
+			                    </td>
 						</tr>
 						<tr>
 							<th>부서참여인원</th>
-							<td><input type="text" th:field="*{deptName}"></td>
+							<td><input type="text" th:field="*{empName}"></td>
 						</tr>
 						<tr>
 							<th>책임자</th>
@@ -45,7 +47,7 @@
 						</tr>
 						<tr>
 							<th>시작일</th>
-							<td><input type="date" th:field="*{prjtDueDT}"></td>
+							<td><input type="date" th:field="*{prjtDueDt}"></td>
 						</tr>
 						<tr>
 							<th>생성주기</th>
@@ -55,7 +57,7 @@
 			                        <option value="week">매주</option>
 			                        <option value="month">매달</option>
 			                    </select>  
-	                    		<input type="time" th:field="*{prjtDueDT}">
+	                    		<input type="time" th:field="*{prjtDueDt}">
 							</td>
 						</tr>
 						<tr>
@@ -76,20 +78,9 @@
 
 
 		<script>
-			document.querySelector('form[name="insertForm"]').addEventListener(
-					'submit', prjtInsert);
-
-			function prjtInsert(event) {
-				event.preventDefault();
-
-				let name = document.getElementById('prjtName');
-				if (name.value == '') {
-					alert('프로젝트명이 입력되지않았습니다.');
-					name.focus();
-					return;
-				}
-				alert('프로젝트등록이 완료되었습니다.');
-				insertForm.submit();
-			}
+			
 		</script>
+		</th:block>
+		</body>
+		
 </html>
