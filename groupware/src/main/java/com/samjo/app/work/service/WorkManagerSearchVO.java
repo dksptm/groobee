@@ -4,20 +4,11 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Data;
+public class WorkManagerSearchVO {
 
-@Data
-public class WorkSearchVO {
 	private int page;
-	private String wkYn;
-	private String wkStat;
-	private String wkSite;
+	private int filte;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date oneDate;
 	private int totalCnt;
-	/*
-	 * @DateTimeFormat(pattern = "yyyy/MM/dd") private Date twoDate;
-	 */
-	
-	
 }

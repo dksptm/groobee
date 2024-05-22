@@ -10,8 +10,8 @@
 				<div class="card my-4 col-11">
 					<div>
 						<h5 id="time"></h5>
-						<button type="button" class="btn btn-primary test3">출근</button>
-						<button type="button" class="btn btn-primary">퇴근</button>
+						<button type="button" class="btn btn-primary" id="wkIn">출근</button>
+						<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
 					</div>
 					<form name="Listform" th:action="@{/worklist}" method="Get"
 						th:object="${filter}">
@@ -26,9 +26,9 @@
 								<option value="오후반차">오후반차</option>
 							</select> <select th:field="*{wkStat}" class="form-select" id="wkStat">
 								<option value="정상근무" selected>정상근무</option>
-								<option value="오후반차">결근</option>
-								<option value="오후반차">지각</option>
-								<option value="오후반차">조퇴</option>
+								<option value="결근">결근</option>
+								<option value="지각">지각</option>
+								<option value="조퇴">조퇴</option>
 							</select> <select th:field="*{wkSite}" class="form-select" id="wkSite">
 								<option value="내근" selected>내근</option>
 								<option value="외근">외근</option>
@@ -39,33 +39,33 @@
 					<br>
 
 
-					<div id="page">
-						<table class="table table-striped-columns">
-						<thead>
-							<tr>
-								<th>날짜</th>
-								<th>사원번호</th>
-								<th>사원명</th>
-								<th>출근시간</th>
-								<th>퇴근시간</th>
-								<th>근무지</th>
-								<th>근무상태</th>
-								<th>근무여부</th>
-							</tr>
-						</thead>
-						<tbody th:each="info : ${list}" id="infos">
-							<tr>
-								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-								<td>[[${info.empNo}]]</td>
-								<td>[[${info.empName}]]</td>
-								<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
-								<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
-								<td>[[${info.wkYn}]]</td>
-								<td>[[${info.wkStat}]]</td>
-								<td>[[${info.wkSite}]]</td>
-							</tr>
-						</tbody>
-						</table>
+					<div id="table">
+							<table class="table table-striped-columns">
+								<thead>
+									<tr>
+										<th>날짜</th>
+										<th>사원번호</th>
+										<th>사원명</th>
+										<th>출근시간</th>
+										<th>퇴근시간</th>
+										<th>근무지</th>
+										<th>근무상태</th>
+										<th>근무여부</th>
+									</tr>
+								</thead>
+								<tbody th:each="info : ${list}" id="infos">
+									<tr>
+										<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
+										<td>[[${info.empNo}]]</td>
+										<td>[[${info.empName}]]</td>
+										<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
+										<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
+										<td>[[${info.wkYn}]]</td>
+										<td>[[${info.wkStat}]]</td>
+										<td>[[${info.wkSite}]]</td>
+									</tr>
+								</tbody>
+							</table>
 					</div>
 					<div>
 						<nav aria-label="Page navigation">
@@ -94,40 +94,41 @@
 				</div>
 			</div>
 		</div>
-
 		<script>
 			$('#filter').on('click', filters);
-	
-			function filters() {
-				var oneDate = $('#oneDate').val();
-				var wkYn = $('#wkYn').val();
-				var wkStat = $('#wkStat').val();
-				var wkSite = $('#wkSite').val();
-				var tr = $('tbody').children('tr');
-				console.log(wkYn);
-				console.log(wkStat);
-				console.log(wkSite);
+			
+		
 				
-				$.get({
-					url:'worklist',
-					method:'Get',
-					data:{
-						oneDate: oneDate,
-						wkYn:    wkYn,
-						wkStat:  wkStat,
-						wkSite:  wkSite
-						},
-					success: function(info){
-						  $(tr).html('');
-						  
-						  
-						  
-						  
-						  
+			function filters() {
+				//$.html('');
+				let oneDate = $('#oneDate').val();
+				let wkYn = $('#wkYn').val();
+				let wkStat = $('#wkStat').val();
+				let wkSite = $('#wkSite').val();
+				let tr = $('tbody').children('tr');
+						console.log(oneDate);
+						console.log(wkYn);
+						console.log(wkStat);
+						console.log(wkSite);
+						
+				
+				$.ajax({
+					url : 'worklist',
+					method : 'Get',
+					data : {
+						oneDate : oneDate,
+						wkYn : wkYn,
+						wkStat : wkStat,
+						wkSite : wkSite
+					},
+					success :function(){
 						console.log('성공');
-					}
-				})
+			$("#table").load("#table");
+							}   
+					})
 			};
+			
+				
 		</script>
 	</th:block>
 </body>

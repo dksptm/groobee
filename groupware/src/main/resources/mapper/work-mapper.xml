@@ -40,38 +40,23 @@ WHERE t.rn > (#{page} -1) * 5
 		FROM wk
 	</select>
 	
-	<select id="managerWorkList" resultType="WorkVO" parameterType="WorkSearchVO">
-	SELECT t.*
-    FROM (SELECT f.*
-      FROM (SELECT w.*
-            FROM (SELECT rownum rn,
-                         e.*
-                  FROM (SELECT
-                               i.dt,
-                               j.emp_no,
-                               j.emp_name,
-                               i.wk_in,
-                               i.wk_out,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_yn) wk_yn,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_stat) wk_stat,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_site) wk_site
-                               FROM emp j join wk i
-                                            on j.emp_id = i.emp_id
-                         ORDER BY dt) e
-                    WHERE rownum <![CDATA[<=]]> (#{page} * 5) ) w) f
-           WHERE    wk_yn   = #{wkYn} and
-                    wk_stat = #{wkStat} and
-                    wk_site = #{wkSite} and
-                         dt <![CDATA[>=]]> #{oneDate}
-                                
-            ) t
-     WHERE t.rn > (#{page} -1) * 5
+	<select id="managerWorkList" resultType="WorkManagerVO">
+	SELECT
+          (select dept_name
+           from dept
+           where dept_id = emp.dept_id) dept_id,
+           emp_no,
+           emp_name,
+          (select job_title
+           FROM jobs
+           WHERE job_no = emp.job_no) job_no,
+           hire_dt,
+           emp_tel
+    FROM emp
+	</select>
+	<select id="managercount">
+		SELECT count(*)
+		FROM emp
 	</select>
 	<!-- 출근을 입력하기위해... 중복이 안됨. -->
 	<!-- <update id="" parameterType="">

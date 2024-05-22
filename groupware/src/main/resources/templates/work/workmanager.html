@@ -5,94 +5,66 @@
 
 <body>
 	<th:block layout:fragment="Content">
-	
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-11">
-				<div>
-					<h5 id="time"></h5>
-					<button type="button" class="btn btn-primary">출근</button>
-					<button type="button" class="btn btn-primary">퇴근</button>
-				</div>
-				<form name="pageform" th:action="@{/worklist}" method="GET"
-					th:object="${filter}">
-					<div>
-						<br> <input id="oneDate" th:field="*{oneDate}" type="Date">
-						     <!-- <input th:field="*{twoDate}" type="Date"> -->
-							
-							<select th:field="*{wkYn}" class="form-select" id="WkYn">
-										<option value="근무일" selected>근무일</option>
-										<option value="연차">연차</option>
-										<option value="오전반차">오전반차</option>
-										<option value="오후반차">오후반차</option>
-								</select>
-							<select th:field="*{wkStat}" class="form-select" id="wkStat">
-										<option value="정상근무" selected>정상근무</option>
-										<option value="오후반차">결근</option>
-										<option value="오후반차">지각</option>
-										<option value="오후반차">조퇴</option>
-								</select>
-							<select th:field="*{wkSite}" class="form-select" id="wkSite">
-										<option value="내근" selected>내근</option>
-										<option value="외근">외근</option>
-								</select>
-							<button type="button" class="btn btn-primary" id="fliter">검색</button>
-						</div>
-						</form>
-						<br>
-	
-					
+		<div class="test">
+			<div class="d-flex justify-content-center">
+				<div class="card my-4 col-11">
+
 					<div id="page">
-						<table class="table table-striped-columns">
-							<tr>
-								<th>날짜</th>
-								<th>사원번호</th>
-								<th>사원명</th>
-								<th>출근시간</th>
-								<th>퇴근시간</th>
-								<th>근무지</th>
-								<th>근무상태</th>
-								<th>근무여부</th>
-							</tr>
-							<tr th:each="info : ${list}">
-								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-								<td>[[${info.empNo}]]</td>
-								<td>[[${info.empName}]]</td>
-								<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
-								<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
-								<td>[[${info.wkYn}]]</td>
-								<td>[[${info.wkStat}]]</td>
-								<td>[[${info.wkSite}]]</td>
-							</tr>
-						</table>
+						<form id=table>
+							<table class="table table-striped-columns">
+								<thead>
+									<tr>
+										<th>부서명</th>
+										<th>사원번호</th>
+										<th>사원명</th>
+										<th>직급</th>
+										<th>입사일</th>
+										<th>연락처</th>
+									</tr>
+								</thead>
+								 <tbody th:each="date : ${list}" id="infos">
+									<tr>
+										<td>[[${date.deptId}]]</td>
+										<td>[[${date.empNo}]]</td>
+										<td>[[${date.empName}]]</td>
+										<td>[[${date.jobNo}]]</td>
+										<td>[[${#dates.format(date.hireDt, "yyyy/MM/dd")}]]</td>
+										<td>[[${date.empTel}]]</td>
+									</tr>
+								</tbody> 
+							</table>
+						</form>
 					</div>
-	<div>
-	 <nav aria-label="Page navigation">
-  <ul class="pagination">
-  	<th:block th:if="${filter.prev}">
-    <li class="page-item prev disabled">
-      <a class="page-link" th:href="|worklist?page=${filter.startPage - 1 }|"><i class="bx bx-chevron-left"></i></a>
-    </li>
-    </th:block>
-    <th:block th:each="num : ${#numbers.sequence(1, filter.endPage)}">
-	<li class="page-item" th:attrappend="class=${num ==  filter.page ? 'active' : ' '}">
-		<a th:href="|worklist?page=${num}|" class="page-link">[[${num}]]</a>
-	</li>
-	</th:block>
-	<th:block th:if="${filter.next}">
-    <li class="page-item next">
-      <a class="page-link" th:href="|worklist?page=${filter.endPage + 1 }|"><i class="bx bx-chevron-right"></i></a>
-    </li>
-    </th:block>
-  </ul>
-</nav>
-	</div>
-				
+					<div>
+						<nav aria-label="Page navigation">
+							<ul class="pagination">
+								<th:block th:if="${page.prev}">
+									<li class="page-item prev disabled"><a class="page-link"
+										th:href="|workmanager?page=${page.startPage - 1 }|"><i
+											class="bx bx-chevron-left"></i></a></li>
+								</th:block>
+								<th:block
+									th:each="num : ${#numbers.sequence(1, page.endPage)}">
+									<li class="page-item"
+										th:attrappend="class=${num ==  page.page ? 'active' : ' '}">
+										<a th:href="|workmanager?page=${num}|" class="page-link">[[${num}]]</a>
+									</li>
+								</th:block>
+								<th:block th:if="${page.next}">
+									<li class="page-item next"><a class="page-link"
+										th:href="|workmanager?page=${page.endPage + 1 }|"><i
+											class="bx bx-chevron-right"></i></a></li>
+								</th:block>
+							</ul>
+						</nav>
+					</div>
+
+				</div>
 			</div>
 		</div>
-
+		<script>
+				
+		</script>
+	</th:block>
 </body>
-<script>
-
-</script>
-</th:block>
 </html>
