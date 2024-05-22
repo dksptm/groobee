@@ -82,7 +82,7 @@ public class ModuleController {
 		if (tempVO != null) {
 			model.addAttribute("tempVO", tempVO);
 		}
-		return "redirect:/solTempList";
+		return "solution/module/insertTemp";
 	}
 	
 	// 템플릿 등록 처리

@@ -89,14 +89,17 @@
 									<textarea class="form-control tempinfo" th:field="*{tempInfo}"></textarea>
 								</div>
 							</div>
+							<div class="mt-3 col-2">
+								<label for="tempId" class="form-label">등록방식</label> <select
+									class="form-select inserttype">
+									<option value="option">-선택-</option>
+									<option value="input">직접입력</option>
+									<option value="upload">업로드</option>
+								</select>
+							</div>
 						</div>
 					</form>
-					<div class="mt-3 col-12">
-						<div class="test">
-							<input name="uploadFiles2" id="uploadFiles2" type="file">
-						</div>
-						<div style="display: none;" class="upload-sample p-3 com-sm-1"></div>
-					</div>
+					<div class="mt-3 col-12 tempdiv"></div>
 
 					<!--  작성완료 버튼 -->
 					<div class="mt-3 text-end">
@@ -121,7 +124,58 @@
 						let radio = $(this).find('td :radio');
 						radio.attr('checked', !radio.is(':checked'));
 					});
-											
+							
+					//업로드or직접입력 선택
+					//직접입력 Tag
+					let templateA = `
+						<div class="mt-3">템플릿HTML명</div>
+						<div class="col-md-5">
+							<input class="form-control inputTemp" id="filename" type="text" />
+						</div>
+						<div class="mt-3">템플릿HTML입력</div>
+						<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
+						<!-- 템플릿 초기화 버튼 -->
+						<div class="d-flex justify-content-center mb-3">
+							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
+						</div>
+						<h4 style="display: none;" class="tempPre">=템플릿 미리보기=</h4>
+						<div style="display: none;"
+							class="tempPre template p-3 border border-dark"></div>
+					`;
+					//업로드 Tag
+					let templateB = `
+						<div class="test">
+							<input name="uploadFiles2" id="uploadFiles2" type="file">
+						</div>
+						<div style="display: none;"	class="upload-sample p-3 com-sm-1"></div>
+					`;
+					//업로드/직접입력 템플릿 반영
+						$(".inserttype").on("change", function(e) {
+							if ($(".inserttype").val() == "input") {
+								$(".tempdiv").html(templateA);
+								$(".tempPre").css('display', 'block');
+							} else if($(".inserttype").val() == "upload"){
+								$(".tempdiv").html(templateB);
+							} else{
+								$(".tempdiv").html('');
+							}
+						});
+
+						//직접입력값 미리보기
+						$(".tempdiv").on("keyup", ".inputTemp", function(e) {
+							let tVal = $("#content").val()
+							let fileName = $("#filename").val();
+							$(".template").html(tVal);
+						});
+
+						//직접입력값 초기화
+						$(".tempdiv").on("click", "#htmlreset", function(e) {
+							console.log($(".inputTemp").val());
+							$(".inputTemp").val("");
+							$(".template").empty();
+						});
+
+					
 					//템플릿 등록 버튼
 					$(".commitbtn").on("click", async function(e) {
 					    e.preventDefault();
