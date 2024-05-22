@@ -108,7 +108,7 @@
 				console.log(wkStat);
 				console.log(wkSite);
 				
-				$.ajax({
+				$.get({
 					url:'worklist',
 					method:'Get',
 					data:{
@@ -118,7 +118,8 @@
 						wkSite:  wkSite
 						},
 					success: function(info){
-						  //$(tr).html('');
+						  $(tr).html('');
+						  
 						  
 						  
 						  
