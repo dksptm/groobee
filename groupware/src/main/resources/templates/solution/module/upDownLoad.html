@@ -23,12 +23,14 @@
 								<div class="col-md-3">
 									<input class="form-control custName" type="text" readOnly />
 								</div>
+								
 								<!-- 고객사 선택 모달버튼 -->
 								<div class="col-md-3">
 									<button type="button" class="btn btn-primary"
 										data-bs-toggle="modal" data-bs-target="#CustModal">고객사
 										선택</button>
 								</div>
+								
 								<!-- 고객사 선택 모달화면 -->
 								<div class="modal fade" id="CustModal" tabindex="-1">
 									<div class="modal-dialog modal-xl modal-dialog-scrollable"
@@ -52,11 +54,12 @@
 													</thead>
 													<tbody>
 														<th:block th:each="CustVO : ${custlist}">
-															<tr>
+															<tr id="custTr">
 																<td>[[ ${CustVO.custName} ]]</td>
 																<td>[[ ${CustVO.custNo} ]]</td>
 																<td>[[ ${CustVO.rep} ]]</td>
-																<td><input type="radio" name="check" th:value="${CustVO.custNo}"></td>
+																<td><input type="radio" name="check"
+																	th:value="${CustVO.custNo}"></td>
 															</tr>
 														</th:block>
 													</tbody>
@@ -108,7 +111,8 @@
 							<input class="form-control inputTemp" id="filename" type="text" />
 						</div>
 						<div class="mt-3">템플릿HTML입력</div>
-						<textarea class="inputTemp" style="width: 790px; height: 200px;" id="content"></textarea>
+						<textarea class="inputTemp" style="width: 790px; height: 200px;"
+							id="content"></textarea>
 						<h4 style="display: none;" class="tempPre">=템플릿 미리보기=</h4>
 						<div class="tempPre template"></div>
 
@@ -134,6 +138,7 @@
 					<div class="mt-3 text-end">
 						<button type="submit"
 							class="commitbtn btn rounded-pill btn-primary">작성완료</button>
+							<p>TEST</p>
 					</div>
 
 					<script>
@@ -147,6 +152,11 @@
 							$(".custName").val($('input:radio:checked').val());
 							
 						})
+					//고객사 행 클릭시 라디오버튼 선택
+						$("#custTr").click(function(){
+						let checkbox = $(this).find('td:first-child :radio');
+						radio.attr('checked', !radio.is(':checked'));
+						});
 					
 					//업로드or직접입력 선택시 입력창에 반영
 						$(".inserttype").on("change", function(e) {

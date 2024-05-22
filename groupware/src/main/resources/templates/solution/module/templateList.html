@@ -26,7 +26,37 @@
 							</div>
 						</th:block>
 					</div>
-
+					<!-- 페이징 -->
+					<div>
+						<th:block th:if="${TempDTO.totalCnt} != 0">
+							<nav aria-label="Page navigation">
+								<ul class="pagination justify-content-center">
+									
+									<th:block th:if="${TempDTO.prev}">
+										<li class="page-item prev"><a
+											th:href="|solTempList?page=${TempDTO.startPage - 1 }|"
+											class="page-link"><i class="bx bx-chevron-left"></i></a></li>
+									</th:block>
+									<th:block
+										th:each="num : ${#numbers.sequence(1, TempDTO.endPage)}">
+										<li class="page-item "
+											th:attrappend="class=${num ==  TempDTO.page ? 'active' : ' '}">
+											<a th:href="|solTempList?page=${num}|" class="page-link">[[${num}]]</a>
+										</li>
+									</th:block>
+									<th:block th:if="${TempDTO.next}">
+										<li class="page-item next"><a
+											th:href="|solTempList?page=${TempDTO.endPage + 1 }|"
+											class="page-link"><i class="bx bx-chevron-right"></i></a></li>
+									</th:block>
+								</ul>
+							</nav>
+						</th:block>
+						<th:block th:unless="${TempDTO.totalCnt} != 0">
+							<p>현재 등록된 템플릿이 없습니다.</p>
+						</th:block>
+					</div>
+					<!-- /페이징 -->
 					<!-- 템플릿 등록 버튼 -->
 					<div class="d-flex align-items-end flex-column mt-3">
 						<button type="button"

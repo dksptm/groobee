@@ -10,62 +10,52 @@
 				<div class="card-body">
 
 					<!-- 템플릿 목록 출력 -->
-					<div class="table-responsive">
-						<!-- <table class="table table-hover">
-							<thead>
-								<tr>
-									<th>템플릿번호</th>
-									<th>템플릿명</th>
-									<th>템플릿설명</th>
-									<th>고객번호</th>
-								</tr>
-							</thead>
-							<tbody> -->
-						<div class="row">
-							<div class="col-3 mb-2">
-								<div class="card" th:onclick="|location.href='@{#}'|">
-									<div class="card-body">
-										<img style="height: 18rem;" th:src="@{|/files/${tempVO.tempImg}|}"
-											 class="card-img-top" alt="...">
-									</div>
+					<div class="row">
+						<div class="col-3 mb-2">
+							<div class="card" th:onclick="|location.href='@{#}'|">
+								<div class="card-body">
+									<p>템플릿 미리보기</p>
+									<img style="height: 14rem;"
+										th:src="@{|/files/${tempVO.tempImg}|}" class="card-img-top"
+										alt="...">
 								</div>
 							</div>
-							<div class="col-5 mb-2">
-								<table class="table">
-									<tr>
-										<th>템플릿번호 : </th>
-										<td>[[ ${tempVO.tempNo} ]]</td>
-									</tr>
-									<tr>
-										<th>템플릿이름 : </th>
-										<td>[[ ${tempVO.tempName} ]]</td>
-									</tr>
-									<tr>
-										<th>템플릿설명 : </th>
-										<td>[[ ${tempVO.tempInfo} ]]</td>
-									</tr>
-									<tr>
-										<th>고객사번호 : </th>
-										<td>[[ ${tempVO.CustNo} ]]</td>
-									</tr>
-									<tr>
-										<td>
-											<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a>
-										</td>
-									</tr>
-								</table>
-							</div>
 						</div>
-						<!-- </tbody>
-						</table> -->
+						<div class="col-9 mb-2">
+							<table class="table table-bordered">
+								<tr>
+									<th>템플릿번호</th>
+									<td>[[ ${tempVO.tempNo} ]]</td>
+								</tr>
+								<tr>
+									<th>템플릿이름</th>
+									<td>[[ ${tempVO.tempName} ]]</td>
+								</tr>
+								<tr>
+									<th>템플릿설명</th>
+									<td>[[ ${tempVO.tempInfo} ]]</td>
+								</tr>
+								<tr>
+									<th>이용고객사번호</th>
+									<td>[[ ${tempVO.CustNo} ]]</td>
+								</tr>
+								<tr>
+									<th>첨부파일명</th>
+									<td>[[ ${tempVO.uplName} ]]</td>
+								</tr>
+							</table>
+							<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a><br>
+							<button type="button" th:onclick="|location.href='@{/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
+							<button type="button" class="btn btn-danger">삭제</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<script>
-		let template = `
-		
-		`;
+			//CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
 		</script>
 	</th:block>
 </body>

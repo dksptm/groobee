@@ -3,7 +3,9 @@ package com.samjo.app.solmodule.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
 import com.samjo.app.approval.service.TempVO;
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.solmodule.mapper.SolModMapper;
 import com.samjo.app.solmodule.service.ModuleService;
 import com.samjo.app.solmodule.service.ModuleVO;
+import com.samjo.app.solmodule.service.TempSearchVO;
 
 @Service
 public class ModuleServiceImpl implements ModuleService{
@@ -33,7 +37,6 @@ public class ModuleServiceImpl implements ModuleService{
 	
 	@Override
 	public List<ModuleVO> modList() {
-		// TODO Auto-generated method stub
 		return solmodMapper.selectModAll();
 	}
 
@@ -93,13 +96,33 @@ public class ModuleServiceImpl implements ModuleService{
 	}
 
 	@Override
-	public List<TempVO> tempList() {
-		return solmodMapper.selectTempAll();
+	public List<TempVO> tempList(SearchVO searchVO) {
+		return solmodMapper.selectTempAll(searchVO);
 	}
 
 	@Override
+	public int count() {
+		return solmodMapper.tempCount();
+	}
+	
+	@Override
 	public TempVO tempInfo(String tempNo) {
 		return solmodMapper.selectTemp(tempNo);
+	}
+
+	@Override
+	public Map<String, Object> tempUpdate(TempVO tempVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result =solmodMapper.UpdateTemp(tempVO);
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		map.put("target", tempVO);
+		return map;
 	}
 
 }

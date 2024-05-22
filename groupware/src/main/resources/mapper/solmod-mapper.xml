@@ -15,17 +15,40 @@
 	</select>
 	
 	<!-- 템플릿 전체목록 -->
-	<select id="selectTempAll" resultType="TempVO">
-		SELECT 	*
-		FROM 	temp
-		ORDER BY temp_no
+	<select id="selectTempAll" resultType="TempVO" parameterType="SearchVO">
+		SELECT r.*
+		FROM (SELECT rownum rn,
+		             t.*
+		      FROM (SELECT 	temp_no,
+		                    temp_name,
+		                    temp_info,
+		                    save_name,
+		                    upl_name,
+		                    cust_no,
+		                    temp_img
+		            FROM 	temp
+		            ORDER BY temp_no desc) t
+		        WHERE rownum <![CDATA[<=]]> (#{page} * 8) ) r
+		WHERE r.rn > (#{page} -1) * 8
+	</select>
+	
+	<!-- 템플릿 페이징 -->
+	<select id="tempCount">
+		SELECT count(*)
+		FROM temp
 	</select>
 	
 	<!-- 템플릿 단건조회 -->
 	<select id="selectTemp" parameterType="String" resultType="TempVO">
-		SELECT 	*
+		SELECT 	temp_no,
+				temp_name,
+				temp_info,
+				save_name,
+				upl_name,
+				cust_no,
+				temp_img
 		FROM 	temp
-		WHERE temp_no = #{tempNo}
+		WHERE 	temp_no = #{tempNo}
 	</select>
 	
 	<!-- 고객사모달 -->
@@ -64,6 +87,13 @@
 			   #{uplName},
 			   #{custNo},
 			   #{tempImg})
-	</insert>	
+	</insert>
+	
+	<!-- 템플릿 수정 -->
+	<update id="UpdateTemp" parameterType="TempVO">
+		UPDATE temp
+		SET temp_info = #{tempIndo}
+		WHERE temp_no = #{tempNo}
+	</update>
 </mapper>
   

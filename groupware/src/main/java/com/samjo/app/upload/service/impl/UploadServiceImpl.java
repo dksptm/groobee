@@ -3,6 +3,7 @@ package com.samjo.app.upload.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -106,6 +107,7 @@ public class UploadServiceImpl implements UploadService {
 		String text = (String)map.get("tags");
 		String fileName = (String)map.get("fileName");
 		String path = "text/html/";
+		
 		// 날짜 폴더 생성
 		String folderPath = makeFolder(path);
 		// UUID
@@ -117,6 +119,7 @@ public class UploadServiceImpl implements UploadService {
 		String saveName = uploadPath + File.separator + uploadFileName;
 
 		File f1 = new File(saveName);
+		
 		/*// 파일이 존재하면 종료
 		 * if (f1.exists()) {
 			System.out.println("파일이 존재..."); 
@@ -128,12 +131,15 @@ public class UploadServiceImpl implements UploadService {
 			// 객체생성방법 1.절대경로넘기기(fullpath) 2.파일객체넘기기 (f1)
 			
 			fos.write(bytes);
-
 			fos.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return uploadFileName;
+		long fileSize = f1.length();
+		String test = "";
+		test = fileName + ":::html:::" + fileSize + ":::" + setImagePath(uploadFileName);
+		
+		return test;
 	}
 
 }
