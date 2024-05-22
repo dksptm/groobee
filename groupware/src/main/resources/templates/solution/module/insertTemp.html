@@ -122,78 +122,78 @@
 						radio.attr('checked', !radio.is(':checked'));
 					});
 											
-						//템플릿 등록 버튼
-						$(".commitbtn").on("click", async function(e) {
-						    e.preventDefault();
-						    
-							let formData = new FormData();
-						    let fileInput = document.querySelector('input[name="uploadFiles2"]');
-						    let fileList = fileInput.files;
-						    for(let file of fileList){
-						        formData.append('uploadFiles', file);
-						    }
-						    
-						    //템플릿 속성값 추가
-						    let tempName = $('.tempname').val();
-						    let tempInfo = $('.tempinfo').val();
-						    let custNo = $('.custName').val();
-						    
-						    try {
-						    	//파일 업로드 처리
-							    	let result = await $.ajax({
-									            url: 'uploadsAjax',
-									            beforeSend: function(xhr){
-									                xhr.setRequestHeader(header, token);
-									            },
-									            type: 'POST',
-									            processData: false,    
-									            contentType: false,    
-									            data: formData
-							        });
-						    		
-							        let path = '';
-							        for(let filePath of result){
-							            path = filePath.split(":::");
-							        }
-							        let saveName = path[3];
-							        let uplName = saveName.split("/").pop();
-						    	
-						        // 파일 미리보기 이미지 생성
-						        let html = await $.ajax({
-						            url: 'files/' + path[3],
-						            dataType: "html"
+					//템플릿 등록 버튼
+					$(".commitbtn").on("click", async function(e) {
+					    e.preventDefault();
+					    
+						let formData = new FormData();
+					    let fileInput = document.querySelector('input[name="uploadFiles2"]');
+					    let fileList = fileInput.files;
+					    for(let file of fileList){
+					        formData.append('uploadFiles', file);
+					    }
+					    
+					    //템플릿 속성값 추가
+					    let tempName = $('.tempname').val();
+					    let tempInfo = $('.tempinfo').val();
+					    let custNo = $('.custName').val();
+					    
+					    try {
+					    	//파일 업로드 처리
+						    	let result = await $.ajax({
+								            url: 'uploadsAjax',
+								            beforeSend: function(xhr){
+								                xhr.setRequestHeader(header, token);
+								            },
+								            type: 'POST',
+								            processData: false,    
+								            contentType: false,    
+								            data: formData
 						        });
-						        $('.upload-sample').css('display', 'block');
-						        $('div.upload-sample').html(html);
-						
-						        var t = $('div.upload-sample')[0];
-						        var canvas = await html2canvas(t);
-						        var myImg = canvas.toDataURL("image/png").replace("data:image/png;base64,", "");
-						
-						        // 템플릿 등록
-						        await $.ajax({
-						            url : 'insertSolTemp',
-						            beforeSend: function(xhr){
-						                xhr.setRequestHeader(header, token);
-						            },
-						            type : 'POST',
-						            data : {
-						                'imgSrc' : myImg,
-						                'tempName' : tempName,
-						                'tempInfo' : tempInfo,
-						                'custNo' : custNo,
-						                'saveName' : saveName,
-						                'uplName' : uplName
-						            },
-						            dataType : 'text'
-						        });
-						
-						        // 페이지 이동
-						        location.replace("/solTempList");
-						    } catch (error) {
-						        console.log("작업 중 오류 발생:", error);
-						    }
-						});
+					    		
+						        let path = '';
+						        for(let filePath of result){
+						            path = filePath.split(":::");
+						        }
+						        let saveName = path[3];
+						        let uplName = saveName.split("/").pop();
+					    	
+					        // 파일 미리보기 이미지 생성
+					        let html = await $.ajax({
+					            url: 'files/' + path[3],
+					            dataType: "html"
+					        });
+					        $('.upload-sample').css('display', 'block');
+					        $('div.upload-sample').html(html);
+					
+					        var t = $('div.upload-sample')[0];
+					        var canvas = await html2canvas(t);
+					        var myImg = canvas.toDataURL("image/png").replace("data:image/png;base64,", "");
+					
+					        // 템플릿 등록
+					        await $.ajax({
+					            url : 'insertSolTemp',
+					            beforeSend: function(xhr){
+					                xhr.setRequestHeader(header, token);
+					            },
+					            type : 'POST',
+					            data : {
+					                'imgSrc' : myImg,
+					                'tempName' : tempName,
+					                'tempInfo' : tempInfo,
+					                'custNo' : custNo,
+					                'saveName' : saveName,
+					                'uplName' : uplName
+					            },
+					            dataType : 'text'
+					        });
+					
+					        // 페이지 이동
+					        location.replace("/solTempList");
+					    } catch (error) {
+					        console.log("작업 중 오류 발생:", error);
+					    }
+					});
 
 						
 					</script>

@@ -92,8 +92,14 @@
 	<!-- 템플릿 수정 -->
 	<update id="UpdateTemp" parameterType="TempVO">
 		UPDATE temp
-		SET temp_info = #{tempIndo}
+		SET temp_info = #{tempInfo}
 		WHERE temp_no = #{tempNo}
 	</update>
+	
+	<!-- 템플릿 삭제 -->
+	<delete id="DeleteTemp" parameterType="TempVO">
+		DELETE temp
+		WHERE temp_no = #{tempNo}
+	</delete>
 </mapper>
   

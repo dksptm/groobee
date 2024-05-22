@@ -79,16 +79,22 @@ public class ModuleController {
 	public String InsertTemplate(@ModelAttribute TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
 		model.addAttribute("custlist", list);
-		System.out.println(tempVO);
-		tempVO = moduleservice.tempInfo(tempVO.getTempNo());
-		System.out.println(tempVO);
 		if (tempVO != null) {
 			model.addAttribute("tempVO", tempVO);
 		}
-		return "solution/module/insertTemp";
+		return "redirect:/solTempList";
 	}
+	
+	// 템플릿 등록 처리
+		@PostMapping("insertSolTemp")
+		@ResponseBody
+		public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
+			tempVO.setTempImg(moduleservice.saveImg(binaryData));
+			moduleservice.tempInsert(tempVO);
+			return "solution/module/templateList";
+		}
 
-	//템플릿 수정 화면
+	// 템플릿 수정 화면
 	@GetMapping("updateSolTemp")
 	public String UpdateTemplate(@ModelAttribute TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
@@ -98,14 +104,24 @@ public class ModuleController {
 		return "solution/module/updateTemp";
 	}
 
-	// 템플릿 등록 처리
-	@PostMapping("insertSolTemp")
-	@ResponseBody
-	public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
-		tempVO.setTempImg(moduleservice.saveImg(binaryData));
-		moduleservice.tempInsert(tempVO);
-		return "";
+	// 템플릿 수정 처리
+	@PostMapping("tempUpdate/{id}")
+	public String tempUpdate(@PathVariable String id, @ModelAttribute TempVO tempVO, Model model) {
+		tempVO.setTempNo(id);
+		moduleservice.tempUpdate(tempVO);
+		return "redirect:/solTempInfo/" + id;
 	}
+	
+	//템플릿 삭제 처리
+	@GetMapping("tempDelete/{id}")
+	public String tempDelete(@PathVariable String id) {
+		TempVO tempVO = new TempVO();
+		tempVO.setTempNo(id);
+		moduleservice.tempDelete(tempVO);
+		return "redirect:/solTempList";
+	}
+
+	
 
 	// 미리보기 이미지 저장 샘플
 	@ResponseBody
