@@ -43,11 +43,11 @@ class GroupwareApplicationTests {
 	@Test
 	public void deleteTest() {
 		System.out.println("파일삭제 테스트 시작");
-		//deleteFile("C:\\upload\\test");
-		
+		//파일삭제1
 		String testPath = uploadPath + File.separator + "10405de1-aab6-4c93-bff2-f63e67a140fd_tempPreview.png";
+						//파일 경로
 		File file = new File(testPath);
-		
+		//파일 상태 확인
 		System.out.println("파일 경로: " + file.getAbsolutePath());
 		System.out.println("파일 존재 여부: " + file.exists());
 		System.out.println("읽기 가능: " + file.canRead());
@@ -62,7 +62,9 @@ class GroupwareApplicationTests {
 			System.out.println("파일이 존재하지 않습니다.");
 		}
 
-		Path filePath = Paths.get(uploadPath + File.separator + "test.txt.txt");
+		//파일삭제2
+		Path filePath = Paths.get(uploadPath + File.separator + "test.txt");
+								//파일 경로
 		try {
 			// 파일 삭제
 			Files.delete(filePath);
@@ -71,18 +73,8 @@ class GroupwareApplicationTests {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		File file2 = new File("C:\\upload\\test.txt");
 
-        if(file2.delete())
-        {
-            System.out.println("File deleted successfully");
-        }
-        else
-        {
-            System.out.println("Failed to delete the file");
-        }
-
+        //디렉토리 존재유무 확인 및 내부파일 확인
         File dir = new File(uploadPath);
         System.out.println("절대 경로: " + dir.getAbsolutePath());
 
