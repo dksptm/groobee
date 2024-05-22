@@ -59,10 +59,13 @@ public class ModuleController {
 		return "solution/module/templateList";
 	}
 	
+	//템플릿 상세 화면
 	@GetMapping("solTempInfo/{tempNo}")
 	public String tempInfo(@PathVariable String tempNo, Model model) {
+		System.out.println("tempno :" + tempNo);
 		TempVO tempVO = moduleservice.tempInfo(tempNo);
 		model.addAttribute("tempVO", tempVO);
+		System.out.println(tempVO);
 		return "solution/module/templateInfo";
 	}
 	
