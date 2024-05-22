@@ -271,7 +271,7 @@
 						(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
 						
 						<choose>
-							<when test="sch.schTaskNos != null">
+							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
 								<foreach item="no" index="index" collection="sch.schTaskNos"
       									 open="(" separator="," close=")">
@@ -306,7 +306,7 @@
 				 AND	(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
 				 		
 				 		<choose>
-							<when test="sch.schTaskNos != null">
+							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
 								<foreach item="no" index="index" collection="sch.schTaskNos"
       									 open="(" separator="," close=")">

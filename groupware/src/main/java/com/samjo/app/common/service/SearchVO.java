@@ -12,6 +12,6 @@ public class SearchVO {
 	
 	// 전자결재 관련.
 	private String docTitle;
-	private List<Integer> schTaskNos;
+	private List<Integer> schTaskNo;
 	
 }

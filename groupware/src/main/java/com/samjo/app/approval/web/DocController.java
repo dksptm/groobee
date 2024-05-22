@@ -139,14 +139,16 @@ public class DocController {
 	@GetMapping("docCmplt")
 	public String docCmplt(SearchVO searchVO, Model model, 
 								Authentication authentication) {
+		
 		searchVO = checkSearch(searchVO);
 		EmpVO empVO = getLoginEmp(authentication);
 		
 		if(empVO != null) {
-			PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
 			List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("search", searchVO);
 			model.addAttribute("path", "docCmplt");
 			return "approval/list/cmplt";
 		} else {
