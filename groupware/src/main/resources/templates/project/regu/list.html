@@ -42,7 +42,6 @@
 				<tbody>
 					<tr th:each="regu : ${projects}">
 						<td th:text="${regu.reguId}" />
-						<td th:text="${regu.taskNo}" />
 						<td th:text="${regu.taskName}" />
 						<td>[[ ${#dates.format(regu.taskStartDt, "yyyy/MM/dd")}]]</td>
 						<td>[[ ${regu.crePerd}]]</td>

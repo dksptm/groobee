@@ -16,6 +16,7 @@ public interface DeptMapper {
 	// 부서 전체 목록 - 진경
 	public List<DeptVO> selectDeptAll();
 	// 총책임자 목록
-	public List<EmpVO> respMngrList(@Param("custNo")String custNo);
+	
+	public List<EmpVO> respMngrList(@Param("cno")String custNo);
 	
 }
