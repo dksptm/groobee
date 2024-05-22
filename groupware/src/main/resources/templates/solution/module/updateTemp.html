@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">템플릿 수정</h5>
+				<div class="card-body">
+					<!-- 템플릿 등록/수정 -->
+					<form id="tempInsertForm" th:action="@{/tempUpdate/${tempNo}}" method="post"
+						th:object="${tempVO}" enctype="multipart/form-data">
+						<input type="hidden" name="_method" value="put"/>
+						<div class="card-body">
+							<div class="mt-3 row">
+								<label for="title" class="col-md-2 col-form-label">템플릿번호</label>
+								<div class="col-md-5">
+									<input class="form-control" type="text" th:field="*{tempNo}"
+										readOnly />
+								</div>
+							</div>
+							<div class="mt-3 row">
+								<label for="title" class="col-md-2 col-form-label">사용고객사</label>
+								<div class="col-md-3">
+									<input class="form-control custName" th:field="*{custNo}"
+										type="text" readOnly />
+								</div>
+							</div>
+							<div class="mt-3 row">
+								<label for="title" class="col-md-2 col-form-label">템플릿명</label>
+								<div class="col-md-5">
+									<input class="form-control tempname" th:field="*{tempName}"
+										type="text" readOnly />
+								</div>
+							</div>
+							<div class="mt-3 row">
+								<label for="cntn" class="col-md-2 col-form-label">설명</label>
+								<div class="col-md-5">
+									<textarea class="form-control tempinfo" th:field="*{tempInfo}"></textarea>
+								</div>
+								<p class="text-danger">템플릿은 설명만 수정가능합니다.</p>
+							</div>
+						</div>
+					<!--  수정완료 버튼 -->
+					<div class="mt-3 text-end">
+						<button type="submit"
+							class="commitbtn btn rounded-pill btn-primary">수정완료</button>
+					</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</th:block>
+</body>
+</html>

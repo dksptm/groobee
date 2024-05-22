@@ -1,8 +1,10 @@
 package com.samjo.app.solmodule.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.samjo.app.approval.service.TempVO;
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.cust.service.CustVO;
 
 
@@ -12,7 +14,8 @@ public interface ModuleService {
 	public List<ModuleVO> modList();
 	
 	//템플릿 전체조회
-	public List<TempVO> tempList();
+	public List<TempVO> tempList(SearchVO searchVO);
+	public int count();
 	
 	//고객사 목록조회
 	public List<CustVO> custList();
@@ -25,5 +28,8 @@ public interface ModuleService {
 	
 	//템플릿 상세조회
 	public TempVO tempInfo(String tempNo);
+	
+	//템플릿 수정REST
+	public Map<String, Object> tempUpdate(TempVO tempVO);
 	
 }

@@ -40,7 +40,13 @@ public class DownloadServiceImpl implements DownloadService {
 			//파일명에서 uuid 제거
 			String makeName = URLEncoder.encode(file.getName(),"UTF-8");
 			String NameAry[] = makeName.split("_");
-			String DownName = NameAry[1]; 
+			String DownName = ""; 
+			for(String name : NameAry) {
+				if(!name.equals(NameAry[0])) {
+					DownName = DownName + name;
+				}
+			}
+			DownName = DownName.replaceAll("\\+", "%20");
 			
 			//파일생성
 			HttpHeaders headers = new HttpHeaders();
