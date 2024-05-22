@@ -269,11 +269,17 @@
 						d.cust_no = #{emp.custNo} 
 				AND 
 						(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
+						
 						<choose>
-							<when test="sch.schTaskNo != 0">
-								AND td.task_no = #{sch.schTaskNo}
+							<when test="sch.schTaskNos != null">
+							AND td.task_no IN 
+								<foreach item="no" index="index" collection="sch.schTaskNos"
+      									 open="(" separator="," close=")">
+								#{no}
+								</foreach>
 							</when>
 						</choose>
+						
 				GROUP BY 
 						 d.doc_no
 					    ,d.dept_id
@@ -286,6 +292,32 @@
 		AND 	g.rn > (#{sch.page} - 1) * 5
 	</select>
 	
+	<!-- 위의 문서리스트(완료 문서)의 카운트. -->
+	<select id="countCmplt" parameterType="map" resultType="int">
+		SELECT  COUNT(*)
+		FROM
+				(SELECT	d.doc_no
+				        ,COUNT(td.task_no)
+				 FROM	doc d LEFT OUTER JOIN task_doc td 
+				                           ON (d.doc_no = td.doc_no)
+				              LEFT OUTER JOIN apr a 
+				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
+				 WHERE	d.cust_no = #{emp.custNo}
+				 AND	(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
+				 		
+				 		<choose>
+							<when test="sch.schTaskNos != null">
+							AND td.task_no IN 
+								<foreach item="no" index="index" collection="sch.schTaskNos"
+      									 open="(" separator="," close=")">
+								#{no}
+								</foreach>
+							</when>
+						</choose>
+						
+				 GROUP BY d.doc_no)
+	</select>		
+		
 	<!-- resultmap의 collection의 select : taskList -->
 	<select id="docMapTaskList" resultType="ProjectVO">
 		SELECT
@@ -298,21 +330,6 @@
 		WHERE	td.doc_no = #{doc_no}
 	</select>
 	
-	<!-- 위의 문서리스트(완료 문서)의 카운트. -->
-	<select id="countCmplt" parameterType="EmpVO" resultType="int">
-		SELECT  COUNT(*)
-		FROM
-				(SELECT	d.doc_no
-				        ,COUNT(td.task_no)
-				 FROM	doc d LEFT OUTER JOIN task_doc td 
-				                           ON (d.doc_no = td.doc_no)
-				              LEFT OUTER JOIN apr a 
-				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
-				 WHERE	d.cust_no = #{custNo}
-				 AND	d.doc_stat = '4B3b' OR d.doc_stat = '4B4b'
-				 GROUP BY d.doc_no)
-	</select>		
-		
 		
 	<!-- 한 문서 상세정보. -->
 	<select id="selectDoc" resultType="DocVO">

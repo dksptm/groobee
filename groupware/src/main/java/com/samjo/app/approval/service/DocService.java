@@ -23,7 +23,7 @@ public interface DocService {
 	public int countIng(EmpVO empVO);
 	// 전체문서 중 완료 문서리스트
 	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO);
-	public int countCmplt(EmpVO empVO);
+	public int countCmplt(EmpVO empVO, SearchVO searchVO);
 	
 	// 단건조회
 	public DocVO docInfo(DocVO docVO);

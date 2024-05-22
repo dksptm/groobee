@@ -1,5 +1,7 @@
 package com.samjo.app.common.service;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -10,6 +12,6 @@ public class SearchVO {
 	
 	// 전자결재 관련.
 	private String docTitle;
-	private Integer schTaskNo;
+	private List<Integer> schTaskNos;
 	
 }

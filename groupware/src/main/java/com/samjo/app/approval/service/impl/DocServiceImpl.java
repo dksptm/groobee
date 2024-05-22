@@ -81,8 +81,8 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectCmpltDocs(empVO, searchVO);
 	}
 	@Override
-	public int countCmplt(EmpVO empVO) {
-		return docMapper.countCmplt(empVO);
+	public int countCmplt(EmpVO empVO, SearchVO searchVO) {
+		return docMapper.countCmplt(empVO, searchVO);
 	}
 
 	// 문서단건조회.

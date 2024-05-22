@@ -150,6 +150,28 @@ const getDocRefs = () => {
 	})
 }
 
+/* 관련업무 선택 모달 함수.*/
+/*
+const getDocTasks = () => {
+	
+	let trs = $('#list3 > tbody input[name=chk-list3]:checked').closest('tr');
+	let divTag = $('#getTasks');
+	divTag.children().remove();
+	
+	trs.each(function(idx,tr) {
+		let get = $(tr);
+		let data = get.data('task');
+		let creatTag = $(`<span>
+							<input name="tasks[${(idx)}]" type="hidden"
+								   value="${get.data('task')}" readonly />
+							<span>${get.find('td').eq(0).text()} 
+							      ${get.find('td').eq(1).text()}</span>
+					      	<span>X</span>
+						  </span>&ensp;`);
+		divTag.append(creatTag);
+	});
+	
+}*/
 
 const getDocTasks = () => {
 	let inputs = $('#getTasks').find('input');
@@ -198,7 +220,25 @@ const ptoSubmit = () => {
 	$('div#pto').append($('<input name="pto.ptoStartDt" />').val(ptoStartDt));
 	let ptoEndDt = $('#edt').val() + ' ' + $('#etime').val()
 	$('div#pto').append($('<input name="pto.ptoEndDt" />').val(ptoEndDt));
-
+	
+	/*
+	$.ajax({
+		url: 'pto',    
+    	type: 'POST',
+    	contentType : 'application/json',
+    	beforeSend: function(xhr) {
+    		xhr.setRequestHeader(header, token);
+		},
+    	data: JSON.stringify(data)
+	})
+	.done(response => {
+    	resolve(response);
+	})
+	.fail(err => {
+	    alert('휴가원 저장 중 오류');
+	    reject(err);
+	});
+	*/
 }
 
 /* 날짜포맷 */
@@ -215,12 +255,39 @@ function getNow(){
 	return date;
 }
 
-function getDate(data) {
-	let date = new Date(data);
-	let year = date.getFullYear();
-	let month = ('0' + (date.getMonth()+1)).substr(-2);
-	let day = ('0' + date.getDate()).substr(-2);
-	
-	let result = year + month + day;
-	return result;
-}//getDate()
+
+/* 파일저장 (FileInfoController) */
+/*
+const saveFile = (fileList, dno, eid) => { 
+	// 아작스 결과를 프로미즈 객체 담기 
+	return new Promise((resolve, reject) => {
+
+	    let formData = new FormData(); 
+	    
+	    for(let file of fileList) {
+	        formData.append('uploadFiles', file);
+	    }
+	    formData.append('empId', eid);
+		formData.append('docNo', dno);	
+			
+	    $.ajax({
+	        url: 'uploadFiles',    
+	        type: 'POST',
+	        processData: false, 
+	        contentType: false,
+	        beforeSend: function(xhr) {
+	        	xhr.setRequestHeader(header, token);
+	    	},
+	        data: formData
+	    })
+	    .done(response => {
+	        resolve(response);
+	    })
+	    .fail(err => {
+	        alert('첨부파일 저장 중 오류');
+	        reject(err);
+	    });
+	})
+	console.log('프로미즈 객체 끝');
+}
+*/
