@@ -10,6 +10,9 @@
 				<h5 class="card-header">받은 메일</h5>
 				<div class="card-body">
 					<div class="table-responsive">
+						<input type="hidden" name="custNo" th:value="${#authentication.principal.custNo}">	
+                		<input type="hidden" name="empId" th:value="${#authentication.principal.empId}">
+											
 						<table class="table table-hover">
 							<thead>
 								<tr>
@@ -26,7 +29,6 @@
 									<td>[[ ${Email.title} ]]</td>
 									<td>[[ ${Email.sender} ]]</td>
 									<td>[[ ${Email.fileNo} ]]</td>
-									<td>[[ ${doc.draft} ]]</td>
 									<td><span class="badge bg-label-primary me-1">빈공간1</span></td>
 									<td>빈공간2</td>
 								</tr>
