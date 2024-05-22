@@ -5,7 +5,6 @@
 
 <th:block layout:fragment="Content">
 
-
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
 	<div class="DocSearch-content col-12 container-p-y">
@@ -44,7 +43,17 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 							<td>[[ ${doc.title} ]]</td>
-							<td>[[ ${doc.task} ]]</td>
+							<td class="taskTitle">
+								<span th:text="${doc.taskCount != 0 ? doc.taskList[0].taskName : '-'}"></span>
+								<span th:text="${doc.taskCount > 1 ? '외' : ''}"></span>&ensp;
+								<span th:text="${doc.taskCount > 1 ? doc.taskCount - 1 : ''}"></span>
+								<div class="taskList" style="display:none;">
+								<th:block th:each="task : ${doc.taskList}">
+									<span>[[ ${task.deptName} ]]&ensp;[[ ${task.taskName} ]]</span>
+									<br>
+								</th:block>
+								</div>
+							</td>
 							<td>[[ ${doc.draftStatName} ]]</td>
 							<td>[[ ${doc.docStatName} ]]</td>
 							<td th:if="${doc.draftStat == '4A1a'}">-</td>
@@ -66,7 +75,20 @@
 	</div>
 	</div>
 	</div>
-	
+
+<script>
+	$(function(){
+		
+		$('.taskList').slideDown();
+		
+		$('.taskTitle').hover(function(){
+			$('.taskList').slideToggle();
+		})
+		
+	})
+</script>
+
+
 </th:block>
 
 

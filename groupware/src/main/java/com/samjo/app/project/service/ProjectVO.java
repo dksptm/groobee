@@ -60,6 +60,8 @@ public class ProjectVO {
 	private String empName;
 	// 업무문서
 	private String docNo;
+	
+	private String abc;
 
 
 

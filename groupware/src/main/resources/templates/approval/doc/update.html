@@ -21,7 +21,6 @@
 			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
-			<p>토큰 -> <input type="text" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" style="width:300px;"></p>
 			
 			<!-- ------------------------- 작성완료/취소 버튼 START ------------------------- -->
 			<div class="m-3 text-end">

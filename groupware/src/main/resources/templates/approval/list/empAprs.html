@@ -45,7 +45,11 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
 							<td>[[ ${doc.deptName} ]]</td>
-							<td>[[ ${doc.task} ]]</td>
+							<td>[[ ${doc.taskCount} ]]
+								<th:block th:each="task : ${doc.taskList}"> 
+									<span>[[ ${task.taskName} ]]</span>
+								</th:block>
+							</td>
 							<td>[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>
 							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>

@@ -135,9 +135,9 @@ public class DocController {
 	@GetMapping("docCmplt")
 	public String docCmplt(SearchVO searchVO, Model model, 
 								Authentication authentication) {
-		if(searchVO.getPage() == 0) {
-			searchVO.setPage(1);
-		}
+		System.out.println("searchVO===>"+searchVO);
+		searchVO = checkSearch(searchVO);
+		System.out.println("searchVO===>"+searchVO);
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
             LoginUserVO loginUserVO = (LoginUserVO) principal;
@@ -149,7 +149,7 @@ public class DocController {
             
             EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
             PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO));
-            List<DocVO> list = docService.getCmpltDocList(empVO,searchVO);
+            List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
             
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
@@ -230,6 +230,16 @@ public class DocController {
 		} else {
 			return "test/test";
 		}
+	}
+	
+	public SearchVO checkSearch(SearchVO searchVO) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		if(searchVO.getSchTaskNo() == null) {
+			searchVO.setSchTaskNo(0);
+		}
+		return searchVO;
 	}
 	
 }
