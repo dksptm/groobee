@@ -13,7 +13,7 @@
                     <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
                 </div>
 				<br>	
-                <table id="form" class="table">
+                <table id="taskForm" class="table">
                     <h3>프로젝트 업무 등록</h3>
                     <tr>
                         <th>업무명</th>
@@ -21,27 +21,27 @@
                     </tr>
                     <tr>
                         <th>업무번호</th>
-                        <td><input type="text" th:field="*{taskNo}"></td>
+                        <td><input type="text" th:field="*{taskNo}" readonly>             
                     </tr>
                     <tr>
                         <th>부서명</th>
                         <td>
-                            <select class="form-select" style="width:100px" th:field="*{deptName}">
-                                <option value="">선택</option>
-                                <!-- 부서 목록을 추가 -->
+                            <select class="form-select" style="width:100px" th:field="*{deptName}" id="selectDept" name="dept">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th>부서참여인원</th>
                         <td><input type="text" th:field="*{empName}">
-                        <button type="button" class="btn btn-primary" id="DeptEmp">등록</button></td>
+                        <button type="button" class="btn btn-primary" id="deptEmp" data-bs-toggle="modal" data-bs-target="#deptEmpModal">등록</button></td>
                     </tr>
                     <tr>
                         <th>협력부서명</th>
                         <td>
                             <select class="form-select" style="width:100px" th:field="*{deptName}">
-                                <option value="">선택</option>
+                                <option value="">협력부서명</option>
                                 <!-- 부서 목록을 추가 -->
                             </select>
                         </td>
@@ -49,7 +49,7 @@
                     <tr>
                         <th>협력부서내참여인원</th>
                         <td><input type="text" th:field="*{empName}">
-                        <button type="button" class="btn btn-primary" id="coDeptEmp">등록</button></td>
+                        <button type="button" class="btn btn-primary" id="coDeptEmp" data-bs-toggle="modal" data-bs-target="#coDeptEmpModal">등록</button></td>
                     </tr>
                     <tr>
                     </tr>
@@ -73,15 +73,127 @@
                     </tr>
                 </table>
                 <div style="text-align: center;">
-                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="submit" class="btn btn-primary" id="taskInsertBtn">저장</button>
                     <button type="button" class="btn btn-secondary">취소</button>
                 </div>
             </form>
         </div>
-    </th:block>
+        
+        <!------------------------------------------------ 모달 -------------------------------------------------->
+		<!-- 부서참여인원 등록 모달창 -->
+		<div class="modal fade" id="deptEmpModal" tabindex="-1" aria-labelledby="deptEmpModalLabel" aria-hidden="true" >
+			<div class="modal-dialog" style=" text-align: center;">
+				<div class=" modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deptEmpModalLabel">참여인원 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>부서 참여인원</th>
+								<th>선택</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>-</td>
+								<td>
+									<div class="form-check" >
+									  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+									  <label class="form-check-label" for="flexRadioDefault2"></label>
+									  </div>
+								</td>
+							<tr>	
+						</tbody>
+					</table>
+					
+					<div class="modal-footer" style=" text-align: center;">
+						<button type="button" class="btn btn-primary" id="DeptInModalBtn">등록</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+			</div> 
+		<!-- 부서참여인원 등록 모달창 끝 -->	
+		
+		<!-- 협력부서참여인원 등록 모달창 -->
+		<div  class="modal fade" id="coDeptEmpModal" tabindex="-1" aria-labelledby="coDeptEmpModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style=" text-align: center;">
+				<div class=" modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="DeptEmpModalLabel">참여인원 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>부서 참여인원</th>
+								<th>-</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td>
+									<div class="form-check">
+									  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+									  <label class="form-check-label" for="flexRadioDefault2"></label>
+									  </div>
+								</td>
+							<tr>	
+						</tbody>
+					</table>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="DeptInModalBtn">등록</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+			</div> 
+		<!-- 협력부서참여인원 등록 모달창 끝 -->
 </body>
+    </th:block>
+
+		
 
 <script>
+	
+// 등록
+$(function(){
+	$('#taskInsertBtn').on('click', function(){
+		let formData = $('taskForm').serialize();
+		console.log(formData);
+		
+		$.ajax({
+			type: 'POST',
+			url : '/taskInser',
+			data : formData,
+			success : function(data){
+				alert('프로젝트업무 등록에 성공했습니다.');
+				location.reload();
+			},
+			error : function(err){
+				alert('프로젝트업무 등록에 실패했습니다.');
+			}
+		});
+	});
+});
+
+
+// 부서 셀렉트 선택
+$(function(){
+	$("#selectDept").val("${param.dept}").attr("selected","selected");
+});
+
+
+
+
+
+
+
+
+
 /* 	document.querySelector('form[name="insertForm"]').addEventListener(
 			'submit', prjtInsert);
 	

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.emp.service.DeptService;
+import com.samjo.app.emp.service.DeptVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 
@@ -21,11 +24,14 @@ public class ProjectController {
 
 	ProjectService projectService;
 	
-	@Autowired
-	public ProjectController(ProjectService projectService) {
-		this.projectService = projectService;
-	}
+	DeptService deptService;
 	
+	@Autowired
+	public ProjectController(ProjectService projectService, DeptService deptService) {
+		this.projectService = projectService;
+		this.deptService = deptService;
+	}
+
 	
 	// 프로젝트 전체 조회
 	@GetMapping("prjtAllList")
@@ -45,7 +51,11 @@ public class ProjectController {
 	
 	// 프로젝트 등록
 	@GetMapping("prjtInsert")
-	public String prjtInsertForm(Model model) {
+	
+	public String prjtInsertForm(@RequestParam(value="custNo", required=false) String custNo, Model model) {
+		List<EmpVO> list = deptService.respMngrList(custNo);
+		model.addAttribute("mngr", list);
+		
 		model.addAttribute("projects", new ProjectVO());
 		return "project/prjt/insert";
 	}
@@ -97,7 +107,10 @@ public class ProjectController {
 	// 프로젝트(하위) 업무 등록
 	@GetMapping("taskInsert")
 	public String taskInsertForm(Model model) {
-			model.addAttribute("task", new ProjectVO());
+		List<DeptVO> list = deptService.deptAllList();
+		model.addAttribute("dept", list);
+		
+		model.addAttribute("task", new ProjectVO());
 			return "project/task/insert";
 			}
 			
@@ -113,7 +126,15 @@ public class ProjectController {
 				}
 				return uri;
 			}
-			
+	
+	// 프로젝트 업무 등록시 부서 전체 목록. 
+	/*@GetMapping("deptAll") 
+	public String deptAll(Model model) {
+		List<DeptVO> list = deptService.deptAllList();
+		model.addAttribute("dept", list);
+		return "project/task/insert";
+	}*/
+	
 	// 프로젝트(하위) 업무 단건
 	@GetMapping("taskInfo")
 	public String taskInfo(ProjectVO projectVO, Model model) {

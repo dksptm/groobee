@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.samjo.app.emp.mapper.DeptMapper;
 import com.samjo.app.project.mapper.ProjectMapper;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
@@ -16,6 +17,7 @@ import com.samjo.app.project.service.ProjectVO;
 public class ProjectServiceImpl implements ProjectService {
 	
 	ProjectMapper projectMapper;
+	
 	
 	@Autowired
 	public ProjectServiceImpl(ProjectMapper projectMapper) {
@@ -138,7 +140,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 	
-
 	
 	@Override // 협력업체 조회
 	public List<ProjectVO> CoopCoAllList() {
@@ -180,6 +181,8 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return map;
 	}
+	
+	// 
 	
 	
 	// 효주 - 업무간단조회
