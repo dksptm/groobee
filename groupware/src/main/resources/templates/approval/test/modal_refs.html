@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<div class="d-flex justify-content-between">
+	<table class="table" id="list2">
+		<thead>
+			<tr>
+				<th>선택</th>
+				<th>부서명</th>
+				<th>이름</th>
+				<th>직급명</th>
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="emp : ${emps}">
+			<!-- 로그인 구현되면 아래정보 변경. -->
+			<tr th:if="${emp.empId != #authentication.principal.empId}" th:attr="data-emp=${emp.empId}">
+				<td><input class="form-check-input" type="checkbox" name="chk-list2"></td>
+				<td>[[ ${emp.deptName} ]]</td>
+				<td>[[ ${emp.empName} ]]</td>
+				<td>[[ ${emp.jobTitle} ]]</td>
+			</tr>
+			</th:block>
+		</tbody>
+	</table>
+	<div class="mx-3 row align-items-center">
+		<button type="button" class="btn btn-icon me-2 btn-primary" id="yes2">
+			<span class="tf-icons bx bx-upvote bx-rotate-90"></span></button>
+		<button type="button" class="btn btn-icon me-2 btn-secondary" id="no2">
+			<span class="tf-icons bx bx-upvote bx-rotate-270"></span></button>
+	</div>
+	<table class="table" id="refslist">
+		<thead>
+			<tr>
+				<th>선택</th>
+				<th>부서명</th>
+				<th>이름</th>
+				<th>직급명</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
+
+<script>
+$(function(){
+	
+	// 모달 tr선택시 체크되도록.
+	$('#list2 > tbody, #refslist > tbody').on('mouseover', 'tr', function(e) {
+		$(this).css('cursor', 'pointer');
+	});
+	
+	$('#list2 > tbody, #refslist > tbody').on('click', 'tr' , function(e){
+		let checkbox = $(this).find("input[type='checkbox']");
+		if(checkbox.prop('disabled') == false){
+			checkbox.prop('checked', !checkbox.prop('checked'));			
+		}
+	});
+
+	$('#list2 > tbody, #refslist > tbody').on('click', 'input[type="checkbox"]' , function(e){
+		let checkbox = $(this);
+		if(checkbox.prop('disabled') == false){
+			checkbox.prop('checked', !checkbox.prop('checked'));
+		}
+	});
+
+	// 참조자 오른쪽 테이블 이동
+	$('#yes2').on('click', function(){
+		let chkList = $("input[name=chk-list2]:checked");
+		
+		chkList.each(function(idx){
+			let chk = $(this);
+			console.log(chk);
+			
+			if(chk.prop('disabled') != true){
+				let tr = chk.closest('tr');
+				let copyTr = tr.clone();
+				
+				copyTr.find('input').attr('name','d-chk-list2').prop('checked', false);
+				$('#refslist > tbody').append(copyTr);
+				
+				tr.find('input').prop('disabled', true);
+			}
+		})
+	})
+	
+	// 참조자 오른쪽 테이블에서 삭제
+	$('#no2').on('click', function(){
+		let chkList = $("input[name=d-chk-list2]:checked");
+		
+		chkList.each(function(idx,ele){
+			let chk = $(this);
+			let tr = chk.closest('tr');
+			let id = tr.data('emp');
+			
+			let list = $('#list2 > tbody tr');
+			
+			list.each(function(idx,ele) {
+				let thisTr = $(this);
+				let thisId = thisTr.data('emp');
+				if(thisId == id) {
+					thisTr.find('input').prop('disabled', false);
+					thisTr.find('input').prop('checked', false);
+				}
+			})
+			tr.remove();
+		})
+	})
+
+})//end
+
+</script>
+
+</html>

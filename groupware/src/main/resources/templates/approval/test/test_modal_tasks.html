@@ -26,26 +26,44 @@
 <script>
 $(function(){
 	
-	// 모달 tr선택시 포인터.
+	// 모달 tr선택시 체크되도록.
 	$('#list3 > tbody').on('mouseover', 'tr', function(e) {
 		$(this).css('cursor', 'pointer');
 	});
-	// 아래 tr이벤트 때문에 input체크이벤트 안걸려서 추가..
+	
+	/*
+	$('#list3 > tbody').on('click', 'tr' , function(e){
+		let checkbox = $(this).find("input[type='checkbox']");
+		checkbox.prop('checked', !checkbox.prop('checked'));			
+	});*/
+	
+	let finds = $('#getTasks').find('input');
+	let ary = []
+	
+	finds.each(function(i,e){
+		ary.push(e.value);
+	})
+	
+	$('[name="chk-list3"]').val(ary);
+	
+	/* 
+	let inputs = $('#getTasks').find('input');
+	let trs = $('#list3 > tbody tr'); 
+	
+	trs.each(function(idx,ele){
+		inputs.each(function(i,e){
+			if(ele.dataset.task == e.value) {
+				$(ele).find('input').prop('checked', true);
+			}
+		})
+	}) */
+	
 	$('#list3 > tbody').on('click', 'input[type="checkbox"]' , function(e){
 		let checkbox = $(this);
 		checkbox.prop('checked', !checkbox.prop('checked'));
 	});
 	
-	// 이미 추가되어있으면, 모달에도 체크상태로.
-	let finds = $('#getTasks').find('input');
-	let ary = []
-	console.log(finds);
-	finds.each(function(i,e){
-		ary.push(e.value);
-	})
-	$('[name="chk-list3"]').val(ary);
 	
-	// 체크하면 추가, 해제하면 삭제
 	$('#list3 > tbody').on('click', 'tr', function(e){
 		let tr = $(this);
 		let checkbox = tr.find('input[type="checkbox"]');
@@ -63,9 +81,13 @@ $(function(){
 		} else {
 			checkbox.prop('checked', false);
 			$('#getTasks').find(`input[value="${tr.data('task')}"]`).closest('span').remove();
-		}	
-	});
+		}
 		
+	});
+	
+	
+	
+	
 })//end
 
 </script>

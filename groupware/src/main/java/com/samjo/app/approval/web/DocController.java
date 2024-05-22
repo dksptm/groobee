@@ -1,6 +1,8 @@
 package com.samjo.app.approval.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -8,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.approval.service.DocService;
@@ -135,31 +139,36 @@ public class DocController {
 	@GetMapping("docCmplt")
 	public String docCmplt(SearchVO searchVO, Model model, 
 								Authentication authentication) {
-		System.out.println("searchVO===>"+searchVO);
 		searchVO = checkSearch(searchVO);
-		System.out.println("searchVO===>"+searchVO);
-		Object principal = authentication.getPrincipal();
-		if (principal instanceof LoginUserVO) {
-            LoginUserVO loginUserVO = (LoginUserVO) principal;
-            
-            String empId = loginUserVO.getEmpId();
-            String custNo = loginUserVO.getCustNo();
-            String deptId = loginUserVO.getDeptId();
-            String permId = loginUserVO.getPermId();	
-            
-            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
-            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO));
-            List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
-            
-            model.addAttribute("list", list);
-            model.addAttribute("pageDTO", pageDTO);
-            model.addAttribute("path", "docCmplt");
-            
-            return "approval/list/cmplt";
-        } else {
-        	System.out.println("Not principal instanceof LoginUserVO");
-        	return "test/test";
-        }
+		EmpVO empVO = getLoginEmp(authentication);
+		
+		if(empVO != null) {
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
+			List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
+			model.addAttribute("list", list);
+			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("path", "docCmplt");
+			return "approval/list/cmplt";
+		} else {
+			return "test/test";
+		}
+	}
+	
+	@PostMapping("docCmplt/search")
+	@ResponseBody
+	public Map<String, Object> docCmpltSearch(@RequestBody SearchVO searchVO, 
+												Authentication authentication) {
+		
+		searchVO = checkSearch(searchVO);
+		EmpVO empVO = getLoginEmp(authentication);
+
+		Map<String, Object> map = new HashMap<>();
+		List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
+		PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
+		map.put("list", list);
+		map.put("pageDTO", pageDTO);
+
+		return map;
 	}
 	
 	// 문서 상세정보.
@@ -232,13 +241,33 @@ public class DocController {
 		}
 	}
 	
+	public EmpVO getLoginEmp(Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+            LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
+            String empId = loginUserVO.getEmpId();
+            String custNo = loginUserVO.getCustNo();
+            String deptId = loginUserVO.getDeptId();
+            String permId = loginUserVO.getPermId();	
+            
+            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
+            return empVO;
+        } else {
+        	return null;
+        }
+	}
+	
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
-		if(searchVO.getSchTaskNo() == null) {
-			searchVO.setSchTaskNo(0);
-		}
+		/*
+		 * if(searchVO.getSchTaskNo() == null) { searchVO.getSchTaskNo().forEach(tno ->
+		 * {
+		 * 
+		 * }); }
+		 */
 		return searchVO;
 	}
 	
