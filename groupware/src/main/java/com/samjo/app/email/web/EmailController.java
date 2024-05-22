@@ -6,19 +6,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
 import com.samjo.app.emp.service.EmpVO;
+import com.samjo.app.security.service.LoginUserVO;
+import com.samjo.app.upload.service.EmailFileUploadService;
 
 @Controller
 public class EmailController {
@@ -26,13 +29,16 @@ public class EmailController {
 	@Autowired
 	EmailService emailService;
 	
+	@Autowired
+	EmailFileUploadService emailFileUploadService;
+	
 	// 받은메일 전체조회
 	@GetMapping("inboxList")
 	public String inboxList(SearchVO searchVO, Model model) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
-		List<EmailVO> list = emailService.inboxList();
+		List<EmailVO> list = emailService.inboxList(searchVO);
 		model.addAttribute("inboxList", list);
 		PageDTO pageDTO = new PageDTO(searchVO.getPage(), emailService.count());
 		model.addAttribute("pageDTO", pageDTO);
@@ -52,16 +58,25 @@ public class EmailController {
 	
 	// 메일작성
 	@GetMapping("emailWrite")
-	public String empInsertForm(Model model, HttpServletRequest req) {
-		//내 경우 emp레퍼런스랑 다르게, 세션에서 계정 id를 받아와서 보내는사람 칸에 자동입력 시켜야함
-		HttpSession session = req.getSession();
-		//세션에서 로그인한 계정의 id를 받아온다.
-//		String empId = (String)session.getAttribute("empId");
-//		EmailVO emailVO = new EmailVO();
-//		emailVO.setSender(empId);
-//		model.addAttribute("email", emailVO); //이 부분은 로그인 기능 활성화되면 하자.
-		model.addAttribute("empId", "KHJ11111");
-	return "email/emailWrite";
+	public String empInsertForm(Model model, Authentication authentication) {
+		//세션이 아니라 어센티케이션에서 로그인한 유저의 id를 얻어옴.
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+			LoginUserVO loginUserVO = (LoginUserVO) principal;
+		String empId = loginUserVO.getEmpId();
+		String custNo = loginUserVO.getCustNo();
+		
+		EmpVO empVO = new EmpVO();
+		empVO.setEmpId(empId);
+		empVO.setCustNo(custNo);
+		
+		//내가 누군지 알아야 내가 속한 회사의 empList를 가져올 수 있다.
+		List<EmpVO> list = emailService.getEmpList(empVO);
+		model.addAttribute("getEmpList", list);
+		return "email/emailWrite";
+		} else {
+			System.out.println("principal is not instanceof LoginUserVO");
+		} return "/";
 	}
 	
 	// 주소록 가져와서 모달창에 뿌려주기 위한.(페이지가 아닌 데이터를 리턴하기 위한.)
@@ -78,10 +93,16 @@ public class EmailController {
 	
 	
 	@PostMapping("emailSend")
-	public String emailSend(EmailVO emailVO) {
+	public String emailSend(EmailVO emailVO, MultipartFile[] filelist) {
 		//리퀘스트 바디(교재 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
-		//수정. 그냥 폼데이터 받는걸로 변경
-		emailService.emailInsert(emailVO);
+		//수정. 그냥 폼데이터 받는걸로 변경	
+		int SenEmailNo = emailService.emailInsert(emailVO);
+		if(!filelist[0].isEmpty()) {
+			emailFileUploadService.uploadFileInfo(filelist, emailVO.getSender(), emailVO.getSenEmailNo() );
+		}
+		if(SenEmailNo != -1) {
+			return"/"; //redirect:emailInfo?senEmailNo=" + SenEmailNo; //인서트 성공시, 보낸메일 상세조회 페이지 이동.
+		}
 		return "email/emailWrite";
 	}
 	

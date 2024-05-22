@@ -2,6 +2,7 @@ package com.samjo.app.email.mapper;
 
 import java.util.List;
 
+import com.samjo.app.email.service.EmailFileVO;
 import com.samjo.app.email.service.EmailVO;
 import com.samjo.app.emp.service.EmpVO;
 
@@ -12,34 +13,37 @@ public interface EmailMapper {
 	public List<EmailVO> selectInboxAll();
 	
 	// 받은메일 상세조회
-	public EmailVO selectInbox(EmailVO emailVo);
+	public EmailVO selectInbox(EmailVO emailVO);
 	
 	// 메일 발송(emailSend)
-	public int insertEmail(EmailVO emailVo);
+	public int insertEmail(EmailVO emailVO);
+	
+	// 메일 첨부파일 등록
+	public int insertEmailFile(EmailFileVO emailFileVO);
 	
 	// 보낸메일 전체조회
 	public List<EmailVO> selectEmailAll();
 	
 	// 보낸메일 상세조회
-	public EmailVO selectEmail(EmailVO emailVo);
+	public EmailVO selectEmail(EmailVO emailVO);
 	
 	// 휴지통 전체조회
 	public List<EmailVO> wastedList();
 	
 	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
-	public EmailVO deleteEmail(EmailVO emailVo);
+	public EmailVO deleteEmail(EmailVO emailVO);
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념
-	public EmailVO getInboxNo(EmailVO emailVo);
+	public EmailVO getInboxNo(EmailVO emailVO);
 	
 	// 주고받은 메일 조회
 	public List<EmailVO> chainMailList();
 	
 	// 발신하는 이메일에 파일 첨부
-	public EmailVO setFile(EmailVO emailVo);
+	public EmailVO setFile(EmailVO emailVO);
 		
 	// 수신한 이메일의 파일 내려받기
-	public EmailVO getFile(EmailVO emailVo);
+	public EmailVO getFile(EmailVO emailVO);
 	
 	//전체 페이지(받은메일)
 	public int count();
@@ -53,6 +57,6 @@ public interface EmailMapper {
 	//휴지통 복원
 	public List<EmailVO> restoreMail();
 	
-	// 주소록 조회(해당 고객사의 사원리스트를 일부 정보만 표시한 채로 전부 출력, 계정쪽 기능 완성 후에 작성한다. 
+	// 주소록 조회
 	public List<EmpVO> getEmpList(EmpVO empVO);
 }

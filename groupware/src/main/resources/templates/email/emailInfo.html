@@ -7,7 +7,7 @@
 	<div class="d-flex justify-content-center">
 		<form id="emailInsertForm" th:action="@{/emailInsert}" method="post" th:object="${email}" class="card my-4 col-10">
 		<div>
-			<h5 class="card-header">메일작성</h5>
+			<h5 class="card-header">보낸메일</h5>
 			<div class="card-body">
 				<div class="mt-3 row">
 					<label for="title" class="col-md-2 col-form-label">발신자</label>
@@ -25,9 +25,9 @@
                     </div>
                 </div>
                 <div class="mt-3 row">
-					<label for="title" class="col-md-2 col-form-label">참조자(점검중)</label>
+					<label for="title" class="col-md-2 col-form-label">참조자</label>
                     <div class="col-md-10">
-                    	<input class="form-control" type="text" th:field="*{recp}" />
+                    	<input class="form-control" type="text" th:field="*{refer}" />
                     </div>
                 </div>
                 <div class="mt-3 row">
@@ -39,7 +39,7 @@
                 <div class="mt-3 row">
                 	<label for="cntn" class="col-md-2 col-form-label">내용</label>
                    	<div class="col-md-10">
-                   		<textarea class="form-control" th:field="*{cntn}">...</textarea>
+                   		<textarea class="form-control" th:field="*{cntn}"></textarea>
                     </div>
                 </div>
              	<!-- 모달  -->

@@ -3,15 +3,15 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
- 	<select id="selectInboxAll" resultType="EmailVO">
+ 	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
   		SELECT  RN
   		       ,REC_EMAIL_NO
                ,SEN_EMAIL_NO
                ,RECP
                ,REFER
-               ,READ_DT
                ,EMAIL_STAT
                ,CUST_NO
+               ,FILE_NO
         FROM   (SELECT /*+ INDEX(INBOX inbox_rec_email_no_pk) */
         		       ROWNUM RN,
         		       INBOX.*
@@ -20,6 +20,11 @@
         		AND    RECP = #{empId})
          ) a
         WHERE a.rn > (#{page} - 1) * 5
+  	</select>
+  	
+  	 <select id="count" resultType="int">
+  		SELECT count(*)
+  		FROM INBOX
   	</select>
   	
   <insert id="insertEmail" parameterType="emailVO" statementType="CALLABLE">
@@ -34,12 +39,36 @@
     )
     ]]>
 </insert>
-
   	
-  	<select id="count">
-  		SELECT count(*)
-  		FROM INBOX
-  	</select>
+<!-- 첨부파일 등록. -->
+	<insert id="insertEmailFile" parameterType="EmailFileVO">
+		<selectKey keyProperty="fileNo"
+				   resultType="Integer"
+				   order="BEFORE">
+			SELECT NVL(MAX(file_no), 0) + 1
+			FROM email_file
+		</selectKey>
+		INSERT INTO email_file
+		        (
+		            file_no
+		            ,sen_email_no
+		            ,save_name
+		            ,upl_name
+		            ,file_ext
+		            ,file_size
+		            ,upl_emp      
+		        )
+		  VALUES
+		        (
+		         #{fileNo}
+		        ,#{senEmailNo}
+		        ,#{saveName}
+		        ,#{uplName}
+		        ,#{fileExt}
+		        ,#{fileSize}
+		        ,#{uplEmp}
+		        )	
+	</insert>  	
   	
   	<select id="selectEmailAll" resultType="EmailVO">
   		SELECT SEN_EMAIL_NO
@@ -96,12 +125,13 @@
   	<select id="getEmpList" resultType="EmpVO" parameterType="EmpVO">
   	SELECT e.emp_name,
        d.dept_name,
-       j.job_title
+       j.job_title,
+       e.emp_id
 	FROM emp e JOIN dept d
            ON e.dept_id = d.dept_id
            JOIN jobs j
            ON e.job_no = j.job_no
-	WHERE cust_no = #{custNo}
+	WHERE e.cust_no = #{custNo}
 	<!--로그인한 세션의 계정이 속한 고객사에 해당하는 emp, dept, jobs -->
   	</select>
   	
