@@ -4,15 +4,6 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-<style>
-.modal-dialog {
-    max-width: 500px; 
-    max-height: 400px; 
-}
-.modal-content {
-    height: 100%; 
-}
-</style>
 
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
@@ -251,10 +242,35 @@
 			
 			// 
 			if(confirm('저장할까요?')) {
+				
 				this.submit();
+				/* try{
+					// 나머지 템플릿은 알아서 저장됨
+					// 파일저장.
+					let dno = $('input[name="docNo"]').val();
+					let eid = $('input[name="draft"]').val();
+					let fileInput = document.querySelector('input#docFiles');
+					let fileList = fileInput.files;
+					let okFile;
+					console.log(fileList.length);
+					if(fileList.length != 0) {
+				 		okFile = await saveFile(fileList, dno, eid); // js파일.
+				 		console.log('첨부파일완료');
+				 		okFile.forEach((ele,idx) => {
+				 			console.log(idx, ' => ', ele);
+				 		});
+				 	}
+					alert('문서등록 완료.');
+
+					this.submit();
+				} catch {
+					alert('문서등록 오류');
+				} */
 			}
 			
 		})// 작성완료end.
+		
+		
 			
 	})//end.
 		

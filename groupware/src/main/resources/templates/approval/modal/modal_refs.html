@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/">
 
+<style>
+  .table-container {
+    display: flex;
+  }
+  .table {
+    flex: 1;
+    margin: 0 10px;
+  }
+  .table tbody tr {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+  .table tbody td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
 <div class="d-flex justify-content-between">
 	<table class="table" id="list2">
 		<thead>
@@ -13,7 +33,6 @@
 		</thead>
 		<tbody>
 			<th:block th:each="emp : ${emps}">
-			<!-- 로그인 구현되면 아래정보 변경. -->
 			<tr th:if="${emp.empId != #authentication.principal.empId}" th:attr="data-emp=${emp.empId}">
 				<td><input class="form-check-input" type="checkbox" name="chk-list2"></td>
 				<td>[[ ${emp.deptName} ]]</td>
