@@ -3,6 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
+  
+  <!-- 받은메일함 전체조회/페이징 -->
  	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
   		SELECT  RN
   		       ,REC_EMAIL_NO
@@ -26,7 +28,21 @@
   		SELECT count(*)
   		FROM INBOX
   	</select>
+  
+  <!-- email,inbox 단건조회시 첨부파일 조회 -->
+  	<select id="selectEmailFile" resultType="EmailFileVO">
+		SELECT file_no
+		       ,sen_email_no
+		       ,save_name
+		       ,upl_name
+		       ,file_size
+		       ,file_ext
+		FROM email_file
+		WHERE sen_email_no = #{senEmailNo}
+		ORDER BY file_no	
+	</select>
   	
+  <!-- 발송 시 3중셀렉키 조합 인서트 -->
   <insert id="insertEmail" parameterType="emailVO" statementType="CALLABLE">
     <![CDATA[
     CALL insert_email(
@@ -35,7 +51,8 @@
         #{cntn, mode=IN, jdbcType=VARCHAR},
         #{recp, mode=IN, jdbcType=VARCHAR},
         #{refer, mode=IN, jdbcType=VARCHAR},
-        #{custNo, mode=IN, jdbcType=VARCHAR}
+        #{custNo, mode=IN, jdbcType=VARCHAR},
+        #{senEmailNo, mode=OUT, jdbcType=VARCHAR}
     )
     ]]>
 </insert>
@@ -55,6 +72,7 @@
 		            ,save_name
 		            ,upl_name
 		            ,file_ext
+		            ,file_dt
 		            ,file_size
 		            ,upl_emp      
 		        )
@@ -65,12 +83,14 @@
 		        ,#{saveName}
 		        ,#{uplName}
 		        ,#{fileExt}
+		        ,SYSDATE
 		        ,#{fileSize}
 		        ,#{uplEmp}
 		        )	
 	</insert>  	
   	
-  	<select id="selectEmailAll" resultType="EmailVO">
+  <!-- 보낸메일함 전체조회 / 페이징처리 아직 안함 -->	
+  	<select id="selectEmailAll" parameterType="SearchVO" resultType="EmailVO">
   		SELECT SEN_EMAIL_NO
               ,SENDER
               ,TITLE
@@ -79,16 +99,23 @@
               ,EMAIL_STAT
               ,CHAIN_MAIL_NO
               ,CUST_NO
-        FROM EMAIL
-        <!--  WHERE RECP = #{empId} -->
+        FROM   (SELECT /*+ INDEX(INBOX email_sen_email_no_pk) */
+        		       ROWNUM RN,
+        		       EMAIL.*
+        		FROM   EMAIL
+        		WHERE  ROWNUM <![CDATA[<=]]> (#{page} * 5)
+        		AND    SENDER = #{empId})
+         ) a
+        WHERE a.rn > (#{page} - 1) * 5
   	</select>
   	
+    <!--  보낸메일 페이징 카운트 -->
   	 <select id="countSend">
   		SELECT count(*)
   		FROM EMAIL
   	</select>
   	
-  	<!-- 휴지통 -->
+  	<!-- 휴지통 보내기 -->
   	<update id="goWaste">
 	  	UPDATE email
 		SET email_stat = '3B2b'
@@ -101,7 +128,8 @@
   		WHERE  email_stat = '3B2b'
   	</select>
 
-	<select id="wastedList" resultType="EmailVO" parameterType="EmpVO">
+	<!-- 휴지통 전체조회, 서치VO 활용해야하고, 아마 수정할 부분이 있을 것.0523 -->
+	<select id="wastedList" parameterType="EmpVO" resultType="EmailVO">
   	SELECT s.sender
       	  ,s.title
           ,s.sent_dt
@@ -111,10 +139,10 @@
           AND i.email_stat = '3B2b'
           AND s.cust_no = #{custNo}
           AND i.cust_no = #{custNo}
-          <!-- 고객사별 분류를 해서 가져와야하므로. 로그인 세션에서 받아온 고객사번과 대조.
-          구현되고 나면 테스트 해볼것 -->
+          <!-- 고객사별 분류를 해서 가져와야하므로. 로그인 세션에서 받아온 고객사번과 대조 -->
 	</select>
 	
+	<!-- 휴지통 이메일 복원 -->
 	<update id="restoreMail" parameterType="EmailVO">
 	  	UPDATE email
 		SET email_stat = '3B1b'
@@ -132,7 +160,6 @@
            JOIN jobs j
            ON e.job_no = j.job_no
 	WHERE e.cust_no = #{custNo}
-	<!--로그인한 세션의 계정이 속한 고객사에 해당하는 emp, dept, jobs -->
   	</select>
   	
   </mapper>
