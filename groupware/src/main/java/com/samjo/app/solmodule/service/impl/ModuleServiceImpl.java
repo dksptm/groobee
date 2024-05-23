@@ -53,6 +53,7 @@ public class ModuleServiceImpl implements ModuleService {
 	@Override
 	public String tempInsert(TempVO tempVO) {
 		int result = solmodMapper.inserTemp(tempVO);
+		System.out.println("tempVO : "+tempVO);
 		if (result == 1) {
 			return tempVO.getTempNo();
 		} else {
@@ -60,6 +61,7 @@ public class ModuleServiceImpl implements ModuleService {
 		}
 	}
 
+	//삭제예정
 	@Override
 	public String saveImg(String binaryData) {
 		FileOutputStream stream = null;

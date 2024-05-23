@@ -62,7 +62,6 @@ public class ModuleController {
 		model.addAttribute("list", list);
 		TempDTO tempDTO = new TempDTO(searchVO.getPage(), moduleservice.count());
 		model.addAttribute("TempDTO", tempDTO);
-		System.out.println("tempDTO: " + tempDTO);
 		return "solution/module/templateList";
 	}
 

@@ -109,91 +109,99 @@
 
 					<script src="/js/html2canvas.js"></script>
 					<script>
-					//CSRF
-					let header = $("meta[name='_csrf_header']").attr('content');
-					let token = $("meta[name='_csrf']").attr('content');
-					
-					//고객사 모달처리
-					//모달창에서 선택한 고객사번호를 input창에 입력.
-					$(".selectCust").on("click", function(e){
-						$(".custName").val($('input:radio:checked').val());
-					})
-					
-					//고객사 행 클릭시 라디오버튼 선택
-					$("#custTr").click(function(){
-						let radio = $(this).find('td :radio');
-						radio.attr('checked', !radio.is(':checked'));
-					});
-							
-					//업로드or직접입력 선택
-					//직접입력 Tag
-					let templateA = `
-						<div class="mt-3">템플릿HTML명</div>
-						<div class="col-md-5">
-							<input class="form-control inputTemp" id="filename" type="text" />
-						</div>
-						<div class="mt-3">템플릿HTML입력</div>
-						<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
-						<!-- 템플릿 초기화 버튼 -->
-						<div class="d-flex justify-content-center mb-3">
-							<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
-						</div>
-						<h4 style="display: none;" class="tempPre">=템플릿 미리보기=</h4>
-						<div style="display: none;"
-							class="tempPre template p-3 border border-dark"></div>
-					`;
-					//업로드 Tag
-					let templateB = `
-						<div class="test">
-							<input name="uploadFiles2" id="uploadFiles2" type="file">
-						</div>
-						<div style="display: none;"	class="upload-sample p-3 com-sm-1"></div>
-					`;
-					//업로드/직접입력 템플릿 반영
+						//CSRF
+						let header = $("meta[name='_csrf_header']").attr('content');
+						let token = $("meta[name='_csrf']").attr('content');
+						
+						//고객사 모달처리
+						//모달창에서 선택한 고객사번호를 input창에 입력.
+						$(".selectCust").on("click", function(e){
+							$(".custName").val($('input:radio:checked').val());
+						});
+						
+						//고객사 행 클릭시 라디오버튼 선택
+						$("#custTr").click(function(){
+							let radio = $(this).find('td :radio');
+							radio.attr('checked', !radio.is(':checked'));
+						});
+								
+						//업로드or직접입력 선택
+						//직접입력 Tag
+						let templateA = `
+							<div class="mt-3">템플릿HTML명</div>
+							<div class="col-md-5">
+								<input class="form-control inputTemp" id="filename" type="text" />
+							</div>
+							<div class="mt-3">템플릿HTML입력</div>
+							<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
+							<!-- 템플릿 초기화 버튼 -->
+							<div class="d-flex justify-content-center mb-3">
+								<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
+							</div>
+							<h4 class="tempPre">=템플릿 미리보기=</h4>
+							<div style="display: none;"
+								class="tempPre template p-3 border border-dark"></div>
+						`;
+						//업로드 Tag
+						let templateB = `
+							<div class="test">
+								<input name="uploadFiles2" id="uploadFiles2" type="file">
+							</div>
+							<div class="upload-sample p-3 com-sm-1"></div>
+						`;
+						
+						//업로드/직접입력 템플릿 반영
 						$(".inserttype").on("change", function(e) {
 							if ($(".inserttype").val() == "input") {
 								$(".tempdiv").html(templateA);
-								$(".tempPre").css('display', 'block');
 							} else if($(".inserttype").val() == "upload"){
 								$(".tempdiv").html(templateB);
 							} else{
 								$(".tempdiv").html('');
 							}
 						});
-
+	
 						//직접입력값 미리보기
+						let tVal;
+						let fileName;
 						$(".tempdiv").on("keyup", ".inputTemp", function(e) {
-							let tVal = $("#content").val()
-							let fileName = $("#filename").val();
+							$(".template").css('display', 'block');
+							tVal = $("#content").val()
+							fileName = $("#filename").val();
 							$(".template").html(tVal);
+							
 						});
-
+	
 						//직접입력값 초기화
 						$(".tempdiv").on("click", "#htmlreset", function(e) {
 							console.log($(".inputTemp").val());
 							$(".inputTemp").val("");
 							$(".template").empty();
 						});
-
-					
-					//템플릿 등록 버튼
-					$(".commitbtn").on("click", async function(e) {
-					    e.preventDefault();
-					    
-						let formData = new FormData();
-					    let fileInput = document.querySelector('input[name="uploadFiles2"]');
-					    let fileList = fileInput.files;
-					    for(let file of fileList){
-					        formData.append('uploadFiles', file);
-					    }
-					    
-					    //템플릿 속성값 추가
-					    let tempName = $('.tempname').val();
-					    let tempInfo = $('.tempinfo').val();
-					    let custNo = $('.custName').val();
-					    
+							
+						//템플릿 등록 버튼
+						$(".commitbtn").on("click", async function(e) {
+						    e.preventDefault();
+						    
 					    try {
-					    	//파일 업로드 처리
+							//템플릿 속성값 추가
+						    let tempName = $('.tempname').val();
+						    let tempInfo = $('.tempinfo').val();
+						    let custNo = $('.custName').val();
+					    	let formData;
+							let fileInput;
+						    let fileList;
+						    let path;
+					        let saveName;
+					        let uplName;
+							if ($(".inserttype").val() == "upload") { //업로드 선택시 파일처리
+								formData = new FormData();
+							    fileInput = document.querySelector('input[name="uploadFiles2"]');
+							    fileList = fileInput.files;
+							    for(let file of fileList){
+							        formData.append('uploadFiles', file);
+							    }
+							  //파일 업로드 처리
 						    	let result = await $.ajax({
 								            url: 'uploadsAjax',
 								            beforeSend: function(xhr){
@@ -205,12 +213,27 @@
 								            data: formData
 						        });
 					    		
-						        let path = '';
 						        for(let filePath of result){
 						            path = filePath.split(":::");
 						        }
-						        let saveName = path[3];
-						        let uplName = saveName.split("/").pop();
+						        saveName = path[3];
+						        uplName = saveName.split("/").pop();
+							} else if($(".inserttype").val() == "input"){ //직접입력 선택시 HTML생성처리
+								let result = await $.ajax({
+											url: 'uploadsHtml',
+											beforeSend: function(xhr){
+										        xhr.setRequestHeader(header, token);
+										    },
+								            type: 'POST',
+								            data: JSON.stringify({tags:tVal,fileName:fileName}),
+								            dataType: 'text',
+								            contentType: 'application/json;charset=UTF-8'
+								});
+						        path = result.split(":::");
+						        saveName = path[3];
+						        uplName = saveName.split("/").pop();
+							};
+					    	
 					    	
 					        // 파일 미리보기 이미지 생성
 					        let html = await $.ajax({
@@ -220,7 +243,12 @@
 					        $('.upload-sample').css('display', 'block');
 					        $('div.upload-sample').html(html);
 					
-					        var t = $('div.upload-sample')[0];
+					        var t;
+					        if ($(".inserttype").val() == "input") {
+					        	t = $('div.template')[0];
+							} else if($(".inserttype").val() == "upload"){
+								t = $('div.upload-sample')[0];
+							}
 					        var canvas = await html2canvas(t);
 					        var myImg = canvas.toDataURL("image/png").replace("data:image/png;base64,", "");
 					

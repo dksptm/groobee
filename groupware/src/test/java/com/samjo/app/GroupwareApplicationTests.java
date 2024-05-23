@@ -7,6 +7,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +41,7 @@ class GroupwareApplicationTests {
 	}
 
 	//파일삭제 테스트
-	@Test
+	//@Test
 	public void deleteTest() {
 		System.out.println("파일삭제 테스트 시작");
 		//파일삭제1
@@ -109,4 +110,22 @@ class GroupwareApplicationTests {
 	        }
 	    }
 
+	 
+	 @Autowired
+	 StringEncryptor jasyptStringEncryptor;
+	 
+	 @Test
+	 public void encryption() {
+			String[] strs = {
+					"net.sf.log4jdbc.sql.jdbcapi.DriverSpy",
+					"jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:xe",
+					"samjo",
+					"samjo"
+			};
+			
+			for(String str : strs) {
+				String encStr = jasyptStringEncryptor.encrypt(str);
+				System.out.println(encStr);
+			}
+		}
 }
