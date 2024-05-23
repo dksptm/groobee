@@ -245,7 +245,7 @@ function ptoForm() {
 
 /* 휴가원 등록 */
 const ptoSubmit = () => {
-
+	
 	let ptoStartDt = $('#sdt').val() + ' ' + $('#stime').val();
 	$('div#pto').append($('<input name="pto.ptoStartDt" />').val(ptoStartDt));
 	let ptoEndDt = $('#edt').val() + ' ' + $('#etime').val()

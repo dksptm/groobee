@@ -227,8 +227,8 @@ public class DocServiceImpl implements DocService {
 				});				
 			}
 			// 4.기존 연결업무 삭제 후 재등록.
-			docMapper.deleteTaskDoc(docVO.getDocNo());
 			if(docVO.getTasks() != null) {
+				docMapper.deleteTaskDoc(docVO.getDocNo());
 				docVO.getTasks().forEach(task -> {
 					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
 				});				

@@ -154,11 +154,13 @@ public class DocController {
 		searchVO = checkSearch(searchVO);
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
+		
 		if(empVO != null) {
 			List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
 			PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
+			System.out.println("searchVO ==========> "+searchVO);
 			model.addAttribute("search", searchVO);
 			model.addAttribute("path", "docCmplt");
 			return "approval/list/cmplt";
@@ -227,7 +229,7 @@ public class DocController {
 	
 	// 문서수정 반영.
 	@PostMapping("docUpdate")
-	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, @RequestParam String flag) {
+	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, String flag) {
 		int update = docService.docInfoUpdate(docVO);
 		int delete = -1;
 		if(update > 0 && flag.equals("YES")) {
@@ -238,7 +240,7 @@ public class DocController {
 					return "redirect:docInfo?docNo=" + docVO.getDocNo();
 				};
 			}
-		} else if(update > 0) {
+		} else if(update > 0 && flag == null) {
 			return "redirect:docInfo?docNo=" + docVO.getDocNo();
 		} else {
 			return "test/test";

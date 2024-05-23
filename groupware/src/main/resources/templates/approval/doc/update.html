@@ -24,11 +24,13 @@
 			<hr>
 			
 			<!-- ------------------------- 작성완료/취소 버튼 START ------------------------- -->
+			<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
 			<div class="m-3 text-end">
 				<button type="submit" class="btn rounded-pill btn-success">수정</button>
 				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
 						class="btn rounded-pill btn-secondary">취소</button>
 			</div>
+			</th:block>
 			<!-- ------------------------- 작성완료/취소 버튼 END ------------------------- -->
 			
 			<div class="card-body row">
@@ -215,8 +217,8 @@
 					<div class="col-5 text-end">
   						<label for="formFileLg" class="form-label">첨부파일</label>
   						<div class="form-control form-control" id="formFileLg">
+ 							<input type="hidden" name="flag" value="NO" />
   							<th:block th:each="file,fstat : ${doc.files}">
-  								<input type="hidden" name="flag" value="NO" />
 								<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
 						 			<span>[[ ${file.uplName} ]]</span>
 								</a><br>

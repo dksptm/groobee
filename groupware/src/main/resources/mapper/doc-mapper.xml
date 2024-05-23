@@ -273,7 +273,7 @@
 						<choose>
 							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
-								<foreach item="no" index="index" collection="sch.schTaskNos"
+								<foreach item="no" index="index" collection="sch.schTaskNo"
       									 open="(" separator="," close=")">
 								#{no}
 								</foreach>
@@ -308,7 +308,7 @@
 				 		<choose>
 							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
-								<foreach item="no" index="index" collection="sch.schTaskNos"
+								<foreach item="no" index="index" collection="sch.schTaskNo"
       									 open="(" separator="," close=")">
 								#{no}
 								</foreach>
