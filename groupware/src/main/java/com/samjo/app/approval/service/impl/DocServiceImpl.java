@@ -123,13 +123,14 @@ public class DocServiceImpl implements DocService {
 
 	// 문서등록.
 	@Override
-	@Transactional
+	@Transactional()
 	public int docInfoInsert(DocVO docVO) {
 		// 문서테이블 등록.
 		int result = docMapper.insertDoc(docVO);
 		if(result != 1) {
 			return -1;
 		}
+		
 		// 문서등록 성공 시.
 		// 연관테이블 등록.
 		
