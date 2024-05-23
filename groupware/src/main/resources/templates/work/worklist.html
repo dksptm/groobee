@@ -98,9 +98,7 @@
 		</div>
 		<script>
 			$('#filter').on('click', filters);
-			
 		
-				
 			function filters() {
 				//$.html('');
 				let oneDate = $('#oneDate').val();
@@ -108,10 +106,6 @@
 				let wkStat = $('#wkStat').val();
 				let wkSite = $('#wkSite').val();
 				let tr = $('tbody').children('tr');
-						console.log(oneDate);
-						console.log(wkYn);
-						console.log(wkStat);
-						console.log(wkSite);
 						
 				
 				$.ajax({
@@ -124,8 +118,13 @@
 						wkSite : wkSite
 					},
 					success :function(){
+						
+						console.log(oneDate);
+						console.log(wkYn);
+						console.log(wkStat);
+						console.log(wkSite);
+						//location.reload();
 						console.log('성공');
-			$("#table").load("#table");
 							}   
 					})
 			};
