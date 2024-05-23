@@ -40,6 +40,6 @@ public class DeptServiceImpl implements DeptService {
 	@Override // 프로젝트등록시 책임자 목록
 	public List<EmpVO> respMngrList(String custNo) {
 		return deptMappr.respMngrList(custNo);
-		}
+	}
 
 }

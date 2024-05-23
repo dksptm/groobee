@@ -4,17 +4,18 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-
+		<br>
+		<h3 style=" text-align: center">프로젝트 단건상세</h3>
+		<br><br><br>
 		<div class="container">
-
-			<table class="table">
+			<table class="table table-light table-sm" >
 				<thead>
 					<tr>
 						<th>프로젝트명</th>
 						<th>프로젝업무명</th>
 						<th>업무번호</th>
 						<th>부서이름</th>
-						<th>참여자id</th>
+						<th>참여자</th>
 						<th>시작일</th>
 						<th>마감일</th>
 						<th>목적</th>
@@ -23,17 +24,47 @@
 				</thead>
 				<tbody>
 					<tr th:each="info : ${projects}">
-						<td>[[ ${info.prjtName}]]</td>
+						<td >[[ ${info.prjtName}]]</td>
 						<td>[[ ${info.taskName}]]</td>
-						<td>[[ ${info.taskNo}]]</td>
+						<td >[[ ${info.taskNo}]]</td>
 						<td>[[ ${info.deptName}]]</td>
-						<td>[[ ${info.taskEmpId}]]</td>
+						<td>[[ ${info.empName}]]</td>
 						<td>[[ ${#dates.format(info.prjtStartDt, "yyyy/MM/dd")}]]</td>
-						<td>[[ ${#dates.format(info.prjtDueDT, "yyyy/MM/dd")}]]</td>
+						<td>[[ ${#dates.format(info.prjtDueDt, "yyyy/MM/dd")}]]</td>
 						<td>[[ ${info.purpose}]]</td>
 						<td>[[ ${info.smry}]]</td>
 					</tr>
 				</tbody>
 			</table>
+			<div style=" text-align: center">
+				<button type="button" th:onclick="|location.href='@{/prjtUpdate}'|"  class="btn btn-primary" id="prjtEditBtn">수정</button>
+				<button type="button" class="btn btn-primary" id="prjtDelBtn">삭제</button>
+			</div>
 		</div>
+		</th:block>
+	</body>
+	
+	<script>
+	
+	 // 삭제버튼 : 삭제 후 리스트로 이동 
+	$(function(){	
+		$('#prjtDelBtn').on('click', function() {
+			
+			let taskNo = $(this).data('');
+			console.log(taskNo); // 값을 제대로 가져왔는지 확인
+
+			$.ajax({
+				type : 'GET',
+				url : '/taskDelete?taskNo=' + taskNo,
+				dataType : 'json',
+				success : function(result) {
+					alert('삭제에 성공했습니다.');
+				},
+				error : function(error) {
+					alert('삭제에 실패했습니다.');
+				}
+			});
+		}); 
+}); 
+	</script>
 </html>

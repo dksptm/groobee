@@ -84,9 +84,7 @@ public class TaskController {
 			projectService.reguDelete(projectVO);
 		return "redirect:reguAllList";
 		}
-		
 	
-		
 		// 협력업체 전체 조회
 		@GetMapping("coopAllList")
 		public String coopAllList(Model model) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +18,12 @@ import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
-
+import com.samjo.app.security.service.LoginUserVO;
 
 @Controller
 public class ProjectController {
 
 	ProjectService projectService;
-	
 	DeptService deptService;
 	
 	@Autowired
@@ -31,7 +31,6 @@ public class ProjectController {
 		this.projectService = projectService;
 		this.deptService = deptService;
 	}
-
 	
 	// 프로젝트 전체 조회
 	@GetMapping("prjtAllList")
@@ -46,20 +45,27 @@ public class ProjectController {
 	public String prjtInfo(ProjectVO projectVO, Model model) {
 		ProjectVO findVO = projectService.prjtInfo(projectVO);
 		model.addAttribute("projects", findVO);
-		return "project/prjt/list";
+		System.out.println(findVO);
+		return "project/prjt/info";
 	}
 	
 	// 프로젝트 등록
 	@GetMapping("prjtInsert")
-	
-	public String prjtInsertForm(@RequestParam(value="custNo", required=false) String custNo, Model model) {
-		List<EmpVO> list = deptService.respMngrList(custNo);
-		model.addAttribute("mngr", list);
+	public String prjtInsertForm(Model model, Authentication authentication) {
 		
-		model.addAttribute("projects", new ProjectVO());
-		return "project/prjt/insert";
+		EmpVO empVO = getLoginEmp(authentication);
+		if(empVO != null) {
+			List<EmpVO> list = deptService.respMngrList(empVO.getCustNo());
+			model.addAttribute("mngr", list);
+			System.out.println(list);
+			model.addAttribute("projects", new ProjectVO());
+			return "project/prjt/insert";			
+		} else {
+			return "test/test";
+		}
+		
 	}
-	
+	@ResponseBody
 	@PostMapping("prjtInsert")
 	public String prjtInsertProcess(ProjectVO projectVO) {
 		int pId = projectService.prjtInsert(projectVO);
@@ -73,20 +79,22 @@ public class ProjectController {
 		return uri;
 	}
 	
-	//  프로젝트 수정
-	@PostMapping("prjtUpdate")
-	public String prjtUpdateForm(@RequestParam String prjtId, Model model) {
+	//  프로젝트 수정 - 페이지 
+	@GetMapping("prjtUpdate")
+	public String prjtUpdateForm(@RequestParam(required = false) String prjtId, Model model) {
 		ProjectVO projectVO = new ProjectVO();
 		projectVO.setPrjtId(prjtId);
 		
-		ProjectVO findVO = projectService.coopInfo(projectVO);
+		ProjectVO findVO = projectService.prjtInfo(projectVO);
 		model.addAttribute("prjtInfo", findVO);
-		return "project/prjt/list";
+		return "project/prjt/update";
 	}
 	
+	// 수정 처리 
+	@PostMapping("prjtUpdate")
 	@ResponseBody
-	public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-		return projectService.coopUpdate(projectVO);
+	public Map<String, Object> prjtUpdateProcess(ProjectVO projectVO) {
+		return projectService.prjtUpdate(projectVO);
 	}
 	
 	// 프로젝트 삭제  
@@ -95,7 +103,6 @@ public class ProjectController {
 		projectService.prjtDelete(projectVO);
 	return "redirect:prjtAllList";
 	}
-	
 	
 	// 프로젝트(하위) 업무 전체조회
 	@GetMapping("taskAllList")
@@ -140,7 +147,7 @@ public class ProjectController {
 	public String taskInfo(ProjectVO projectVO, Model model) {
 				ProjectVO findVO = projectService.taskInfo(projectVO);
 				model.addAttribute("task", findVO);
-				return "project/task/info";
+				return "project/task/list";
 			}
 			
 	// 프로젝트(하위) 업무 수정  
@@ -163,6 +170,24 @@ public class ProjectController {
 	public String empDelete(ProjectVO projectVO) {
 		projectService.taskDelete(projectVO);
 		return "redirect:taskAllList";
+	}
+	
+	// 공통으로 사용
+	public EmpVO getLoginEmp(Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+            LoginUserVO loginUserVO = (LoginUserVO) principal;
+            
+            String empId = loginUserVO.getEmpId();
+            String custNo = loginUserVO.getCustNo();
+            String deptId = loginUserVO.getDeptId();
+            String permId = loginUserVO.getPermId();	
+            
+            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
+            return empVO;
+        } else {
+        	return null;
+        }
 	}
 	
 

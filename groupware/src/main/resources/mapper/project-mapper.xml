@@ -8,7 +8,8 @@
 	
 	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
-		SELECT p.prjt_name 
+		SELECT p.prjt_id 
+			  ,p.prjt_name 
 		      ,t.task_name
 		      ,t.task_no
 		      ,e.dept_name
@@ -16,6 +17,7 @@
 		      ,p.prjt_due_dt
 		      ,p.purpose
 		      ,p.smry
+		      ,p.prjt_stat 
 		FROM prjt p JOIN task_common t 
 		             ON (p.prjt_id = t.standard_no)
 		             JOIN task_emps e
@@ -24,26 +26,29 @@
 	
 	<!-- 프로젝트(상위) 단건 -->
 	<select id="selectPrjt" resultType="ProjectVO">
-		SELECT    p.prjt_name
-			      ,t.task_name
-			      ,t.task_no
-			      ,e.dept_name
-			      ,p.prjt_start_dt
-			      ,p.prjt_due_dt
-			      ,p.purpose
-			      ,p.smry
-		FROM prjt p join task_common t 
-			             on p.prjt_id = t.standard_no
-			             join task_emps e
-			             on t.task_no = e.task_no
-		ORDER BY p.prjt_id
+			SELECT             p.prjt_id
+							  ,p.prjt_name
+						      ,t.task_name
+						      ,t.task_no
+						      ,get_deptname(e.dept_id) as dept_name
+			                  ,e.emp_name
+						      ,p.prjt_start_dt
+						      ,p.prjt_due_dt
+						      ,p.purpose
+						      ,p.smry
+			FROM prjt p join task_common t 
+			                    on p.prjt_id = t.standard_no
+						 join emp e
+			                    on t.cust_no = e.cust_no
+			WHERE t.task_no = #{taskNo}
+			ORDER BY p.prjt_id	
 	</select>
 	
 	<!-- 프로젝트(상위) 등록 -->
 	<insert id="insertPrjt" parameterType="ProjectVO"> 
 			<selectKey keyProperty="prjtId" order="BEFORE"
 			resultType="string">
-			SELECT NVL(MAX(prjt_id),0) +1 
+			SELECT 'CPJ'||LPAD(NVL((MAX(TO_NUMBER(SUBSTR(prjt_id, -4)))),0 + 1), 4, '0') 
 			FROM prjt
 		</selectKey>
 		INSERT ALL INTO prjt (prjt_id 
@@ -59,7 +64,7 @@
 							,#{prjtName}
 							,#{prjtStat}
 							,#{prjtStartDt}
-							,#{prjtDueDT}
+							,#{prjtDueDt}
 							,#{smry}
 							,#{purpose}
 							,#{respMngrId}
@@ -67,16 +72,29 @@
 		INTO task_emps (task_no
 					, task_emp_id
 					, dept_id
+					, dept_name
 					, cmplt
 					, cust_no)
 		VALUES(#{taskNo}
+				,#{taskEmpId}
+				,#{deptId}
 				,#{deptName}
-				,#{taskEmpId}
-				,#{taskEmpId}
-				,#{deptMngr})
+				,#{cmplt}
+				,#{custNo})
 		SELECT 1 FROM DUAL
 	</insert>
-	<!-- 프로젝트(상위) 수정 -->
+	<!-- 프로젝트(상위) 수정 prjt테이블만 수정.  -->
+	<update id="updatePrjt" parameterType="ProjectVO">
+		SET        		prjt_name = #{prjtName}
+		                ,prjt_stat = #{prjtStat}
+					    ,prjt_start_dt = #{prjtStartDt}
+					    ,prjt_due_dt  = #{prjtDueDt}
+					    ,purpose = #{purpose},
+					    ,smry = #{smry}
+		                ,resp_mngr_id = #{respMngrId}
+		                ,cust = #{cust}
+		WHERE prjt_id = #{prjtId}
+	</update>	
 		
 	<!-- 프로젝트(상위) 삭제-->
 	<delete id="deletePrjt" parameterType="int">
@@ -104,6 +122,7 @@
 	        ,e.dept_name
 	        ,t.task_start_dt
 	        ,t.task_due_dt
+	        ,t.task_no
 	        ,m.emp_name
 	        ,p.purpose
         	,p.smry
@@ -113,6 +132,7 @@
 	                     ON p.prjt_id = t.standard_no
 	               	 JOIN emp m
 	                    ON m.emp_id = p.resp_mngr_id
+	  WHERE t.task_no = #{taskNo}          
      </select>
 	<!-- 프로젝트(하위) 업무 등록 -->
 	<insert id="insertTask" parameterType="ProjectVO"> 
@@ -163,9 +183,11 @@
 						     #{custNo})
 				 select 1 from dual
  		</insert>
-	<!-- 프로젝트(상위) 업무 수정 -->
+	<!-- 프로젝트(하위) 업무 수정 -->
 	
-	<!-- 프로젝트(상위) 업무 삭제-->
+	
+	
+	<!-- 프로젝트(하위) 업무 삭제-->
 	<delete id="deleteTask" parameterType="int">
 		DELETE FROM task_common
 		WHERE task_no = #{taskNo}
