@@ -271,7 +271,7 @@
 						(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
 						
 						<choose>
-							<when test="sch.schTaskNos != null">
+							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
 								<foreach item="no" index="index" collection="sch.schTaskNos"
       									 open="(" separator="," close=")">
@@ -306,7 +306,7 @@
 				 AND	(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
 				 		
 				 		<choose>
-							<when test="sch.schTaskNos != null">
+							<when test="sch.schTaskNo != null">
 							AND td.task_no IN 
 								<foreach item="no" index="index" collection="sch.schTaskNos"
       									 open="(" separator="," close=")">
@@ -386,6 +386,10 @@
 	
 	<!-- 문서등록. -->
 	<insert id="insertDoc" parameterType="DocVO">
+		<selectKey keyProperty="docNo" order="BEFORE" resultType="int">
+			SELECT NVL(MAX(doc_no), 0) + 1 as docNo
+		FROM doc
+		</selectKey>
 		INSERT INTO doc
 				(
 					doc_no
@@ -483,6 +487,12 @@
 	
 	<delete id="deleteTaskDoc" parameterType="int">
 		DELETE task_doc
+		WHERE doc_no = #{dno}
+	</delete>
+	
+	<!-- 파일삭제 -->
+	<delete id="deleteDocFile" parameterType="int">
+		DELETE doc_file
 		WHERE doc_no = #{dno}
 	</delete>
 	

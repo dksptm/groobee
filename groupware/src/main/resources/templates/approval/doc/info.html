@@ -20,7 +20,6 @@
 			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
-			<p>토큰 -> <input type="text" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" style="width:300px;"></p>
 			
 			<!-- ------------------------- 상신/수정/목록/삭제 버튼 START ------------------------- -->
 			<div class="card-body text-end mx-4">
@@ -127,13 +126,21 @@
 	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}">
 						<th:block th:each="apr,aprStat : ${doc.aprs}">
 							<th:block th:if="${apr.aprSq == doc.nowLine}">
-							<div class="card col-1" style="width: 10rem;background-color: skyblue;">
+							<div class="card col-1" 
+								 th:classappend="${doc.docStat == '4B4b' ? 'bg-secondary text-white' : 'bg-success'}"
+								 style="width: 10rem;">
 				  				<ul class="list-group list-group-flush"
 				  					th:attr="data-apr=${apr.aprEmp}">
-				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
-				    				<li class="list-group-item">[[ ${apr.aprCode} ]]
-				    					<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
-				    				<li class="list-group-item">[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
+				    				<li class="list-group-item"
+				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
+				    						[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
+				    				<li class="list-group-item"
+				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
+				    						[[ ${apr.aprCode} ]]
+				    						<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
+				    				<li class="list-group-item"
+				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
+				    						[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
 				  				</ul>
 				  			</div>
 			  				</th:block>
@@ -150,7 +157,7 @@
 						</th:block>
 	                </div>
 				</div>
-				<!-- ------------------------- 결재라인 START --------------------------->
+				<!-- ------------------------- 결재라인 END --------------------------->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
 				<div class="d-flex justify-content-end">
@@ -200,7 +207,6 @@
 	</div>
 	</div>
 	
-	<script th:src="@{/js/approval.js}"></script>
 	<script>
 		$(function(){
 			
@@ -402,7 +408,6 @@
 	            url: '/pto/' + dno, // 엔드포인트 URL
 	            type: 'GET',
 	            success: function(response) {
-	                console.log(response);
 	                
 	                $('#ptoType').val(response.ptoType).prop("selected",true);
                 	$('#sdt').val(response.ptoStartDt.split(" ")[0]);
@@ -410,9 +415,7 @@
                 	$('#edt').val(response.ptoEndDt.split(" ")[0]);
                 	$('#etime').val(response.ptoEndDt.split(" ")[1]);
                 	$('textarea[name="pto.reason"]').val(response.reason);
-	                for(let key in response){
-	                	console.log(key,'->',response[key]);
-	                }
+
 	            },
 	            error: function(xhr, status, error) {
 	                console.error('Error:', error);

@@ -27,9 +27,9 @@ class GroupwareApplicationTests {
 	@Value("${file.upload.path}")
 	private String uploadPath;
 
-	// @Test
+	//@Test
 	public void testEncoder() {
-		String password = "1234";
+		String password = "net.sf.log4jdbc.sql.jdbcapi.DriverSpy";
 
 		String enPwd = passwordEncoder.encode(password);
 		System.out.println("enPwd : " + enPwd);

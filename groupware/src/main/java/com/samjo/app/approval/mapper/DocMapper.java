@@ -57,4 +57,7 @@ public interface DocMapper {
 	// 업무-문서 삭제.
 	public int deleteTaskDoc(@Param("dno")Integer docNo);
 	
+	// 문서의 파일 삭제.
+	public int deleteDocFile(@Param("dno")Integer docNo);
+	
 }	

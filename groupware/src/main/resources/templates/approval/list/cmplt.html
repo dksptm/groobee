@@ -23,37 +23,49 @@
 			<hr>
 		</div>
 		
-		<div class="mt-3 pt-3">
-			<!-- 업무 선택 -->
-			<div class="border border-3 p-3 col-4 input-tag-css">
-				<!-- 모달버튼 : 업무 -->
-				<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
-						data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button>
-				<!-- 업무 리스트 -->
-				<div class="mt-3 text-start">
-					<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
-				</div>		
+		<form id="searchForm" th:action="@{/docCmplt}" method="get" th:object="${search}">
+			<p><input type="number" th:field="*{page}" /></p>
+			<div class="mt-3 pt-3">
+				<!-- 업무 선택 -->
+				<div class="border border-3 p-3 col-4 input-tag-css">
+					<!-- 모달버튼 : 업무 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+							data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button>
+					<!-- 업무 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
+					</div>		
+				</div>
+				<hr>
 			</div>
-			<!-- 모달영역 : 업무선택 -->
-			<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-scrollable" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">관련업무 선택</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body"></div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary getTasks-btn" data-bs-dismiss="modal">닫기</button>
-						</div>
+			<div class="mt-3 pt-3">
+				
+			</div>
+			<!-- 작성완료/취소 버튼 -->
+			<div class="m-3 text-end">
+				<button type="submit" class="btn rounded-pill btn-primary btn-lg">검색</button>
+			</div>
+		</form>
+		<!--------------------------------------------------------- 모달영역 -->
+		<!-- 모달영역 : 업무선택 -->
+		<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">관련업무 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary getTasks-btn" data-bs-dismiss="modal">닫기</button>
 					</div>
 				</div>
 			</div>
-			<hr>
 		</div>
-		<div class="mt-3 pt-3">
-			<button type="button" class="btn btn-secondary" id="schBtn">검색</button>
-		</div>
+		<!--------------------------------------------------------- 모달영역 -->
+
+			
+
 		
 		<div class="mt-3 pt-3">
 			<div class="table-responsive">
@@ -117,12 +129,6 @@
 <script>
 	$(function(){
 		
-		// 툴팁.
-		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-		/* var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-		  return new Tooltip(tooltipTriggerEl);
-		}); */
-		
 		//모달열기 - 업무.
 		$('.doc-modal-btn-tasks').on('click', function(e) {
 			let cust = $('input[name="custNo"]').val();
@@ -133,22 +139,14 @@
 		// 모달에서 - name부여.
 		$('.getTasks-btn').on('click', schTaskName);
 		
-		$('#schBtn').on('click', search);
-		
+		// 나머지업무명 보이기.
 		$('.taskTitle').hover(function(){
 			$(this).find('.taskList').toggle();
 		})
 		
-		
-		
-		
 	})
-	
-	
-
-
 </script>
-	
+
 </th:block>
 
 </html>

@@ -35,6 +35,10 @@ $(function(){
 		let checkbox = $(this);
 		checkbox.prop('checked', !checkbox.prop('checked'));
 	});
+
+	if($('#getTasks').is('table')) {
+		$('#getTasks').children().remove();
+	}
 	
 	// 이미 추가되어있으면, 모달에도 체크상태로.
 	let finds = $('#getTasks').find('input');
