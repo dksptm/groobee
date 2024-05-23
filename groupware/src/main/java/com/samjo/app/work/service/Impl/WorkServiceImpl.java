@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.work.mapper.WorkMapper;
+import com.samjo.app.work.service.WorkManagerSearchVO;
 import com.samjo.app.work.service.WorkManagerVO;
 import com.samjo.app.work.service.WorkSearchVO;
 import com.samjo.app.work.service.WorkService;
@@ -47,17 +48,17 @@ public class WorkServiceImpl implements WorkService{
 	
 	// 관리자 페이지 전체조회
 	@Override
-	public List<WorkManagerVO> managerWorkList(WorkSearchVO worksearchVO) {
-		return workMapper.managerWorkList(worksearchVO);
+	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO) {
+		return workMapper.managerWorkList(workmanagersearchVO);
 	}
-	// 관리자 페이지 상세조회
+	// 페이지 상세조회
 	@Override
-	public WorkVO selectWork(WorkManagerVO workmanagerVO) {
+	public WorkVO selectWork(WorkVO workVO) {
 		return null;
 	}
-	// 관리자 페이지 수정
+	// 페이지 수정
 	@Override
-	public int updateWork(WorkManagerVO workmanagerVO) {
+	public int updateWork(WorkVO workVO) {
 		return workMapper.insertWork();
 	}
 
@@ -65,6 +66,7 @@ public class WorkServiceImpl implements WorkService{
 	public int managercount() {
 		return workMapper.managercount();
 	}
+	
 	
 	
 	

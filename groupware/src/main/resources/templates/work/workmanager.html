@@ -9,8 +9,18 @@
 			<div class="d-flex justify-content-center">
 				<div class="card my-4 col-11">
 
+							<p><h4 style="text-align: center">사원 목록</h4></p>
 					<div id="page">
-						<form id=table>
+					
+					<!-- <select th:field="*{filter}" class="form-select" id="filter">
+								<option value="deptId" selected>부서명</option>
+								<option value="jobNo">직급</option>
+								<option value="오전반차">오전반차</option>
+								<option value="오후반차">오후반차</option>
+					</select> -->
+						<input type="checkbox">
+					
+						
 							<table class="table table-striped-columns">
 								<thead>
 									<tr>
@@ -22,18 +32,17 @@
 										<th>연락처</th>
 									</tr>
 								</thead>
-								<tbody th:each="date : ${list}" id="infos">
+								<tbody th:each="list : ${list}" id="infos">
 									<tr>
-										<td>[[${date.deptId}]]</td>
-										<td>[[${date.empNo}]]</td>
-										<td>[[${date.empName}]]</td>
-										<td>[[${date.jobNo}]]</td>
-										<td>[[${#dates.format(date.hireDt, "yyyy/MM/dd")}]]</td>
-										<td>[[${date.empTel}]]</td>
+										<td>[[${list.deptId}]]</td>
+										<td>[[${list.empNo}]]</td>
+										<td>[[${list.empName}]]</td>
+										<td>[[${list.jobNo}]]</td>
+										<td>[[${#dates.format(list.hireDt, "yyyy/MM/dd")}]]</td>
+										<td>[[${list.empTel}]]</td>
 									</tr>
 								</tbody>
 							</table>
-						</form>
 					</div>
 					<div>
 						<nav aria-label="Page navigation" >

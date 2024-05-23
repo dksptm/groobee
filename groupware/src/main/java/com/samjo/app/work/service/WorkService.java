@@ -22,11 +22,11 @@ public interface WorkService {
 	public int insertWork();
 	
 	// 관리자 페이지 전체조회
-	public List<WorkManagerVO> managerWorkList(WorkSearchVO worksearchVO);
+	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO);
 	
-	// 관리자 페이지 상세 조회
-	public WorkVO selectWork(WorkManagerVO workmanagerVO);
+	// 전체페이지의 상세 조회
+	public WorkVO selectWork(WorkVO workVO);
 	
-	// 관리자 페이지 수정
-	public int updateWork(WorkManagerVO workmanagerVO);
+	// 전체페이지의 수정
+	public int updateWork(WorkVO workVO);
 }

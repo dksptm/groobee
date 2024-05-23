@@ -44,8 +44,8 @@
 								<thead>
 									<tr>
 										<th>날짜</th>
-										<th>사원번호</th>
-										<th>사원명</th>
+										<th th:block sec:authorize="hasAuthority('1D3d')">사원번호</th>
+										<th th:block sec:authorize="hasAuthority('1D3d')">사원명</th>
 										<th>출근시간</th>
 										<th>퇴근시간</th>
 										<th>근무지</th>
@@ -54,18 +54,17 @@
 									</tr>
 								</thead>
 								<tbody th:each="info : ${list}" id="infos">
-								
-									<tr>
+									<tr th:onclick="|location.href='@{/info(dt=${#dates.format(info.dt, 'yyyy/MM/dd')})}'|">
+									                <!--, empId=${#authentication.principal.empId})}'|"> -->
 										<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-										<td>[[${info.empNo}]]</td>
-										<td>[[${info.empName}]]</td>
+										<td th:block sec:authorize="hasAuthority('1D3d')">[[${info.empNo}]]</td>
+										<td th:block sec:authorize="hasAuthority('1D3d')">[[${#authentication.name}]]</td>
 										<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
 										<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
 										<td>[[${info.wkYn}]]</td>
 										<td>[[${info.wkStat}]]</td>
 										<td>[[${info.wkSite}]]</td>
 									</tr>
-										
 								</tbody>
 							</table>
 				</div>

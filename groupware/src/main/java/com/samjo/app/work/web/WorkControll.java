@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.samjo.app.work.service.WorkManagerSearchVO;
 import com.samjo.app.work.service.WorkManagerVO;
 import com.samjo.app.work.service.WorkPageDTO;
 import com.samjo.app.work.service.WorkSearchVO;
@@ -20,7 +21,7 @@ public class WorkControll {
 	@Autowired
 	WorkService workService;
 
-	
+	// 일반 페이지 전체 조회
 	@GetMapping("worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
 		Date date = new Date();
@@ -51,18 +52,25 @@ public class WorkControll {
 		model.addAttribute("filter", workpageDTO);
 		return "work/worklist";
 	}
-	
+	// 관리자 페이지 전체 조회
 	@GetMapping("workmanager")
-	public String managerWorkList(WorkSearchVO worksearchVO, Model model){
-		if(worksearchVO.getPage() == 0) {
-			worksearchVO.setPage(1);
+	public String managerWorkList(WorkManagerSearchVO workmanagersearchVO, Model model){
+		if(workmanagersearchVO.getPage() == 0) {
+			workmanagersearchVO.setPage(1);
 			
 		}
-		List<WorkManagerVO> list = workService.managerWorkList(worksearchVO);
+		List<WorkManagerVO> list = workService.managerWorkList(workmanagersearchVO);
 		model.addAttribute("list", list);
-		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.managercount());
+		WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount());
 		model.addAttribute("page", workpageDTO);
 		return "work/workmanager";
+	}
+	// 상세페이지
+	@GetMapping("workinfo")
+	public String selectwork(WorkVO workVO, Model model) {
+		WorkVO work = workService.selectWork(workVO);
+		model.addAttribute("info", work);
+		return "work/workinfo";
 	}
 	
 		

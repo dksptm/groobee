@@ -84,6 +84,34 @@ values (
                '2B1b',
                '2C1c')
    </insert>
-  
+   <!-- 상세페이지 확인 -->
+  <select id="selectWork" resultType="WorkVO">
+select 
+       emp_id,
+       dt,
+       wk_in,
+       wk_out,
+       wk_in_loc,
+       wk_out_loc,
+       wk_yn,
+       wk_stat,
+       wk_site
+from wk
+where dt = #{dt} 
+
+   </select>
+   <!-- 상세페이지에서 작동하는 업데이트 -->
+   <update id="updateWork" parameterType="WorkVO">
+   UPDATE wk(
+          wk_in = #{wkIn}
+          wk_out = #{wkOut},
+          wk_in_loc = #{wkInLoc},
+          wk_out_loc = #{wkOutLoc},
+          wk_yn = #{wkYn},
+          wk_stat = #{wkStat},
+          wt_site = #{wkSite}
+   WHERE dt = #{dt} and emp_no = #{empNo}
+   </update>
+   
   </mapper>
   

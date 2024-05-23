@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+	
+	<div>
+		<table class="table table-striped-columns">
+			<thead>
+				<tr>
+					<th>사원명</th>
+					<th>날짜</th>
+					<th>출근시간</th>
+					<th>퇴근시간</th>
+					<th>출근위치</th>
+					<th>퇴근위치</th>
+					<th>근무지</th>
+					<th>근무상태</th>
+					<th>근무여부</th>
+				</tr>
+			</thead>
+			<tbody th:each="list : ${info}" id="infos">
+				<tr>
+					<td>[[${#authentication.name}]]</td>
+					<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
+					<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
+					<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
+					<td>[[${list.wkInLoc}]]</td>
+					<td>[[${list.wkOutLoc}]]</td>
+					<td>[[${list.wkYn}]]</td>
+					<td>[[${list.wkStat}]]</td>
+					<td>[[${list.wkSite}]]</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+	<div>
+	<!--<button type="button" th:onclick="|location.href=@|">수정</button> -->
+	</div>
+
+	</th:block>
+</body>
+</html>
