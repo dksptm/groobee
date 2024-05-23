@@ -1,6 +1,9 @@
 package com.samjo.app.common.service;
 
+import java.util.Date;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -13,5 +16,16 @@ public class SearchVO {
 	// 전자결재 관련.
 	private String docTitle;
 	private List<Integer> schTaskNos;
+	
+	// 계약 관련.
+	private String ctName;
+	private String ctStat;
+	private String ctSort;
+	private String ctNo;
+	private String custNo;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date ctStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date ctEnd;
 	
 }

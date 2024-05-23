@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.samjo.app.ct.mapper.CtMapper">
+
+	<!-- 계약 전체목록 -->
+	<select id="selectCtAll" resultType="CtVO"
+		parameterType="SearchVO">
+		SELECT r.*
+		FROM (SELECT rownum rn,
+			t.*
+			FROM (SELECT ct.ct_no,
+						ct.cust_no,
+						c.cust_name,
+						ct.ct_stat,
+						ct.ct_start_dt,
+						ct.ct_end_dt,
+						ct.ct_amt,
+						ct.use_mod_cnt,
+						ct.max_emps,
+						ct.cur_emps,
+						ct.ct_file
+				FROM ct ct JOIN cust c
+							ON (ct.cust_no = c.cust_no)
+				WHERE rownum <![CDATA[<=]]> (#{page} * 10) 
+				<if test="ctName != null and ctName != ''">
+					AND c.cust_name LIKE #{ctName}
+				</if>
+				<if test="ctNo != null and ctNo != ''">
+					AND ct.ct_no LIKE #{ctNo}
+				</if>
+				<if test="custNo != null and custNo != ''">
+					AND ct.cust_no LIKE #{custNo}
+				</if>
+				ORDER BY #{ctSort}) t ) r
+		WHERE r.rn > (#{page} -1) * 10
+	</select>
+
+	<!-- 계약 페이징 -->
+	<select id="ctCount">
+		SELECT COUNT(*)
+		FROM ct
+	</select>
+</mapper>

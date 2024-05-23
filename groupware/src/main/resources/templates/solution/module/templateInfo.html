@@ -46,7 +46,7 @@
 							</table>
 							<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a><br>
 							<button type="button" th:onclick="|location.href='@{/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
-							<button type="button" class="btn btn-danger">삭제</button>
+							<button type="button" th:onclick="|location.href='@{/tempDelete/{tempNo}(tempNo=${tempVO.tempNo})}'|" class="btn btn-danger">삭제</button>
 						</div>
 					</div>
 				</div>
@@ -56,6 +56,8 @@
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
+			
+			
 		</script>
 	</th:block>
 </body>
