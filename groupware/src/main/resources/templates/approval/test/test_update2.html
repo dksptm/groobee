@@ -14,7 +14,7 @@
 		</div>
 		<hr>
 		<div class="m-3 p-3 shadow-lg rounded bg-white">
-		<form th:action="@{/docUpdate}" id="docUpdateForm" method="post" th:object="${doc}" enctype="multipart/form-data">
+		<form th:action="@{/docUpdate}" method="post" th:object="${doc}" enctype="multipart/form-data">
 			
 			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
@@ -208,15 +208,10 @@
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
 				<div class="d-flex justify-content-end">
-					<button type="button" class="mx-3 btn btn-outline-info  fileModify">파일수정</button>
-				</div>
-				
-				<div class="d-flex justify-content-end">
 					<div class="col-5 text-end">
   						<label for="formFileLg" class="form-label">첨부파일</label>
   						<div class="form-control form-control" id="formFileLg">
   							<th:block th:each="file,fstat : ${doc.files}">
-  								<input type="hidden" name="flag" value="NO" />
 								<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
 						 			<span>[[ ${file.uplName} ]]</span>
 								</a><br>
@@ -224,9 +219,11 @@
   						</div>
 					</div>
 				</div>
-
 				<div class="col-8 p-0 mt-3"></div>
-				<div class="col-4 p-0 mt-3 text-end fileModifyArea"></div>
+				<div class="col-4 p-0 mt-3 text-end">
+					<label for="filelist">첨부파일 수정</label>
+					<input type="file" name="filelist" class="form-control" id="filelist" multiple>
+				</div>
 				<div class="col-4 p-0 mt-3">
 					<select class="form-select border border-3" th:field="*{tempId}">
 						<option value="no-data">템플릿옵션을 선택하세요.</option>
@@ -307,7 +304,7 @@
 				if(!confirm('기존 내용은 삭제됩니다.\n템플릿을 변경할까요?')){
 					return;
 				}
-				tempChangeUpdate();
+				tempChange();
 			});
 			
 			// 템플릿 중 휴가원 선택.
@@ -356,43 +353,48 @@
 			// 모달에서 - name부여.
 			$('.getTasks-btn').on('click', inTaskName);
 			
-			// 파일 수정
-			$('.fileModify').on('click', function(e) {
-				if(confirm('기존 파일은 삭제됩니다\n파일 재업로드를 진행할까요?')) {
-					$('#formFileLg').children('*').remove();
-					let creatInput = $('<input type="file" name="filelist" id="filelist" multiple />'
-										+ '<input type="hidden" name="flag" value="YES" />');
-					
-					creatInput.addClass('form-control');
-					$('.fileModifyArea').append(creatInput);
-				}
-			})
-			
-			
 			// 수정 버튼.
-			$('#docUpdateForm').submit(async function(e){
+			$('#docInsertForm').submit(async function(e){
 				// submit 중지.
 				e.preventDefault();
 				
 				// 필수입력 확인.
 				if(!docCheck()) return;
 				
+				let temp = document.querySelector('#tempId').value;
+				if(temp == "TP002") {
+					ptoSubmit();
+				}
+
+				
 				// 
 				if(confirm('저장할까요?')) {
 					try{
 						// 지출결의서, 휴가원은 여기에...
-						let temp = document.querySelector('#tempId').value;
 						if(temp == "TP002") {
 							ptoSubmit();
-							console.log($('input[name="pto.ptoStartDt"]').val());
-							console.log($('input[name="pto.ptoEndDt"]').val());
+							console.log('input[name="pto.ptoStartDt"]');
+							console.log('input[name="pto.ptoEndDt"]');
 						}
 						
 						// 나머지 템플릿은 알아서 저장됨
 						
+						// 파일저장.
+						let dno = $('input[name="docNo"]').val();
+						let eid = $('input[name="draft"]').val();
+						let fileInput = document.querySelector('input#docFiles');
+						let fileList = fileInput.files;
+						let okFile;
+						if(fileList.length != 0) {
+					 		okFile = await saveFile(fileList, dno, eid); // js파일.
+					 		console.log('첨부파일완료');
+					 		okFile.forEach((ele,idx) => {
+					 			console.log(idx, ' => ', ele);
+					 		});
+					 	}
 						alert('문서등록 완료.');
 	
-						this.submit();
+						//this.submit();
 					} catch {
 						alert('문서등록 오류');
 					}

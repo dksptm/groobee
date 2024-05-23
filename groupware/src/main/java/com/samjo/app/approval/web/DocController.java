@@ -1,18 +1,16 @@
 package com.samjo.app.approval.web;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.approval.service.DocService;
@@ -20,23 +18,35 @@ import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.approval.service.TempVO;
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.security.service.LoginUserVO;
 import com.samjo.app.upload.service.FileUploadService;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+/**
+ * 전자결재 중 문서관리.
+ * @author 권효주.
+ * 
+ *
+ */
 @Controller
+@Data
+@RequiredArgsConstructor
 public class DocController {
 	
-	DocService docService;
-	FileUploadService fileUploadService;
+	final DocService docService;
+	final FileUploadService fileUploadService;
 	
-	@Autowired
-	public DocController(DocService docService, FileUploadService fileUploadService) {
-		this.docService = docService;
-		this.fileUploadService = fileUploadService;
-	}
-
+	/*
+	 * @Autowired public DocController(DocService docService, FileUploadService
+	 * fileUploadService) { this.docService = docService; this.fileUploadService =
+	 * fileUploadService; }
+	 */
+	
 	// 문서 전체조회.
 	@GetMapping("docList")
 	public String docList(SearchVO searchVO, Model model) {
@@ -45,8 +55,10 @@ public class DocController {
 		}
 		List<DocVO> list = docService.docList(searchVO);
 		model.addAttribute("list", list);
+		
 		PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.count());
 		model.addAttribute("pageDTO", pageDTO);
+		
 		return "approval/doc/list";
 	}
 	
@@ -137,11 +149,10 @@ public class DocController {
 	
 	// 전체문서 중 결재완료/반려 문서.
 	@GetMapping("docCmplt")
-	public String docCmplt(SearchVO searchVO, Model model, 
-								Authentication authentication) {
+	public String docCmplt(SearchVO searchVO, Model model) {
 		
 		searchVO = checkSearch(searchVO);
-		EmpVO empVO = getLoginEmp(authentication);
+		EmpVO empVO = SecuUtil.getLoginEmp();
 		
 		if(empVO != null) {
 			List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
@@ -154,23 +165,6 @@ public class DocController {
 		} else {
 			return "test/test";
 		}
-	}
-	
-	@PostMapping("docCmplt/search")
-	@ResponseBody
-	public Map<String, Object> docCmpltSearch(@RequestBody SearchVO searchVO, 
-												Authentication authentication) {
-		
-		searchVO = checkSearch(searchVO);
-		EmpVO empVO = getLoginEmp(authentication);
-
-		Map<String, Object> map = new HashMap<>();
-		List<DocVO> list = docService.getCmpltDocList(empVO, searchVO);
-		PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countCmplt(empVO, searchVO));
-		map.put("list", list);
-		map.put("pageDTO", pageDTO);
-
-		return map;
 	}
 	
 	// 문서 상세정보.
@@ -189,9 +183,9 @@ public class DocController {
 	// 문서작성 양식.
 	@GetMapping("docInsert")
 	public String dobInsertForm(Model model) {
-		DocVO docVO = docService.getDocNo();
+		//DocVO docVO = docService.getDocNo();
 		List<TempVO> temps = docService.getCustTemps();
-		model.addAttribute("doc", docVO);
+		model.addAttribute("doc", new DocVO());
 		model.addAttribute("temps", temps);
 		return "approval/doc/insert";
 	}
@@ -199,12 +193,12 @@ public class DocController {
 	// 문서작성 저장.
 	@PostMapping("docInsert")
 	public String docInsertProcess(DocVO docVO, MultipartFile[] filelist) {
-		//System.out.println("draftName =====>" + docVO.getDraftName());
 		int docNo = docService.docInfoInsert(docVO);
-		System.out.println("파일==> " + filelist[0].isEmpty());
 		if(!filelist[0].isEmpty()) {
-			System.out.println("---파일입력---");
-			fileUploadService.uploadFileInfo(filelist, docVO.getDraft(), docVO.getDocNo() );
+			List<Map<String, Object>> flist = 
+					fileUploadService.uploadFileInfo(filelist, docVO.getDraft(), docVO.getDocNo());
+			int ret = docService.fileInsert(flist, docVO);
+			System.out.println("file-insert-ret->"+ ret);
 		}
 		if(docNo != -1) {
 			return "redirect:docInfo?docNo=" + docNo;
@@ -233,42 +227,31 @@ public class DocController {
 	
 	// 문서수정 반영.
 	@PostMapping("docUpdate")
-	public String docUpdateProcess(DocVO docVO) {
-		int ret = docService.docInfoUpdate(docVO);
-		if(ret > 0) {
+	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, @RequestParam String flag) {
+		int update = docService.docInfoUpdate(docVO);
+		int delete = -1;
+		if(update > 0 && flag.equals("YES")) {
+			delete = docService.fileDelete(docVO); //파일삭제와 파일테이블데이터삭제.
+			if(delete >= 0) {
+				// 파일삭제 성공(또는 삭제할파일 없음)  -> 새로운 파일 등록.
+				if(docService.fileInsert(docVO, filelist) >= 0) {
+					return "redirect:docInfo?docNo=" + docVO.getDocNo();
+				};
+			}
+		} else if(update > 0) {
 			return "redirect:docInfo?docNo=" + docVO.getDocNo();
 		} else {
 			return "test/test";
 		}
+		return "test/test";
 	}
 	
-	public EmpVO getLoginEmp(Authentication authentication) {
-		Object principal = authentication.getPrincipal();
-		if (principal instanceof LoginUserVO) {
-            LoginUserVO loginUserVO = (LoginUserVO) principal;
-            
-            String empId = loginUserVO.getEmpId();
-            String custNo = loginUserVO.getCustNo();
-            String deptId = loginUserVO.getDeptId();
-            String permId = loginUserVO.getPermId();	
-            
-            EmpVO empVO = new EmpVO(empId, custNo, deptId, permId);
-            return empVO;
-        } else {
-        	return null;
-        }
-	}
+	
 	
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
-		/*
-		 * if(searchVO.getSchTaskNo() == null) { searchVO.getSchTaskNo().forEach(tno ->
-		 * {
-		 * 
-		 * }); }
-		 */
 		return searchVO;
 	}
 	

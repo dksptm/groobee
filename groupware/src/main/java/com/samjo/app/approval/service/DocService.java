@@ -1,6 +1,9 @@
 package com.samjo.app.approval.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -32,16 +35,21 @@ public interface DocService {
 	// 단건조회 - 업무.
 	public List<ProjectVO> docTasks(Integer docNo);
 	
+	// 문서작성/수정시 - 템플릿 전체조회.
+	public List<TempVO> getCustTemps();
 	// 문서작성
 	public int docInfoInsert(DocVO docVO);
 	// 문서작성 - 문서번호 조회.
 	public DocVO getDocNo();
 	// 파일등록
-	public int fileInsert(DocFileVO fileVO);	
-	// 문서작성/수정시 - 템플릿 전체조회.
-	public List<TempVO> getCustTemps();
+	public int fileInsert(List<Map<String, Object>> flist, DocVO docVO);	
 	
 	// 문서수정
 	public int docInfoUpdate(DocVO docVO);
+	
+	// 파일삭제
+	public int fileDelete(DocVO docVO);
+	// 파일등록
+	public int fileInsert(DocVO docVO, MultipartFile[] filelist);
 	
 }

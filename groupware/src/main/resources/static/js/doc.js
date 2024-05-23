@@ -7,13 +7,13 @@ const header = document.querySelector('meta[name="_csrf_header"]').getAttribute(
 
 let editor;
 
-/* 템플릿 체인지 이벤트 */
+/* 템플릿 체인지 이벤트 : 등록 */
 const tempChange = function() {
 
 	// 안내메시지 숨기기.
 	$('.cntn-slide').slideUp();
 	// 휴가원,지출결의 숨기기
-	$('#textArea').slideUp();
+	$('#textArea').hide();
 	$('#tempEXT').slideUp();
 	$('#tempPTO').slideUp();
 	$('div#pto').find('input, textarea').val('');
@@ -25,7 +25,6 @@ const tempChange = function() {
 	if(opt.val() == 'no-data' || opt.val() == 'TP001' || opt.val() == 'TP002' ) {
 		if(editor) {
 			editor.setData('');
-			$('.cntn-slide').slideDown();
 		}
 	}
 	
@@ -53,7 +52,6 @@ const tempChange = function() {
         ClassicEditor
             .create(document.querySelector('#cntn'))
             .then(newEditor => {
-                console.log('에디터 준비', newEditor);
                 editor = newEditor;
                 getHtml();
             })
@@ -61,13 +59,65 @@ const tempChange = function() {
                 console.error(error);
             });
     } else {
+    	console.log('에디터 있음');
     	editor.setData('');
         getHtml();
-        console.log('에디터 이미 있음');
     }
     
-    console.log('tempChange 끝');
+}
 
+/* 템플릿 체인지 이벤트 : 수정 */
+const tempChangeUpdate = function() {
+
+	// 안내메시지 숨기기.
+	$('.cntn-slide').slideUp();
+	// 휴가원,지출결의 숨기기
+	$('#textArea').hide();
+	$('#tempEXT').slideUp();
+	$('#tempPTO').slideUp();
+	$('div#pto').find('input, textarea').val('');
+	
+	// 옵션값 확인하기.
+	let opt = $('#tempId option:selected');
+	
+	// 옵션값 선택안함
+	if(opt.val() == 'no-data' || opt.val() == 'TP001' || opt.val() == 'TP002' ) {
+		if(editor) {
+			editor.setData('');
+		}
+	}
+	
+	// 옵션값 선택안함/휴가원/지출결의
+	if(opt.val() == 'no-data') {
+		$('.cntn-slide').slideDown();
+		return;
+	}
+	
+	if(opt.val() == 'TP002') {
+		$('#tempPTO').slideDown();
+		ptoForm();
+		return;
+	}
+	
+	if(opt.val() == 'TP001') {
+		$('#tempEXT').slideDown();
+		return;
+	}
+	
+	// 옵션값 그 외.
+	$('#textArea').show();
+	$('#textArea').children('*').remove();
+	$('#textArea').append($('<textarea name="cntn" id="cntn"></textarea>'));
+	ClassicEditor
+        .create(document.querySelector('#cntn'))
+        .then(newEditor => {
+            editor = newEditor;
+            getHtml();
+        })
+        .catch(error => {
+            console.error(error);
+        });
+            
 }
 
 /* 템플릿 체인지 이벤트 -> 템플릿경로 가져와서 세팅 */
@@ -91,7 +141,6 @@ const getHtml = function() {
 	    }
 	})
 	
-	console.log('getHtml 끝');
 }
 
 /* 결재자 선택 모달 함수.*/

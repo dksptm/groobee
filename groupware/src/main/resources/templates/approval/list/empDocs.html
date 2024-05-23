@@ -79,10 +79,9 @@
 <script>
 	$(function(){
 		
-		$('.taskList').slideDown();
-		
+		// 나머지업무명 보이기.
 		$('.taskTitle').hover(function(){
-			$('.taskList').slideToggle();
+			$(this).find('.taskList').toggle();
 		})
 		
 	})
