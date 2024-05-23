@@ -55,11 +55,11 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override // 프로젝트 삭제
 	public Map<String, Object> prjtDelete(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		int reguId = Integer.parseInt(projectVO.getPrjtId());
-		int result = projectMapper.deletePrjt(reguId);
+		int prjtId = Integer.parseInt(projectVO.getPrjtId());
+		int result = projectMapper.deletePrjt(prjtId);
 
 		if (result == 1) {
-			map.put("reguId", projectVO.getPrjtId());
+			map.put("prjtId", projectVO.getPrjtId());
 		}
 		return map;
 	}
@@ -96,7 +96,7 @@ public class ProjectServiceImpl implements ProjectService {
 		int result = projectMapper.deleteTask(projectVO.getTaskNo());
 		//System.out.println("result:"+ result);
 		if (result == 1) {
-			map.put("coopCoNo", projectVO.getTaskNo());
+			map.put("taskNo", projectVO.getTaskNo());
 		}
 		return map;
 	}

@@ -77,7 +77,7 @@
 		       ,cust_addr
 		       ,cntn
 		FROM coop_co
-		WHERE coop_co_no =#{coopCoNo}
+		WHERE coop_co_no = #{coopCoNo}
 		</select>
 		
 	<!-- 협력업체 수정 -->

@@ -20,7 +20,6 @@ import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.security.service.LoginUserVO;
 
-
 @Controller
 public class ProjectController {
 
@@ -32,7 +31,6 @@ public class ProjectController {
 		this.projectService = projectService;
 		this.deptService = deptService;
 	}
-
 	
 	// 프로젝트 전체 조회
 	@GetMapping("prjtAllList")
@@ -47,7 +45,8 @@ public class ProjectController {
 	public String prjtInfo(ProjectVO projectVO, Model model) {
 		ProjectVO findVO = projectService.prjtInfo(projectVO);
 		model.addAttribute("projects", findVO);
-		return "project/prjt/list";
+		System.out.println(findVO);
+		return "project/prjt/info";
 	}
 	
 	// 프로젝트 등록
@@ -66,7 +65,7 @@ public class ProjectController {
 		}
 		
 	}
-	
+	@ResponseBody
 	@PostMapping("prjtInsert")
 	public String prjtInsertProcess(ProjectVO projectVO) {
 		int pId = projectService.prjtInsert(projectVO);
@@ -80,20 +79,22 @@ public class ProjectController {
 		return uri;
 	}
 	
-	//  프로젝트 수정
-	@PostMapping("prjtUpdate")
-	public String prjtUpdateForm(@RequestParam String prjtId, Model model) {
+	//  프로젝트 수정 - 페이지 
+	@GetMapping("prjtUpdate")
+	public String prjtUpdateForm(@RequestParam(required = false) String prjtId, Model model) {
 		ProjectVO projectVO = new ProjectVO();
 		projectVO.setPrjtId(prjtId);
 		
-		ProjectVO findVO = projectService.coopInfo(projectVO);
+		ProjectVO findVO = projectService.prjtInfo(projectVO);
 		model.addAttribute("prjtInfo", findVO);
-		return "project/prjt/list";
+		return "project/prjt/update";
 	}
 	
+	// 수정 처리 
+	@PostMapping("prjtUpdate")
 	@ResponseBody
-	public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-		return projectService.coopUpdate(projectVO);
+	public Map<String, Object> prjtUpdateProcess(ProjectVO projectVO) {
+		return projectService.prjtUpdate(projectVO);
 	}
 	
 	// 프로젝트 삭제  
@@ -102,7 +103,6 @@ public class ProjectController {
 		projectService.prjtDelete(projectVO);
 	return "redirect:prjtAllList";
 	}
-	
 	
 	// 프로젝트(하위) 업무 전체조회
 	@GetMapping("taskAllList")
@@ -147,7 +147,7 @@ public class ProjectController {
 	public String taskInfo(ProjectVO projectVO, Model model) {
 				ProjectVO findVO = projectService.taskInfo(projectVO);
 				model.addAttribute("task", findVO);
-				return "project/task/info";
+				return "project/task/list";
 			}
 			
 	// 프로젝트(하위) 업무 수정  

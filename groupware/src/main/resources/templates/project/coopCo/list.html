@@ -5,7 +5,6 @@
 
 <body>
 	<th:block layout:fragment="Content">
-
 		<div class="container">
 			<br>
 			<h4>협력업체 조회</h4>
@@ -302,7 +301,7 @@
 					$('#deleteBtn').data('coop-co-no', coopCoNo);
 				});
 
-				// 삭제 버튼 클릭 이벤트
+				// 삭제 버튼
 				$('#deleteBtn').on('click', function() {
 				 	let coopCoNo = $(this).data('coop-co-no');
 					console.log(coopCoNo); // 값을 제대로 가져왔는지 확인
@@ -324,5 +323,6 @@
 			});
 		</script>
 	</th:block>
+	</body>
 </html>
 
