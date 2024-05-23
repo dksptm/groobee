@@ -3,6 +3,8 @@ package com.samjo.app.approval.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectVO;
 
@@ -38,9 +40,10 @@ public class DocVO {
     private List<DocFileVO> files;
     
     // 관련업무 리스트.
-    private List<ProjectVO> taskList;
+    private List<Integer> tasks;		// insert : 업무의 taskNo만 필요.
+    private List<ProjectVO> taskList; 	// select : 업무의 정보필요.(부서,업무명)
     private Integer taskCount;
-    
+    	
     // 참조자 리스트
     private List<String> refs;  // insert : 참조자의 empId만 필요.
     private List<EmpVO> refList;// select : 참조자의 정보필요.(부서,이름)
@@ -48,8 +51,6 @@ public class DocVO {
     // 휴가원
     private TempVO pto;
     
-    // 참조자 리스트, 업무 리스트.
-    private List<Integer> tasks; // 업무번호.
     // 조회시 필요한 필드 추가.
     private String curApr;
     private String task;

@@ -388,7 +388,7 @@
 	<insert id="insertDoc" parameterType="DocVO">
 		<selectKey keyProperty="docNo" order="BEFORE" resultType="int">
 			SELECT NVL(MAX(doc_no), 0) + 1 as docNo
-		FROM doc
+			FROM doc
 		</selectKey>
 		INSERT INTO doc
 				(
@@ -428,9 +428,7 @@
 	
 	<!-- 문서의 첨부파일 등록. -->
 	<insert id="insertDocFile" parameterType="DocFileVO">
-		<selectKey keyProperty="fileNo"
-				   resultType="Integer"
-				   order="BEFORE">
+		<selectKey keyProperty="fileNo" resultType="Integer" order="BEFORE">
 			SELECT NVL(MAX(file_no), 0) + 1
 			FROM doc_file
 		</selectKey>
@@ -445,31 +443,35 @@
 		            ,upl_emp      
 		        )
 		  VALUES
+		<foreach collection="files" item="file" separator=",">
 		        (
-		         #{fileNo}
-		        ,#{docNo}
-		        ,#{saveName}
-		        ,#{uplName}
-		        ,#{fileExt}
-		        ,#{fileSize}
-		        ,#{uplEmp}
+		         #{file.fileNo}
+		        ,#{file.docNo}
+		        ,#{file.saveName}
+		        ,#{file.uplName}
+		        ,#{file.fileExt}
+		        ,#{file.fileSize}
+		        ,#{file.uplEmp}
 		        )	
+		</foreach>
 	</insert>
 	
 	<!-- 문서와 업무 연결. -->
-	<insert id="insertTaskDoc" parameterType="map">
+	<insert id="insertTaskDoc" parameterType="DocVO">
 		INSERT INTO task_doc
 			(
-				doc_no
+				 doc_no
 				,task_no
 				,cust_no
 			)
 		  VALUES
+		<foreach collection="doc.tasks" item="tno" separator=",">
 			(
-				#{dno}
+				 #{doc.docNo}
 				,#{tno}
-				,#{cno}
-			)
+				,#{doc.custNo}
+			)		
+		</foreach>
 	</insert>
 	
 	<!-- 문서수정 -->

@@ -5,16 +5,14 @@
 <mapper namespace="com.samjo.app.approval.mapper.AprMapper">
 
 	<!-- 결재자 등록. -->
-	<insert id="insertApr" parameterType="AprVO">
-		<selectKey keyProperty="aprNo"
-				   resultType="Integer"
-				   order="BEFORE">
+	<insert id="insertApr" parameterType="DocVO">
+		<selectKey keyProperty="aprNo" resultType="Integer" order="BEFORE">
 			SELECT NVL(MAX(apr_no), 0) + 1
 			FROM apr
 		</selectKey>
 		INSERT INTO apr
 		        (
-		            apr_no
+		             apr_no
 		            ,doc_no
 		            ,cust_no
 		            ,apr_sq
@@ -24,16 +22,18 @@
 		            ,apr_name
 		        )
 		  VALUES
+		  <foreach collection="doc.aprs" item="apr" separator=",">
 		        (
-		            #{aprNo}
-		            ,#{docNo}
-		            ,#{custNo}
-		            ,#{aprSq}
-		            ,#{aprSq}
-		            ,#{aprEmp}
+		             #{apr.aprNo}
+		            ,#{doc.docNo}
+		            ,#{doc.custNo}
+		            ,#{apr.aprSq}
+		            ,#{apr.aprSq}
+		            ,#{apr.aprEmp}
 		            ,'4D1d'
-		            ,get_emptitle(#{aprEmp})
-		        )
+		            ,get_emptitle(#{apr.aprEmp})
+		        )		  
+		  </foreach>
 	</insert>
 	
 	<!-- 문서의 결재자리스트 가져오기. -->
@@ -53,7 +53,7 @@
 		ORDER BY apr_sq
 	</select>
 	
-	<!-- 결재자 수정 -->
+	<!-- 결재자 삭제 -->
 	<delete id="deleteApr">
 		DELETE apr
 		WHERE doc_no = #{dno}
@@ -94,19 +94,21 @@
 	</update>
 	
 	<!-- 참조자 등록 (doc_rece 테이블)-->
-	<insert id="insertRef" parameterType="map">
+	<insert id="insertRef" parameterType="DocVO">
 		INSERT INTO doc_rece
 			(
-				doc_no
+				 doc_no
 				,emp_id
 				,cust_no
 			)
 		  VALUES
+		<foreach collection="doc.refs" item="ref" separator=",">
 			(
-				#{dno}
-				,#{eid}
-				,#{cno}
+				 #{doc.docNo}
+				,#{ref}
+				,#{doc.custNo}
 			)	
+		</foreach>
 	</insert>
 	
 	<!-- 참조자 삭제 -->

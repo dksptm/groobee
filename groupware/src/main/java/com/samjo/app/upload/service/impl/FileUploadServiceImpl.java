@@ -12,13 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.samjo.app.approval.service.DocFileVO;
-import com.samjo.app.approval.service.DocService;
 import com.samjo.app.upload.service.FileUploadService;
 
 @Service
@@ -28,11 +25,18 @@ public class FileUploadServiceImpl implements FileUploadService {
 	private String uploadPath;
 	
 	@Override
-	public List<Map<String, Object>> uploadFileInfo(MultipartFile[] uploadFiles, String empId, Integer docNo) {
+	public List<Map<String, Object>> uploadFileInfo(MultipartFile[] uploadFiles) {
+		
 		List<Map<String, Object>> fileList = new ArrayList<>();
 		
 		for (MultipartFile uploadFile : uploadFiles) {
 			
+			// 파일사이즈 0이면(파일없으면) 멈추고 다시 for.
+			if(uploadFile.getSize() == 0) {	
+				continue;
+			}
+			
+			// fileVO 필드값 넣을 map생성.
 			Map<String, Object> map = new HashMap<>();
 			
 			// 파일의 타입구하기(타입별로 상위폴더 만들기 위함)
@@ -40,11 +44,11 @@ public class FileUploadServiceImpl implements FileUploadService {
 			
 			String originalName = uploadFile.getOriginalFilename();
 			
-			// 각 필드값 구하기.
+			// 저장경로명, 업로드명, 파일확장자, 파일사이즈.
+			String saveName;
 			String uplName = originalName.substring(originalName.lastIndexOf("//") + 1);
 			String fileExt = originalName.substring(originalName.lastIndexOf(".") + 1);;
 			Long fileSize = uploadFile.getSize();
-			String saveName;
 			
 			// 타입>날짜 폴더 생성
 			String folderPath = makeFileFolder(filetype);
@@ -61,19 +65,27 @@ public class FileUploadServiceImpl implements FileUploadService {
 				// uploadFile에 파일을 업로드 하는 메서드 transferTo(file)
 				// savePath에 파일저장.
 				uploadFile.transferTo(savePath);
+				
 			} catch (IOException e) {
+				
 				e.printStackTrace();
 			}
-			// 필드 saveName 구하기.
+			
+			// 저장경로명 구하기.
 			saveName = setFilePath(uploadFileName);
+			
+			// map에 담고, list에 add.
 			map.put("fileExt", fileExt);
 			map.put("fileSize", fileSize);
 			map.put("uplName", uplName);
 			map.put("saveName", saveName);
-			System.out.println(map);
+			
 			fileList.add(map);
+			
 		}
+		
 		return fileList;
+		
 	}
 
 	@Override
@@ -99,18 +111,31 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	// 파일삭제
 	@Override
-	public boolean deleteFileInfo(List<String> fileSaveNames, int count) {
+	public int deleteFileInfo(List<String> fileSaveNames) {
+		
 		int cnt = 0;
-		for(String file : fileSaveNames) {
-			File delFile = new File(uploadPath + File.separator + file);
+		
+		for(String saveName : fileSaveNames) {
+		
+			File delFile = new File(uploadPath + File.separator + saveName);
+			
 			if (delFile.exists()) {
-				delFile.delete();
-				++cnt;
+				
+				if(delFile.delete()) {
+					++cnt;					
+				} else {
+					System.out.println("delete fail: " + saveName);
+				}
+				
 			} else {
-				System.out.println("이상하게 파일이 없네요...");
+				
+				System.out.println("not exist: " + saveName);
 			}
+			
 		}
-		return (count == cnt);
+		
+		return cnt;
 	}
+
 
 }
