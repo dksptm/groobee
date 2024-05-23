@@ -31,6 +31,9 @@ public class EmailFileUploadServiceImpl implements EmailFileUploadService {
 		//List<DocFileVO> fileList = new ArrayList<>();
 		for (MultipartFile uploadFile : uploadFiles) {
 			EmailFileVO emailfile = new EmailFileVO();
+			//0523 오류 체크 -> fileNo와 senEmailNo에 NULL 입력됨. 어소리티에서 가져와 VO에 넣어주자. 근데 어소리티가 가지는 값이 아니다..
+			
+			
 			
 			// 파일의 타입구하기(타입별로 상위폴더 만들기 위함)
 			String filetype = uploadFile.getContentType() + "/";

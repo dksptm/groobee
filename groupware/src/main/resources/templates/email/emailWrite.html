@@ -15,7 +15,8 @@
 		<div class="container mt-4">
 			<h3 class="mb-4">메일 작성</h3>
 			<form name="insertForm" th:action="@{/emailSend}" method="post"
-				th:object="${EmailVO}" id="emailInsertForm">
+				th:object="${EmailVO}" id="emailInsertForm" enctype = "multipart/form-data">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				<div class="mb-3 row">
 					<div>
 						<!-- <input type="hidden" name="custNo" th:value="${session.getAttribute('custNo')}"> -->
@@ -184,11 +185,6 @@ document.querySelector('form[name="insertForm"]').addEventListener('submit', fun
 		alert('발송 실패.');
 	}
 })
-
-//CSRF
-let header = $("meta[name='_csrf_header']").attr('content');
-let token = $("meta[name='_csrf']").attr('content');
-
 
 // 모달창 - 수신자 선택 -> 추후에 id값만 붙이는게 아닌, 이름도 같이 표시하게 해야 함.
 $("#selectRecp").on("click", function(e){
