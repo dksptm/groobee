@@ -24,14 +24,8 @@
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
 				WHERE rownum <![CDATA[<=]]> (#{page} * 10) 
-				<if test="ctName != null and ctName != ''">
-					AND c.cust_name LIKE '%' || #{ctName} || '%'
-				</if>
-				<if test="ctNo != null and ctNo != ''">
-					AND ct.ct_no LIKE '%' || #{ctNo} || '%'
-				</if>
-				<if test="custNo != null and custNo != ''">
-					AND ct.cust_no LIKE '%' || #{custNo} || '%'
+				<if test="keyword != null and keyword != ''">
+					AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 				</if>
 				<if test="ctStat != null and ctStat != ''">
 					AND ct.ct_stat LIKE #{ctStat}
@@ -57,14 +51,8 @@
 		FROM ct ct JOIN cust c
 					ON (ct.cust_no = c.cust_no)
 		<where>
-			<if test="ctName != null and ctName != ''">
-				AND c.cust_name LIKE '%' || #{ctName} || '%'
-			</if>
-			<if test="ctNo != null and ctNo != ''">
-				AND ct.ct_no LIKE '%' || #{ctNo} || '%'
-			</if>
-			<if test="custNo != null and custNo != ''">
-				AND ct.cust_no LIKE '%' || #{custNo} || '%'
+			<if test="keyword != null and keyword != ''">
+				AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 			</if>
 			<if test="ctStat != null and ctStat != ''">
 				AND ct.ct_stat LIKE #{ctStat}
