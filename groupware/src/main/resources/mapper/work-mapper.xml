@@ -41,18 +41,24 @@ WHERE t.rn > (#{page} -1) * 5
 	</select>
 	
 	<select id="managerWorkList" resultType="WorkManagerVO">
-	SELECT
-          (select dept_name
-           from dept
-           where dept_id = emp.dept_id) dept_id,
-           emp_no,
-           emp_name,
-          (select job_title
-           FROM jobs
-           WHERE job_no = emp.job_no) job_no,
-           hire_dt,
-           emp_tel
-    FROM emp
+	SELECT l.*
+    FROM (SELECT t.*
+          FROM(SELECT e.*, rownum rn
+               FROM (SELECT
+                      (SELECT dept_name
+                       FROM dept
+                       WHERE dept_id = emp.dept_id) dept_id ,
+                       emp_no,
+                       emp_name,
+                      (SELECT job_title
+                       FROM jobs
+                       WHERE job_no = emp.job_no) job_no ,
+                       hire_dt,
+                       emp_tel
+                 FROM emp
+                 ORDER BY #{filter}) e
+            WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
+WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 	</select>
 	<select id="managercount">
 		SELECT count(*)

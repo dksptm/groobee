@@ -55,9 +55,11 @@ public class WorkControll {
 	// 관리자 페이지 전체 조회
 	@GetMapping("workmanager")
 	public String managerWorkList(WorkManagerSearchVO workmanagersearchVO, Model model){
+		if(workmanagersearchVO.getFilter() == null) {
+			workmanagersearchVO.setFilter("dept_id");
+		}
 		if(workmanagersearchVO.getPage() == 0) {
 			workmanagersearchVO.setPage(1);
-			
 		}
 		List<WorkManagerVO> list = workService.managerWorkList(workmanagersearchVO);
 		model.addAttribute("list", list);
