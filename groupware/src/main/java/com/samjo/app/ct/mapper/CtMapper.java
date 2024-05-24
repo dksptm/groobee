@@ -11,5 +11,5 @@ public interface CtMapper {
 	public List<CtVO> selectCtAll(SearchVO searchVO);
 	
 	//계약 페이징
-	public int ctCount();
+	public int ctCount(SearchVO searchVO);
 }

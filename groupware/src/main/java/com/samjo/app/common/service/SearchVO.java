@@ -28,5 +28,6 @@ public class SearchVO {
 	private Date ctStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date ctEnd;
+	private String ctDt;
 	
 }

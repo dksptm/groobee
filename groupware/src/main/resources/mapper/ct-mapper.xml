@@ -25,21 +25,61 @@
 							ON (ct.cust_no = c.cust_no)
 				WHERE rownum <![CDATA[<=]]> (#{page} * 10) 
 				<if test="ctName != null and ctName != ''">
-					AND c.cust_name LIKE #{ctName}
+					AND c.cust_name LIKE '%' || #{ctName} || '%'
 				</if>
 				<if test="ctNo != null and ctNo != ''">
-					AND ct.ct_no LIKE #{ctNo}
+					AND ct.ct_no LIKE '%' || #{ctNo} || '%'
 				</if>
 				<if test="custNo != null and custNo != ''">
-					AND ct.cust_no LIKE #{custNo}
+					AND ct.cust_no LIKE '%' || #{custNo} || '%'
 				</if>
+				<if test="ctStat != null and ctStat != ''">
+					AND ct.ct_stat LIKE #{ctStat}
+				</if>
+				<choose>
+					<when test="ctStart != null and ctEnd != null">
+						AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
+					</when>
+					<when test="(ctStart != null) and (ctEnd == null)">
+						AND ${ctDt} >= #{ctStart}
+					</when>
+					<when test="(ctEnd != null) and (ctStart == null)">						
+						AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+					</when>
+				</choose>
 				ORDER BY #{ctSort}) t ) r
 		WHERE r.rn > (#{page} -1) * 10
 	</select>
 
 	<!-- 계약 페이징 -->
-	<select id="ctCount">
-		SELECT COUNT(*)
-		FROM ct
+	<select id="ctCount" parameterType="SearchVO">
+		SELECT  COUNT(*)
+		FROM ct ct JOIN cust c
+					ON (ct.cust_no = c.cust_no)
+		<where>
+			<if test="ctName != null and ctName != ''">
+				AND c.cust_name LIKE '%' || #{ctName} || '%'
+			</if>
+			<if test="ctNo != null and ctNo != ''">
+				AND ct.ct_no LIKE '%' || #{ctNo} || '%'
+			</if>
+			<if test="custNo != null and custNo != ''">
+				AND ct.cust_no LIKE '%' || #{custNo} || '%'
+			</if>
+			<if test="ctStat != null and ctStat != ''">
+				AND ct.ct_stat LIKE #{ctStat}
+			</if>
+			<choose>
+				<when test="ctStart != null and ctEnd != null">
+					AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
+				</when>
+				<when test="(ctStart != null) and (ctEnd == null)">
+					AND ${ctDt} >= #{ctStart}
+				</when>
+				<when test="(ctEnd != null) and (ctStart == null)">						
+					AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+				</when>
+			</choose>
+		</where>
 	</select>
 </mapper>

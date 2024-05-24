@@ -1,5 +1,6 @@
 package com.samjo.app.ct.web;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,16 @@ public class CtController {
 	//계약 전체조회
 	@GetMapping("sol/ctList")
 	public String ctListPage(SearchVO searchVO, Model model) {
-		System.out.println(searchVO);
 		if (searchVO.getPage() <= 0) {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getCtSort() == null || searchVO.getCtSort().trim().isEmpty()) {
 			searchVO.setCtSort("ct_no");
 		}
+		System.out.println(searchVO);
 		List<CtVO> list = ctservice.ctList(searchVO);
 		model.addAttribute("list", list);
-		CtDTO ctDTO = new CtDTO(searchVO.getPage(), ctservice.count());
+		CtDTO ctDTO = new CtDTO(searchVO.getPage(), ctservice.count(searchVO));
 		model.addAttribute("CtDTO", ctDTO);
 		return "solution/ct/ctList";
 	}
@@ -39,6 +40,7 @@ public class CtController {
 	@PostMapping("sol/viewCtList")
 	public String viewCtListPage(SearchVO searchVO, Model model) {
 		System.out.println("searchVO: "+searchVO);
+		System.out.println("startDay : "+ searchVO.getCtStart());
 		if (searchVO.getPage() <= 0) {
 			searchVO.setPage(1);
 		}
@@ -47,7 +49,7 @@ public class CtController {
 		}
 		List<CtVO> list = ctservice.ctList(searchVO);
 		model.addAttribute("list", list);
-		CtDTO ctDTO = new CtDTO(searchVO.getPage(), ctservice.count());
+		CtDTO ctDTO = new CtDTO(searchVO.getPage(), ctservice.count(searchVO));
 		model.addAttribute("CtDTO", ctDTO);
 		return "solution/ct/ctList :: #ctTable";
 	}
