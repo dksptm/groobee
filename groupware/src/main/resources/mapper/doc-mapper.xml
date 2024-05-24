@@ -211,6 +211,17 @@
 				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
 				WHERE	d.cust_no = #{emp.custNo}
 				AND		d.doc_stat = '4B2b'
+						<choose>
+							<when test="sch.schTaskNo != null">
+							AND td.task_no IN 
+								<foreach item="no" index="index" collection="sch.schTaskNo"
+      									 open="(" separator="," close=")">
+								#{no}
+								</foreach>
+							</when>
+						</choose>
+				
+				
 				GROUP BY 
 						d.doc_no
 						,d.dept_id

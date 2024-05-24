@@ -1,55 +1,47 @@
-/* doc.js */
+/* doclist.js */
 
-console.log('static/js/docsch.js');
+console.log('static/js/doclist.js');
 
-$(function(){
+const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-	//기간 검색 범위처리
-	$('.fromDt').on('change', function(e){
-		$('.toDt').attr('min', this.value);
-	});
-	$('.toDt').on('change', function(e){
-		$('.fromDt').attr('max', this.value);
-	});
-	
-	//검색버튼 이벤트 처리
-	$(".searchbtn").on("click", function(e) {
-		let page = 1;
-		showTable(page);
-	});
-	
-	//페이징 링크 처리
-	$(document).on("click", ".pagebtn", function(e){
-		e.preventDefault();
-		let page = e.target.id;
-		showTable(page);
-	});
-	
+/*  */
+const tempChange = () => {
+
 	//검색 AJAX 함수
 	function showTable(page){
-		let custNo;
-		let ctName;
-		let ctNo;
-		let ctStat;
-		let ctDt = $('.ctDt').val();
-		let ctStart = $('.fromDt').val();
-		let ctEnd = $('.toDt').val();
-		let ct;
+		
+		let keywordCondition;
+		let keyword;
+		
+		let aprStatCondition;		
+		
+		let dateCondition;
+		let dtStart = $('.fromDt').val();
+		let dtEnd = $('.toDt').val();
+		
+		let sortCondition;
+		
 		//키워드 검색 처리
-		if($('.searchKeySelect').val()=='custname'){
-			ctName = $('.searchKey').val();
-		}else if($('.searchKeySelect').val()=='custno'){
-			custNo = $('.searchKey').val();
-		}else if($('.searchKeySelect').val()=='ctno'){
-			ctNo = $('.searchKey').val();
-		}
+		if($('select[name="keywordCondition"]').val()=='titile'){
+			
+			title = $('.searchKey').val();
+			
+		} else if($('.searchKeySelect').val()=='cntn'){
+			
+			cntn = $('.searchKey').val();
+		
+		} 
+		
 		//기간 검색 처리
 		if($('.searchKeySelect').val()=='custname'){
+		
 			ctName = $('.searchKey').val();
 			
 		}else if($('.searchKeySelect').val()=='custno'){
 			custNo = $('.searchKey').val();
 		}
+		
 		//계약상태 검색처리
 		if($('.ctStat').val()!='statAll'){
 			ctStat = $('.ctStat').val();
@@ -81,8 +73,9 @@ $(function(){
 			}
 		});
 	}
-
-}) //end
+	
+    
+}
 
 /* 업무 name부여 */
 const schTaskName = () => {
@@ -99,4 +92,3 @@ const schTaskName = () => {
 	});
 	
 }
-

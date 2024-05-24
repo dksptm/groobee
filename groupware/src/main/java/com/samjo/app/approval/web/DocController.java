@@ -83,6 +83,30 @@ public class DocController {
         }
 	}
 	
+	@PostMapping("myDocList/view")
+	public String myDocListView(SearchVO searchVO, Model model) {
+		
+		searchVO = checkSearch(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			List<DocVO> list = docService.getMyDocList(empVO.getEmpId(), searchVO);
+	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId()));
+	        
+	        model.addAttribute("list", list);
+	        model.addAttribute("pageDTO", pageDTO);
+	        model.addAttribute("search", searchVO);
+	        model.addAttribute("path", "myDocList");
+	        
+            return "approval/list/empDocs";
+            
+        } else {
+        	
+        	return "test/test";
+        }
+	}
+	
 	// 한 직원이 현재 결재해야할 문서리스트.
 	@GetMapping("myAprList")
 	public String myAprList(SearchVO searchVO, Model model) {
@@ -122,7 +146,8 @@ public class DocController {
             
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
-            model.addAttribute("path", "docIng"); //X.
+            model.addAttribute("search", searchVO);
+            model.addAttribute("path", "docIng"); 
             
             return "approval/list/ing";
             

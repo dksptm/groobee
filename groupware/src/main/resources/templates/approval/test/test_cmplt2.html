@@ -23,59 +23,59 @@
 			<hr>
 		</div>
 		
-		<!-- 검색 -->
-		<p class="navbar-brand">검색조건</p>
-		<nav class="navbar navbar-expand-lg navbar-light">
-			<div class="container-fluid">
-				<button class="navbar-toggler" type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarSupportedContent"
-					aria-controls="navbarSupportedContent" aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<table>
-						<tr>
-							<td><select class="form-select searchKeySelect">
-									<option value="custname">제목</option>
-									<option value="ctno">기안자</option>
-									<option value="custno">고객번호</option>
-							</select></td>
-							<td colspan='3'><input class="form-control searchKey"
-								type="text"></td>
-							<td class="text-white">_</td>
-							<td class="form-control">계약상태</td>
-							<td><select class="form-select ctStat">
-									<option value="statAll">전체</option>
-									<option value="0A1a">계약중</option>
-									<option value="0A2a">계약종료</option>
-							</select></td>
-						</tr>
-						<tr>
-							<td><select class="form-select ctDt">
-									<option value="ct.ct_start_dt">계약시작일</option>
-									<option value="ct.ct_end_dt">계약종료일</option>
-							</select></td>
-							<td><input class="form-select fromDt" type="date"></td>
-							<td>~</td>
-							<td><input class="form-select toDt" type="date"></td>
-							<td class="text-white">_</td>
-							<td class="form-control">정렬조건</td>
-							<td><select class="form-select searchSelect">
-									<option value="ct.ct_no">계약번호순</option>
-									<option value="ct.ct_start_dt">계약시작일순</option>
-									<option value="ct.ct_end_dt">계약종료일순</option>
-							</select></td>
-						</tr>
-					</table>
-					<span class="position-absolute top-50 end-0 translate-middle-y">
-						<button class="btn btn-outline-success searchbtn bg-light"
-							type="submit">검색</button>
-					</span>
+		<form id="searchForm" th:action="@{/docCmplt}"  method="get" th:object="${search}">
+			<p><input type="number" th:field="*{page}" /></p>
+			<div class="mt-3 pt-3">
+				<!-- 업무 선택 -->
+				<div class="border border-3 input-tag-css">
+					<!-- 모달버튼 : 업무 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+							data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button>
+					<!-- 업무 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getTasks">
+						<th:block th:each="tno,stat : ${search.schTaskNo}">
+						<input type="text" class="aleadyInputs" th:value="${tno}" th:name="|schTaskNo[${stat.index}]|" readonly />
+						</th:block>
+						<th:block th:each="tna,stat : ${search.schTaskName}">
+						<input type="text" class="aleadyInputs" th:value="${tna}" th:name="|schTaskName[${stat.index}]|" readonly />
+		                
+	                    </th:block>
+						
+						</div>
+					</div>		
+				</div>
+				
+				<hr>
+			</div>
+			<div class="mt-3 pt-3">
+				
+			</div>
+			<!-- 검색 버튼 -->
+			<div class="m-3 text-end">
+				<button type="submit" class="btn rounded-pill btn-primary btn-lg">검색</button>
+			</div>
+		</form>
+		<!--------------------------------------------------------- 모달영역 -->
+		<!-- 모달영역 : 업무선택 -->
+		<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">관련업무 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary getTasks-btn" data-bs-dismiss="modal">닫기</button>
+					</div>
 				</div>
 			</div>
-		</nav>
+		</div>
+		<!--------------------------------------------------------- 모달영역 -->
+
+			
+
 		
 		<div class="mt-3 pt-3">
 			<div class="table-responsive">
@@ -117,42 +117,17 @@
 						</th:block>
 					</tbody>
 				</table>
+				<table>
+					
+				</table>
 			</div>
-			<!-- 페이징 -->
-			<div class="paging">
-				<th:block th:if="${pageDTO.totalCnt} != 0">
-					<nav aria-label="Page navigation">
-						<ul class="pagination justify-content-center">
-
-							<th:block th:if="${pageDTO.prev}">
-								<li class="page-item prev"><a
-									href="#"
-									th:id="${pageDTO.startPage - 1 }"
-									class="page-link pagebtn"><i class="bx bx-chevron-left"></i></a></li>
-							</th:block>
-							<th:block
-								th:each="num : ${#numbers.sequence(1, pageDTO.endPage)}">
-								<li class="page-item "
-									th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
-									<a href="#"
-										th:id="${num}"
-										class="page-link pagebtn">[[${num}]]</a>
-								</li>
-							</th:block>
-							<th:block th:if="${pageDTO.next}">
-								<li class="page-item next"><a
-									href="#"
-									th:id="${pageDTO.endPage + 1 }"
-									class="page-link pagebtn"><i class="bx bx-chevron-right"></i></a></li>
-							</th:block>
-						</ul>
-					</nav>
-				</th:block>
-				<th:block th:unless="${pageDTO.totalCnt} != 0">
-					<p>현재 등록된 계약이 없습니다.</p>
-				</th:block>
+			<div>
+				<!-- 페이징공간 start -->				
+				<div id="pageArea">
+					<th:block th:replace="approval/list/page :: Page"></th:block>
+				</div>
 			</div>
-			<!-- /페이징 -->
+			
 		</div>
 		
 	</div>
@@ -178,8 +153,6 @@
 		$('.taskTitle').hover(function(){
 			$(this).find('.taskList').toggle();
 		})
-		
-		//
 		
 	})
 </script>
