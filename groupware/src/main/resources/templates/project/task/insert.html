@@ -13,45 +13,49 @@
                     <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
                 </div>
 				<br>	
+                <h3>프로젝트 업무 등록 수정</h3>
                 <table id="taskForm" class="table">
-                    <h3>프로젝트 업무 등록</h3>
+                	  <tr>
+                        <th>프로젝트</th>
+                        <td>
+                            <select class="form-select" style="width:100px" th:field="*{standardNo}">
+                                <option value="">프로젝트명</option>
+                                <option  th:each=" plist : ${plist}" th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
+                            </select>
+                        </td>
+                    </tr>
                     <tr>
                         <th>업무명</th>
                         <td><input type="text" th:field="*{taskName}"></td>
                     </tr>
                     <tr>
-                        <th>업무번호</th>
-                        <td><input type="text" th:field="*{taskNo}" readonly>             
-                    </tr>
-                    <tr>
                         <th>부서명</th>
                         <td>
-                            <select class="form-select" style="width:100px" th:field="*{deptName}" id="selectDept" name="dept">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
+                            <select class="form-select" style="width:100px" th:field="*{deptId}">
+                                <option value="">부서명</option>
+                                <option  th:each=" dept : ${dept}" th:value="${dept.deptId}" th:text="${dept.deptName}"></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th>부서참여인원</th>
-                        <td><input type="text" th:field="*{empName}">
-                        <button type="button" class="btn btn-primary" id="deptEmp" data-bs-toggle="modal" data-bs-target="#deptEmpModal">등록</button></td>
+                        <td><button type="button" class="btn btn-primary" id="deptEmpBtn" data-bs-toggle="modal" data-bs-target="#deptEmpModal">등록</button>
+                            <table> <tbody id="deptEmpList"></tbody></table>
                     </tr>
                     <tr>
                         <th>협력부서명</th>
                         <td>
-                            <select class="form-select" style="width:100px" th:field="*{deptName}">
+                            <select class="form-select" style="width:100px" th:field="*{deptId}">
                                 <option value="">협력부서명</option>
-                                <!-- 부서 목록을 추가 -->
+                                <option  th:each=" dept : ${dept}" th:value="${dept.deptId}" th:text="${dept.deptName}"></option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <th>협력부서내참여인원</th>
-                        <td><input type="text" th:field="*{empName}">
-                        <button type="button" class="btn btn-primary" id="coDeptEmp" data-bs-toggle="modal" data-bs-target="#coDeptEmpModal">등록</button></td>
-                    </tr>
-                    <tr>
+                        <td><button type="button" class="btn btn-primary" id="codeptEmpBtn" data-bs-toggle="modal" data-bs-target="#coDeptEmpModal">등록</button>
+                    	 <table> <tbody id="coDeptEmpList"></tbody></table>
+                    	 </td>
                     </tr>
                     <tr>
                         <th>시작일</th>
@@ -65,151 +69,214 @@
                     </tr>
                     <tr>
                         <th>업무목적</th>
-                        <td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+                        <td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
                     </tr>
                     <tr>
                         <th>내용</th>
-                        <td><textarea cols="50" th:field="*{smry}"></textarea></td>
+                        <td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
                     </tr>
                 </table>
                 <div style="text-align: center;">
-                    <button type="submit" class="btn btn-primary" id="taskInsertBtn">저장</button>
+                    <button type="button" class="btn btn-primary" id="taskInsertBtn">저장</button>
                     <button type="button" class="btn btn-secondary">취소</button>
                 </div>
             </form>
         </div>
         
         <!------------------------------------------------ 모달 -------------------------------------------------->
-		<!-- 부서참여인원 등록 모달창 -->
-		<div class="modal fade" id="deptEmpModal" tabindex="-1" aria-labelledby="deptEmpModalLabel" aria-hidden="true" >
+		<!-- 참여자 선택창  -->
+		<div  class="modal fade" id="deptEmpModal" tabindex="-1" aria-labelledby="deptEmpModalLabel" aria-hidden="true">
 			<div class="modal-dialog" style=" text-align: center;">
 				<div class=" modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="deptEmpModalLabel">참여인원 선택</h5>
+					<div class="modal-header" style=" text-align: center">
+						<h5 class="modal-title" id="deptEmpModal" >참여자 선택</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<table>
+					<table class="table table-light table-sm">
 						<thead>
 							<tr>
-								<th>부서 참여인원</th>
+								<th>부서번호</th>
+								<th>부서명</th>
+								<th>직급명</th>
+								<th>사원이름</th>
+								<th>사원번호</th>
 								<th>선택</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td>-</td>
-								<td>
-									<div class="form-check" >
-									  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-									  <label class="form-check-label" for="flexRadioDefault2"></label>
-									  </div>
-								</td>
-							<tr>	
-						</tbody>
-					</table>
-					
-					<div class="modal-footer" style=" text-align: center;">
-						<button type="button" class="btn btn-primary" id="DeptInModalBtn">등록</button>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-					</div>
-				</div>
-			</div>
-			</div> 
-		<!-- 부서참여인원 등록 모달창 끝 -->	
-		
-		<!-- 협력부서참여인원 등록 모달창 -->
-		<div  class="modal fade" id="coDeptEmpModal" tabindex="-1" aria-labelledby="coDeptEmpModalLabel" aria-hidden="true">
-			<div class="modal-dialog" style=" text-align: center;">
-				<div class=" modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="DeptEmpModalLabel">참여인원 선택</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<table>
-						<thead>
-							<tr>
-								<th>부서 참여인원</th>
-								<th>-</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td></td>
-								<td>
-									<div class="form-check">
-									  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-									  <label class="form-check-label" for="flexRadioDefault2"></label>
-									  </div>
-								</td>
-							<tr>	
+						<tbody id="empList">
+							<th:block th:each="emp : ${emp}">
+								<tr>
+									<td>[[ ${emp.deptId} ]]</td>
+									<td>[[ ${emp.deptName} ]]</td>
+									<td>[[ ${emp.jobTitle} ]]</td>
+									<td>[[ ${emp.empName} ]]</td>
+									<td>[[ ${emp.empId} ]]</td>
+									<td> <input class="form-radio-input" type="checkbox" name="empCheck"></td>
+								</tr>
+							</th:block>	
 						</tbody>
 					</table>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="DeptInModalBtn">등록</button>
+						<button type="button" class="btn btn-primary" id="deptEmpBtnM" data-bs-dismiss="modal">등록</button>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
-			</div> 
-		<!-- 협력부서참여인원 등록 모달창 끝 -->
-</body>
-    </th:block>
+		</div> 
+		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
+		<!-- 협력부서 부서원 선택창   -->
+		<div  class="modal fade" id="coDeptEmpModal" tabindex="-1" aria-labelledby="coDeptEmpModal" aria-hidden="true">
+			<div class="modal-dialog" style=" text-align: center;">
+				<div class=" modal-content">
+					<div class="modal-header" style=" text-align: center">
+						<h5 class="modal-title" id="coDeptEmpModal"> 협력부서 참여자 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<table class="table table-light table-sm">
+						<thead>
+							<tr>
+								<th>부서번호</th>
+								<th>부서명</th>
+								<th>직급명</th>
+								<th>성명</th>
+								<th>사원번호</th>
+								<th>선택</th>
+							</tr>
+						</thead>
+						<tbody id="empList">
+							<th:block th:each="emp : ${emp}">
+								<tr>
+									<td>[[ ${emp.deptId} ]]</td>
+									<td>[[ ${emp.deptName} ]]</td>
+									<td>[[ ${emp.jobTitle} ]]</td>
+									<td>[[ ${emp.empName} ]]</td>
+									<td>[[ ${emp.empId} ]]</td>
+									<td> <input class="form-radio-input" type="checkbox" name="coEmpCheck"></td>
+								</tr>
+							</th:block>	
+						</tbody>
+					</table>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="coDeptEmpBtnM" data-bs-dismiss="modal">등록</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div> 
+		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 		
-
-<script>
+		<script  th:inline="javascript" >
+		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	
-// 등록
-$(function(){
-	$('#taskInsertBtn').on('click', function(){
-		let formData = $('taskForm').serialize();
-		console.log(formData);
+			let emps = [[${emp}]]
+			
+			$("#deptEmpBtn").attr("disabled", true);
+			$("#codeptEmpBtn").attr("disabled", true);
+			
+			
+			$.fn.serializeObject = function() {
+				  "use strict"
+				  var result = {}
+				  var extend = function(i, element) {
+				    var node = result[element.name]
+				    if ("undefined" !== typeof node && node !== null) {
+				      if ($.isArray(node)) {
+				        node.push(element.value)
+				      } else {
+				        result[element.name] = [node, element.value]
+				      }
+				    } else {
+				      result[element.name] = element.value
+				    }
+				  }
+
+				  $.each(this.serializeArray(), extend)
+				  return result
+				}
+			
+			let deptEmp = [];
+			
+			$(function(){
+				// 부서참여원 
+				// 부서선택시 부서원 모달버튼 
+				$('#deptId').on('change',function(){
+					let selectDept = $(this).val();
+					
+					if (selectDept =='') {
+						$("#deptEmpBtn").attr("disabled", true);
+					} else {
+						$("#deptEmpBtn").attr("disabled", false);
+						// 해당 부서원만 필터링
+						$("#empList").empty();
+						for(let i = 0; i < emps.length; i++){
+							console.log(emps[i].deptId, selectDept)
+							if(emps[i].deptId == selectDept){
+								let tr= `	<tr>
+									<td>${emps[i].deptId}</td>
+									<td>${emps[i].deptName}</td>
+									<td>${emps[i].jobTitle}</td>
+									<td>${emps[i].empName}</td>
+									<td>${emps[i].empId}</td>
+									<td> <input class="form-radio-input" type="checkbox" name="empCheck"></td>
+								</tr>`
+								$("#empList").append(tr)
+							}
+						}
+					}
+				});
+			
+				//등록
+				$('#taskInsertBtn').on('click', function(){
+					var formData = $('[name="insertForm"]').serializeObject();					
+					console.log(formData);
+					
+					formData.taskEmps= deptEmp;
+					
+					$.ajax({
+						type: 'POST',
+						url : '/task/insert',
+						contentType : 'application/json' ,
+						data :  JSON.stringify(formData),
+						beforeSend: function(xhr) {
+					        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+					    },
+						success : function(data){
+							alert('프로젝트업무 등록에 성공했습니다.');
+							location.reload();
+						},
+						error : function(err){
+							alert('프로젝트업무 등록에 실패했습니다.');
+						}
+					});
+				});
+			
+				// 사원 선택시 모달 
+				$("#deptEmpBtnM").on('click',function(){
+					let deptEmpChk = $("input[name=empCheck]:checked");
+					deptEmp = [];
+					$("#deptEmpList").html("");
+					
+					for(let i = 0; i < deptEmpChk.length; i++){
+						let tr = $(deptEmpChk[i]).closest('tr').clone()
+						$("#deptEmpList").append(tr);
+						
+						let taskEmpId = $(deptEmpChk[i]).closest('tr').find('td').eq(4).text();
+						let deptId = $(deptEmpChk[i]).closest('tr').find('td').eq(0).text();
+						let deptName = $(deptEmpChk[i]).closest('tr').find('td').eq(1).text();
+						
+						deptEmp.push({taskEmpId,deptId,deptName	});
+						console.log('---------------->',deptEmp);
+					}
+				})
+				
+			});
+			
+		</script>
 		
-		$.ajax({
-			type: 'POST',
-			url : '/taskInser',
-			data : formData,
-			success : function(data){
-				alert('프로젝트업무 등록에 성공했습니다.');
-				location.reload();
-			},
-			error : function(err){
-				alert('프로젝트업무 등록에 실패했습니다.');
-			}
-		});
-	});
-});
-
-
-// 부서 셀렉트 선택
-$(function(){
-	$("#selectDept").val("${param.dept}").attr("selected","selected");
-});
-
-
-
-
-
-
-
-
-
-/* 	document.querySelector('form[name="insertForm"]').addEventListener(
-			'submit', prjtInsert);
-	
-	function prjtInsert(event) {
-		event.preventDefault();
-	
-		let name = document.getElementById('prjtName');
-		if (name.value == '') {
-			alert('프로젝트명이 입력되지않았습니다.');
-			name.focus();
-			return;
-		}
-		alert('프로젝트등록이 완료되었습니다.');
-		insertForm.submit();
-	} */
-</script>
+	</body>
+</th:block>
 </html>
 
 

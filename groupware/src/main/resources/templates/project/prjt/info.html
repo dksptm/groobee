@@ -46,25 +46,25 @@
 	
 	<script>
 	
-	 // 삭제버튼 : 삭제 후 리스트로 이동 
-	$(function(){	
-		$('#prjtDelBtn').on('click', function() {
-			
-			let taskNo = $(this).data('');
-			console.log(taskNo); // 값을 제대로 가져왔는지 확인
-
-			$.ajax({
-				type : 'GET',
-				url : '/taskDelete?taskNo=' + taskNo,
-				dataType : 'json',
-				success : function(result) {
-					alert('삭제에 성공했습니다.');
-				},
-				error : function(error) {
-					alert('삭제에 실패했습니다.');
-				}
-			});
-		}); 
-}); 
+		 // 삭제버튼 : 삭제 후 리스트로 이동 
+		$(function(){	
+			$('#prjtDelBtn').on('click', function() {
+				
+				let taskNo = $(this).data('');
+				console.log(taskNo); // 값을 제대로 가져왔는지 확인
+	
+				$.ajax({
+					type : 'GET',
+					url : '/taskDelete?taskNo=' + taskNo,
+					dataType : 'json',
+					success : function(result) {
+						alert('삭제에 성공했습니다.');
+					},
+					error : function(error) {
+						alert('삭제에 실패했습니다.');
+					}
+				});
+			}); 
+	}); 
 	</script>
 </html>
