@@ -342,13 +342,13 @@
 		        ,d.cntn
 		        ,d.draft_dt
 		        ,d.draft_stat
-		        ,get_codename(d.draft_stat) as draft_stat_name       
+		        ,get_codename(d.draft_stat) AS draft_stat_name       
 		        ,d.temp_id
-		        ,temp_id
+		        ,get_tempname(d.temp_id) 	AS temp_name
 		        ,d.final_line
 		        ,d.now_line
 		        ,d.doc_stat
-		        ,get_codename(d.doc_stat) as doc_stat_name
+		        ,get_codename(d.doc_stat) 	AS doc_stat_name
 				,d.cmplt_dt
 		FROM doc d JOIN emp e 
 		             ON(d.draft = e.emp_id)
@@ -428,13 +428,13 @@
 	
 	<!-- 문서의 첨부파일 등록. -->
 	<insert id="insertDocFile" parameterType="DocFileVO">
-		<selectKey keyProperty="fileNo" resultType="Integer" order="BEFORE">
-			SELECT NVL(MAX(file_no), 0) + 1
+		<selectKey keyProperty="fno" resultType="int" order="BEFORE">
+			SELECT NVL(TO_NUMBER(MAX(file_no)), 0) + 1
 			FROM doc_file
 		</selectKey>
 		INSERT ALL		
-			<foreach collection="files" item="file" separator=",">
-			INSERT INTO doc_file
+			<foreach collection="files" item="file" index="no">
+			INTO doc_file
 			        (
 			            file_no
 			            ,doc_no
@@ -446,7 +446,7 @@
 			        )
 			  VALUES
 			        (
-			         #{file.fileNo}
+			         #{fno} + #{no}
 			        ,#{file.docNo}
 			        ,#{file.saveName}
 			        ,#{file.uplName}
@@ -455,14 +455,14 @@
 			        ,#{file.uplEmp}
 			        )	
 			</foreach>
-		SELECT * FROM DAUL
+		SELECT * FROM DUAL
 	</insert>
 	
 	<!-- 문서와 업무 연결. -->
 	<insert id="insertTaskDoc" parameterType="DocVO">
 	INSERT ALL
-		<foreach collection="doc.tasks" item="tno" separator=",">
-		INSERT INTO task_doc
+		<foreach collection="doc.tasks" item="tno">
+		INTO task_doc
 			(
 				 doc_no
 				,task_no

@@ -22,7 +22,7 @@ const tempChange = function() {
 	let opt = $('#tempId option:selected');
 	
 	// 옵션값 선택안함
-	if(opt.val() == 'no-data' || opt.val() == 'TP001' || opt.val() == 'TP002' ) {
+	if(opt.val() == 'no-data' || opt.val() == 'temp001') {
 		if(editor) {
 			editor.setData('');
 		}
@@ -34,7 +34,7 @@ const tempChange = function() {
 		return;
 	}
 	
-	if(opt.val() == 'TP002') {
+	if(opt.val() == 'temp001') {
 		$('#tempPTO').slideDown();
 		ptoForm();
 		return;
@@ -125,7 +125,7 @@ const getHtml = function() {
 
 	// 옵션값 그 외.
 	let tempPath = $('#tempId option:selected').data('temp');
-	console.log('tempPath', tempPath);
+
 	// ajax로 템플릿 경로통해 가져오기.
 	$.ajax({
 		url : 'files/' + tempPath,
@@ -135,6 +135,7 @@ const getHtml = function() {
 	    },
 	    success: function(html) {
 	    	 editor.setData(html);
+	    	 console.log(html);
 	    },
 	    error: function(err){
 	    	console.log('ERR : ', err);

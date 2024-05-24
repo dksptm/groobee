@@ -23,6 +23,13 @@
 			<hr>
 		</div>
 		
+		<div>
+			<!-- 검색공간 -->				
+			<div id="searchArea">
+				<th:block th:replace="approval/list/search :: Search"></th:block>
+			</div>
+		</div>
+		
 		<div class="mt-3 pt-3">
 			<div class="table-responsive">
 				<table class="table table-bordered table-hover text-center bg-white">
@@ -75,7 +82,7 @@
 	</div>
 	</div>
 	</div>
-
+<script th:src="@{/js/docsch.js}"></script>
 <script>
 	$(function(){
 		

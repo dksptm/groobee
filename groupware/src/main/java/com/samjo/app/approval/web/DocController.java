@@ -69,11 +69,12 @@ public class DocController {
 			
 			List<DocVO> list = docService.getMyDocList(empVO.getEmpId(), searchVO);
 	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId()));
-	            
+	        
 	        model.addAttribute("list", list);
 	        model.addAttribute("pageDTO", pageDTO);
-	        model.addAttribute("path", "myDocList"); // 나중에 바꿔야함..(검색을 form으로 구현시)
-            
+	        model.addAttribute("search", searchVO);
+	        model.addAttribute("path", "myDocList");
+	        
             return "approval/list/empDocs";
             
         } else {
@@ -147,7 +148,6 @@ public class DocController {
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
-			model.addAttribute("path", "docCmplt"); //X
 			
 			return "approval/list/cmplt";
 			

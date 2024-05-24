@@ -33,6 +33,7 @@ public class DocVO {
     
     // 결재자 리스트.
     private List<AprVO> aprs;
+    private Integer aprno;
     
     // 첨부파일 리스트.
     private List<DocFileVO> files;
