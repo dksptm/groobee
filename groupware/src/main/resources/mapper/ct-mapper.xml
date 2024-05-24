@@ -47,7 +47,7 @@
 						AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
 					</when>
 				</choose>
-				ORDER BY #{ctSort}) t ) r
+				ORDER BY ${ctSort}) t ) r
 		WHERE r.rn > (#{page} -1) * 10
 	</select>
 
@@ -78,8 +78,9 @@
 				</when>
 				<when test="(ctEnd != null) and (ctStart == null)">						
 					AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-				</when>
+				</when> 
 			</choose>
 		</where>
 	</select>
+	
 </mapper>
