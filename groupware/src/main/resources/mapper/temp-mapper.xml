@@ -8,7 +8,7 @@
 	<select id="selectCustTemps" resultType="TempVO">
 		SELECT temp_no
 		       ,temp_name
-		       ,temp_img
+		       ,save_name
 		FROM temp
 		ORDER BY temp_no
 	</select>

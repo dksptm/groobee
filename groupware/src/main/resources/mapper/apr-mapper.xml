@@ -5,13 +5,13 @@
 <mapper namespace="com.samjo.app.approval.mapper.AprMapper">
 
 	<!-- 결재자 등록. -->
-	<insert id="insertApr" parameterType="DocVO">
-		<selectKey keyProperty="aprNo" resultType="Integer" order="BEFORE">
+	<insert id="insertApr">
+		<selectKey keyProperty="aprno" resultType="Integer" order="BEFORE">
 			SELECT NVL(MAX(apr_no), 0) + 1
 			FROM apr
 		</selectKey>
 		INSERT ALL
-			<foreach collection="doc.aprs" item="apr">
+			<foreach collection="doc.aprs" item="apr" index="no" >
 			INTO apr
 			        (
 			             apr_no
@@ -26,7 +26,7 @@
 				VALUES
 		  
 		        (
-		             #{apr.aprNo}
+		             #{aprno} + #{no}
 		            ,#{doc.docNo}
 		            ,#{doc.custNo}
 		            ,#{apr.aprSq}
@@ -36,7 +36,8 @@
 		            ,get_emptitle(#{apr.aprEmp})
 		        )		  
 			</foreach>
-		SELECT * FROM DUAL
+		SELECT * 
+		FROM DUAL
 	</insert>
 	
 	<!-- 문서의 결재자리스트 가져오기. -->
@@ -99,8 +100,8 @@
 	<!-- 참조자 등록 (doc_rece 테이블)-->
 	<insert id="insertRef" parameterType="DocVO">
 		INSERT ALL
-		<foreach collection="doc.refs" item="ref" separator=",">
-		INSERT INTO doc_rece
+		<foreach collection="doc.refs" item="ref">
+		INTO doc_rece
 			(
 				 doc_no
 				,emp_id

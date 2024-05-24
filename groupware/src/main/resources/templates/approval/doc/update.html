@@ -233,7 +233,7 @@
 					<select class="form-select border border-3" th:field="*{tempId}">
 						<option value="no-data">템플릿옵션을 선택하세요.</option>
 						<th:block th:each="temp : ${temps}">
-		                <option th:value="${temp.tempNo}" th:attr="data-temp=${temp.tempImg}">
+		                <option th:value="${temp.tempNo}" th:attr="data-temp=${temp.saveName}">
 		                    		[[ ${temp.tempName} ]]</option>
 	                    </th:block>
 					</select>

@@ -18,6 +18,8 @@ public class DocFileVO {
 	private Date fileDt;   
 	private String uplEmp;
 	
+	private int fno;
+	
 	public DocFileVO(Integer docNo, String saveName, String uplName, String fileExt, Long fileSize, String uplEmp) {
 		this.docNo = docNo;
 		this.saveName = saveName;
