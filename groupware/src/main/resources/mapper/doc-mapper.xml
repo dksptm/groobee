@@ -432,32 +432,36 @@
 			SELECT NVL(MAX(file_no), 0) + 1
 			FROM doc_file
 		</selectKey>
-		INSERT INTO doc_file
-		        (
-		            file_no
-		            ,doc_no
-		            ,save_name
-		            ,upl_name
-		            ,file_ext
-		            ,file_size
-		            ,upl_emp      
-		        )
-		  VALUES
-		<foreach collection="files" item="file" separator=",">
-		        (
-		         #{file.fileNo}
-		        ,#{file.docNo}
-		        ,#{file.saveName}
-		        ,#{file.uplName}
-		        ,#{file.fileExt}
-		        ,#{file.fileSize}
-		        ,#{file.uplEmp}
-		        )	
-		</foreach>
+		INSERT ALL		
+			<foreach collection="files" item="file" separator=",">
+			INSERT INTO doc_file
+			        (
+			            file_no
+			            ,doc_no
+			            ,save_name
+			            ,upl_name
+			            ,file_ext
+			            ,file_size
+			            ,upl_emp      
+			        )
+			  VALUES
+			        (
+			         #{file.fileNo}
+			        ,#{file.docNo}
+			        ,#{file.saveName}
+			        ,#{file.uplName}
+			        ,#{file.fileExt}
+			        ,#{file.fileSize}
+			        ,#{file.uplEmp}
+			        )	
+			</foreach>
+		SELECT * FROM DAUL
 	</insert>
 	
 	<!-- 문서와 업무 연결. -->
 	<insert id="insertTaskDoc" parameterType="DocVO">
+	INSERT ALL
+		<foreach collection="doc.tasks" item="tno" separator=",">
 		INSERT INTO task_doc
 			(
 				 doc_no
@@ -465,13 +469,13 @@
 				,cust_no
 			)
 		  VALUES
-		<foreach collection="doc.tasks" item="tno" separator=",">
 			(
 				 #{doc.docNo}
 				,#{tno}
 				,#{doc.custNo}
 			)		
 		</foreach>
+	SELECT * FROM DUAL
 	</insert>
 	
 	<!-- 문서수정 -->

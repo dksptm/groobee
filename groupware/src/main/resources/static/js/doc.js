@@ -204,9 +204,9 @@ const getDocRefs = () => {
 
 /* 업무 -name부여 */
 const inTaskName = () => {
-	
-	let inputs = $('#getTasks').find('input');
-	inputs.each(function(i,e) {
+
+	let inputsNo = $('#getTasks').find('input[name="no"]');
+	inputsNo.each(function(i,e) {
 		e.setAttribute('name','tasks[' + i + ']');
 	});
 	

@@ -10,19 +10,21 @@
 			SELECT NVL(MAX(apr_no), 0) + 1
 			FROM apr
 		</selectKey>
-		INSERT INTO apr
-		        (
-		             apr_no
-		            ,doc_no
-		            ,cust_no
-		            ,apr_sq
-		            ,apr_line
-		            ,apr_emp
-		            ,apr_yn
-		            ,apr_name
-		        )
-		  VALUES
-		  <foreach collection="doc.aprs" item="apr" separator=",">
+		INSERT ALL
+			<foreach collection="doc.aprs" item="apr" separator=",">
+			INTO apr
+			        (
+			             apr_no
+			            ,doc_no
+			            ,cust_no
+			            ,apr_sq
+			            ,apr_line
+			            ,apr_emp
+			            ,apr_yn
+			            ,apr_name
+			        )
+				VALUES
+		  
 		        (
 		             #{apr.aprNo}
 		            ,#{doc.docNo}
@@ -33,7 +35,8 @@
 		            ,'4D1d'
 		            ,get_emptitle(#{apr.aprEmp})
 		        )		  
-		  </foreach>
+			</foreach>
+		SELECT * FROM DUAL
 	</insert>
 	
 	<!-- 문서의 결재자리스트 가져오기. -->
@@ -95,6 +98,8 @@
 	
 	<!-- 참조자 등록 (doc_rece 테이블)-->
 	<insert id="insertRef" parameterType="DocVO">
+		INSERT ALL
+		<foreach collection="doc.refs" item="ref" separator=",">
 		INSERT INTO doc_rece
 			(
 				 doc_no
@@ -102,13 +107,13 @@
 				,cust_no
 			)
 		  VALUES
-		<foreach collection="doc.refs" item="ref" separator=",">
 			(
 				 #{doc.docNo}
 				,#{ref}
 				,#{doc.custNo}
 			)	
 		</foreach>
+		SELECT * FROM DUAL
 	</insert>
 	
 	<!-- 참조자 삭제 -->
