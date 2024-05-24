@@ -11,7 +11,7 @@
 			FROM apr
 		</selectKey>
 		INSERT ALL
-			<foreach collection="doc.aprs" item="apr" separator=",">
+			<foreach collection="doc.aprs" item="apr">
 			INTO apr
 			        (
 			             apr_no
