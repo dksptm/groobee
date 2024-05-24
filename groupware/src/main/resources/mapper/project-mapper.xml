@@ -94,6 +94,7 @@
 		                ,resp_mngr_id = #{respMngrId}
 		                ,cust = #{cust}
 		WHERE prjt_id = #{prjtId}
+		
 	</update>	
 		
 	<!-- 프로젝트(상위) 삭제-->
