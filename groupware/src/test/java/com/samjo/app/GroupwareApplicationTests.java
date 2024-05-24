@@ -117,10 +117,10 @@ class GroupwareApplicationTests {
 	 @Test
 	 public void encryption() {
 			String[] strs = {
-					"net.sf.log4jdbc.sql.jdbcapi.DriverSpy",
-					"jdbc:log4jdbc:oracle:thin:@127.0.0.1:1521:xe",
-					"samjo",
-					"samjo"
+					"",
+					"",
+					"",
+					""
 			};
 			
 			for(String str : strs) {
