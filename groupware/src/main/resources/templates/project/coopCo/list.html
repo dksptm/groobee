@@ -45,12 +45,10 @@
 				</tbody>
 			</table>
 		</div>
-
 		<div style="text-align: end;">
 			<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 				data-bs-target="#coopInModal">등록</button>
 		</div>
-
 
 		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 행클릭 상세화면 모달 -->
@@ -78,7 +76,6 @@
 				</div>
 			</div>
 		</div>
-
 		<!-- 수정 모달 -->
 		<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
 			aria-labelledby="editModalLabel" aria-hidden="true">
@@ -103,7 +100,6 @@
 				</div>
 			</div>
 		</div>
-
 		<!-- 등록모달 -->
 		<div class="modal fade" id="coopInModal" tabindex="-1"
 			aria-labelledby="coopInModal" aria-hidden="true">
@@ -148,7 +144,6 @@
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
-	
 		// 상세화면모달
 		$(function() {
 			$('tr').on('click', function() {
@@ -168,10 +163,9 @@
 				$('#detailModal').modal('show');
 			});
 		});
-		
-			$(function() {
-				// 주소는 리스트에서 안보이게.
-				$('.tdHide').hide();
+		// 주소는 리스트에서 안보이게.
+		$(function() {
+			$('.tdHide').hide();
 
 				// 등록모달
 				$('#modalInsertBtn').on('click', function() {
@@ -189,12 +183,9 @@
 							alert('협력업체 등록에 실패했습니다.');
 						}
 					});
-
 				});
-
 			});
 
-			
 			// 수정폼모달
 			$(function() {
 				$('#editBtn').click(function() {
