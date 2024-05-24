@@ -139,7 +139,9 @@ public class ProjectController {
 		projectVO.setTaskType("5A1a");
 		projectVO.setPrjtMat("5B1b");
 		projectVO.setCustNo(empVO.getCustNo());
+		
 		int taskNo = projectService.taskInsert(projectVO);
+		
 		String uri = null;
 
 		if (taskNo > -1) {

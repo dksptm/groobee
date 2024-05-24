@@ -59,6 +59,8 @@ public class ProjectVO {
     private String taskStat;
     private String taskEmpId;
     
+    private String coDeptId;
+    
 	// 업무문서
 	private String docNo;
 	

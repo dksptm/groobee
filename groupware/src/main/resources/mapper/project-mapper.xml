@@ -91,10 +91,9 @@
 			      ,t.task_name
 			      ,t.task_start_dt
 			      ,t.task_due_dt
-	              ,e.task_emp_id
-	              
-	FROM task_common t JOIN task_emps e
-			       ON (t.task_no = e.task_no)
+			      ,p.prjt_name
+	FROM task_common t JOIN prjt p
+                        ON p.prjt_id = t.standard_no
 	ORDER BY t.task_no
 	</select>
 	
@@ -120,7 +119,7 @@
      </select>
 	<!-- 프로젝트(하위) 업무 등록 -->
 	<insert id="insertTask" parameterType="ProjectVO"> 
-			<selectKey keyProperty="taskNo" 
+			<selectKey keyProperty="pj.taskNo" 
 			resultType="Integer"
 			order="BEFORE">
 			SELECT NVL(MAX(task_no),0) +1 
@@ -150,7 +149,8 @@
 							    #{pj.standardNo},
 							    #{pj.prjtMat},
 							    #{pj.deptId},
-							    #{pj.custNo} )
+							    #{pj.custNo} 
+							    )
 				<foreach collection="pj.taskEmps" item="te" >
 				INTO task_emps (
 						    task_no,

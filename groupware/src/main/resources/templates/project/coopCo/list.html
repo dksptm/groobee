@@ -110,7 +110,7 @@
 							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="coopForm">
+						<form id="coopForm" th:action="@{/taskInsert}" method="post">
 							<div class="mb-3">
 								<label for="coName" class="form-label">업체명</label> <input
 									type="text" class="form-control" id="coName" name="coName"required>
@@ -143,6 +143,9 @@
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
+		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+		
 		// 상세화면모달
 		$(function() {
 			$('tr').on('click', function() {
@@ -164,15 +167,42 @@
 		
 			// 주소는 리스트에서 안보이게.
 			$('.tdHide').hide();
+			
+			//	
+			$.fn.serializeObject = function() {
+				  "use strict"
+				  var result = {}
+				  var extend = function(i, element) {
+				    var node = result[element.name]
+				    if ("undefined" !== typeof node && node !== null) {
+				      if ($.isArray(node)) {
+				        node.push(element.value)
+				      } else {
+				        result[element.name] = [node, element.value]
+				      }
+				    } else {
+				      result[element.name] = element.value
+				    }
+				  }
 
+				  $.each(this.serializeArray(), extend)
+				  return result
+				}
+			
 				// 등록모달
 				$('#modalInsertBtn').on('click', function() {
-					let formData = $('#coopForm').serialize();
+					let formData = $('#coopForm').serializeObject();
+					
 					console.log(formData);
+					
 					$.ajax({
 						type : 'POST',
-						url : '/coopAllList',
-						data : formData,
+						url : '/coopInsert',
+						contentType : 'application/json' ,
+						data :  JSON.stringify(formData),
+						beforeSend: function(xhr) {
+					        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+					    },
 						success : function(data) {
 							alert('협력업체 등록에 성공했습니다.');
 							location.reload();
@@ -278,7 +308,6 @@
 			    });
 			}); 
 			
-		});
 
 			/*$(function() {
 				$('#detailModal').on('show.bs.modal', function(event) {
@@ -311,7 +340,7 @@
 			});*/
 			
 		</script>
+		</body>
 	</th:block>
-</body>
 </html>
 
