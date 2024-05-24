@@ -82,7 +82,7 @@
 								</thead>
 								<tbody>
 									<th:block th:each="CtVO : ${list}">
-										<tr>
+										<tr th:onclick="|location.href='@{/sol/ctInfo/}@{${CtVO.ctNo}}'|">
 											<td>[[ ${CtVO.ctNo} ]]</td>
 											<td>[[ ${CtVO.custNo} ]]</td>
 											<td>[[ ${CtVO.custName} ]]</td>

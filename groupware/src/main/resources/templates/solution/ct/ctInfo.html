@@ -3,6 +3,9 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
-
+	<th:block layout:fragment="Content">
+		상세화면 테스트
+		<td>[[ ${ctVO.ctNo} ]]</td>
+	</th:block>
 </body>
 </html>
