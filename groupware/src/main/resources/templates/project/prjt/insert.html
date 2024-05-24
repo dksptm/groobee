@@ -35,7 +35,8 @@
 					<tr>
 						<th>책임자</th>
 						<td>
-							<input type="text" th:field="*{respMngrId}" placeholder="버튼을 눌러 선택하세요" id="mngrResult">
+						    <input type="hidden" th:field="*{respMngrId}">
+							<input type="text" id="respMngrName"  placeholder="버튼을 눌러 선택하세요">
 							<button type="button"  class="btn btn-primary" 
 							id="respMngrId" data-bs-toggle="modal" data-bs-target="#respModal">선택</button>
 						</td>
@@ -61,7 +62,7 @@
 			<div class="modal-dialog" style=" text-align: center;">
 				<div class=" modal-content">
 					<div class="modal-header" style=" text-align: center">
-						<h5 class="modal-title" id="respModalLabel" >책임자 선택</h5>
+						<h5 class="modal-title" id="respModalLabel">책임자 선택</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 			
@@ -77,61 +78,62 @@
 						<tbody>
 							<th:block th:each="mngr : ${mngr}">
 								<tr>
-										<td>[[ ${mngr.deptName} ]]</td>
-										<td>[[ ${mngr.jobTitle} ]]</td>
-										<td>[[ ${mngr.empName} ]]</td>
-										<td> <input class="form-radio-input" type="radio" name="mngrCheck"></td>
+									<td>[[ ${mngr.deptName} ]]</td>
+									<td>[[ ${mngr.jobTitle} ]]</td>
+									<td>[[ ${mngr.empName} ]]</td>
+									<td>[[ ${mngr.empId} ]]</td>
+									<td> <input class="form-radio-input" type="radio" name="mngrCheck" th:value="${mngr.empId}"></td>
 								</tr>
 							</th:block>	
 						</tbody>
 					</table>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="respInBtn">등록</button>
+						<button type="button" class="btn btn-primary" id="respInBtn" data-bs-dismiss="modal">등록</button>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
 		</div> 
-	</th:block>
-</body>
+	<!------------------------------------------------ 모달 끝-------------------------------------------------->
 		
-		<!------------------------------------------------ 모달 끝-------------------------------------------------->
-		<script>
+	<script>
+		$(function(){	
 			// 책임자이름 선택 등록  
-			$(function(){	
-				$('#respInBtn').on('click', function() {
-					let chkMngr = $("input[name=mngrCheck]:checked").val();
-						
-					if(chkMngr.length > 0) {
-						
-						let checked = first().closest('tr').find().'td:eq(2)'text();
-						
-						$('#mngrResult').val(checked);
-					}
-				}); 
+			$('#respInBtn').on('click', function() {
+				let chkMngr = $("input[name=mngrCheck]:checked");
+					
+				if(chkMngr.val().length > 0) {
+					
+					let mngrName = $(chkMngr).closest('tr').find('td:eq(2)').text();
+					let mngrId = $(chkMngr).closest('tr').find('td:eq(3)').text();
+					
+					$('#respMngrName').val(mngrName);
+					$('#respMngrId').val(mngrId);
+				}
 			}); 
 			
 			// 등록
-			$(function(){
-				$('#prjtInsertBtn').on('click', function(){
-					let formData = $('#prjtForm').serialize();
-					console.log(formData);
-					$.ajax({
-						type: 'POST',
-						url : '/prjtInsert',
-						data : formData,
-						success : function(data){
-							alert('프로젝트 등록에 성공했습니다.');
-							location.reload();
-						},
-						error : function(err){
-							alert('프로젝트 등록에 실패했습니다.');
-						}
-					});
+			$('#prjtInsertBtn').on('click', function(){
+				let formData = $('#prjtForm').serialize();
+				console.log(formData);
+				$.ajax({
+					type: 'POST',
+					url : '/prjtInsert',
+					data : formData,
+					success : function(data){
+						alert('프로젝트 등록에 성공했습니다.');
+						location.reload();
+					},
+					error : function(err){
+						alert('프로젝트 등록에 실패했습니다.');
+					}
 				});
 			});
 				
+		}); 
 	</script>
+	</th:block>
+</body>
 </html>
 
 

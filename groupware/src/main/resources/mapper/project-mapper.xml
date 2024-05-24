@@ -9,19 +9,13 @@
 	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
 		SELECT p.prjt_id 
-			  ,p.prjt_name 
-		      ,t.task_name
-		      ,t.task_no
-		      ,e.dept_name
+			  ,p.prjt_name  
 		      ,p.prjt_start_dt
 		      ,p.prjt_due_dt
 		      ,p.purpose
 		      ,p.smry
 		      ,p.prjt_stat 
-		FROM prjt p JOIN task_common t 
-		             ON (p.prjt_id = t.standard_no)
-		             JOIN task_emps e
-		             ON (t.task_no = e.task_no)
+		FROM prjt p 
 	</select>
 	
 	<!-- 프로젝트(상위) 단건 -->
@@ -51,7 +45,7 @@
 			SELECT 'CPJ'||LPAD(NVL((MAX(TO_NUMBER(SUBSTR(prjt_id, -4)))),0 + 1), 4, '0') 
 			FROM prjt
 		</selectKey>
-		INSERT ALL INTO prjt (prjt_id 
+		INSERT INTO prjt (prjt_id 
 							,prjt_name 
 							,prjt_stat 
 							,prjt_start_dt 
@@ -69,19 +63,7 @@
 							,#{purpose}
 							,#{respMngrId}
 							,#{custNo})
-		INTO task_emps (task_no
-					, task_emp_id
-					, dept_id
-					, dept_name
-					, cmplt
-					, cust_no)
-		VALUES(#{taskNo}
-				,#{taskEmpId}
-				,#{deptId}
-				,#{deptName}
-				,#{cmplt}
-				,#{custNo})
-		SELECT 1 FROM DUAL
+		
 	</insert>
 	<!-- 프로젝트(상위) 수정 prjt테이블만 수정.  -->
 	<update id="updatePrjt" parameterType="ProjectVO">
@@ -110,6 +92,7 @@
 			      ,t.task_start_dt
 			      ,t.task_due_dt
 	              ,e.task_emp_id
+	              
 	FROM task_common t JOIN task_emps e
 			       ON (t.task_no = e.task_no)
 	ORDER BY t.task_no
@@ -137,14 +120,14 @@
      </select>
 	<!-- 프로젝트(하위) 업무 등록 -->
 	<insert id="insertTask" parameterType="ProjectVO"> 
-			<selectKey 
-			keyProperty="taskNo" 
+			<selectKey keyProperty="taskNo" 
 			resultType="Integer"
 			order="BEFORE">
 			SELECT NVL(MAX(task_no),0) +1 
 			FROM task_common
 		</selectKey>
-		INSERT ALL INTO  task_common(
+		INSERT ALL 
+			INTO  task_common(
 						    task_no,
 						    task_name,
 						    task_purpose,
@@ -157,31 +140,31 @@
 						    dept_id,
 						    cust_no  )
 				VALUES (
-							    #{taskNo},
-							    #{taskName},
-							    #{taskPurpose},
-							    #{taskCntn},
-							    #{taskStartDt},
-							    #{taskDueDt},
-							    #{taskType},
-							    #{standardNo},
-							    #{prjtMat},
-							    #{deptId},
-							    #{custNo} )
+							    #{pj.taskNo},
+							    #{pj.taskName},
+							    #{pj.taskPurpose},
+							    #{pj.taskCntn},
+							    #{pj.taskStartDt},
+							    #{pj.taskDueDt},
+							    #{pj.taskType},
+							    #{pj.standardNo},
+							    #{pj.prjtMat},
+							    #{pj.deptId},
+							    #{pj.custNo} )
+				<foreach collection="pj.taskEmps" item="te" >
 				INTO task_emps (
 						    task_no,
 						    task_emp_id,
 						    dept_id,
 						    dept_name,
-						    cmplt,
 						    cust_no )
 				    VALUES (
-						     #{taskNo},
-						     #{taskEmpId},
-						     #{deptId},
-						     #{deptName},
-						     #{cmplt},
-						     #{custNo})
+						     #{pj.taskNo},
+						     #{te.taskEmpId},
+						     #{te.deptId},
+						     #{te.deptName},
+						     #{pj.custNo})
+				</foreach>			 
 				 select 1 from dual
  		</insert>
 	<!-- 프로젝트(하위) 업무 수정 -->

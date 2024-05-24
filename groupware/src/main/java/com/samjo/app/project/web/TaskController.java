@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 
@@ -105,16 +104,16 @@ public class TaskController {
 			model.addAttribute("coopCo", new ProjectVO());
 			return "project/coopCo/list";
 		}
-		
+		@ResponseBody
 		@PostMapping("coopInsert")
 		public String coopInsertProcess(ProjectVO projectVO) {
 			int cNo =  projectService.coopInsert(projectVO);
 			String uri = null;
 			
 			if(cNo > -1) {
-				uri = "redirect:coopInfo?coopCoNo=" + cNo;
+				uri = "true";
 			} else {
-				uri = "coopAllList";			
+				uri = "false";			
 			}
 			return uri;
 		}

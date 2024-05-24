@@ -24,7 +24,7 @@ public interface ProjectMapper {
 	// 프로젝트 업무 조회
 	public List<ProjectVO> selectTaskAllList();
 	// 프로젝트 업무 등록
-	public int insertTask(ProjectVO projectVO);
+	public int insertTask(@Param("pj") ProjectVO projectVO);
 	// 프로젝트 단건조회
 	public ProjectVO selectTask(ProjectVO projectVO);
 	// 프로젝트 업무 수정

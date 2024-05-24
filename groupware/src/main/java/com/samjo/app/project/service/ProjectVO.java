@@ -1,6 +1,7 @@
 package com.samjo.app.project.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,19 +17,21 @@ public class ProjectVO {
 	private String taskCntn;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date taskStartDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date taskDueDt;
 	private String taskType;
 	private String standardNo;
 	private String prjtMat;
 	private String deptId;
+	private String deptName;
 	
 	//상시업무기준
 	private String reguId;
 	private String creType;
 	private String crePerd;
 	private String active;
-	private Date fileDt;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fileDt;
 	private String respEmpId;
 	
 	//프로젝트
@@ -43,7 +46,6 @@ public class ProjectVO {
 	private Date prjtDueDt;
 	private String respMngrId;
 	
-	
 	//협력업체
 	private int coopCoNo;
 	private String coName;
@@ -52,17 +54,17 @@ public class ProjectVO {
 	private String custAddr;
 	private String cntn; 
 	
-	// 업무참여자
-	private String taskEmpId;
-	private String deptName;
-	private String cmplt;
-	
-	private String empName;
+	// 업무참여
+    List<TaskEmpsVO> taskEmps;
+    private String taskStat;
+    private String taskEmpId;
+    
 	// 업무문서
 	private String docNo;
 	
 	private String abc;
-
+	
+	private String custNo;
 
 
 	
