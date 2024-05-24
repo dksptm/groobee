@@ -34,7 +34,7 @@ const tempChange = function() {
 		return;
 	}
 	
-	if(opt.val() == 'temp001') {
+	if(opt.val() == 'public01') {
 		$('#tempPTO').slideDown();
 		ptoForm();
 		return;
@@ -93,7 +93,7 @@ const tempChangeUpdate = function() {
 		return;
 	}
 	
-	if(opt.val() == 'TP002') {
+	if(opt.val() == 'public01') {
 		$('#tempPTO').slideDown();
 		ptoForm();
 		return;

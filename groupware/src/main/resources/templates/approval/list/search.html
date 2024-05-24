@@ -42,8 +42,8 @@
 					<table>
 						<tr>
 							<td><select class="form-select" name="keywordCondition">
-									<option value="titile">제목</option>
-									<option value="cntn">기안자</option>
+									<option value="d.title" selected>제목</option>
+									<option value="d.cntn">기안자</option>
 							</select></td>
 							<td colspan='3'><input class="form-control" name="keyword"
 								type="text" placeholder="검색어입력"></td>
@@ -59,32 +59,32 @@
 						</tr>
 						<tr>
 							<td><select class="form-select" name="dateCondition">
-									<option value="doc.draft_dt">상신일자</option>
-									<option value="doc.cmplt_dt">완료일자</option>
+									<option value="d.draft_dt">상신일자</option>
+									<option value="d.cmplt_dt">완료일자</option>
 							</select></td>
-							<td><input class="form-select" name="dtStart" type="date"></td>
+							<td><input class="form-select sdt" name="dtStart" type="date"></td>
 							<td>~</td>
-							<td><input class="form-select" name="dtEnd" type="date"></td>
+							<td><input class="form-select edt" name="dtEnd" type="date"></td>
 							<td class="text-white">_</td>
 							<td class="form-control">정렬조건</td>
 							<td><select class="form-select" name="sortCondition">
-									<option value="doc.darft_dt">상신일자순</option>
-									<option value="doc.doc_no">문서번호순</option>
+									<option value="d.doc_no">문서번호순</option>
+									<option value="d.doc_no DESC" selected>문서번호순(역순)</option>
+									<option value="d.draft_dt">상신일자순</option>
+									<option value="d.draft_dt DESC">상신일자순(역순)</option>
+									<option value="d.cmplt_dt">완료일자순(역순)</option>
+									<option value="d.cmplt_dt DESC">상신일자순(역순)</option>
 							</select></td>
 						</tr>
 					</table>
+					<!-- 검색 버튼 -->
 					<span class="position-absolute top-50 end-0 translate-middle-y">
-						<button class="btn btn-outline-success searchbtn bg-light"
+						<button class="btn rounded-pill btn-primary btn-lg"
 							type="submit">검색</button>
 					</span>
 				</div>
 			</div>
 		</nav>
-
-		</div>
-		<!-- 검색 버튼 -->
-		<div class="m-3 text-end">
-			<button type="submit" class="btn rounded-pill btn-primary btn-lg">검색</button>
 		</div>
 	</form>
 
@@ -109,11 +109,14 @@
 	$(function(){
 		
 		//기간 검색 범위처리
-		$('.fromDt').on('change', function(e){
-			$('.toDt').attr('min', this.value);
+		$('.sdt').on('change', function(e){
+			console.log('이벤트..')
+			
+			$('input[name="dtEnd"]').attr('min', this.value);
 		});
-		$('.toDt').on('change', function(e){
-			$('.fromDt').attr('max', this.value);
+		$('.edt').on('change', function(e){
+			console.log('이벤트.......')
+			$('input[name="dtEnd"]').attr('max', this.value);
 		});
 		
 		//모달열기 - 업무.

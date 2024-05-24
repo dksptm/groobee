@@ -74,8 +74,8 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectIngDocs(empVO, searchVO);
 	}
 	@Override
-	public int countIng(EmpVO empVO) {
-		return docMapper.countIng(empVO);
+	public int countIng(EmpVO empVO, SearchVO searchVO) {
+		return docMapper.countIng(empVO, searchVO);
 	}
 	
 	// 문서조회 - 전체문서 중 최종결재완료/반려 문서목록.

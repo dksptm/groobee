@@ -121,7 +121,8 @@ public class DocController {
             
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
-            model.addAttribute("path", "myAprList"); // X
+            model.addAttribute("search", searchVO);
+            model.addAttribute("path", "myAprList");
             
             return "approval/list/empAprs";
             
@@ -142,7 +143,8 @@ public class DocController {
 		if(empVO != null) {
 			
             List<DocVO> list = docService.getIngDocList(empVO, searchVO);
-            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countIng(empVO));
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countIng(empVO, searchVO));
+            
             
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
@@ -298,6 +300,12 @@ public class DocController {
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
+		}
+		if(searchVO.getSortCondition() == null) {
+			searchVO.setSortCondition("d.doc_no DESC");
+		}
+		if(searchVO.getAprStatCondition() == null || searchVO.getAprStatCondition().equals("docAll")) {
+			searchVO.setAprStatCondition("_");
 		}
 		return searchVO;
 	}

@@ -24,7 +24,7 @@ public interface DocService {
 	
 	// 전체문서 중 결재진행중인 문서리스트
 	public List<DocVO> getIngDocList(EmpVO empVO, SearchVO searchVO);
-	public int countIng(EmpVO empVO);
+	public int countIng(EmpVO empVO, SearchVO searchVO);
 	
 	// 전체문서 중 완료 문서리스트
 	public List<DocVO> getCmpltDocList(EmpVO empVO, SearchVO searchVO);

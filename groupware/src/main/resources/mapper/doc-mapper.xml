@@ -195,7 +195,7 @@
 				,g.draft_dt
 		FROM
 				(SELECT
-						ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
+						ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
 						,d.doc_no
 						,get_deptname(d.dept_id)	AS dept_name
 						,get_tempname(d.temp_id)	AS temp_name
@@ -211,17 +211,23 @@
 				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
 				WHERE	d.cust_no = #{emp.custNo}
 				AND		d.doc_stat = '4B2b'
+						<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<if test="sch.aprStatCondition != null">
+							AND a.apr_yn LIKE '%' || #{sch.aprStatCondition} || '%'
+						</if> 
 						<choose>
-							<when test="sch.schTaskNo != null">
-							AND td.task_no IN 
-								<foreach item="no" index="index" collection="sch.schTaskNo"
-      									 open="(" separator="," close=")">
-								#{no}
-								</foreach>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
 							</when>
 						</choose>
-				
-				
 				GROUP BY 
 						d.doc_no
 						,d.dept_id
@@ -236,7 +242,7 @@
 	</select>
 
 	<!-- 위의 문서리스트(결재진행 중 문서)의 카운트. -->
-	<select id="countIng" parameterType="EmpVO" resultType="int">
+	<select id="countIng" parameterType="map" resultType="int">
 		SELECT  COUNT(*)
 		FROM
 				(SELECT	d.doc_no
@@ -245,9 +251,27 @@
 				                       	   ON (d.doc_no = td.doc_no)
 				              LEFT OUTER JOIN apr a 
 				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
-				 WHERE	d.cust_no = #{custNo}
+				 WHERE	d.cust_no = #{emp.custNo}
 				 AND	d.doc_stat = '4B2b'
-				 GROUP BY d.doc_no)
+				 
+				 <if test="sch.keywordCondition != null">
+					AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+				</if>
+				<if test="sch.aprStatCondition != null">
+					AND a.apr_yn LIKE '%' || #{sch.aprStatCondition} || '%'
+				</if> 
+				<choose>
+					<when test="sch.dtStart != null and sch.dtEnd != null">
+						AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+					</when>
+					<when test="sch.dtStart != null and sch.dtEnd == null">
+						AND ${sch.dateCondition} >= #{sch.dtStart}
+					</when>
+					<when test="sch.dtStart != null and sch.dtEnd != null">
+						AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
+					</when>
+				</choose> 
+				GROUP BY d.doc_no)
 	</select>	
 	
 	<!-- 전체문서 중 완료된 문서 -->
