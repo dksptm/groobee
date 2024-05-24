@@ -6,22 +6,43 @@
   
   <!-- 받은메일함 전체조회/페이징 -->
  	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
-  		SELECT  RN
-  		       ,REC_EMAIL_NO
-               ,SEN_EMAIL_NO
-               ,RECP
-               ,REFER
-               ,EMAIL_STAT
-               ,CUST_NO
-               ,FILE_NO
-        FROM   (SELECT /*+ INDEX(INBOX inbox_rec_email_no_pk) */
-        		       ROWNUM RN,
-        		       INBOX.*
-        		FROM   INBOX
-        		WHERE  ROWNUM <![CDATA[<=]]> (#{page} * 5)
-        		AND    RECP = #{empId})
-         ) a
-        WHERE a.rn > (#{page} - 1) * 5
+  		SELECT g.*
+		FROM (SELECT rownum rn,
+			t.*
+			FROM (SELECT r.rec_email_no,
+			             r.refer,
+			             r.cust_no,
+			             r.email_stat,
+						 r.email_stat,
+			             s.sen_email_no , 
+			             s.title,
+						 s.sender,
+						 s.sent_dt
+				FROM email s JOIN inbox r
+							ON (s.sen_email_no = r.sen_email_no)
+				WHERE rownum <![CDATA[<=]]> (#{page} * 10)
+				AND  r.cust_no = #{custNo}
+				AND  r.email_stat = '3B1b'
+				<if test="#recp != null">
+				    AND recp like '%'||#{recp}||'%'
+				</if>
+				  <if test="#refer != null and author.name != null">
+				    AND refer like #{refer}
+			  	</if>
+				<choose>
+					<when test="sdStart != null and sdEnd != null">
+						AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
+					</when>
+					<when test="(sdStart != null) and (sdEnd == null)">
+						AND ${sentDt} >= #{sdStart}
+					</when>
+					<when test="(sdEnd != null) and (sdStart == null)">						
+						AND ${senDt} <![CDATA[<=]]> #{sdEnd}
+					</when> 
+				</choose>
+				ORDER BY ${sentDt} ASC) t ) g
+		WHERE g.rn > (#{page} -1) * 10
+		<!-- 수신 유형이 recp / refer 로 나뉘어 있는데, 이 경우를 반영하지 않았다. -->
   	</select>
   	
   	 <select id="count" resultType="int">
