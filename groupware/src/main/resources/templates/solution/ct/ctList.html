@@ -32,26 +32,26 @@
 											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">계약상태</td>
-										<td><select class="form-select">
-												<option value="ctall">전체</option>
-												<option value="ct">계약중</option>
-												<option value="unct">계약종료</option>
+										<td><select class="form-select ctStat">
+												<option value="statAll">전체</option>
+												<option value="0A1a">계약중</option>
+												<option value="0A2a">계약종료</option>
 										</select></td>
 									</tr>
 									<tr>
-										<td><select class="form-select">
-												<option value="custname">계약시작일</option>
-												<option value="ctno">계약종료일</option>
+										<td><select class="form-select ctDt">
+												<option value="ct.ct_start_dt">계약시작일</option>
+												<option value="ct.ct_end_dt">계약종료일</option>
 										</select></td>
-										<td><input class="form-select" type="date"></td>
+										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
-										<td><input class="form-select" type="date"></td>
+										<td><input class="form-select toDt" type="date"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">정렬조건</td>
 										<td><select class="form-select searchSelect">
-												<option value="ct_no">계약번호순</option>
-												<option value="ct_start_dt">계약시작일순</option>
-												<option value="ct_end_dt">계약종료일순</option>
+												<option value="ct.ct_no">계약번호순</option>
+												<option value="ct.ct_start_dt">계약시작일순</option>
+												<option value="ct.ct_end_dt">계약종료일순</option>
 										</select></td>
 									</tr>
 								</table>
@@ -93,27 +93,31 @@
 							</table>
 						</div>
 						<!-- 페이징 -->
-						<div>
+						<div class="paging">
 							<th:block th:if="${CtDTO.totalCnt} != 0">
 								<nav aria-label="Page navigation">
 									<ul class="pagination justify-content-center">
 
 										<th:block th:if="${CtDTO.prev}">
 											<li class="page-item prev"><a
-												th:href="|/sol/ctList?page=${CtDTO.startPage - 1 }|"
-												class="page-link"><i class="bx bx-chevron-left"></i></a></li>
+												href="#"
+												th:id="${CtDTO.startPage - 1 }"
+												class="page-link pagebtn"><i class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
 											th:each="num : ${#numbers.sequence(1, CtDTO.endPage)}">
 											<li class="page-item "
 												th:attrappend="class=${num ==  CtDTO.page ? 'active' : ' '}">
-												<a th:href="|/sol/ctList?page=${num}|" class="page-link">[[${num}]]</a>
+												<a href="#"
+													th:id="${num}"
+													class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
 										<th:block th:if="${CtDTO.next}">
 											<li class="page-item next"><a
-												th:href="|/sol/ctList?page=${CtDTO.endPage + 1 }|"
-												class="page-link"><i class="bx bx-chevron-right"></i></a></li>
+												href="#"
+												th:id="${CtDTO.endPage + 1 }"
+												class="page-link pagebtn"><i class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
 								</nav>
@@ -132,12 +136,37 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 
+			//기간 검색 범위처리
+			$('.fromDt').on('change', function(e){
+				$('.toDt').attr('min', this.value);
+			});
+			$('.toDt').on('change', function(e){
+				$('.fromDt').attr('max', this.value);
+			});
+			
+			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
+				let page = 1;
+				showTable(page);
+			});
+			
+			//페이징 링크 처리
+			$(document).on("click", ".pagebtn", function(e){
+				e.preventDefault();
+				let page = e.target.id;
+				showTable(page);
+			});
+			
+			//검색 AJAX 함수
+			function showTable(page){
 				let custNo;
 				let ctName;
 				let ctNo;
-				let ctStart;
-				let ctEnd;
+				let ctStat;
+				let ctDt = $('.ctDt').val();
+				let ctStart = $('.fromDt').val();
+				let ctEnd = $('.toDt').val();
+				let ct;
 				//키워드 검색 처리
 				if($('.searchKeySelect').val()=='custname'){
 					ctName = $('.searchKey').val();
@@ -152,10 +181,14 @@
 					
 				}else if($('.searchKeySelect').val()=='custno'){
 					custNo = $('.searchKey').val();
-					
 				}
-				
+				//계약상태 검색처리
+				if($('.ctStat').val()!='statAll'){
+					ctStat = $('.ctStat').val();
+				}
+				//정렬 처리
 				let ctSort = $('.searchSelect').val();
+				
 				$.ajax({
 					url : '/sol/viewCtList',
 					type : 'POST',
@@ -163,13 +196,15 @@
 						xhr.setRequestHeader(header, token);
 					},
 					data : {
-						page : 1,
+						page : page,
 						ctName : ctName,
 						ctSort : ctSort,
 						custNo : custNo,
 						ctNo : ctNo,
-						ctStart : ctStart,	
-						ctEnd : ctEnd
+						ctStart : ctStart,
+						ctEnd : ctEnd,
+						ctStat : ctStat,
+						ctDt : ctDt
 					},
 					dataType : 'Text',
 					success : function(result) {
@@ -177,7 +212,7 @@
 						$('#ctTable').replaceWith(result);
 					}
 				});
-			});
+			}
 		</script>
 	</th:block>
 </body>

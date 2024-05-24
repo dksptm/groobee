@@ -28,6 +28,7 @@ public class SearchVO {
 	private Date ctStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date ctEnd;
+	private String ctDt;
 	
 	
 	// 이메일 관련 inboxList, emailList, wastedList 전부 공유
