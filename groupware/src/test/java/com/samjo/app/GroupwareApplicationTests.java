@@ -7,6 +7,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.jasypt.encryption.StringEncryptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +27,9 @@ class GroupwareApplicationTests {
 	@Value("${file.upload.path}")
 	private String uploadPath;
 
-	// @Test
+	//@Test
 	public void testEncoder() {
-		String password = "1234";
+		String password = "net.sf.log4jdbc.sql.jdbcapi.DriverSpy";
 
 		String enPwd = passwordEncoder.encode(password);
 		System.out.println("enPwd : " + enPwd);
@@ -40,7 +41,7 @@ class GroupwareApplicationTests {
 	}
 
 	//파일삭제 테스트
-	@Test
+	//@Test
 	public void deleteTest() {
 		System.out.println("파일삭제 테스트 시작");
 		//파일삭제1
@@ -109,4 +110,22 @@ class GroupwareApplicationTests {
 	        }
 	    }
 
+	 
+	 @Autowired
+	 StringEncryptor jasyptStringEncryptor;
+	 
+	 @Test
+	 public void encryption() {
+			String[] strs = {
+					"",
+					"",
+					"",
+					""
+			};
+			
+			for(String str : strs) {
+				String encStr = jasyptStringEncryptor.encrypt(str);
+				System.out.println(encStr);
+			}
+		}
 }

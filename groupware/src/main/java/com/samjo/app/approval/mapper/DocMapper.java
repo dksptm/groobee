@@ -43,18 +43,18 @@ public interface DocMapper {
 	
 	// 문서등록
 	public int insertDoc(DocVO docVO);
-	// 문서등록 - 문서번호 조회.
-	public DocVO getDocNo();
 	// 첨부파일 등록
-	public int insertDocFile(DocFileVO docFile);
-	// 업무와 연결(문서-업무 테이블)
-	public int insertTaskDoc(@Param("dno")Integer docNo, 
-			@Param("tno")Integer taskNo, @Param("cno")String custNo);
+	public int insertDocFile(@Param("files") List<DocFileVO> docFileList);
+	// 관련업무 연결
+	public int insertTaskDoc(@Param("doc") DocVO docVO);
 	
 	// 문서수정
 	public int updateDoc(DocVO docVO);
 	
 	// 업무-문서 삭제.
 	public int deleteTaskDoc(@Param("dno")Integer docNo);
+	
+	// 문서의 파일 삭제.
+	public int deleteDocFile(@Param("dno")Integer docNo);
 	
 }	

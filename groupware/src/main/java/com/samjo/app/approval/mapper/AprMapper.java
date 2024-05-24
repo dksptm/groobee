@@ -5,12 +5,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.samjo.app.approval.service.AprVO;
+import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.emp.service.EmpVO;
 
 public interface AprMapper {
+	
 	// 결재자등록(DocService에서 사용).
-	public int insertApr(AprVO aprVO);
-	// 결재자수정
+	public int insertApr(@Param("doc") DocVO docVO);
+	// 결재자삭제
 	public int deleteApr(@Param("dno")Integer docNo);
 	
 	// 결재자 리스트.
@@ -24,8 +26,7 @@ public interface AprMapper {
 	public void updateAprNg(AprVO aprVO);
 	
 	// 참조자 등록(DocService에서 사용).
-	public int insertRef(@Param("dno")Integer docNo, 
-							@Param("eid")String empId, @Param("cno")String custNo);
+	public int insertRef(@Param("doc") DocVO docVO);
 	// 참조자 삭제
 	public int deleteRef(@Param("dno")Integer docNo);
 	// 참조자 가져오기.

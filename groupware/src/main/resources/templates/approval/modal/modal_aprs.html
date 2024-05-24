@@ -13,9 +13,8 @@
 		</thead>
 		<tbody>
 			<th:block th:each="emp : ${dept.emps}">
-			<!-- 로그인 구현되면 아래정보 변경. -->
-			<tr th:attr="data-emp=${emp.empId}, data-dept=${dept.deptName}" th:if="${emp.empId != #authentication.principal.empId}">
-				<td><input type="checkbox" name="chk-list1"></td>
+			<tr th:if="${emp.empId != #authentication.principal.empId}" th:attr="data-emp=${emp.empId}">
+				<td><input type="checkbox" name="chk-list1" class="form-check-input"></td>
 				<td>[[ ${dept.deptName} ]]</td>
 				<td>[[ ${emp.empName} ]]</td>
 				<td>[[ ${emp.jobTitle} ]]</td>
@@ -45,60 +44,61 @@
 
 <script>
 $(function(){
-
-	$('#list1 > tbody, #aprlist > tbody').on('click', 'tr' , function(e){
-		let checkbox = $(this).find("input[type='checkbox']");
-		checkbox.prop("checked", !checkbox.prop("checked"));
+	
+	// checkbox 설정.
+	$('#list1 > tbody, #aprlist > tbody').on('mouseover', 'tr', function(e) {
+		if(!$(this).find('input').prop('disabled')) {
+			$(this).css('cursor', 'pointer');
+		}
 	});
 
-	$('#list1 > tbody, #aprlist > tbody').on('click', 'input[type="checkbox"]' , function(e){
-		let checkbox = $(this)
-		checkbox.prop("checked", !checkbox.prop("checked"));
+	$('#list1 > tbody, #aprlist > tbody').on('click', 'tr, input[type="checkbox"]', function(e){
+		let chk = $(this);
+		if (chk.is('input[type="checkbox"]')) {
+			if(chk.prop('disabled') == false){
+				chk.prop('checked', !chk.prop('checked'));
+			}
+        } else {
+        	if(chk.find('input').prop('disabled') == false) {
+        		chk.find("input").prop('checked', !chk.find("input").prop('checked'));
+        	}
+        }			
 	});
 	
-	$('#yes1').on('click', function(){
-		let checkbox = $("input[name=chk-list1]:checked");
+	// 오른쪽 테이블로 복사.
+	$('#yes1').on('click', function(){		
+		let chkList = $("input[name=chk-list1]:checked");
 		
-		checkbox.each(function(idx){
-			let chk = $(this);
-			let tr = chk.closest('tr');
-			let td = tr.children();
-			
-			let code = tr.data('emp');
-			let dept = tr.data('dept');
-			let name = td.eq(2).text();
-			let job = td.eq(3).text();
-
-			$('#aprlist > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
-						+'<td><input type="checkbox" name="d-chk-list1" /></td>'
-						+'<td></td>'
-						+'<td>'+ name +'</td>'
-						+'<td>'+ job +'</td>'
-						+'</tr>');
-			tr.remove();
+		chkList.each(function(idx,ele) {
+			if($(ele).prop('disabled') == false){
+				let tr = $(ele).closest('tr');
+				let copyTr = tr.clone();
+				copyTr.find('input').attr('name','d-chk-list1').prop('checked', false);
+				copyTr.find('td').eq(1).text('');
+				copyTr.attr('draggable', true).addClass('draggable');
+				$('#aprlist > tbody').append(copyTr);
+				tr.find('input').prop('disabled', true);
+			}
 		})
 		resq();
-	})
+	});
+	
+	// 오른쪽 테이블에서 삭제.
 	$('#no1').on('click', function(){
-		let checkbox = $("input[name=d-chk-list1]:checked");
+		let chkList = $("input[name=d-chk-list1]:checked");
 		
-		checkbox.each(function(idx){
-			let chk = $(this);
-			let tr = chk.closest('tr');
-			let td = tr.children();
+		chkList.each(function(idx,ele){
+			let rtr = $(ele).closest('tr');
+			let rid = rtr.data('emp');
+			let ltrs = $('#list1 > tbody tr');
 			
-			let code = tr.data('emp');
-			let dept = tr.data('dept');
-			let name = td.eq(2).text();
-			let job = td.eq(3).text();
-
-			$('#list1 > tbody').append('<tr data-emp="' + code + '" data-dept="'+ dept +'" >'
-						+'<td><input type="checkbox" name="chk-list1" /></td>'
-						+'<td>'+ dept +'</td>'
-						+'<td>'+ name +'</td>'
-						+'<td>'+ job +'</td>'
-						+'</tr>');
-			tr.remove();
+			ltrs.each(function(i,e){
+				let lid = $(e).data('emp');
+				if(lid == rid){
+					$(e).find('input').prop('disabled', false).prop('checked', false);
+				}
+			})
+			rtr.remove();
 		})
 		resq();
 	})
@@ -110,7 +110,6 @@ function resq() {
         $(this).children().eq(1).text(index + 2);
     });
 }
-
 
 </script>
 

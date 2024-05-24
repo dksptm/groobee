@@ -29,7 +29,10 @@ public interface ModuleService {
 	//템플릿 상세조회
 	public TempVO tempInfo(String tempNo);
 	
-	//템플릿 수정REST
+	//템플릿 수정
 	public Map<String, Object> tempUpdate(TempVO tempVO);
+	
+	//템플릿 삭제
+	public Map<String, Object> tempDelete(TempVO tempVO);
 	
 }

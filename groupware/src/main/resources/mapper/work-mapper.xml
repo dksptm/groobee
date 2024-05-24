@@ -41,18 +41,24 @@ WHERE t.rn > (#{page} -1) * 5
 	</select>
 	
 	<select id="managerWorkList" resultType="WorkManagerVO">
-	SELECT
-          (select dept_name
-           from dept
-           where dept_id = emp.dept_id) dept_id,
-           emp_no,
-           emp_name,
-          (select job_title
-           FROM jobs
-           WHERE job_no = emp.job_no) job_no,
-           hire_dt,
-           emp_tel
-    FROM emp
+	SELECT l.*
+    FROM (SELECT t.*
+          FROM(SELECT e.*, rownum rn
+               FROM (SELECT
+                      (SELECT dept_name
+                       FROM dept
+                       WHERE dept_id = emp.dept_id) dept_id ,
+                       emp_no,
+                       emp_name,
+                      (SELECT job_title
+                       FROM jobs
+                       WHERE job_no = emp.job_no) job_no ,
+                       hire_dt,
+                       emp_tel
+                 FROM emp
+                 ORDER BY #{filter}) e
+            WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
+WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 	</select>
 	<select id="managercount">
 		SELECT count(*)
@@ -84,6 +90,34 @@ values (
                '2B1b',
                '2C1c')
    </insert>
-  
+   <!-- 상세페이지 확인 -->
+  <select id="selectWork" resultType="WorkVO">
+select 
+       emp_id,
+       dt,
+       wk_in,
+       wk_out,
+       wk_in_loc,
+       wk_out_loc,
+       wk_yn,
+       wk_stat,
+       wk_site
+from wk
+where dt = #{dt} 
+
+   </select>
+   <!-- 상세페이지에서 작동하는 업데이트 -->
+   <update id="updateWork" parameterType="WorkVO">
+   UPDATE wk(
+          wk_in = #{wkIn}
+          wk_out = #{wkOut},
+          wk_in_loc = #{wkInLoc},
+          wk_out_loc = #{wkOutLoc},
+          wk_yn = #{wkYn},
+          wk_stat = #{wkStat},
+          wt_site = #{wkSite}
+   WHERE dt = #{dt} and emp_no = #{empNo}
+   </update>
+   
   </mapper>
   

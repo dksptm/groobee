@@ -8,19 +8,19 @@
 			<ul class="pagination justify-content-center">
 				<th:block th:if="${pageDTO.prev}">
 					<li class="page-item prev">
-						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${pageDTO.startPage - 1})}"
+						<a th:href="${pageDTO.startPage - 1}"
 						   class="page-link"><i class="bx bx-chevron-left"></i></a>
 					</li>
 				</th:block>
 				<th:block th:each="num : ${#numbers.sequence(pageDTO.startPage, pageDTO.endPage)}">
 					<li class="page-item "
 						th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
-						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${num})}" class="page-link">[[${num}]]</a>
+						<a th:href="${num}" class="page-link">[[${num}]]</a>
 					</li>
 				</th:block>
 				<th:block th:if="${pageDTO.next}">
 					<li class="page-item next">
-						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${pageDTO.endPage + 1})}"
+						<a th:href="${pageDTO.endPage + 1}"
 						   class="page-link"><i class="bx bx-chevron-right"></i></a>
 					</li>
 				</th:block>
@@ -31,6 +31,26 @@
 		<p>현재 문서가 없습니다.</p>
 	</th:block>
 
+<script>
+
+$(function(){
+	let searchForm = $('#searchForm');
+	
+	$('li.page-item a').on('click', function(e){
+		e.preventDefault();
+		let pageNum = $(this).attr('href');
+		console.log('페이지클릭');
+		console.log(pageNum,"페이지");
+		
+		searchForm.find('input[name="page"]').val(pageNum);
+		searchForm.submit();
+	});
+	
+	
+})
+
+</script>
+	
 </th:block>
 
 </html>

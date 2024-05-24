@@ -35,9 +35,13 @@ $(function(){
 		let checkbox = $(this);
 		checkbox.prop('checked', !checkbox.prop('checked'));
 	});
+
+	if($('#getTasks').is('table')) {
+		$('#getTasks').children().remove();
+	}
 	
 	// 이미 추가되어있으면, 모달에도 체크상태로.
-	let finds = $('#getTasks').find('input');
+	let finds = $('#getTasks').find('input').not('input.aleadyInputs');
 	let ary = []
 	console.log(finds);
 	finds.each(function(i,e){
@@ -54,7 +58,9 @@ $(function(){
 			checkbox.prop('checked', true);
 			let creatTag = $(`<span>
 								<input type="hidden"
-						   		 	   value="${tr.data('task')}" readonly />
+						   		 	   value="${tr.data('task')}" name="no" readonly />
+					   		 	<input type="hidden"
+						   		 	   value="${tr.find('td').eq(1).text()}" name="na" readonly />
 								<span>${tr.find('td').eq(0).text()} 
 					      			  ${tr.find('td').eq(1).text()}
 					      			  &ensp;</span>

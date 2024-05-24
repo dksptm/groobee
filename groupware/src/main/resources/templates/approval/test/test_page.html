@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<th:block th:fragment="Page">
+
+	<th:block th:if="${pageDTO.totalCnt} != 0">
+		<nav aria-label="Page navigation">
+			<ul class="pagination justify-content-center">
+				<th:block th:if="${pageDTO.prev}">
+					<li class="page-item prev">
+						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${pageDTO.startPage - 1})}"
+						   class="page-link"><i class="bx bx-chevron-left"></i></a>
+					</li>
+				</th:block>
+				<th:block th:each="num : ${#numbers.sequence(pageDTO.startPage, pageDTO.endPage)}">
+					<li class="page-item "
+						th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
+						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${num})}" class="page-link">[[${num}]]</a>
+					</li>
+				</th:block>
+				<th:block th:if="${pageDTO.next}">
+					<li class="page-item next">
+						<a th:href="@{{urlVar}?page={pageNum}(urlVar=${path},pageNum=${pageDTO.endPage + 1})}"
+						   class="page-link"><i class="bx bx-chevron-right"></i></a>
+					</li>
+				</th:block>
+			</ul>
+		</nav>
+	</th:block>
+	<th:block th:unless="${pageDTO.totalCnt} != 0">
+		<p>현재 문서가 없습니다.</p>
+	</th:block>
+
+</th:block>
+
+</html>

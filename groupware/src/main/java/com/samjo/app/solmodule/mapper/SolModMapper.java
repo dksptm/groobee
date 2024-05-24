@@ -30,4 +30,7 @@ public interface SolModMapper {
 	//템플릿 수정
 	public int UpdateTemp(TempVO tempVO);
 	
+	//템플릿 삭제
+	public int DeleteTemp(TempVO tempVO);
+	
 }

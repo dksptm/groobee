@@ -1,9 +1,12 @@
 package com.samjo.app.approval.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.samjo.app.approval.mapper.AprMapper;
 import com.samjo.app.approval.mapper.DocMapper;
@@ -35,7 +38,7 @@ public class DocServiceImpl implements DocService {
 	public List<DocVO> docList(SearchVO searchVO) {
 		return docMapper.selectDocAll(searchVO);
 	}
-	//		- 전체페이지 수.
+	// (전체페이지 수)
 	@Override
 	public int count() {
 		return docMapper.count();
@@ -107,107 +110,151 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectDocTasks(docNo);
 	}
 	
-	// 문서작성.
-	@Override
-	public int docInfoInsert(DocVO docVO) {
-		// 문서테이블 등록.
-		int result = docMapper.insertDoc(docVO);
-		// 연관테이블 등록.
-		if(result == 1) { // 문서등록 성공 시.
-			// 1.결재자 등록.
-			docVO.getAprs().forEach(apr -> {
-				apr.setDocNo(docVO.getDocNo());
-				apr.setCustNo(docVO.getCustNo());
-				aprMapper.insertApr(apr);
-			});
-			// 2.휴가원 등록.---최종결재완료이후에!!!
-			System.out.println( "템플릿 -> "+ docVO.getTempId());
-			if(docVO.getTempId().equals("TP002")) {
-				docVO.getPto().setDocNo(docVO.getDocNo());
-				int ret = tempMapper.insertPto(docVO.getPto());
-				System.out.println("ret==>"+ret);
-			}
-			// 3.참조자 등록.
-			if(docVO.getRefs() != null) {
-				docVO.getRefs().forEach(ref -> {
-					aprMapper.insertRef(docVO.getDocNo(), ref, docVO.getCustNo());
-				});				
-			}
-			// 4.업무연결 등록.
-			if(docVO.getTasks() != null) {
-				docVO.getTasks().forEach(task -> {
-					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
-				});				
-			}
-			System.out.println("docVO ===> " + docVO);
-			// 5.문서번호 리턴.
-			return docVO.getDocNo();
-		} else {	// 문서등록 실패 시.		
-			return -1; 
-		}
-	}
-	
-	// 문서작성 - 미리 번호가져오기.
-	@Override
-	public DocVO getDocNo() {
-		return docMapper.getDocNo();
-	}
-		
-	// 문서등록 - 파일등록.
-	@Override
-	public int fileInsert(DocFileVO fileVO) {
-		return docMapper.insertDocFile(fileVO);
-	}
-	
-	// 문서작성 - 템플릿 전체조회.
+	// 문서등록 화면 - 템플릿 전체조회.
 	@Override
 	public List<TempVO> getCustTemps() {
 		return tempMapper.selectCustTemps();
 	}
 
-	// 문서수정.
+	// 문서등록.
 	@Override
-	public int docInfoUpdate(DocVO docVO) {
-		// 문서테이블 수정.
-		int result = docMapper.updateDoc(docVO);
-		System.out.println("결재자들--" + docVO.getAprs());
-		System.out.println("마지막라인--"+docVO.getFinalLine());
-		// 문서수정 완료 시.
-		if(result == 1) {
-			// 1.결재자 삭제 후 재등록
-			aprMapper.deleteApr(docVO.getDocNo());
-			docVO.getAprs().forEach(apr -> {
-				apr.setDocNo(docVO.getDocNo());
-				apr.setCustNo(docVO.getCustNo());
-				aprMapper.insertApr(apr);
-			});
-			// 2.휴가원 수정 또는 삭제.
-			if(docVO.getTempId().equals("TP002")) {
-				int ret = tempMapper.updatePto(docVO.getPto());
-				System.out.println("update-ret==>"+ret);
-			} else {
-				int ret = tempMapper.deletePto(docVO.getDocNo());
-				System.out.println("delete-ret==>"+ret);
-			}
-			// 3.참조자 기존참조자 삭제 후 재등록.
-			aprMapper.deleteRef(docVO.getDocNo());
-			if(docVO.getRefs() != null) {
-				docVO.getRefs().forEach(ref -> {
-					aprMapper.insertRef(docVO.getDocNo(), ref, docVO.getCustNo());
-				});				
-			}
-			// 4.기존 연결업무 삭제 후 재등록.
-			docMapper.deleteTaskDoc(docVO.getDocNo());
-			if(docVO.getTasks() != null) {
-				docVO.getTasks().forEach(task -> {
-					docMapper.insertTaskDoc(docVO.getDocNo(), task, docVO.getCustNo());
-				});				
-			}
-			// 5.문서번호 리턴.
-			return docVO.getDocNo();
-		} else {
+	@Transactional
+	public int docInfoInsert(DocVO docVO, List<Map<String, Object>> fileInfoList) {
+		
+		int result = 0;
+		
+		// 0.문서 등록.
+		result = docMapper.insertDoc(docVO);
+		
+		if(result != 1) {
 			return -1;
 		}
+		
+		result = 0;
+		
+		// 1.결재자 등록.
+		if(docVO.getAprs() != null) {
+			aprMapper.insertApr(docVO);
+		}
+		
+		// 2.휴가원 등록.--최종결재완료이후 처리필요.
+		if(docVO.getTempId().equals("TP002")) {
+			docVO.getPto().setDocNo(docVO.getDocNo());
+			tempMapper.insertPto(docVO.getPto());
+		}
+		
+		// 3.참조자 등록.
+		if(docVO.getRefs() != null) {
+			aprMapper.insertRef(docVO);
+		}
+		
+		// 4.업무연결 등록.
+		if(docVO.getTasks() != null) {
+			docMapper.insertTaskDoc(docVO);				
+		}
+		
+		// 5.첨부파일 등록.
+		if(fileInfoList.size() > 0) {
+			List<DocFileVO> docFileList = getDocFileList(docVO, fileInfoList);
+			docMapper.insertDocFile(docFileList);			
+		}
+		
+		// 6. 문서번호 리턴.
+		result = docVO.getDocNo();
+		
+		// COMMIT : 문서번호. / ROLLBACK : 0.
+		return result;
+		
 	}
+	
+	// 문서수정.
+	@Override
+	@Transactional
+	public int docInfoUpdate(DocVO docVO, List<Map<String, Object>> fileInfoList, String flag) {
+		
+		int result = 0;
+		
+		// 0.문서테이블 수정.
+		result = docMapper.updateDoc(docVO);
+		
+		if(result != 1) {
+			return -1;
+		} 
+		
+		result = 0;
+		
+		// 1.기존 결재자 삭제 후 재등록
+		aprMapper.deleteApr(docVO.getDocNo());
+		if(docVO.getAprs() != null) {
+			aprMapper.insertApr(docVO);
+		}
+		
+		// 2.휴가원 수정
+		if(docVO.getTempId().equals("TP002")) {
+			docVO.getPto().setDocNo(docVO.getDocNo());
+			tempMapper.updatePto(docVO.getPto());
+		} else {
+			tempMapper.deletePto(docVO.getDocNo());
+		}
+		
+		// 3.기존 참조자 삭제 후 재등록
+		aprMapper.deleteRef(docVO.getDocNo());
+		if(docVO.getRefs() != null) {
+			aprMapper.insertRef(docVO);
+		}
+		
+		// 4.기존 연결업무 삭제 후 재등록
+		docMapper.deleteTaskDoc(docVO.getDocNo());
+		if(docVO.getTasks() != null) {
+			docMapper.insertTaskDoc(docVO);				
+		}
+		
+		// 5.기존 파일 삭제(flag == YES) 후 재등록
+		if(flag.equals("YES")) {
+			docMapper.deleteDocFile(docVO.getDocNo());					
+		}
+		if(fileInfoList.size() > 0) {
+			List<DocFileVO> docFileList = getDocFileList(docVO, fileInfoList);
+			docMapper.insertDocFile(docFileList);			
+		}
+		
+		// 6. 문서번호 리턴.
+		result = docVO.getDocNo();
+		
+		// COMMIT : 문서번호. / ROLLBACK : 0.
+		return result;
+	}
+	
+	// DocVO docVO => List<String> fileSaveNames
+	@Override
+	public List<String> getDocFileSavaNames(DocVO docVO) {
+		
+		List<DocFileVO> files = docMapper.selectDocFile(docVO.getDocNo());
+		List<String> fileSaveNames = new ArrayList<>();
+		
+		for(DocFileVO file : files) {
+			fileSaveNames.add(file.getSaveName());
+		}
+		
+		return fileSaveNames;
+		
+	}
+	
+	// List<Map<String, Object>> => DocFileVO.
+	public List<DocFileVO> getDocFileList(DocVO docVO, List<Map<String, Object>> fileInfoList) {
+		
+		List<DocFileVO> docFileList = new ArrayList<>();
+		
+		fileInfoList.forEach(file -> { // object 형변환해서 fileVO 생성.
+			DocFileVO fileVO =
+					new DocFileVO(docVO.getDocNo(), (String) file.get("saveName"), 
+									(String) file.get("uplName"), (String) file.get("fileExt"), 
+									(Long) file.get("fileSize"), docVO.getDraft());
+			docFileList.add(fileVO);
+		});
+		
+		return docFileList;
+	}
+
 
 }

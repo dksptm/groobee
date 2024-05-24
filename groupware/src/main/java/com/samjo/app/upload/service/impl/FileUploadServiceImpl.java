@@ -6,15 +6,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.samjo.app.approval.service.DocFileVO;
-import com.samjo.app.approval.service.DocService;
 import com.samjo.app.upload.service.FileUploadService;
 
 @Service
@@ -23,69 +24,68 @@ public class FileUploadServiceImpl implements FileUploadService {
 	@Value("${file.upload.path}")
 	private String uploadPath;
 	
-	@Autowired
-	DocService docService;
-
 	@Override
-	public void uploadFileInfo(MultipartFile[] uploadFiles, String empId, Integer docNo) {
-		//List<DocFileVO> fileList = new ArrayList<>();
+	public List<Map<String, Object>> uploadFileInfo(MultipartFile[] uploadFiles) {
+		
+		List<Map<String, Object>> fileList = new ArrayList<>();
+		
 		for (MultipartFile uploadFile : uploadFiles) {
-			DocFileVO docfile = new DocFileVO();
+			
+			// 파일사이즈 0이면(파일없으면) 멈추고 다시 for.
+			if(uploadFile.getSize() == 0) {	
+				continue;
+			}
+			
+			// fileVO 필드값 넣을 map생성.
+			Map<String, Object> map = new HashMap<>();
 			
 			// 파일의 타입구하기(타입별로 상위폴더 만들기 위함)
 			String filetype = uploadFile.getContentType() + "/";
 			
 			String originalName = uploadFile.getOriginalFilename();
 			
-			// 각 필드값 구하기.
+			// 저장경로명, 업로드명, 파일확장자, 파일사이즈.
+			String saveName;
 			String uplName = originalName.substring(originalName.lastIndexOf("//") + 1);
 			String fileExt = originalName.substring(originalName.lastIndexOf(".") + 1);;
 			Long fileSize = uploadFile.getSize();
-			String saveName;
-			
-			//System.out.println("originalName : " + originalName);
-			
-			//System.out.println("uplName : " + uplName);
-			//System.out.println("fileExt : " + fileExt);
-			//System.out.println("fileSize : " + fileSize);
 			
 			// 타입>날짜 폴더 생성
 			String folderPath = makeFileFolder(filetype);
-			//System.out.println("folderPath : " + folderPath);
 			// UUID
 			String uuid = UUID.randomUUID().toString();
 			// 저장할 파일 이름 : 중간에 "_"를 이용하여 구분
 			String uploadFileName = folderPath + File.separator + uuid + "_" + uplName;
-			//System.out.println("uploadFileName : " + uploadFileName);
 			// 저장경로 포함 파일이름
 			String saveFileName = uploadPath + File.separator + uploadFileName;
-			//System.out.println("saveFileName : " + saveFileName);
 			// Paths.get() 메서드는 특정 경로의 파일 정보를 가져옵니다.(경로 정의하기)
 			Path savePath = Paths.get(saveFileName);
-			//System.out.println("savePath : " + savePath);
 			
 			try {
 				// uploadFile에 파일을 업로드 하는 메서드 transferTo(file)
 				// savePath에 파일저장.
 				uploadFile.transferTo(savePath);
+				
 			} catch (IOException e) {
+				
 				e.printStackTrace();
 			}
-			System.out.println("-------------2----------------------");
-			// 필드 saveName 구하기.
+			
+			// 저장경로명 구하기.
 			saveName = setFilePath(uploadFileName);
-			// docfile 클래스에 넣기.
-			docfile.setFileExt(fileExt);
-			docfile.setFileSize(fileSize);
-			docfile.setUplName(uplName);
-			docfile.setSaveName(saveName);
-			docfile.setDocNo(docNo);
-			docfile.setUplEmp(empId);
-			System.out.println(docfile);
-			int result = docService.fileInsert(docfile);
-			System.out.println("ret => "+ result);
-			//fileList.add(docfile);
+			
+			// map에 담고, list에 add.
+			map.put("fileExt", fileExt);
+			map.put("fileSize", fileSize);
+			map.put("uplName", uplName);
+			map.put("saveName", saveName);
+			
+			fileList.add(map);
+			
 		}
+		
+		return fileList;
+		
 	}
 
 	@Override
@@ -108,5 +108,34 @@ public class FileUploadServiceImpl implements FileUploadService {
 	public String setFilePath(String uploadFileName) {
 		return uploadFileName.replace(File.separator, "/");
 	}
+	
+	// 파일삭제
+	@Override
+	public int deleteFileInfo(List<String> fileSaveNames) {
+		
+		int cnt = 0;
+		
+		for(String saveName : fileSaveNames) {
+		
+			File delFile = new File(uploadPath + File.separator + saveName);
+			
+			if (delFile.exists()) {
+				
+				if(delFile.delete()) {
+					++cnt;					
+				} else {
+					System.out.println("delete fail: " + saveName);
+				}
+				
+			} else {
+				
+				System.out.println("not exist: " + saveName);
+			}
+			
+		}
+		
+		return cnt;
+	}
+
 
 }

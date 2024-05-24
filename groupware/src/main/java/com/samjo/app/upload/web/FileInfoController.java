@@ -15,10 +15,10 @@ public class FileInfoController {
 	@Autowired
 	FileUploadService fileUploadService;
 	
-	@PostMapping("/fileUpload")
+	@PostMapping("/FileUpload")
 	@ResponseBody
 	public void uploadFile(@RequestPart MultipartFile[] uploadFiles, String empId, Integer docNo) {
-	    fileUploadService.uploadFileInfo(uploadFiles,empId,docNo);
+	    fileUploadService.uploadFileInfo(uploadFiles);
 	}
 	
 }
