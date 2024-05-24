@@ -24,9 +24,9 @@
 								<table>
 									<tr>
 										<td><select class="form-select searchKeySelect">
-												<option value="custname">상호명</option>
-												<option value="ctno">계약번호</option>
-												<option value="custno">고객번호</option>
+												<option value="c.cust_name">상호명</option>
+												<option value="ct.ct_no">계약번호</option>
+												<option value="ct.cust_no">고객번호</option>
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey"
 											type="text"></td>
@@ -132,106 +132,89 @@
 				</div>
 			</div>
 		</div>
-		<!-- <input type="file" onchange="readURL(this);">
-		<img id="preview" /> <div id="preTest"></div>
- 		<link rel="import" href=""> -->
 
 		<script>
-			function readURL(input) {
-			  if (input.files && input.files[0]) {
-			    var reader = new FileReader();
-			    reader.onload = function(e) {
-			      //document.getElementById('preview').src = e.target.result;
-			    	$('#preTest').html(e.target.result);
-			    	console.log("@@@1@@@" + e.target.result);
-			    };
-			    reader.readAsDataURL(input.files[0]);
-			    console.log("@@@2@@@" + input.files[0]);
-			  } else {
-			    //document.getElementById('preview').src = "";
-				  $('#preTest').html('');
-			  }
-			}
-			//CSRF
-			let header = $("meta[name='_csrf_header']").attr('content');
-			let token = $("meta[name='_csrf']").attr('content');
-
-			//기간 검색 범위처리
-			$('.fromDt').on('change', function(e) {
-				$('.toDt').attr('min', this.value);
-			});
-			$('.toDt').on('change', function(e) {
-				$('.fromDt').attr('max', this.value);
-			});
-
-			//검색버튼 이벤트 처리
-			$(".searchbtn").on("click", function(e) {
-				let page = 1;
-				showTable(page);
-			});
-
-			//페이징 링크 처리
-			$(document).on("click", ".pagebtn", function(e) {
-				e.preventDefault();
-				let page = e.target.id;
-				showTable(page);
-			});
-
-			//검색 AJAX 함수
-			function showTable(page) {
-				let custNo;
-				let ctName;
-				let ctNo;
-				let ctStat;
-				let ctDt = $('.ctDt').val();
-				let ctStart = $('.fromDt').val();
-				let ctEnd = $('.toDt').val();
-				let ct;
-				//키워드 검색 처리
-				if ($('.searchKeySelect').val() == 'custname') {
-					ctName = $('.searchKey').val();
-				} else if ($('.searchKeySelect').val() == 'custno') {
-					custNo = $('.searchKey').val();
-				} else if ($('.searchKeySelect').val() == 'ctno') {
-					ctNo = $('.searchKey').val();
-				}
-				//기간 검색 처리
-				if ($('.searchKeySelect').val() == 'custname') {
-					ctName = $('.searchKey').val();
-
-				} else if ($('.searchKeySelect').val() == 'custno') {
-					custNo = $('.searchKey').val();
-				}
-				//계약상태 검색처리
-				if ($('.ctStat').val() != 'statAll') {
-					ctStat = $('.ctStat').val();
-				}
-				//정렬 처리
-				let ctSort = $('.searchSelect').val();
-
-				$.ajax({
-					url : '/sol/viewCtList',
-					type : 'POST',
-					beforeSend : function(xhr) {
-						xhr.setRequestHeader(header, token);
-					},
-					data : {
-						page : page,
-						ctName : ctName,
-						ctSort : ctSort,
-						custNo : custNo,
-						ctNo : ctNo,
-						ctStart : ctStart,
-						ctEnd : ctEnd,
-						ctStat : ctStat,
-						ctDt : ctDt
-					},
-					dataType : 'Text',
-					success : function(result) {
-						$('#ctTable').replaceWith(result);
-					}
-				});
-			}
+		    // CSRF
+		    let header = $("meta[name='_csrf_header']").attr('content');
+		    let token = $("meta[name='_csrf']").attr('content');
+		
+		    // 기간 검색 범위처리
+		    $('.fromDt').on('change', function(e) {
+		        $('.toDt').attr('min', this.value);
+		    });
+		    $('.toDt').on('change', function(e) {
+		        $('.fromDt').attr('max', this.value);
+		    });
+		
+		    // 검색 조건 변수 생성
+		    let keyword;
+		    let searchCondition;
+		    let ctStat;
+		    let ctDt;
+		    let ctStart;
+		    let ctEnd;
+		    let ctSort;
+		    
+		    // 검색버튼 이벤트 처리
+		    $(".searchbtn").on("click", function(e) {
+		        updateParams();
+		        let page = 1;
+		        showTable(page);
+		    });
+		
+		    // 페이징 링크 처리
+		    $(document).on("click", ".pagebtn", function(e) {
+		        e.preventDefault();
+		        let page = e.target.id;
+		        showTable(page);
+		    });
+		
+		    // 검색 조건 갱신 함수
+		    function updateParams() {
+		        // 키워드 검색 처리
+		        keyword = $('.searchKey').val();
+		        searchCondition = $('.searchKeySelect').val();
+		        
+		    	// 기간 검색 처리
+		        ctDt = $('.ctDt').val();
+		        ctStart = $('.fromDt').val();
+		        ctEnd = $('.toDt').val();
+		
+		        // 계약상태 검색 처리
+		        if ($('.ctStat').val() != 'statAll') {
+		            ctStat = $('.ctStat').val();
+		        } else {
+		            ctStat = null;
+		        }
+		
+		        // 정렬 조건 처리
+		        ctSort = $('.searchSelect').val();
+		    }
+		
+		    // 검색 AJAX 함수
+		    function showTable(page) {
+		        $.ajax({
+		            url: '/sol/viewCtList',
+		            type: 'POST',
+		            beforeSend: function(xhr) {
+		                xhr.setRequestHeader(header, token);
+		            },
+		            data: {
+		                page: page,
+		                ctSort: ctSort,
+		                ctStart: ctStart,
+		                ctEnd: ctEnd,
+		                ctStat: ctStat,
+		                ctDt: ctDt,
+		                keyword: keyword,
+		                searchCondition: searchCondition
+		            },
+		            dataType: 'Text',
+		            success: function(result) {
+		                $('#ctTable').replaceWith(result);
+		            }
+		        });
+		    }
 		</script>
 	</th:block>
 </body>
