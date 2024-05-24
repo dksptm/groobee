@@ -19,7 +19,7 @@ public interface WorkService {
 	public int workout();
 	
 	// 출근등록
-	public int insertWork();
+	public int insertWork(WorkVO workVo);
 	
 	// 관리자 페이지 전체조회
 	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO);

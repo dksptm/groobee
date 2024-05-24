@@ -33,7 +33,7 @@
 								<option value="내근" selected>내근</option>
 								<option value="외근">외근</option>
 							</select>
-							<button type="button" class="btn btn-primary test" id="filter">검색</button>
+							<button type="submit" class="btn btn-primary test" id="filter">검색</button>
 						</div>
 					</form>
 					<br>
@@ -54,9 +54,8 @@
 									</tr>
 								</thead>
 								<tbody th:each="info : ${list}" id="infos">
-									<tr th:onclick="|location.href='@{/info(dt=${#dates.format(info.dt, 'yyyy/MM/dd')})}'|">
-									                <!--, empId=${#authentication.principal.empId})}'|"> -->
-										<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
+									<tr th:onclick="|location.href='@{/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${#authentication.principal.empId})}'|">
+									<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
 										<td th:block sec:authorize="hasAuthority('1D3d')">[[${info.empNo}]]</td>
 										<td th:block sec:authorize="hasAuthority('1D3d')">[[${#authentication.name}]]</td>
 										<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
@@ -122,12 +121,27 @@
 						console.log(wkYn);
 						console.log(wkStat);
 						console.log(wkSite);
-						//location.reload();
 						console.log('성공');
 							}   
 					})
 			};
+			$('#wkin').on('click', wkin);
 			
+			$('#wkout').on('click', wkout);
+			
+			function wkin() {
+				
+				$.ajax({
+					url : 'worklist',
+					method : 'POST'
+			},
+			success : function() {
+				console.log(wkin)
+			}
+			
+			function wkout(){
+				let wkout = 1;
+			}
 				
 		</script>
 	</th:block>

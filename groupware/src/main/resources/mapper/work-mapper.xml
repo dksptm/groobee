@@ -64,16 +64,26 @@ WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 		SELECT count(*)
 		FROM emp
 	</select>
-	<!-- 출근을 입력하기위해... 중복이 안됨. -->
-	<!-- <update id="" parameterType="">
-	
-	</update> -->
+	<!-- 출근을 입력하기위해... 중복이되면 안됨. -->
+	<update id="workin">
+	UPDATE wk
+	SET wk_in = sysdate
+	where emp_id = #{empId}
+	</update>
+	<!-- 출근을 했는지 안했는지 체크하기위해 -->
+	<select id="in_check">
+	SELECT wk_in
+	FROM wk
+	where emp_id = #{empId}
+	</select>
 	
 	<!-- 퇴근을 입력하기위해... 중복이됨.-->
-	<!-- <update id="" parameterType="">
-	
+	 <update id="workout">
+	UPDATE wk
+	SET wk_out = sysdate
+	where emp_id = #{empId}
 	</update>
-   -->
+  
     <insert id="workinsert">
 insert into wk(
                emp_id,
@@ -103,12 +113,13 @@ select
        wk_stat,
        wk_site
 from wk
-where dt = #{dt} 
+where dt = #{dt} and emp_id = #{empId}
 
    </select>
    <!-- 상세페이지에서 작동하는 업데이트 -->
    <update id="updateWork" parameterType="WorkVO">
-   UPDATE wk(
+   UPDATE wk 
+   SET
           wk_in = #{wkIn}
           wk_out = #{wkOut},
           wk_in_loc = #{wkInLoc},
@@ -116,7 +127,7 @@ where dt = #{dt}
           wk_yn = #{wkYn},
           wk_stat = #{wkStat},
           wt_site = #{wkSite}
-   WHERE dt = #{dt} and emp_no = #{empNo}
+   WHERE dt = #{dt} AND emp_no = #{empNo}
    </update>
    
   </mapper>
