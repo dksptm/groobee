@@ -24,7 +24,7 @@
 				AND  r.cust_no = #{custNo}
 				AND  r.email_stat = '3B1b'
 				<if test="#recp != null">
-				    AND recp like #{recp}
+				    AND recp like '%'||#{recp}||'%'
 				</if>
 				  <if test="#refer != null and author.name != null">
 				    AND refer like #{refer}
