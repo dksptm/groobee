@@ -26,8 +26,8 @@ public class CtServiceImpl implements CtService{
 	}
 
 	@Override
-	public int count() {
-		return ctMapper.ctCount();
+	public int count(SearchVO searchVO) {
+		return ctMapper.ctCount(searchVO);
 	}
 
 }
