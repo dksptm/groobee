@@ -204,9 +204,9 @@ const getDocRefs = () => {
 
 /* 업무 -name부여 */
 const inTaskName = () => {
-	
-	let inputs = $('#getTasks').find('input');
-	inputs.each(function(i,e) {
+
+	let inputsNo = $('#getTasks').find('input[name="no"]');
+	inputsNo.each(function(i,e) {
 		e.setAttribute('name','tasks[' + i + ']');
 	});
 	
@@ -245,7 +245,7 @@ function ptoForm() {
 
 /* 휴가원 등록 */
 const ptoSubmit = () => {
-
+	
 	let ptoStartDt = $('#sdt').val() + ' ' + $('#stime').val();
 	$('div#pto').append($('<input name="pto.ptoStartDt" />').val(ptoStartDt));
 	let ptoEndDt = $('#edt').val() + ' ' + $('#etime').val()

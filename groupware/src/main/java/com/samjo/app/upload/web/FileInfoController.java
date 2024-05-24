@@ -18,7 +18,7 @@ public class FileInfoController {
 	@PostMapping("/FileUpload")
 	@ResponseBody
 	public void uploadFile(@RequestPart MultipartFile[] uploadFiles, String empId, Integer docNo) {
-	    fileUploadService.uploadFileInfo(uploadFiles,empId,docNo);
+	    fileUploadService.uploadFileInfo(uploadFiles);
 	}
 	
 }

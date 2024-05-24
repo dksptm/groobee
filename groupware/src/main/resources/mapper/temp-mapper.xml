@@ -25,7 +25,7 @@
 		        )
 		  VALUES
 		        (
-		            #{docNo}
+		             #{docNo}
 		            ,#{ptoType}
 		            ,TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI')
 		            ,TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI')

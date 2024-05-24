@@ -48,7 +48,7 @@
 			resultType="Integer">
 			SELECT NVL(MAX(coop_co_no),0) +1 
 			FROM coop_co
-	</selectKey>
+		</selectKey>
 		INSERT INTO coop_co (
 						coop_co_no
 	                     ,task_no 

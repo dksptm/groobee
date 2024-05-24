@@ -23,25 +23,35 @@
 			<hr>
 		</div>
 		
-		<form id="searchForm" th:action="@{/docCmplt}" method="get" th:object="${search}">
+		<form id="searchForm" th:action="@{/docCmplt}"  method="get" th:object="${search}">
 			<p><input type="number" th:field="*{page}" /></p>
 			<div class="mt-3 pt-3">
 				<!-- 업무 선택 -->
-				<div class="border border-3 p-3 col-4 input-tag-css">
+				<div class="border border-3 input-tag-css">
 					<!-- 모달버튼 : 업무 -->
 					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
 							data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button>
 					<!-- 업무 리스트 -->
 					<div class="mt-3 text-start">
-						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
+						<div id="getTasks">
+						<th:block th:each="tno,stat : ${search.schTaskNo}">
+						<input type="text" class="aleadyInputs" th:value="${tno}" th:name="|schTaskNo[${stat.index}]|" readonly />
+						</th:block>
+						<th:block th:each="tna,stat : ${search.schTaskName}">
+						<input type="text" class="aleadyInputs" th:value="${tna}" th:name="|schTaskName[${stat.index}]|" readonly />
+		                
+	                    </th:block>
+						
+						</div>
 					</div>		
 				</div>
+				
 				<hr>
 			</div>
 			<div class="mt-3 pt-3">
 				
 			</div>
-			<!-- 작성완료/취소 버튼 -->
+			<!-- 검색 버튼 -->
 			<div class="m-3 text-end">
 				<button type="submit" class="btn rounded-pill btn-primary btn-lg">검색</button>
 			</div>
