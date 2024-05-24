@@ -29,7 +29,7 @@
 									</tr>
 								</thead>
 								<tbody th:each="list : ${list}" id="infos">
-									<tr>
+									<tr th:onclick="|location.href='@{/worklist(empNo=${list.empNo})}'|">
 										<td>[[${list.deptId}]]</td>
 										<td>[[${list.empNo}]]</td>
 										<td>[[${list.empName}]]</td>

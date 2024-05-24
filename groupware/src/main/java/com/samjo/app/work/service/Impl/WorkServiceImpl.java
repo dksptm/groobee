@@ -29,20 +29,20 @@ public class WorkServiceImpl implements WorkService{
 		return workMapper.workcount();
 	}
 	
-	// 출근 등록
+	// 출근 수정
 	@Override
 	public int workin() {
 		return workMapper.workin();
 	}
-	// 퇴근 등록	
+	// 퇴근 수정	
 	@Override
 	public int workout() {
 		return workMapper.workout();
 	}
-	// 테이블 등록
+	// 등록
 	@Override
-	public int insertWork() {
-		return workMapper.insertWork();
+	public int insertWork(WorkVO workVo) {
+		return workMapper.insertWork(workVo);
 	}
 	
 	
@@ -54,12 +54,12 @@ public class WorkServiceImpl implements WorkService{
 	// 페이지 상세조회
 	@Override
 	public WorkVO selectWork(WorkVO workVO) {
-		return null;
+		return workMapper.selectWork(workVO);
 	}
 	// 페이지 수정
 	@Override
 	public int updateWork(WorkVO workVO) {
-		return workMapper.insertWork();
+		return workMapper.updateWork(workVO);
 	}
 
 	@Override
