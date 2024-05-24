@@ -50,8 +50,11 @@
 										<td class="form-control">정렬조건</td>
 										<td><select class="form-select searchSelect">
 												<option value="ct.ct_no">계약번호순</option>
+												<option value="ct.ct_no DESC">계약번호역순</option>
 												<option value="ct.ct_start_dt">계약시작일순</option>
+												<option value="ct.ct_start_dt DESC">계약시작일역순</option>
 												<option value="ct.ct_end_dt">계약종료일순</option>
+												<option value="ct.ct_end_dt DESC">계약종료일역순</option>
 										</select></td>
 									</tr>
 								</table>
@@ -84,7 +87,9 @@
 											<td>[[ ${CtVO.custNo} ]]</td>
 											<td>[[ ${CtVO.custName} ]]</td>
 											<td>[[ ${CtVO.ctAmt} ]]</td>
-											<td>[[ ${CtVO.ctStat} ]]</td>
+											<td
+												th:class="${CtVO.ctStat == '0A2a' ? 'table-secondary' : ''}">
+												[[ ${CtVO.ctStat} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctStartDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctEndDt, "yyyy-MM-dd")} ]]</td>
 										</tr>
@@ -99,25 +104,21 @@
 									<ul class="pagination justify-content-center">
 
 										<th:block th:if="${CtDTO.prev}">
-											<li class="page-item prev"><a
-												href="#"
-												th:id="${CtDTO.startPage - 1 }"
-												class="page-link pagebtn"><i class="bx bx-chevron-left"></i></a></li>
+											<li class="page-item prev"><a href="#"
+												th:id="${CtDTO.startPage - 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
 											th:each="num : ${#numbers.sequence(1, CtDTO.endPage)}">
 											<li class="page-item "
 												th:attrappend="class=${num ==  CtDTO.page ? 'active' : ' '}">
-												<a href="#"
-													th:id="${num}"
-													class="page-link pagebtn">[[${num}]]</a>
+												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
 										<th:block th:if="${CtDTO.next}">
-											<li class="page-item next"><a
-												href="#"
-												th:id="${CtDTO.endPage + 1 }"
-												class="page-link pagebtn"><i class="bx bx-chevron-right"></i></a></li>
+											<li class="page-item next"><a href="#"
+												th:id="${CtDTO.endPage + 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
 								</nav>
@@ -131,34 +132,54 @@
 				</div>
 			</div>
 		</div>
+		<input type="file" onchange="readURL(this);">
+		<img id="preview" /> <div id="preTest"></div>
+ 
+
+
 		<script>
+			function readURL(input) {
+			  if (input.files && input.files[0]) {
+			    var reader = new FileReader();
+			    reader.onload = function(e) {
+			      document.getElementById('preview').src = e.target.result;
+			    	//$('preview').html(e.target.result);
+			    	console.log(e.target.result);
+			    };
+			    reader.readAsDataURL(input.files[0]);
+			    console.log(input.files);
+			  } else {
+			    document.getElementById('preview').src = "";
+				  //$('preview').html('');
+			  }
+			}
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 
 			//기간 검색 범위처리
-			$('.fromDt').on('change', function(e){
+			$('.fromDt').on('change', function(e) {
 				$('.toDt').attr('min', this.value);
 			});
-			$('.toDt').on('change', function(e){
+			$('.toDt').on('change', function(e) {
 				$('.fromDt').attr('max', this.value);
 			});
-			
+
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
 				let page = 1;
 				showTable(page);
 			});
-			
+
 			//페이징 링크 처리
-			$(document).on("click", ".pagebtn", function(e){
+			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
 				let page = e.target.id;
 				showTable(page);
 			});
-			
+
 			//검색 AJAX 함수
-			function showTable(page){
+			function showTable(page) {
 				let custNo;
 				let ctName;
 				let ctNo;
@@ -168,27 +189,27 @@
 				let ctEnd = $('.toDt').val();
 				let ct;
 				//키워드 검색 처리
-				if($('.searchKeySelect').val()=='custname'){
+				if ($('.searchKeySelect').val() == 'custname') {
 					ctName = $('.searchKey').val();
-				}else if($('.searchKeySelect').val()=='custno'){
+				} else if ($('.searchKeySelect').val() == 'custno') {
 					custNo = $('.searchKey').val();
-				}else if($('.searchKeySelect').val()=='ctno'){
+				} else if ($('.searchKeySelect').val() == 'ctno') {
 					ctNo = $('.searchKey').val();
 				}
 				//기간 검색 처리
-				if($('.searchKeySelect').val()=='custname'){
+				if ($('.searchKeySelect').val() == 'custname') {
 					ctName = $('.searchKey').val();
-					
-				}else if($('.searchKeySelect').val()=='custno'){
+
+				} else if ($('.searchKeySelect').val() == 'custno') {
 					custNo = $('.searchKey').val();
 				}
 				//계약상태 검색처리
-				if($('.ctStat').val()!='statAll'){
+				if ($('.ctStat').val() != 'statAll') {
 					ctStat = $('.ctStat').val();
 				}
 				//정렬 처리
 				let ctSort = $('.searchSelect').val();
-				
+
 				$.ajax({
 					url : '/sol/viewCtList',
 					type : 'POST',
