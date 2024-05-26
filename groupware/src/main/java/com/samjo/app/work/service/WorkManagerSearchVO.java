@@ -8,5 +8,6 @@ public class WorkManagerSearchVO {
 
 	private int page;
 	private String filter;
+	private String empId;
 	private int totalCnt;
 }

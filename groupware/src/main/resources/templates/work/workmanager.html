@@ -41,22 +41,23 @@
 							</table>
 					</div>
 					<div>
-						<nav aria-label="Page navigation" >
+						<nav aria-label="Page navigation">
 							<ul class="pagination">
-								<th:block th:if="${page.prev}">
+								<th:block th:if="${filter.prev}">
 									<li class="page-item prev disabled"><a class="page-link"
-										th:href="|workmanager?page=${page.startPage - 1 }|"><i
+										th:href="|workmanager?page=${filter.startPage - 1 }|"><i
 											class="bx bx-chevron-left"></i></a></li>
 								</th:block>
-								<th:block th:each="num : ${#numbers.sequence(1, page.endPage)}">
+								<th:block
+									th:each="num : ${#numbers.sequence(1, filter.endPage)}">
 									<li class="page-item"
-										th:attrappend="class=${num ==  page.page ? 'active' : ' '}">
+										th:attrappend="class=${num ==  filter.page ? 'active' : ' '}">
 										<a th:href="|workmanager?page=${num}|" class="page-link">[[${num}]]</a>
 									</li>
 								</th:block>
-								<th:block th:if="${page.next}">
+								<th:block th:if="${filter.next}">
 									<li class="page-item next"><a class="page-link"
-										th:href="|workmanager?page=${page.endPage + 1 }|"><i
+										th:href="|workmanager?page=${filter.endPage + 1 }|"><i
 											class="bx bx-chevron-right"></i></a></li>
 								</th:block>
 							</ul>

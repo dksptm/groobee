@@ -9,6 +9,9 @@ import lombok.Data;
 @Data
 public class WorkSearchVO {
 	private int page;
+	private String empName;
+	private String empId;
+	private int empNo;
 	private String wkYn;
 	private String wkStat;
 	private String wkSite;
