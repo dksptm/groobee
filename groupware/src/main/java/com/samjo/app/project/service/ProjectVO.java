@@ -24,7 +24,8 @@ public class ProjectVO {
 	private String prjtMat;
 	private String deptId;
 	private String deptName;
-	
+	private int ptCnt;
+	private int progress;
 	//상시업무기준
 	private String reguId;
 	private String creType;

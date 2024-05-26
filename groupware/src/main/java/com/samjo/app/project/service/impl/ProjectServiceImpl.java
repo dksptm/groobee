@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.mapper.DeptMapper;
 import com.samjo.app.project.mapper.ProjectMapper;
 import com.samjo.app.project.service.ProjectService;
@@ -64,10 +65,13 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 	
-
 	@Override // 프로젝트(하위)업무 전체조회
-	public List<ProjectVO> taskAllList() {
-		return projectMapper.selectTaskAllList();
+	public List<ProjectVO> taskAllList(SearchVO searchVO) {
+		return projectMapper.selectTaskAllList(searchVO);
+	}
+	@Override // 프로젝트업무 페이징
+	public int count(SearchVO searchVO) {
+		return projectMapper.taskCount(searchVO);
 	}
 	@Override // 프로젝트(하위)업무 단건조회
 	public ProjectVO taskInfo(ProjectVO projectVO) {
@@ -181,8 +185,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return map;
 	}
-	
-	// 
+
 	
 	
 	// 효주 - 업무간단조회
@@ -191,6 +194,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectTasks(custNo);
 	}
 	// 효주 끝.
+
 
 
 }

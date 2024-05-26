@@ -12,12 +12,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
+import com.samjo.app.ct.service.CtDTO;
+import com.samjo.app.ct.service.CtVO;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
+import com.samjo.app.project.service.TaskDTO;
 
 @Controller
 public class ProjectController {
@@ -107,12 +111,38 @@ public class ProjectController {
 
 	// 프로젝트(하위) 업무 전체조회
 	@GetMapping("taskAllList")
-	public String taskAllList(Model model) {
-		List<ProjectVO> list = projectService.taskAllList();
+	public String taskListPage(SearchVO searchVO, Model model) {
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
+			searchVO.setTaskSort("task_no");
+		}
+		List<ProjectVO> list = projectService.taskAllList(searchVO);
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+		model.addAttribute("TaskDTO", taskDTO);
 		model.addAttribute("task", list);
-		return "project/task/list";
+		return "project/task/tsList";
 	}
 	
+	//프로젝트 업무 조회페이지 검색/페이징 처리
+	@PostMapping("viewTsList")
+	public String viewTsListPage(SearchVO searchVO, Model model) {
+		System.out.println("searchVO: "+searchVO);
+		System.out.println("startDay : "+ searchVO.getTaskStart());
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
+			searchVO.setTaskSort("task_no");
+		}
+		List<ProjectVO> list = projectService.taskAllList(searchVO);
+		model.addAttribute("list", list);
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+		model.addAttribute("TaskDTO", taskDTO);
+		return "project/task/tsList :: #taskTable";
+	}
+	 
 	// 프로젝트(하위) 업무 등록
 	@GetMapping("taskInsert")
 	public String taskInsertForm(Model model) {
@@ -131,7 +161,6 @@ public class ProjectController {
 	}
 	
 	@PostMapping("task/insert")
-	@ResponseBody
 	public String taskInsertProcess(@RequestBody ProjectVO projectVO) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();

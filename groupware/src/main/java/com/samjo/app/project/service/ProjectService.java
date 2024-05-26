@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.samjo.app.common.service.SearchVO;
+
 public interface ProjectService {
 	// 프로젝트 상위 //
 	// 프로젝트 조회
@@ -20,7 +22,9 @@ public interface ProjectService {
 	
 	// 프로젝트 하위 - 프로젝트업무 //
 	// 프로젝트 업무 조회 
-	public List<ProjectVO> taskAllList();
+	public List<ProjectVO> taskAllList(SearchVO searchVO);
+	// 프로젝트 업무 페이징
+	public int count(SearchVO searchVO);
 	// 프로젝트 업무 단건조회
 	public ProjectVO taskInfo(ProjectVO projectVO);
 	// 프로젝트 업무 등록

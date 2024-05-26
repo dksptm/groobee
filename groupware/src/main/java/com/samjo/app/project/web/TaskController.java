@@ -49,9 +49,9 @@ public class TaskController {
 			String uri = null;
 			
 			if(rId > -1) {
-				uri = "redirect:prjtInfo?prjtId=" + rId;
+				uri = "" ;
 			} else {
-				uri = "reguAllList";
+				uri = "";
 			}
 			return uri;
 		}
@@ -112,7 +112,7 @@ public class TaskController {
 		public String coopInsertProcess(@RequestBody ProjectVO projectVO) {
 			
 
-			//projectVO.setTaskNo();
+			//ProjectVO.setTaskNo(int);
 			
 			int cNo =  projectService.coopInsert(projectVO);
 			String uri = null;
