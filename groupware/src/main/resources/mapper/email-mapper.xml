@@ -10,25 +10,21 @@
 		FROM (SELECT rownum rn,
 			t.*
 			FROM (SELECT r.rec_email_no,
+			             r.recp,
 			             r.refer,
 			             r.cust_no,
+			             r.recp_type,
 			             r.email_stat,
-						 r.email_stat,
-			             s.sen_email_no , 
+			             s.sen_email_no, 
 			             s.title,
 						 s.sender,
 						 s.sent_dt
 				FROM email s JOIN inbox r
-							ON (s.sen_email_no = r.sen_email_no)
+							 ON (s.sen_email_no = r.sen_email_no)
 				WHERE rownum <![CDATA[<=]]> (#{page} * 10)
-				AND  r.cust_no = #{custNo}
+				AND  (r.recp = #{recp} OR r.refer = #{refer, jdbcType=VARCHAR})
+				AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				AND  r.email_stat = '3B1b'
-				<if test="#recp != null">
-				    AND recp like '%'||#{recp}||'%'
-				</if>
-				  <if test="#refer != null and author.name != null">
-				    AND refer like #{refer}
-			  	</if>
 				<choose>
 					<when test="sdStart != null and sdEnd != null">
 						AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
@@ -37,18 +33,24 @@
 						AND ${sentDt} >= #{sdStart}
 					</when>
 					<when test="(sdEnd != null) and (sdStart == null)">						
-						AND ${senDt} <![CDATA[<=]]> #{sdEnd}
+						AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
 					</when> 
 				</choose>
-				ORDER BY ${sentDt} ASC) t ) g
+				ORDER BY sent_Dt ASC) t ) g
 		WHERE g.rn > (#{page} -1) * 10
-		<!-- 수신 유형이 recp / refer 로 나뉘어 있는데, 이 경우를 반영하지 않았다. -->
   	</select>
   	
-  	 <select id="count" resultType="int">
+  	 <select id="count" parameterType="SearchVO" resultType="int">
   		SELECT count(*)
   		FROM INBOX
   	</select>
+  
+  	<select id="countMyInbox" resultType="int">
+		SELECT  COUNT(*)
+		FROM    inbox
+		WHERE	recp = #{eid}	
+		OR      refer = #{eid}
+	</select>
   
   <!-- email,inbox 단건조회시 첨부파일 조회 -->
   	<select id="selectEmailFile" resultType="EmailFileVO">
@@ -73,7 +75,8 @@
         #{recp, mode=IN, jdbcType=VARCHAR},
         #{refer, mode=IN, jdbcType=VARCHAR},
         #{custNo, mode=IN, jdbcType=VARCHAR},
-        #{senEmailNo, mode=OUT, jdbcType=VARCHAR}
+        #{senEmailNo, mode=OUT, jdbcType=VARCHAR},
+        #{recpType, mode=IN, jdbcType=VARCHAR}
     )
     ]]>
 </insert>

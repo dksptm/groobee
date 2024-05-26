@@ -21,11 +21,11 @@ public class EmailVO {
 	private String recEmailNo;
 	private String recp;
 	private String refer;
-	//private String recpType; //수신자,참조자 구별하는건데 이거 없애고 걍 참조자 필드 추가.
+	private String recpType;
 	private Date readDt;
 	
 	// email_file TABLE
-	private Integer fileNo; // >> 다른 TABLE fileNo와 이름은 같으나, PRIMARY KEY이다. 여기서 다루는게 맞다
+	private Integer fileNo;
 	private String saveName;
 	private String uplName;
 	private String fileExt;

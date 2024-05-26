@@ -73,7 +73,7 @@
 											<td>[[ ${emailVO.sender} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<!-- <td>[[ ${#emailVO.reStat}]]</td>  -->
+											<td>[[ ${#emailVO.recpType} ]]</td>
 											<td><input type="radio" name="check" th:value="${EmailVO.senEmailNo}"></td>
 										</tr>
 									</th:block>

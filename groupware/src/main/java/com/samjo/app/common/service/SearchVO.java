@@ -43,10 +43,15 @@ public class SearchVO {
 	
 	// 이메일 관련 inboxList, emailList, wastedList 전부 공유
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date sendDt;
-	
+	private Date sentDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date sdStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date sdEnd;	
 	private String emTitle;
 	private String sender;
+	private String recp;
+	private String refer;
 	private boolean hasFile; //첨부파일 유무 -> 있으면 클립이미지
 	
 }

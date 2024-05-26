@@ -2,6 +2,9 @@ package com.samjo.app.email.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.email.service.EmailFileVO;
 import com.samjo.app.email.service.EmailVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -10,7 +13,7 @@ import com.samjo.app.emp.service.EmpVO;
 // 네이밍도 어떻게 했는지 살펴보기
 public interface EmailMapper {
 	// 받은메일 전체조회
-	public List<EmailVO> selectInboxAll();
+	public List<EmailVO> selectInboxAll(SearchVO searchVO);
 	
 	// 받은메일 상세조회
 	public EmailVO selectInbox(EmailVO emailVO);
@@ -45,8 +48,11 @@ public interface EmailMapper {
 	// 수신한 이메일의 파일 내려받기
 	public EmailVO getFile(EmailVO emailVO);
 	
-	//전체 페이지(받은메일)
-	public int count();
+	//이메일 전체 페이징
+	public int count(@Param("eid")String empId);
+	
+	// 한 emp가 recp이거나, refer인 메일
+	public List<EmailVO> countMyInbox(@Param("eid")String Empid, @Param("sch")SearchVO searchVO);
 	
 	//전체 페이지(보낸메일)
 	public int countSend();

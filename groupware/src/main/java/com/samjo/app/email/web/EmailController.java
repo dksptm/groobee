@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.common.util.SecuUtil;
+import com.samjo.app.ct.service.CtDTO;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -38,10 +40,17 @@ public class EmailController {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		String eid = empVO.getEmpId();
+		searchVO.setRecp(eid);
 		List<EmailVO> list = emailService.inboxList(searchVO);
 		model.addAttribute("inboxList", list);
-		PageDTO pageDTO = new PageDTO(searchVO.getPage(), emailService.count());
-		model.addAttribute("pageDTO", pageDTO);
+		CtDTO ctDTO = new CtDTO(searchVO.getPage(), emailService.count(eid)); 
+		//위 코드가 좀 이상함. 페이징에 대한 이해가 덜되어서 그런가..
+		model.addAttribute("CtDTO", ctDTO);
+		model.addAttribute("eid", eid);
+        model.addAttribute("searchVO", searchVO);
+		
 		return "email/inboxList";
 	}
 	
