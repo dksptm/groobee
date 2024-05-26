@@ -22,7 +22,7 @@ const tempChange = function() {
 	let opt = $('#tempId option:selected');
 	
 	// 옵션값 선택안함
-	if(opt.val() == 'no-data' || opt.val() == 'temp001') {
+	if(opt.val() == 'no-data' || opt.val() == 'public01') {
 		if(editor) {
 			editor.setData('');
 		}
@@ -50,7 +50,11 @@ const tempChange = function() {
 	if (!editor) {
         console.log('에디터 없음');
         ClassicEditor
-            .create(document.querySelector('#cntn'))
+            .create(document.querySelector('#cntn'), {
+	            toolbar: {
+	            	items : ['bold', 'italic', 'link', 'insertTable'] 
+	            }
+            })
             .then(newEditor => {
                 editor = newEditor;
                 getHtml();
@@ -81,7 +85,7 @@ const tempChangeUpdate = function() {
 	let opt = $('#tempId option:selected');
 	
 	// 옵션값 선택안함
-	if(opt.val() == 'no-data' || opt.val() == 'TP001' || opt.val() == 'TP002' ) {
+	if(opt.val() == 'no-data' || opt.val() == 'public01' || opt.val() == 'TP002' ) {
 		if(editor) {
 			editor.setData('');
 		}
@@ -225,7 +229,7 @@ function docCheck(e) {
 		$('#tempId').focus();
 		return false;
 	}
-	if($('#tempId').val() == 'TP002') {
+	if($('#tempId').val() == 'public01') {
 		if($('#ptoType').val() == '' || $('#sdt').val() == '' || $('#edt').val() ==''){
 			alert('휴가원은 휴가종류, 시작/종료날짜\n모두 선택해야 합니다.');
 			return false;

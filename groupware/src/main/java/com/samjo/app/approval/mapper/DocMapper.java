@@ -17,13 +17,13 @@ public interface DocMapper {
 	// 문서전체-페이징
 	public int count();
 	// 한 직원이 작성한 문서.
-	public List<DocVO> selectEmpDocs(@Param("eid")String empId, @Param("sch")SearchVO searchVO);
+	public List<DocVO> selectEmpDocs(@Param("eid") String empId, @Param("sch") SearchVO searchVO);
 	//		-전체count.
-	public int countEmpDocs(@Param("eid")String empId);	
+	public int countEmpDocs(@Param("eid")String empId, @Param("sch") SearchVO searchVO);	
 	// 내가 현재 결재해야할 문서리스트.
 	public List<DocVO> selectEmpApr(@Param("eid")String empId, @Param("sch")SearchVO searchVO);
 	//		-전체count.
-	public int countEmpApr(@Param("eid")String empId);	
+	public int countEmpApr(@Param("eid")String empId, @Param("sch") SearchVO searchVO);	
 	// 결재진행중인 문서리스트.(--추후 권한별 리스트출력)
 	public List<DocVO> selectIngDocs(@Param("emp")EmpVO empVO, @Param("sch") SearchVO searchVO);
 	//		-전체count.

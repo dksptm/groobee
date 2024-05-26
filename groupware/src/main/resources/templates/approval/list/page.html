@@ -34,18 +34,45 @@
 <script>
 
 $(function(){
-	let searchForm = $('#searchForm');
+	
+	const searchForm = $('#searchForm');
+	
+	const begin = {
+		keywordCondition : $('#keywordCondition').val(),
+		keyword : $('#keyword').val(),
+		draftStatCondition : $('#draftStatCondition').val(),
+		aprStatCondition : $('#aprStatCondition').val(),
+		dateCondition : $('#dateCondition').val(),
+		dtStart : $('#dtStart').val(),
+		dtEnd : $('#dtEnd').val(),
+		docStatCondition : $('#docStatCondition').val(),
+		sortCondition : $('#sortCondition').val()
+	}
 	
 	$('li.page-item a').on('click', function(e){
 		e.preventDefault();
 		let pageNum = $(this).attr('href');
-		console.log('페이지클릭');
-		console.log(pageNum,"페이지");
+		
+		$('#keywordCondition').val(begin.keywordCondition);
+		$('#keyword').val(begin.keyword);
+		$('#draftStatCondition').val(begin.draftStatCondition);
+		$('#aprStatCondition').val(begin.aprStatCondition);
+		$('#dateCondition').val(begin.dateCondition);
+		$('#dtStart').val(begin.dtStart);
+		$('#dtEnd').val(begin.dtEnd);
+		$('#docStatCondition').val(begin.docStatCondition);
+		$('#sortCondition').val(begin.sortCondition);
 		
 		searchForm.find('input[name="page"]').val(pageNum);
 		searchForm.submit();
 	});
 	
+	$('#schBtn').on('click', function(e) {
+		
+		$('#page').val('1');
+		searchForm.submit();
+		
+	});
 	
 })
 

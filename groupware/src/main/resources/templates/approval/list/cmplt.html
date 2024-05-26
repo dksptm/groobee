@@ -43,7 +43,8 @@
 							<th class="text-white">제목</th>
 							<th class="text-white">기안자</th>
 							<th class="text-white">문서상태</th>
-							<th class="text-white" colspan="2">작성일자</th>
+							<th class="text-white">작성일자</th>
+							<th class="text-white">완료일자</th>
 						</tr>
 					</thead>
 					<tbody class="resultList">
@@ -67,6 +68,7 @@
 							<td>[[ ${doc.draftName} ]]</td>
 							<td>[[ ${doc.docStatName} ]]</td>
 							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+							<td>[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
 						</tr>
 						</th:block>
 					</tbody>

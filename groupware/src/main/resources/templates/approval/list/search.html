@@ -4,88 +4,112 @@
 <th:block th:fragment="Search">
 
 	<form id="searchForm" th:action="@{{urlVar}(urlVar=${path})}"  method="get" th:object="${search}">
-		<p><input type="number" th:field="*{page}" /></p>
-		<div class="mt-3 pt-3">
-			<!-- 업무 선택 -->
-			<div class="border border-3 input-tag-css">
-				<!-- 모달버튼 : 업무 -->
-				<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
-						data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button>
-				<!-- 업무 리스트 -->
-				<div class="mt-3 text-start">
-					<div id="getTasks">
-					<th:bloxk th:if="${search.schTaskNo != null && search.schTaskName != null}">
-						<th:block th:each="tno,stat : ${search.schTaskNo}">
-						<input type="text" class="aleadyInputs" th:value="${tno}" th:name="|schTaskNo[${stat.index}]|" readonly />
-						</th:block>
-						<th:block th:each="tna,stat : ${search.schTaskName}">
-						<input type="text" class="aleadyInputs" th:value="${tna}" th:name="|schTaskName[${stat.index}]|" readonly />
-	                	</th:block>
-	                </th:bloxk>
-					</div>
-				</div>		
-			</div>
-			<hr>
-		</div>
-		<div class="mt-3 pt-3">
-		
+		<div>
 		<nav class="navbar navbar-expand-lg navbar-light">
 			<div class="container-fluid">
-				<button class="navbar-toggler" type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarSupportedContent"
-					aria-controls="navbarSupportedContent" aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<table>
 						<tr>
-							<td><select class="form-select" name="keywordCondition">
+							<td><select class="form-select" th:field="*{keywordCondition}">
 									<option value="d.title" selected>제목</option>
-									<option value="d.cntn">기안자</option>
+									<!-- '문서함'에서는 기안자검색 비활성화 -->
+									<option value="d.draft_name" th:disabled="${path} == 'myDocList'">기안자</option>
 							</select></td>
-							<td colspan='3'><input class="form-control" name="keyword"
+							<td colspan='3'><input class="form-control" th:field="*{keyword}"
 								type="text" placeholder="검색어입력"></td>
-							<td class="text-white">_</td>
-							<td class="form-control">결재상태</td>
-							<td><select class="form-select" name="aprStatCondition">
-									<option value="docAll">전체</option>
+							<td class="form-control bg-transparent">작성상태</td>
+							<!-- '문서함' 에서만 작성상태 검색가능 -->
+							<th:block th:if="${path} == 'myDocList'">
+								<td><select class="form-select" th:field="*{draftStatCondition}">
+										<option th:value="draftStatAll">전체</option>
+										<option value="4A1a">작성중</option>
+										<option value="4A2a">상신완료</option>
+								</select></td>
+							</th:block>
+							<!-- '문서함' 이외는 작성상태 상신완료로 고정 -->
+							<th:block th:unless="${path} == 'myDocList'">
+								<td><select class="form-select" disabled>
+										<option value="4A2a" selected>상신완료</option>
+								</select></td>
+							</th:block>
+							<td class="form-control bg-transparent">결재상태</td>
+							<!-- '결재함'은 결재 대기상태만 조회 -->
+							<th:block th:if="${path} != 'myAprList'">
+								<td><select class="form-select" th:field="*{aprStatCondition}">
+										<option value="aprStatAll">전체</option>
+										<option value="4D1d">대기</option>
+										<option value="4D2d">결재</option>
+										<option value="4D3d">미결</option>
+										<option value="4D4d">반려</option>
+								</select></td>
+							</th:block>
+							<th:block th:unless="${path} != 'myAprList'">
+							<td><select class="form-select" disabled>
 									<option value="4D1d">대기</option>
-									<option value="4D2d">결재</option>
-									<option value="4D3d">미결</option>
-									<option value="4D4d">반려</option>
 							</select></td>
+							</th:block>
 						</tr>
 						<tr>
-							<td><select class="form-select" name="dateCondition">
+							<td><select class="form-select" th:field="*{dateCondition}">
 									<option value="d.draft_dt">상신일자</option>
-									<option value="d.cmplt_dt">완료일자</option>
+									<option value="d.cmplt_dt" 
+											th:disabled="${path} != 'docIng' and ${path} != 'myAprList'">
+											완료일자</option><!-- '결재함','결재진행중'은 결재진행중인 문서만(완료일자없음) -->
 							</select></td>
-							<td><input class="form-select sdt" name="dtStart" type="date"></td>
+							<td><input class="form-select sdt" th:field="*{dtStart}" type="date"></td>
 							<td>~</td>
-							<td><input class="form-select edt" name="dtEnd" type="date"></td>
-							<td class="text-white">_</td>
-							<td class="form-control">정렬조건</td>
-							<td><select class="form-select" name="sortCondition">
+							<td><input class="form-select edt" th:field="*{dtEnd}" type="date"></td>
+							<td class="form-control bg-transparent">문서상태</td>
+							<!-- '결재함','결재진행중'은 결재진행중인 문서만 검색 -->
+							<th:block th:if="${path} != 'myAprList' and ${path} != 'docIng'">
+								<td><select class="form-select" th:field="*{docStatCondition}">
+										<option value="docStatAll">전체</option>
+										<option value="4B1b">결재전</option>
+										<option value="4B2b">결재진행중</option>
+										<option value="4B3b">최종결재완료</option>
+										<option value="4B4b">반려문서</option>
+								</select></td>
+							</th:block>
+							<th:block th:unless="${path} != 'myAprList' and ${path} != 'docIng'">
+								<td><select class="form-select" disabled>
+										<option value="4B2b">결재진행중</option>
+								</select></td>
+							</th:block>
+							<td class="form-control bg-transparent">정렬조건</td>
+							<td><select class="form-select" th:field="*{sortCondition}">
 									<option value="d.doc_no">문서번호순</option>
 									<option value="d.doc_no DESC" selected>문서번호순(역순)</option>
 									<option value="d.draft_dt">상신일자순</option>
 									<option value="d.draft_dt DESC">상신일자순(역순)</option>
-									<option value="d.cmplt_dt">완료일자순(역순)</option>
-									<option value="d.cmplt_dt DESC">상신일자순(역순)</option>
+									<!-- '결재함','결재진행중'은 결재진행중인 문서만(완료일자없음) -->
+									<th:block th:if="${path} != 'myAprList' and ${path} != 'docIng'">
+										<option value="d.cmplt_dt">완료일자순</option>
+										<option value="d.cmplt_dt DESC">완료일자순(역순)</option>
+									</th:block>
 							</select></td>
+						</tr>
+						<tr>
+							<td><button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+										data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button></td>
+							<td colspan="3" id="getTasks"></td>
+							<td><button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+										data-bs-toggle="modal" data-bs-target="#docModalTasks">부서 선택</button></td>
+							<td colspan="3"></td>
 						</tr>
 					</table>
 					<!-- 검색 버튼 -->
 					<span class="position-absolute top-50 end-0 translate-middle-y">
-						<button class="btn rounded-pill btn-primary btn-lg"
-							type="submit">검색</button>
+						<button class="btn rounded-pill btn-info"
+								type="button" id="schBtn">검색</button>
+						<button class="btn rounded-pill btn-secondary"
+								type="reset"
+								th:onclick="|location.href='@{{urlVar}(urlVar=${path})}'|">초기화</button>
 					</span>
 				</div>
 			</div>
 		</nav>
 		</div>
+		<p><input type="number" th:field="*{page}" /></p>
 	</form>
 
 	<!-- 모달영역 : 업무선택 -->
@@ -110,12 +134,9 @@
 		
 		//기간 검색 범위처리
 		$('.sdt').on('change', function(e){
-			console.log('이벤트..')
-			
 			$('input[name="dtEnd"]').attr('min', this.value);
 		});
 		$('.edt').on('change', function(e){
-			console.log('이벤트.......')
 			$('input[name="dtEnd"]').attr('max', this.value);
 		});
 		
@@ -133,8 +154,6 @@
 		$('.taskTitle').hover(function(){
 			$(this).find('.taskList').toggle();
 		})
-		
-		
 		
 	})
 </script>

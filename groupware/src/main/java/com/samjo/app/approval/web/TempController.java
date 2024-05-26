@@ -35,6 +35,7 @@ public class TempController {
 	@ResponseBody
 	@GetMapping("pto/{docNo}")
 	public TempVO ptoInsertProcess(@PathVariable Integer docNo) {
+		System.out.println(tempService.selectPto(docNo));
 		return tempService.selectPto(docNo);
 	}
 	

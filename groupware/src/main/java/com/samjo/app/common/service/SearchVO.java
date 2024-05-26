@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.samjo.app.project.service.ProjectVO;
+
 import lombok.Data;
 
 @Data
@@ -16,17 +18,16 @@ public class SearchVO {
 	// 전자결재 관련.
 	private String keywordCondition;
 	private String aprStatCondition;
+	private String docStatCondition;
+	private String draftStatCondition;
+	private List<ProjectVO> schTasks;
+	
 	private String dateCondition;
 	private String sortCondition;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dtStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dtEnd;
-	
-	private List<String> schTaskName;
-	
-	private List<Integer> schTaskNo;
-	
 	
 	// 계약 관련.
 	private String ctName;

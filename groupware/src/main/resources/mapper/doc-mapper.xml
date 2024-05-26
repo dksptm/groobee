@@ -74,9 +74,10 @@
 		        ,g.doc_stat_name
 		        ,g.cur_apr
 		        ,g.draft_dt
+		        ,g.cmplt_dt
 		FROM
 		        (SELECT 
-		                ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
+		                ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
 		                ,d.doc_no
 		                ,get_tempname(d.temp_id) 	AS temp_name
 		                ,COUNT(td.task_no)		 	AS task_count
@@ -85,12 +86,43 @@
 				        ,get_codename(d.doc_stat)	AS doc_stat_name
 		                ,NVL2(a.apr_yn, a.apr_name|| ' ' ||get_codename(a.apr_yn), '-') AS cur_apr
 		                ,d.draft_dt 
+		                ,d.cmplt_dt
 		        FROM	
 		        		doc d LEFT OUTER JOIN task_doc td 
 		                                   ON (d.doc_no = td.doc_no)
 		                                 JOIN apr a 
 		                                   ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
 		        WHERE	d.draft = #{eid}	
+		        		<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<if test="sch.aprStatCondition != null">
+							AND a.apr_yn LIKE '%' || #{sch.aprStatCondition} || '%'
+						</if>
+						<if test="sch.docStatCondition != null">
+							AND d.doc_stat LIKE '%' || #{sch.docStatCondition} || '%'
+						</if> 
+						<if test="sch.draftStatCondition != null">
+							AND d.draft_stat LIKE '%' || #{sch.draftStatCondition} || '%'
+						</if>  
+						<choose>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
+							</when>
+						</choose>
+						<if test="sch.schTasks != null">
+							AND td.task_no IN 
+							<foreach item="task" index="index" collection="sch.schTasks"
+     								 open="(" separator="," close=")">
+							#{task.taskNo}
+							</foreach>
+						</if>
 		        GROUP BY 
 		                d.doc_no
 		                ,d.temp_id
@@ -99,7 +131,8 @@
 		                ,d.doc_stat
 		                ,a.apr_yn
 		                ,a.apr_name
-		                ,d.draft_dt     ) g
+		                ,d.draft_dt     
+		                ,d.cmplt_dt      ) g
 		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
 		AND		g.rn > (#{sch.page} - 1) * 5
 	</select>
@@ -114,7 +147,37 @@
 		                                   ON (d.doc_no = td.doc_no)
 		                                 JOIN apr a 
 		                                   ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
-		         WHERE	d.draft = #{eid}	
+		         WHERE	d.draft = #{eid}
+		         		<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<if test="sch.aprStatCondition != null">
+							AND a.apr_yn LIKE '%' || #{sch.aprStatCondition} || '%'
+						</if>
+						<if test="sch.docStatCondition != null">
+							AND d.doc_stat LIKE '%' || #{sch.docStatCondition} || '%'
+						</if> 
+						<if test="sch.draftStatCondition != null">
+							AND d.draft_stat LIKE '%' || #{sch.draftStatCondition} || '%'
+						</if>  
+						<choose>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
+							</when>
+						</choose>
+						<if test="sch.schTasks != null">
+							AND td.task_no IN 
+							<foreach item="task" index="index" collection="sch.schTasks"
+     								 open="(" separator="," close=")">
+							#{task.taskNo}
+							</foreach>
+						</if>
 		       	 GROUP BY d.doc_no)
 	</select>
 
@@ -134,7 +197,7 @@
 				,g.draft_dt
 		FROM
 				(SELECT 
-						ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
+						ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
 						,d.doc_no
 						,d.draft
 						,d.dept_id
@@ -152,6 +215,20 @@
 				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
 				WHERE	a.apr_emp = #{eid}	
 				AND		d.doc_stat = '4B2b'
+						<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<choose>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
+							</when>
+						</choose>
 				GROUP BY 
 						 d.doc_no
 						,d.draft
@@ -178,6 +255,20 @@
 				                           ON (d.doc_no = a.doc_no AND d.now_line = a.apr_sq)
 				WHERE	d.doc_stat = '4B2b'
 				AND		a.apr_emp = #{eid}
+						<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<choose>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
+							</when>
+						</choose>
 				GROUP BY d.doc_no) 
 	</select>
 	
@@ -224,7 +315,7 @@
 							<when test="sch.dtStart != null and sch.dtEnd == null">
 								AND ${sch.dateCondition} >= #{sch.dtStart}
 							</when>
-							<when test="sch.dtStart != null and sch.dtEnd != null">
+							<when test="sch.dtStart == null and sch.dtEnd != null">
 								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
 							</when>
 						</choose>
@@ -267,7 +358,7 @@
 					<when test="sch.dtStart != null and sch.dtEnd == null">
 						AND ${sch.dateCondition} >= #{sch.dtStart}
 					</when>
-					<when test="sch.dtStart != null and sch.dtEnd != null">
+					<when test="sch.dtStart == null and sch.dtEnd != null">
 						AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
 					</when>
 				</choose> 
@@ -286,9 +377,10 @@
 			  	,g.draft_name
 			  	,g.doc_stat_name
 			    ,g.draft_dt
+			    ,g.cmplt_dt
 		FROM    
 				(SELECT 
-						 ROW_NUMBER() OVER (ORDER BY d.doc_no DESC) rn
+						 ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition}) rn
 				        ,d.doc_no
 				        ,get_deptname(d.dept_id)  AS dept_name
 				        ,get_tempname(d.temp_id)  AS temp_name
@@ -297,6 +389,7 @@
 				        ,d.draft_name
 				        ,get_codename(d.doc_stat) AS doc_stat_name
 				        ,d.draft_dt
+				        ,d.cmplt_dt
 				FROM 
 						doc d LEFT OUTER JOIN task_doc td 
 				                           ON (d.doc_no = td.doc_no)
@@ -304,17 +397,27 @@
 						d.cust_no = #{emp.custNo} 
 				AND 
 						(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
-						
+						<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
 						<choose>
-							<when test="sch.schTaskNo != null">
-							AND td.task_no IN 
-								<foreach item="no" index="index" collection="sch.schTaskNo"
-      									 open="(" separator="," close=")">
-								#{no}
-								</foreach>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
 							</when>
 						</choose>
-						
+						<if test="sch.schTasks != null">
+							AND td.task_no IN 
+							<foreach item="task" index="index" collection="sch.schTasks"
+     									 open="(" separator="," close=")">
+							#{task.taskNo}
+							</foreach>
+						</if>
 				GROUP BY 
 						 d.doc_no
 					    ,d.dept_id
@@ -322,7 +425,8 @@
 					    ,d.title
 					    ,d.draft_name
 					    ,d.doc_stat
-					    ,d.draft_dt		) g
+					    ,d.draft_dt
+					    ,d.cmplt_dt		) g
 		WHERE 	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
 		AND 	g.rn > (#{sch.page} - 1) * 5
 	</select>
@@ -339,17 +443,30 @@
 				                           ON (d.doc_no = a.doc_no AND a.apr_sq = d.now_line)
 				 WHERE	d.cust_no = #{emp.custNo}
 				 AND	(d.doc_stat = '4B3b' OR d.doc_stat = '4B4b')
-				 		
-				 		<choose>
-							<when test="sch.schTaskNo != null">
-							AND td.task_no IN 
-								<foreach item="no" index="index" collection="sch.schTaskNo"
-      									 open="(" separator="," close=")">
-								#{no}
-								</foreach>
+				 		<if test="sch.keywordCondition != null">
+							AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+						</if>
+						<if test="sch.aprStatCondition != null">
+							AND a.apr_yn LIKE '%' || #{sch.aprStatCondition} || '%'
+						</if> 
+						<choose>
+							<when test="sch.dtStart != null and sch.dtEnd != null">
+								AND ${sch.dateCondition} BETWEEN #{sch.dtStart} AND #{sch.dtEnd}
+							</when>
+							<when test="sch.dtStart != null and sch.dtEnd == null">
+								AND ${sch.dateCondition} >= #{sch.dtStart}
+							</when>
+							<when test="sch.dtStart == null and sch.dtEnd != null">
+								AND ${sch.dateCondition} <![CDATA[<=]]> #{sch.dtEnd}
 							</when>
 						</choose>
-						
+						<if test="sch.schTasks != null">
+							AND td.task_no IN 
+							<foreach item="task" index="index" collection="sch.schTasks"
+     									 open="(" separator="," close=")">
+							#{task.taskNo}
+							</foreach>
+						</if>
 				 GROUP BY d.doc_no)
 	</select>		
 		

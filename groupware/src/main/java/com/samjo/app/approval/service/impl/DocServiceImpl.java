@@ -54,8 +54,8 @@ public class DocServiceImpl implements DocService {
 		return list;
 	}
 	@Override
-	public int countEmpDocs(String empId) {
-		return docMapper.countEmpDocs(empId);
+	public int countEmpDocs(String empId, SearchVO searchVO) {
+		return docMapper.countEmpDocs(empId, searchVO);
 	}
 	
 	// 문서조회 - 한 emp가 결재해야할 문서목록.
@@ -64,8 +64,8 @@ public class DocServiceImpl implements DocService {
 		return docMapper.selectEmpApr(empId, searchVO);
 	}
 	@Override
-	public int countEmpApr(String empId) {
-		return docMapper.countEmpApr(empId);
+	public int countEmpApr(String empId, SearchVO searchVO) {
+		return docMapper.countEmpApr(empId, searchVO);
 	}
 	
 	// 문서조회 - 전체문서 중 결재진행중 문서목록.
@@ -137,8 +137,9 @@ public class DocServiceImpl implements DocService {
 			aprMapper.insertApr(docVO);
 		}
 		
+		System.out.println(docVO.getPto());
 		// 2.휴가원 등록.--최종결재완료이후 처리필요.
-		if(docVO.getTempId().equals("TP002")) {
+		if(docVO.getTempId().equals("public01")) {
 			docVO.getPto().setDocNo(docVO.getDocNo());
 			tempMapper.insertPto(docVO.getPto());
 		}
@@ -190,7 +191,7 @@ public class DocServiceImpl implements DocService {
 		}
 		
 		// 2.휴가원 수정
-		if(docVO.getTempId().equals("TP002")) {
+		if(docVO.getTempId().equals("public01")) {
 			docVO.getPto().setDocNo(docVO.getDocNo());
 			tempMapper.updatePto(docVO.getPto());
 		} else {

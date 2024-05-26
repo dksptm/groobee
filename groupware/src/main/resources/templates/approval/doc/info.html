@@ -408,7 +408,7 @@
 	            url: '/pto/' + dno, // 엔드포인트 URL
 	            type: 'GET',
 	            success: function(response) {
-	                
+	                console.log(response);
 	                $('#ptoType').val(response.ptoType).prop("selected",true);
                 	$('#sdt').val(response.ptoStartDt.split(" ")[0]);
                 	$('#stime').val(response.ptoStartDt.split(" ")[1]);

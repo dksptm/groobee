@@ -16,11 +16,11 @@ public interface DocService {
 
 	// 한 직원이 작성한 모든문서.
 	public List<DocVO> getMyDocList(String empId, SearchVO searchVO);
-	public int countEmpDocs(String empId);
+	public int countEmpDocs(String empId, SearchVO searchVO);
 	
 	// 내가 현재 결재해야할 문서리스트.
 	public List<DocVO> getMyAprList(String empId, SearchVO searchVO);
-	public int countEmpApr(String empId);
+	public int countEmpApr(String empId, SearchVO searchVO);
 	
 	// 전체문서 중 결재진행중인 문서리스트
 	public List<DocVO> getIngDocList(EmpVO empVO, SearchVO searchVO);

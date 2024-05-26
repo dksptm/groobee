@@ -68,7 +68,7 @@ public class DocController {
 		if(empVO != null) {
 			
 			List<DocVO> list = docService.getMyDocList(empVO.getEmpId(), searchVO);
-	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId()));
+	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId(), searchVO));
 	        
 	        model.addAttribute("list", list);
 	        model.addAttribute("pageDTO", pageDTO);
@@ -92,7 +92,7 @@ public class DocController {
 		if(empVO != null) {
 			
 			List<DocVO> list = docService.getMyDocList(empVO.getEmpId(), searchVO);
-	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId()));
+	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId(), searchVO));
 	        
 	        model.addAttribute("list", list);
 	        model.addAttribute("pageDTO", pageDTO);
@@ -117,7 +117,7 @@ public class DocController {
 		if (empVO != null) {
             
             List<DocVO> list = docService.getMyAprList(empVO.getEmpId(), searchVO);
-            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpApr(empVO.getEmpId()));
+            PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpApr(empVO.getEmpId(), searchVO));
             
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
@@ -257,7 +257,6 @@ public class DocController {
 		model.addAttribute("emps", emps);
 		model.addAttribute("tasks", tasks);
 		
-		System.out.println(findVO);
 		return "approval/doc/update";
 	}
 	
@@ -275,12 +274,15 @@ public class DocController {
 		
 		// 첨부파일 디렉토리 저장.
 		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
-		if(!filelist[0].isEmpty()) {
+		
+		System.out.println(filelist == null);
+		
+		if(filelist != null && !filelist[0].isEmpty()) {
 			fileInfoList = fileUploadService.uploadFileInfo(filelist);			
 		}
 		
 		// 파일수정 트랜잭션으로.
-		int result = docService.docInfoInsert(docVO, fileInfoList);
+		int result = docService.docInfoUpdate(docVO, fileInfoList, flag);
 		
 		if(result == -1) {
 			System.out.println("fail - doc table update");
@@ -304,8 +306,14 @@ public class DocController {
 		if(searchVO.getSortCondition() == null) {
 			searchVO.setSortCondition("d.doc_no DESC");
 		}
-		if(searchVO.getAprStatCondition() == null || searchVO.getAprStatCondition().equals("docAll")) {
+		if(searchVO.getAprStatCondition() == null || searchVO.getAprStatCondition().equals("aprStatAll")) {
 			searchVO.setAprStatCondition("_");
+		}
+		if(searchVO.getDocStatCondition() == null || searchVO.getDocStatCondition().equals("docStatAll")) {
+			searchVO.setDocStatCondition("_");
+		}
+		if(searchVO.getDraftStatCondition() == null || searchVO.getDraftStatCondition().equals("draftStatAll")) {
+			searchVO.setDraftStatCondition("_");
 		}
 		return searchVO;
 	}
