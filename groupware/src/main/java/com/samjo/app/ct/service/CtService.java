@@ -10,4 +10,6 @@ public interface CtService {
 	public List<CtVO> ctList(SearchVO searchVO);
 	//계약 페이징
 	public int count(SearchVO searchVO);
+	//계약 상세조회
+	public CtVO ctInfo(int ctNO);
 }

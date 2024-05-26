@@ -99,15 +99,16 @@
 							</div>
 						</div>
 					</form>
-					<div class="mt-3 col-12 tempdiv"></div>
 
 					<!--  작성완료 버튼 -->
 					<div class="mt-3 text-end">
 						<button type="submit"
 							class="commitbtn btn rounded-pill btn-primary">작성완료</button>
 					</div>
+					<div class="mt-3 col-12 tempdiv"></div>
 
-					<script src="/js/html2canvas.js"></script>
+					<!-- <script src="/js/html2canvas.js"></script> -->
+					<script src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 					<script>
 						//CSRF
 						let header = $("meta[name='_csrf_header']").attr('content');
@@ -133,21 +134,22 @@
 								<input class="form-control inputTemp" id="filename" type="text" />
 							</div>
 							<div class="mt-3">템플릿HTML입력</div>
-							<textarea class="form-control inputTemp w-100 h-75 p-1" id="content"></textarea>
+							<textarea class="form-control inputTemp w-100 p-1" id="content"></textarea>
 							<!-- 템플릿 초기화 버튼 -->
 							<div class="d-flex justify-content-center mb-3">
 								<button type="button" class="btn btn-primary mt-2 mx-2" id="htmlreset">초기화</button>
 							</div>
 							<h4 class="tempPre">=템플릿 미리보기=</h4>
-							<div style="display: none;"
+							<div style="width: 210mm; height: 297mm; position: relative;"
 								class="tempPre template p-3 border border-dark"></div>
 						`;
 						//업로드 Tag
 						let templateB = `
 							<div class="test">
-								<input name="uploadFiles2" id="uploadFiles2" type="file">
+								<input name="uploadFiles2" id="uploadFiles2" onchange="previewFile()" type="file">
 							</div>
-							<div class="upload-sample p-3 com-sm-1"></div>
+							<div style="background-color: #ffffff; display: inline-block; position: relative; "
+								class="upload-sample p-3" ></div>
 						`;
 						
 						//업로드/직접입력 템플릿 반영
@@ -234,14 +236,13 @@
 						        uplName = saveName.split("/").pop();
 							};
 					    	
-					    	
 					        // 파일 미리보기 이미지 생성
-					        let html = await $.ajax({
+					         /* let html = await $.ajax({
 					            url: 'files/' + path[3],
 					            dataType: "html"
 					        });
 					        $('.upload-sample').css('display', 'block');
-					        $('div.upload-sample').html(html);
+					        $('div.upload-sample').html(html);  */
 					
 					        var t;
 					        if ($(".inserttype").val() == "input") {
@@ -277,7 +278,26 @@
 					    }
 					});
 
-						
+					//HTML미리보기 처리 함수
+					function previewFile() {
+			            //const content = document.querySelector(".upload-sample");
+			            const content = $(".upload-sample");
+			            const [file] = document.querySelector("input[type=file]").files;
+			            const reader = new FileReader();
+
+			            reader.addEventListener("load", () => {
+			                    const parser = new DOMParser();
+			                    const doc3 = parser.parseFromString(reader.result, "text/html");
+			                    //content.append(doc3.body);
+			                    content.html('');
+			                    $(doc3.body).children().appendTo('.upload-sample');
+			                },
+			                false,
+			            );
+			            if (file) {
+			                reader.readAsText(file);
+			            } 
+			        }
 					</script>
 				</div>
 			</div>

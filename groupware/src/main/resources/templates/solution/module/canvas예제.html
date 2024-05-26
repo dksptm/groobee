@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+</head>
+
+<body>
+
+    <div class="card card-default pb-5">
+        <input type="file" onchange="previewFile()" /><br />
+        <p class="content"></p>
+
+        <div class="save_btn">
+            <a class="hover" href='javascript:void(0);' onclick="PrintDiv($('#bar_chart2'));">이미지로 저장</a>
+        </div>
+        <div id="bar_chart2"> //저장 div
+            <div class="card-header justify-content-center">
+                <h2 class="text-center">현재 습도 데이터</h2>
+            </div>
+            <div class="card-body" style="height: 300px;">
+                <div id='customLegend_humi' class='customLegend'></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //이미지(png)로 다운로드
+        function PrintDiv(div) {
+            div = div[0]
+            html2canvas(div, {
+                width: 500,
+                height: 500
+            }).then(function (canvas) {
+                var myImage = canvas.toDataURL();
+                var img = document.createElement("img")
+                img.src = myImage;
+                document.body.appendChild(img);
+            });
+        }
+
+
+        function previewFile() {
+            const content = document.querySelector(".content");
+            const [file] = document.querySelector("input[type=file]").files;
+            const reader = new FileReader();
+
+            reader.addEventListener("load", () => {
+                    const parser = new DOMParser();
+                    const doc3 = parser.parseFromString(reader.result, "text/html");
+                    content.append(doc3.body);
+                },
+                false,
+            );
+
+            if (file) {
+                reader.readAsText(file);
+            }
+        }
+    </script>
+</body>
+
+</html>
