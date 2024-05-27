@@ -30,4 +30,13 @@ public class CtServiceImpl implements CtService{
 		return ctMapper.ctCount(searchVO);
 	}
 
+	@Override
+	public CtVO ctInfo(int ctNO) {
+		CtVO ctVO = new CtVO();
+		ctVO = ctMapper.ctInfo(ctNO);
+		ctVO.setModList(ctMapper.selectModList(ctNO));
+		ctVO.setEmpList(ctMapper.selectEmpList(ctNO));
+		return ctVO; 
+	}
+
 }

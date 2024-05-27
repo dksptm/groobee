@@ -23,25 +23,27 @@
 						ct.ct_file
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
-				WHERE rownum <![CDATA[<=]]> (#{page} * 10) 
-				<if test="keyword != null and keyword != ''">
-					AND ${searchCondition} LIKE '%' || #{keyword} || '%'
-				</if>
-				<if test="ctStat != null and ctStat != ''">
-					AND ct.ct_stat LIKE #{ctStat}
-				</if>
-				<choose>
-					<when test="ctStart != null and ctEnd != null">
-						AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
-					</when>
-					<when test="(ctStart != null) and (ctEnd == null)">
-						AND ${ctDt} >= #{ctStart}
-					</when>
-					<when test="(ctEnd != null) and (ctStart == null)">						
-						AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-					</when>
-				</choose>
-				ORDER BY ${ctSort}) t ) r
+				<where>
+					<if test="keyword != null and keyword != ''">
+						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="ctStat != null and ctStat != ''">
+						AND ct.ct_stat LIKE #{ctStat}
+					</if>
+					<choose>
+						<when test="ctStart != null and ctEnd != null">
+							AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
+						</when>
+						<when test="(ctStart != null) and (ctEnd == null)">
+							AND ${ctDt} >= #{ctStart}
+						</when>
+						<when test="(ctEnd != null) and (ctStart == null)">						
+							AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+						</when>
+					</choose>
+				</where>
+				ORDER BY ${ctSort},cust_no ) t 
+			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10
 	</select>
 
@@ -70,5 +72,47 @@
 			</choose>
 		</where>
 	</select>
+	
+	<!-- 계약 상세조회 -->
+	<select id="ctInfo" resultType="CtVO">
+		SELECT ct.ct_no,
+			   ct.ct_stat,
+		       ct.cust_no,
+		       c.cust_name,
+		       c.brn,
+		       c.rep,
+		       ct.ct_file,
+		       ct.ct_start_dt,
+		       ct.ct_end_dt,
+		       ct.ct_amt,
+		       ct.use_mod_cnt,
+		       ct.max_emps,
+		       ct.cur_emps
+		FROM   ct ct JOIN cust c 
+		             ON(ct.cust_no = c.cust_no)
+		WHERE  ct.ct_no = #{ctNo}
+	</select>
+	
+	<!-- 계약 상세조회-이용중 모듈목록 -->
+	<select id="selectModList" resultType="ModuleVO">
+		SELECT 	m.mod_name
+		FROM 	use_mod um JOIN mod m
+		                	ON (um.mod_id = m.mod_id)
+		WHERE 	um.mod_use_stat = '1B1b'
+		AND   	um.ct_no = #{ctNo}
+	</select>	
+	
+	<!-- 계약 상세조회-이용중 계정목록 -->	
+	<select id="selectEmpList" resultType="EmpVO">
+		SELECT  e.emp_id,
+		        e.email_addr,
+		        e.emp_name, 
+		        j.job_title,
+		        p.perm_name
+		FROM emp e JOIN jobs j
+		            ON(e.job_no = j.job_no)
+		           JOIN perm p
+		            ON(j.perm_id = p.perm_id)
+	</select>	
 	
 </mapper>

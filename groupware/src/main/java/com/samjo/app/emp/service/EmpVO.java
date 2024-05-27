@@ -33,6 +33,7 @@ public class EmpVO {
 	
 	// 권한.
 	private String permId;
+	private String permName;
 	
 	// 조회 위한 생성자..
 	public EmpVO(String empId, String custNo, String deptId, String permId) {

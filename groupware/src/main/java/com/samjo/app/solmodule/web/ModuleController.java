@@ -31,6 +31,10 @@ import com.samjo.app.solmodule.service.ModuleVO;
 import com.samjo.app.solmodule.service.TempDTO;
 import com.samjo.app.upload.service.UploadService;
 
+/*솔루션 - 모듈관리페이지 컨트롤러
+ 작성자 : 정연복 / 작성일자 : 240527 
+    
+*/
 @Controller
 public class ModuleController {
 	@Autowired
@@ -38,7 +42,11 @@ public class ModuleController {
 	@Autowired
 	UploadService uploadservice;
 
-	// 모듈 전체조회
+	/**
+	 * 모듈 전체조회
+	 * @param model
+	 * @return 
+	 */
 	@GetMapping("solModList")
 	public String moddulePage(Model model) {
 		List<ModuleVO> list = moduleservice.modList();
@@ -46,13 +54,22 @@ public class ModuleController {
 		return "solution/module/moduleList";
 	}
 
-	// 모듈 등록
+	/**
+	 * 모듈 등록 
+	 * @return
+	 */
 	@GetMapping("insertSolMod")
 	public String InsertMod() {
 		return "solution/module/insertModule";
 	}
 
 	// 템플릿 전체조회
+	/**
+	 * 
+	 * @param searchVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("solTempList")
 	public String tempList(SearchVO searchVO, Model model) {
 		if (searchVO.getPage() <= 0) {

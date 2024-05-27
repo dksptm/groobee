@@ -58,8 +58,7 @@ public class CtController {
 	//계약 상세조회
 	@GetMapping("sol/ctInfo/{ctNo}")
 	public String ctInfoPage(@PathVariable int ctNo,Model model) {
-		CtVO ctVO = new CtVO();
-		ctVO.setCtNo(ctNo);
+		CtVO ctVO = ctservice.ctInfo(ctNo);
 		model.addAttribute("ctVO", ctVO);
 		return "solution/ct/ctInfo";
 	}
