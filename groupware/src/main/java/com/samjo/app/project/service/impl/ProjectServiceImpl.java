@@ -19,7 +19,6 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	ProjectMapper projectMapper;
 	
-	
 	@Autowired
 	public ProjectServiceImpl(ProjectMapper projectMapper) {
 		this.projectMapper = projectMapper;
@@ -40,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 		System.out.println("프로젝트등록:"+ projectVO);
 		return projectMapper.insertPrjt(projectVO);
 	}
+	
 	@Override // 프로젝트 수정
 	public Map<String, Object> prjtUpdate(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
@@ -67,20 +67,25 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Override // 프로젝트(하위)업무 전체조회
 	public List<ProjectVO> taskAllList(SearchVO searchVO) {
+		System.out.println("serchVO--->:" + searchVO);
 		return projectMapper.selectTaskAllList(searchVO);
 	}
+	
 	@Override // 프로젝트업무 페이징
 	public int count(SearchVO searchVO) {
 		return projectMapper.taskCount(searchVO);
 	}
+	
 	@Override // 프로젝트(하위)업무 단건조회
 	public ProjectVO taskInfo(ProjectVO projectVO) {
 		return projectMapper.selectTask(projectVO);
 	}
+	
 	@Override // 프로젝트(하위) 등록
 	public int taskInsert(ProjectVO projectVO) {
 		return projectMapper.insertTask(projectVO);
 	}
+	
 	@Override //프로젝트(하위)업무 수정
 	public Map<String, Object> taskUpdate(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
@@ -104,7 +109,6 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		return map;
 	}
-	
 	
 	@Override // 상시(주기적)업무 등록
 	public int reguInsert(ProjectVO projectVO) {

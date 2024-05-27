@@ -65,7 +65,6 @@ public class ProjectController {
 		} else {
 			return "test/test";
 		}
-
 	}
 	
 	@ResponseBody
@@ -118,10 +117,11 @@ public class ProjectController {
 		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
 			searchVO.setTaskSort("task_no");
 		}
+		System.out.println(searchVO);
 		List<ProjectVO> list = projectService.taskAllList(searchVO);
+		model.addAttribute("list", list);
 		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
 		model.addAttribute("TaskDTO", taskDTO);
-		model.addAttribute("task", list);
 		return "project/task/tsList";
 	}
 	
@@ -174,13 +174,12 @@ public class ProjectController {
 		String uri = null;
 
 		if (taskNo > -1) {
-			uri = "true";
+			uri = "task/tsList";
 		} else {
 			uri = "false";
 		}
 		return uri;
 	}
-	
 	
 	
 	// 프로젝트(하위) 업무 단건

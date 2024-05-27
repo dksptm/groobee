@@ -24,24 +24,32 @@
 								<table>
 									<tr>
 										<td><select class="form-select searchKeySelect">
-												<option value="taskno">업무번호</option>
-												<option value="prjtname">프로젝트명</option>
-												<option value="taskname">업무명</option>
+												<option value="t.task_no">업무번호</option>
+												<option value="p.prjt_name">프로젝트명</option>
+												<option value="t.task_name">업무명</option>
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey" type="text"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">업무종류</td>
 										<td><select class="form-select taskType">
-												<option value="statAll">전체</option>
+												<option value="typeAll">전체</option>
 												<option value="5A1a">프로젝트업무</option>
 												<option value="5A2a">상시업무</option>
+										</select></td>
+										<td class="text-white">_</td>
+										<td class="form-control">진행상태</td>
+										<td><select class="form-select prjtMat">
+												<option value="statAll">전체</option>
+												<option value="5B1b">업무진행중</option>
+												<option value="5B2b">업무완료</option>
+												<option value="5B3b">업무취소</option>
 										</select></td>
 									</tr>
 									<tr>
 										<td><select class="form-select taskDt">
-												<option value="t.task_start_dt">업무시작일</option>
-												<option value="t.task_end_dt">업무종료일</option>
-										</select></td>
+												<option value="t.task_start_dt">시작일</option>
+												<option value="t.task_due_dt">종료일</option>
+										</select>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
@@ -53,8 +61,9 @@
 												<option value="t.task_start_dt">업무시작일순</option>
 												<option value="t.task_start_dt DESC">업무시작일순</option>
 												<option value="t.task_due_dt">업무마감일</option>
-												<option value="t.task_due_dt DESC">업무마감일역</option>
-												<option value="participants_cnt">참여인원순</option>
+												<option value="t.task_due_dt DESC">업무마감일역순</option>
+												<option value="participants_cnt">참여인원적은순</option>
+												<option value="participants_cnt DESC">참여인원많은순</option>
 												<option value="progress">진행도순</option>
 										</select></td>
 									</tr>
@@ -67,7 +76,7 @@
 						</div>
 					</nav>
 					<div id="taskTable">
-						<!-- 업 목록 출력 -->
+						<!-- 업무 목록 출력 -->
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
@@ -83,16 +92,15 @@
 									</tr>
 								</thead>
 								<tbody>
-									<th:block th:each="task : ${task}">
+									<th:block th:each="task : ${list}">
 										<tr
 											th:onclick="|location.href='@{/task/Info/}@{${task.taskNo}}'|">
 											<td>[[ ${task.taskNo} ]]</td>
 											<td>[[ ${task.prjtName} ]]</td>
 											<td>[[ ${task.taskName} ]]</td>
-											<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}
-												]]</td>
+											<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
 											<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${task.ptCnt} ]]</td>
+											<td>[[ ${task.participantsCnt} ]]</td>
 											<td>[[ ${task.progress} ]]</td>
 											<td
 												th:class="${task.prjtMat == '5B2b' ? 'table-secondary' : ''}">
@@ -154,19 +162,16 @@
 			// 검색 조건 변수 
 			let keyword;
 			let searchCondition;
-			let taskNo;
-			let taskName;
-			let prjtName;
 			let taskType;
 			let prjtMat;
 			let taskDt;
 			let taskStart;
 			let taskDue;
-			let task;
+			let taskSort;
 			
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
-				e.preventDefault(); 
+				//e.preventDefault(); 
 				updateParams();
 				let page = 1;
 				showTable(page);
@@ -176,7 +181,7 @@
 			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
 				let page = e.target.id;
-				updateParams();
+				//updateParams();
 				showTable(page);
 			});
 			
@@ -187,7 +192,7 @@
 		        searchCondition = $('.searchKeySelect').val();
 		        
 		    	// 기간 검색 처리
-		        taskDt = $('.task').val();
+		        taskDt = $('.taskDt').val();
 		        taskStart = $('.fromDt').val();
 		        taskDue = $('.toDt').val();
 		
@@ -199,13 +204,12 @@
 		        }
 				
 				// 타입 검색처리
-				if ($('.taskType').val() != 'statAll') {
+				if ($('.taskType').val() != 'typeAll') {
 					taskType = $('.taskType').val();
 		        } else {
 		        	taskType = null;
 		        }
 				
-
 				// 정렬 처리
 				taskSort = $('.searchSelect').val();
 			 
@@ -222,18 +226,17 @@
 						data : {
 							page : page,
 							taskSort : taskSort,
-							prjtMat : prjtMat,
 							taskStart : taskStart,
 							taskDue : taskDue,
-							taskType : taskType,
 							taskDt : taskDt,
+							prjtMat : prjtMat,
+							taskType : taskType,
 							keyword: keyword,
 			                searchCondition: searchCondition
 						},
-						dataType : 'html',
+						dataType : 'Text',
 						success : function(result) {
 								$('#taskTable').replaceWith(result);
-								
 					}
 				});
 			}
