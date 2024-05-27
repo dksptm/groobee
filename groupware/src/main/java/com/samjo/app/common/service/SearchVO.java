@@ -53,6 +53,8 @@ public class SearchVO {
 	private String sender;
 	private String recp;
 	private String refer;
+	private String recpType;
+	private String emSort;
 	private boolean hasFile; //첨부파일 유무 -> 있으면 클립이미지
 	
 	

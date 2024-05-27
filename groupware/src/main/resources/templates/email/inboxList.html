@@ -24,23 +24,23 @@
 								<table>
 									<tr>
 										<td><select class="form-select searchKeySelect">
-												<option value="title">제목 검색</option>
-												<option value="cntn">내용 검색</option>
-												<option value="sender">발신자 검색</option>
+												<option value="s.title">제목 검색</option>
+												<option value="s.cntn">내용 검색</option>
+												<option value="s.sender">발신자 검색</option>
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey"
 											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">수신유형</td>
-										<td><select class="form-select" id = "reSelect">
+										<td><select class="form-select" id = "recpType">
 												<option value="reall">전체</option>
-												<option value="recp">수신자</option>
-												<option value="refer">참조자</option>
+												<option value="3A1a">수신자</option>
+												<option value="3A2a">참조자</option>
 										</select></td>
 									</tr>
 									<tr>
 										<td><select class="form-select sentDt">
-												<option value="sentDt">수신날짜</option>
+												<option value="s.sentDt">수신날짜</option>
 										</select></td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
@@ -54,6 +54,7 @@
 							</div>
 						</div>
 					</nav>
+				</div>
 					<div id="inboxTable">
 						<!-- 계약 목록 출력 -->
 						<div class="table-responsive">
@@ -68,13 +69,14 @@
 									</tr>
 								</thead>
 								<tbody>
-									<th:block th:each="EmailVO : ${list}">
-										<tr>
+									<th:block th:each="emailVO : ${list}">
+										<tr><!--*/ th:onclick="|location.href='@{/email/inboxInfo/}@{${EmailVO.senEmailNo}}'|"> */--> 
 											<td>[[ ${emailVO.sender} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${#emailVO.recpType} ]]</td>
-											<td><input type="radio" name="check" th:value="${EmailVO.senEmailNo}"></td>
+											<td>점검</td>
+											<!--*/<td th:text="${#emailVO.recpType}"></td>/*-->
+											<td><input type="radio" name="check" th:value="${emailVO.senEmailNo}"></td>
 										</tr>
 									</th:block>
 								</tbody>
@@ -82,32 +84,33 @@
 						</div>
 						<!-- 페이징 -->
 						<div>
-							<th:block th:if="${CtDTO.totalCnt} != 0">
+						<div class="paging mt-2">
+							<th:block th:if="${EmailDTO.totalCnt} != 0">
 								<nav aria-label="Page navigation">
 									<ul class="pagination justify-content-center">
 
-										<th:block th:if="${CtDTO.prev}">
-											<li class="page-item prev"><a
-												th:href="|/inboxList?page=${CtDTO.startPage - 1 }|"
-												class="page-link"><i class="bx bx-chevron-left"></i></a></li>
+										<th:block th:if="${EmailDTO.prev}">
+											<li class="page-item prev"><a href="#"
+												th:id="${EmailDTO.startPage - 1 }" class="page-link pagebtn"><i 
+													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
-											th:each="num : ${#numbers.sequence(1, CtDTO.endPage)}">
+											th:each="num : ${#numbers.sequence(1, EmailDTO.endPage)}">
 											<li class="page-item "
-												th:attrappend="class=${num ==  CtDTO.page ? 'active' : ' '}">
-												<a th:href="|/inboxList?page=${num}|" class="page-link">[[${num}]]</a>
+												th:attrappend="class=${num ==  EmailDTO.page ? 'active' : ' '}">
+												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
-										<th:block th:if="${CtDTO.next}">
-											<li class="page-item next"><a
-												th:href="|/sol/inboxList?page=${CtDTO.endPage + 1 }|"
-												class="page-link"><i class="bx bx-chevron-right"></i></a></li>
+										<th:block th:if="${EmailDTO.next}">
+											<li class="page-item next"><a href="#"
+												th:id="${EmailDTO.endPage + 1 }" class="page-link pagebtn"><i 
+													class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
 								</nav>
 							</th:block>
-							<th:block th:unless="${CtDTO.totalCnt} != 0">
-								<p>받은 메일이 없습니다.</p>
+							<th:block th:unless="${EmailDTO.totalCnt} != 0">
+								<p class="text-center mt-4">받은 메일이 없습니다.</p>
 							</th:block>
 						</div>
 						<!-- /페이징 -->
@@ -128,40 +131,59 @@
 				$('.fromDt').attr('max', this.value);
 			});
 			
+			// 검색 조건 변수 -> 개선 : 객체 타입으로...
+			let keyword;
+			let searchCondition;
+			let recEmailNo;
+			let title;
+			let cntn;
+			let sender;
+			let recpType;
+			let sentDt;
+			let sdStart;
+			let sdEnd;
+			let emSort;
+			
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
+				updateParams();
 				let page = 1;
 				showTable(page);
 			});
 			
 			//페이징 링크 처리
-			$(".paging").on("click", $(".page-link"), function(e){
+			$(document).on("click", $(".pagebtn"), function(e){
 				e.preventDefault();
-				let page = $(this).attr("id");
-				console.log($(this));
+				let page = e.target.id;
 				showTable(page);
 			});
 			
+			// 검색 조건 갱신 함수
+		    function updateParams() {
+		        // 키워드 검색 처리
+		        keyword = $('.searchKey').val();
+		        searchCondition = $('.searchKeySelect').val();
+		        
+		        //기간 검색 처리
+		        sentDt = $('.sentDt').val();
+		        sdStart = $('.fromDt').val();
+		        sdEnd = $('.toDt').val();
+		        
+		        // 수신자/참조자 검색처리
+		        if ($('#recpType').val() != 'reall') {
+		            recpType = $('.recpType').val();
+		        } else {
+		        	recpType = null;
+		        }
+		        
+		        //정렬 조건
+		        emSort = $('.searchSelect').val();
+			}
+			
 			//검색 AJAX 함수
-			function showTable(page){
-				let recEmailNo;
-				let title;
-				let cntn;
-				let sender;
-				let sentDt = $('.sentDt').val();
-				let sdStart = $('.fromDt').val();
-				let sdEnd = $('.toDt').val();
-				//키워드 검색 처리
-				if($('.searchKeySelect').val()=='title'){
-					title = $('.searchKey').val();
-				}else if($('.searchKeySelect').val()=='cntn'){
-					cntn = $('.searchKey').val();
-				}else if($('.searchKeySelect').val()=='sender'){
-					sender = $('.searchKey').val();
-				}
-				
+			function showTable(page) { 
 				$.ajax({
-					url : '/inboxList',
+					url : '/viewInboxList',
 					type : 'POST',
 					beforeSend : function(xhr) {
 						xhr.setRequestHeader(header, token);
@@ -169,12 +191,12 @@
 					data : {
 						page : page,
 						recEmailNo : recEmailNo,
-						title : title,
-						cntn : cntn,
-						sender : sender,
 						sentDt : sentDt,
 						sdStart : sdStart,
 						sdEnd : sdEnd,
+						emSort : emSort,
+						keyword : keyword,
+						searchCondition : searchCondition
 					},
 					dataType : 'Text',
 					success : function(result) {

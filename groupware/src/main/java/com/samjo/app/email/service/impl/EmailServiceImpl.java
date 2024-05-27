@@ -2,7 +2,6 @@ package com.samjo.app.email.service.impl;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,9 +95,10 @@ public class EmailServiceImpl implements EmailService {
 	public EmailVO getFile(EmailVO emailVO) {
 		return null;
 	}
-
+	
+	//무의미 -> 테스트후 삭제
 	@Override
-	public int count(@Param("eid")String empId) {
+	public int count(String empId) {
 		return emailMapper.count(empId);
 	}
 
@@ -126,13 +126,8 @@ public class EmailServiceImpl implements EmailService {
 	
 	//한 emp가 recp,refer인 모든 메일
 	@Override
-	public List<EmailVO> countMyInbox(String EmpId, SearchVO searchVO) {
-		List<EmailVO> list = emailMapper.countMyInbox(EmpId, searchVO);
-		for(EmailVO email : list) {
-			System.out.println(email.getRecp());
-			System.out.println(email.getRefer());
-		}
-		return emailMapper.countMyInbox(EmpId, searchVO);
+	public int countMyInbox(SearchVO searchVO) {
+		return emailMapper.countMyInbox(searchVO);
 	}
 
 

@@ -4,39 +4,45 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
   
-  <!-- 받은메일함 전체조회/페이징 -->
+  <!-- 받은메일함 전체조회 -->
  	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
   		SELECT g.*
 		FROM (SELECT rownum rn,
-			t.*
-			FROM (SELECT r.rec_email_no,
-			             r.recp,
-			             r.refer,
-			             r.cust_no,
-			             r.recp_type,
-			             r.email_stat,
-			             s.sen_email_no, 
-			             s.title,
-						 s.sender,
-						 s.sent_dt
-				FROM email s JOIN inbox r
-							 ON (s.sen_email_no = r.sen_email_no)
-				WHERE rownum <![CDATA[<=]]> (#{page} * 10)
-				AND  (r.recp = #{recp} OR r.refer = #{refer, jdbcType=VARCHAR})
-				AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
-				AND  r.email_stat = '3B1b'
-				<choose>
-					<when test="sdStart != null and sdEnd != null">
-						AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
-					</when>
-					<when test="(sdStart != null) and (sdEnd == null)">
-						AND ${sentDt} >= #{sdStart}
-					</when>
-					<when test="(sdEnd != null) and (sdStart == null)">						
-						AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
-					</when> 
-				</choose>
-				ORDER BY sent_Dt ASC) t ) g
+			         t.*
+			  FROM (SELECT r.rec_email_no,
+			               r.recp,
+			               r.refer,
+			               r.cust_no,
+			               r.recp_type,
+			               r.email_stat,
+			               s.sen_email_no, 
+			               s.title,
+						   s.sender,
+						   s.sent_dt
+				    FROM email s JOIN inbox r
+							     ON (s.sen_email_no = r.sen_email_no)
+				    WHERE  (r.recp = #{recp} OR r.refer = #{refer, jdbcType=VARCHAR})
+				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
+				    AND  r.email_stat = '3B1b' <!-- if걸고 수신자,참조자 구별하기 -->
+				    <if test="keyword != null and keyword != ''">
+				    	AND ${searchCondition} Like '%' || #{keyword} || '%'
+				    </if>
+				    <if test ="recpType != null and recpType !='' ">
+				    	AND r.recp_type LIKE #{recpType}
+				    </if>
+				    <choose>
+					    <when test="sdStart != null and sdEnd != null">
+						    AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
+					    </when>
+					    <when test="(sdStart != null) and (sdEnd == null)">
+						    AND ${sentDt} >= #{sdStart}
+					    </when>
+					    <when test="(sdEnd != null) and (sdStart == null)">						
+						    AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
+					    </when>
+				    </choose>
+				    ORDER BY sent_Dt ASC ) t
+				WHERE rownum <![CDATA[<=]]> (#{page} * 10)) g
 		WHERE g.rn > (#{page} -1) * 10
   	</select>
   	
@@ -45,11 +51,29 @@
   		FROM INBOX
   	</select>
   
-  	<select id="countMyInbox" resultType="int">
+  <!-- 받은메일 페이징 -->
+  	<select id="countMyInbox" parameterType="SearchVO" resultType="int">
 		SELECT  COUNT(*)
 		FROM    inbox
-		WHERE	recp = #{eid}	
-		OR      refer = #{eid}
+		WHERE	recp = #{recp}	
+		OR      refer = #{refer}
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} Like '%' || #{keyword} || '%'
+		</if>
+		<if test ="recpType != null and recpType !='' ">
+			AND recp_type = #{recpType}
+		</if>
+			<choose>
+				<when test="sdStart != null and sdEnd != null">
+					AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
+				</when>
+				<when test="(sdStart != null) and (sdEnd == null)">
+					AND ${sentDt} >= #{sdStart}
+				</when>
+				<when test="(sdEnd != null) and (sdStart == null)">						
+					AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
+				</when>
+			</choose>
 	</select>
   
   <!-- email,inbox 단건조회시 첨부파일 조회 -->
