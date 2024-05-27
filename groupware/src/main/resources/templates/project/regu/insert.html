@@ -2,85 +2,123 @@
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
-<body>
-	<th:block layout:fragment="Content">
-		<div class="container">
-			<form name="insertForm" th:action="@{/regu/insert}" method="post" th:object="${projects}">
-				<br><br><br>
-                    <div style=" text-align: center;">
-                    	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
-                    	<button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
-                    	<button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
-                    </div>  
-                  <br>
-				<table id="form" class="table">
-						<h3>상시업무 등록</h3>
-						<tr>
-							<th>업무명</th>
-							<td><input type="text" th:field="*{prjtId}"></td>
-						</tr>
-						<tr>
-							<th>업무번호</th>
-							<td><input type="text" th:field="*{prjtName}"></td>
-						</tr>
-						<tr>
-							<th>부서명</th>
-							<td><select class="form-select" style="width:100px" th:field="*{deptName}" >
-									<option value="">선택</option>
-                               		 <!-- 부서 목록을 추가 -->
-			                    </select>  
-			                    </td>
-						</tr>
-						<tr>
-							<th>부서참여인원</th>
-							<td><input type="text" th:field="*{empName}"></td>
-						</tr>
-						<tr>
-							<th>책임자</th>
-							<td><input type="text" th:field="*{respMngrId}">
-							<button type="button" class="btn btn-primary">선택</button></td>
-						</tr>
-						<tr>
-							<th>담당자</th>
-							<td><input type="text" th:field="*{respMngrId}">
-							<button type="button" class="btn btn-primary">선택</button></td>
-						</tr>
-						<tr>
-							<th>시작일</th>
-							<td><input type="date" th:field="*{prjtDueDt}"></td>
-						</tr>
-						<tr>
-							<th>생성주기</th>
-							<td>
-								<select class="form-select" style="width:100px" th:field="*{prjtId}" >
-									<option value="day">매일</option>
-			                        <option value="week">매주</option>
-			                        <option value="month">매달</option>
-			                    </select>  
-	                    		<input type="time" th:field="*{prjtDueDt}">
-							</td>
-						</tr>
-						<tr>
-							<th>업무목적</th>
-							<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
-						</tr>
-						<tr>
-							<th>내용</th>
-							<td><textarea cols="50" th:field="*{smry}"></textarea></td>
-						</tr>
-				</table>
-					<div style=" text-align: center;">
-						<button type="submit" class="btn btn-primary">저장</button>
-						<button type="button" class="btn btn-primary">취소</button>
-					</div>
-				</form>
+
+<th:block layout:fragment="Content">
+
+<div class="container-xxl flex-grow-1 container-p-y">
+	<div class="row flex-xl-nowrap">
+	<div class="DocSearch-content col-12 container-p-y">
+		<div class="row m-3 p-3">
+			<h2 class="m-0 p-0 doc-page-title">문서작성</h2>
 		</div>
-
-
-		<script>
+		<hr>
+		<div class="row m-3 p-3 bg-white shadow-lg rounded">
+		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}" enctype="multipart/form-data">
+		
+			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			사원명 <input type="text" th:value="${#authentication.name}" name="draftName" readonly />
+			문서번호 <input type="text" name="docNo" th:value="${doc.docNo}" readonly /></p>
+			<hr>
 			
-		</script>
-		</th:block>
-		</body>
+			<!-- 작성완료/취소 버튼 -->
+			<div class="m-3 text-end">
+				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
+				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
+						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
+			</div>
+			
+			<div class="card-body row">
+			
+				<!-- 결재자 공간 -->
+				<div class="border border-3 p-3 col-4 input-tag-css">
+					<!-- 모달버튼 : 결재자 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-apr" 
+							data-bs-toggle="modal" data-bs-target="#docModalAprs">결재자 선택</button>
+					<!-- 결재자 리스트 -->
+					<div class="mt-3">
+						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" readonly /></p>
+						<div id="getAprs"><!-- 선택한 결재자 보여주는 공간 --></div>
+					</div>		
+				</div>
+				
+				<!-- 참조자 공간 -->
+				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 참조자  -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
+							data-bs-target="#docModalRefs">참조자 선택</button>
+					<!-- 참조자 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getRefs"><!-- 선택한 참조자 보여주는 공간 --></div>
+					</div>
+				</div>
+				
+				<!-- 업무선택 공간 -->
+				<div class="border border-3 p-3 col-4">
+					<!-- 모달버튼 : 업무선택 -->
+					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" data-bs-toggle="modal"
+							data-bs-target="#docModalTasks">업무 선택</button>
+					<!-- 관련업무 리스트 -->
+					<div class="mt-3 text-start">
+						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
+					</div>
+				</div>
+
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
+				<div class="col-8 mt-3 p-0">
+	    			<input type="text" class="form-control border border-3" th:field="*{title}" 
+	    				   aria-describedby="basic-addon14" placeholder="제목을 입력하세요." />
+				</div>
+				<div class="col-4 p-0 mt-3">
+					<select class="form-select border border-3" th:field="*{tempId}">
+						<option value="no-data">템플릿옵션을 선택하세요.</option>
+						<th:block th:each="temp : ${temps}">
+		                <option th:value="${temp.tempNo}"
+		                	 th:attr="data-temp=${temp.saveName}">[[ ${temp.tempName} ]]</option>
+	                    </th:block>
+					</select>
+				</div>
+				
+				<div class="col-8 p-0 mt-3"></div>
+				<div class="col-4 p-0 mt-3 text-end">
+					<input type="file" name="filelist" class="form-control" multiple>
+				</div>
+				
+				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
+				
+				<!-- ---------------------------- 내용영역 START ---------------------------- -->
+				<div class="p-0 mt-3">
+					<div class="card p-0 text-center cntn-slide">
+					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br>
+					</div>
+					
+					<div class="col-md-12">
+						
+						<div id="textArea" style="hight:500px;">
+						<textarea name="cntn" id="cntn"></textarea>
+						</div>
+						
+						<!-- PTO fragment -->
+						<div id="tempPTO">
+							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
+						</div>
+						
+						<!-- EXT fragment -->
+						<div id="tempEXT">
+							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
+						</div>
+									
+					</div>
+				</div>
+				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>
+	</div>
+
+</th:block>
 		
 </html>

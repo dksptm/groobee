@@ -52,8 +52,8 @@
 		            rownum rn,
 		            doc.*
 		      FROM  doc
-		      WHERE rownum <![CDATA[<=]]> (#{page} * 5)) a
-		WHERE  a.rn > (#{page} - 1) * 5	
+		      WHERE rownum <![CDATA[<=]]> (#{page} * 10)) a
+		WHERE  a.rn > (#{page} - 1) * 10	
 	</select>
 	
 	<!-- 페이징 위한 count. -->
@@ -133,8 +133,8 @@
 		                ,a.apr_name
 		                ,d.draft_dt     
 		                ,d.cmplt_dt      ) g
-		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		g.rn > (#{sch.page} - 1) * 5
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND		g.rn > (#{sch.page} - 1) * 10
 	</select>
 	
 	<!-- 위의 문서리스트(작성문서)의 카운트. -->
@@ -239,8 +239,8 @@
 						,d.draft_name
 						,a.apr_yn
 						,d.draft_dt 	) g
-		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		g.rn > (#{sch.page} - 1) * 5
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND		g.rn > (#{sch.page} - 1) * 10
 	</select>
 
 	<!-- 위의 문서리스트(결재해야할 문서)의 카운트. -->
@@ -328,8 +328,8 @@
 						,a.apr_yn
 						,a.apr_name
 						,d.draft_dt		) g
-		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND		g.rn > (#{sch.page} - 1) * 5
+		WHERE	g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND		g.rn > (#{sch.page} - 1) * 10
 	</select>
 
 	<!-- 위의 문서리스트(결재진행 중 문서)의 카운트. -->
@@ -427,8 +427,8 @@
 					    ,d.doc_stat
 					    ,d.draft_dt
 					    ,d.cmplt_dt		) g
-		WHERE 	g.rn <![CDATA[<=]]> (#{sch.page} * 5)
-		AND 	g.rn > (#{sch.page} - 1) * 5
+		WHERE 	g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND 	g.rn > (#{sch.page} - 1) * 10
 	</select>
 	
 	<!-- 위의 문서리스트(완료 문서)의 카운트. -->

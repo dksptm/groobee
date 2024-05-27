@@ -12,10 +12,10 @@ public class PageDTO {
 	public PageDTO (int page, int totalCnt) {
 		this.page = page;
 		this.totalCnt = totalCnt;
-		int realEnd = (int) Math.ceil(totalCnt/5.0);
+		int realEnd = (int) Math.ceil(totalCnt/10.0);
 		
-		this.endPage = (int) Math.ceil(page/5.0) * 5;
-		this.startPage = this.endPage - 4;
+		this.endPage = (int) Math.ceil(page/10.0) * 10;
+		this.startPage = this.endPage - 9;
 		
 		this.endPage = this.endPage > realEnd ? realEnd : this.endPage;
 		
