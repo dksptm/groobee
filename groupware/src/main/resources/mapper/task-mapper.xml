@@ -42,13 +42,13 @@
 					</if>
 				<choose>
 					<when test="taskStart != null and taskDue != null">
-						AND ${taskDt} <![CDATA[>=]]> #{taskStart}  AND ${taskDt} <![CDATA[<=]]> #{taskDue}
+						AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
 					</when>
 					<when test="(taskStart != null) and (taskDue == null)">
-						AND ${taskDt} >= #{taskStart}
+						AND t.task_start_dt >= #{taskStart}
 					</when>
 					<when test="(taskDue != null) and (taskStart == null)">
-						AND ${taskDt} <![CDATA[<=]]> #{taskDue}
+						AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
 					</when>
 				</choose>
 				</where>
@@ -74,15 +74,15 @@
 				AND t.prjt_mat LIKE #{prjtMat}
 		</if>
 		<choose>
-			<when test="taskStart != null and taskDue != null">
-					AND ${taskDt} <![CDATA[>=]]> #{taskStart}  AND ${taskDt} <![CDATA[<=]]> #{taskDue}
-			</when>
-			<when test="(taskStart != null) and (taskDue == null)">
-				AND ${taskDt} >= #{taskStart}
-			</when>
-			<when test="(taskDue != null) and (taskStart == null)">
-				AND ${taskDt} <![CDATA[<=]]> #{taskDue}
-			</when>
+				<when test="taskStart != null and taskDue != null">
+					AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				</when>
+				<when test="(taskStart != null) and (taskDue == null)">
+					AND t.task_start_dt >= #{taskStart}
+				</when>
+				<when test="(taskDue != null) and (taskStart == null)">
+					AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				</when>
 		</choose>
 		</where>
 	</select>
