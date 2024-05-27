@@ -115,37 +115,38 @@
 			FROM task_common
 		</selectKey>
 		INSERT ALL
-				INTO task_common(
-								task_no,
-								task_name,
-								task_purpose,
-								task_cntn,
-								task_start_dt,
-								task_due_dt,
-								task_type,
-								standard_no,
-								prjt_mat,
-								dept_id,
-								cust_no )
-		VALUES (
-				#{pj.taskNo},
-				#{pj.taskName},
-				#{pj.taskPurpose},
-				#{pj.taskCntn},
-				#{pj.taskStartDt},
-				#{pj.taskDueDt},
-				#{pj.taskType},
-				#{pj.standardNo},
-				#{pj.prjtMat},
-				#{pj.deptId},
-				#{pj.custNo} )
+		INTO task_common(
+							task_no,
+							task_name,
+							task_purpose,
+							task_cntn,
+							task_start_dt,
+							task_due_dt,
+							task_type,
+							standard_no,
+							prjt_mat,
+							dept_id,
+							cust_no )
+			VALUES (
+					#{pj.taskNo},
+					#{pj.taskName},
+					#{pj.taskPurpose},
+					#{pj.taskCntn},
+					#{pj.taskStartDt},
+					#{pj.taskDueDt},
+					#{pj.taskType},
+					#{pj.standardNo},
+					#{pj.prjtMat},
+					#{pj.deptId},
+					#{pj.custNo}
+			)
 		<foreach collection="pj.taskEmps" item="te">
 			INTO task_emps (
-							task_no,
-							task_emp_id,
-							dept_id,
-							dept_name,
-							cust_no )
+								task_no,
+								task_emp_id,
+								dept_id,
+								dept_name,
+								cust_no )
 			VALUES (
 					#{pj.taskNo},
 					#{te.taskEmpId},
@@ -168,14 +169,15 @@
 
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO">
-		SELECT coop_co_no
+
+		SELECT   coop_co_no
 				,task_no
 				,co_name
 				,co_tel
 				,pic
 				,cust_addr
 				,cntn
-		FROM coop_co
+		FROM    coop_co
 		ORDER BY coop_co_no
 	</select>
 

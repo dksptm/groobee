@@ -22,8 +22,8 @@ public class SearchVO {
 	private String draftStatCondition;
 	private List<ProjectVO> schTasks;
 	
-	private String dateCondition;
 	private String sortCondition;
+	private String dateCondition;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dtStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

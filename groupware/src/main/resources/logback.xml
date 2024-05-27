@@ -17,7 +17,7 @@
 	<logger name="jdbc.connection" level="OFF" />
 	
 	<!-- logging.level.root=info -->
-	<root level="INFO">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>

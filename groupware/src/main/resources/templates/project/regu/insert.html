@@ -7,117 +7,229 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
-	<div class="DocSearch-content col-12 container-p-y">
+	<div class="DocSearch-content col-8 container-p-y">
 		<div class="row m-3 p-3">
-			<h2 class="m-0 p-0 doc-page-title">문서작성</h2>
+			<h2 class="m-0 p-0 doc-page-title">상시업무 등록</h2>
 		</div>
 		<hr>
-		<div class="row m-3 p-3 bg-white shadow-lg rounded">
-		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}" enctype="multipart/form-data">
-		
-			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
-			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
-			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="text" th:value="${#authentication.name}" name="draftName" readonly />
-			문서번호 <input type="text" name="docNo" th:value="${doc.docNo}" readonly /></p>
-			<hr>
+		<div class="m-3 p-3 bg-white shadow-lg rounded">
+		<form id="reguInsertForm" th:action="@{/reguInsert}" method="post" th:object="${taskRegu}">
 			
-			<!-- 작성완료/취소 버튼 -->
-			<div class="m-3 text-end">
-				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
-				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
-						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
-			</div>
+			<table class="table">
+				<tr>
+					<th>업무명</th>
+					<td colspan="3">
+						<input type="text" class="form-control" th:field="*{taskName}" />
+					</td>
+				</tr>
+				<tr>
+					<th>업무목적</th>
+					<td colspan="3">
+						<input type="text" class="form-control" th:field="*{taskPurpose}" />
+					</td>
+				</tr>
+				<tr>
+					<th>업무내용</th>
+					<td colspan="3">
+						<input type="text" class="form-control" th:field="*{taskCntn}" />
+					</td>
+				</tr>
+				<tr>
+					<th>책임자
+						<button type="button" class="btn btn-icon me-1 btn-info" 
+								data-bs-toggle="offcanvas" data-bs-target="#chk-reps" aria-controls="offcanvasScroll">
+							<span class="tf-icons bx bx-user-circle"></span>
+						</button>
+					</th>
+					<td><input type="text" class="form-control" th:field="*{respEmpId}" readonly /></td>
+					<th>부서</th>
+					<td><input type="text" class="form-control" th:field="*{deptId}" readonly /></td>
+				</tr>
+				<tr>
+					<th>담당자
+						<button type="button" class="btn btn-icon me-1 btn-secondary" 
+								data-bs-toggle="offcanvas" data-bs-target="#chk-emps" aria-controls="offcanvasScroll">
+							<span class="tf-icons bx bx-user-circle"></span>
+						</button>
+					</th>
+					<td colspan="3" id="add-emp">
+					</td>
+				</tr>
+				<tr>
+					<th>생성유형</th>
+					<td><select class="form-select" th:field="*{creType}">
+						    <option value="5C1c">매일</option>
+						    <option value="5C2c">매주</option>
+						    <option value="5C3c">매월</option>
+					  	</select>
+					</td>
+					<th>생성주기</th>
+					<td id="chktime">
+						<input type="time" class="form-control" min="09:00" max="18:00" />
+						<button type="button">+</button></td>
+				</tr>
+				<tr>
+					<th>시작일자</th>
+					<td><input type="datetime-local" class="form-control" th:field="*{taskStartDt}" readonly />
+					<th>마감일자</th>
+					<td><input type="datetime-local" class="form-control" th:field="*{taskDueDt}"  readonly />
+				</tr>
+				<tr>
+					<td>
+						활성화
+					</td>
+					<td>
+						<div class="form-check form-check-primary mt-3">
+						  <input class="form-check-input" type="radio" id="active" name="aa">
+						  <label class="form-check-label" for="active">활성화</label>
+						</div>
+					</td>
+					<td colspan="2">
+						<div class="form-check form-check-primary mt-3">
+						  <input class="form-check-input" type="radio" id="active2" name="aa">
+						  <label class="form-check-label" for="active2">비활성화</label>
+						</div>
+					</td>
+				</tr>
+			</table>
 			
-			<div class="card-body row">
-			
-				<!-- 결재자 공간 -->
-				<div class="border border-3 p-3 col-4 input-tag-css">
-					<!-- 모달버튼 : 결재자 -->
-					<button type="button" class="btn btn-outline-secondary doc-modal-btn-apr" 
-							data-bs-toggle="modal" data-bs-target="#docModalAprs">결재자 선택</button>
-					<!-- 결재자 리스트 -->
-					<div class="mt-3">
-						<p>결재자 수 : <input type="number" th:field="*{finalLine}" value="1" readonly /></p>
-						<div id="getAprs"><!-- 선택한 결재자 보여주는 공간 --></div>
-					</div>		
-				</div>
-				
-				<!-- 참조자 공간 -->
-				<div class="border border-3 p-3 col-4">
-					<!-- 모달버튼 : 참조자  -->
-					<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
-							data-bs-target="#docModalRefs">참조자 선택</button>
-					<!-- 참조자 리스트 -->
-					<div class="mt-3 text-start">
-						<div id="getRefs"><!-- 선택한 참조자 보여주는 공간 --></div>
-					</div>
-				</div>
-				
-				<!-- 업무선택 공간 -->
-				<div class="border border-3 p-3 col-4">
-					<!-- 모달버튼 : 업무선택 -->
-					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" data-bs-toggle="modal"
-							data-bs-target="#docModalTasks">업무 선택</button>
-					<!-- 관련업무 리스트 -->
-					<div class="mt-3 text-start">
-						<div id="getTasks"><!-- 선택한 업무 보여주는 공간 --></div>
-					</div>
-				</div>
-
-				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
-				<div class="col-8 mt-3 p-0">
-	    			<input type="text" class="form-control border border-3" th:field="*{title}" 
-	    				   aria-describedby="basic-addon14" placeholder="제목을 입력하세요." />
-				</div>
-				<div class="col-4 p-0 mt-3">
-					<select class="form-select border border-3" th:field="*{tempId}">
-						<option value="no-data">템플릿옵션을 선택하세요.</option>
-						<th:block th:each="temp : ${temps}">
-		                <option th:value="${temp.tempNo}"
-		                	 th:attr="data-temp=${temp.saveName}">[[ ${temp.tempName} ]]</option>
-	                    </th:block>
-					</select>
-				</div>
-				
-				<div class="col-8 p-0 mt-3"></div>
-				<div class="col-4 p-0 mt-3 text-end">
-					<input type="file" name="filelist" class="form-control" multiple>
-				</div>
-				
-				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
-				
-				<!-- ---------------------------- 내용영역 START ---------------------------- -->
-				<div class="p-0 mt-3">
-					<div class="card p-0 text-center cntn-slide">
-					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br>
-					</div>
-					
-					<div class="col-md-12">
-						
-						<div id="textArea" style="hight:500px;">
-						<textarea name="cntn" id="cntn"></textarea>
-						</div>
-						
-						<!-- PTO fragment -->
-						<div id="tempPTO">
-							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
-						</div>
-						
-						<!-- EXT fragment -->
-						<div id="tempEXT">
-							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
-						</div>
-									
-					</div>
-				</div>
-				<!-- ---------------------------- 내용영역 END ---------------------------- -->
-			</div>
 		</form>
 		</div>
+		
+		<!-- Enable Body scrolling -->
+		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-reps" aria-labelledby="offcanvasScrollLabel">
+		  <div class="offcanvas-header">
+		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">책임자 선택</h5>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+		  	<table class="table">
+				<thead>
+					<tr>
+						<th>부서명</th>
+						<th>이름</th>
+						<th>직급</th>
+						<th>선택</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="emp : ${resp}">
+					<tr th:attr="data-resp=${emp.empId}">
+						<td th:attr="data-respd=${emp.deptId}">[[ ${emp.deptName} ]]</td>
+						<td>[[ ${emp.empName} ]]</td>
+						<td>[[ ${emp.jobTitle} ]]</td>
+						<td><input class="form-check-input" type="radio" name="resp">
+						</td>
+					</tr>
+					</th:block>
+				</tbody>
+			</table>
+		    <button type="button" class="btn btn-info mb-2 d-grid w-100 chk-reps-btn" data-bs-dismiss="offcanvas">선택</button>
+		  </div>
+		</div>
+		
+		<!-- Enable Body scrolling -->
+		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-emps" aria-labelledby="offcanvasScrollLabel">
+		  <div class="offcanvas-header">
+		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">담당자 선택</h5>
+		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		  </div>
+		  <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+		  	<table class="table">
+				<thead>
+					<tr>
+						<th>부서명</th>
+						<th>이름</th>
+						<th>직급</th>
+						<th>선택</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="emp : ${dept.emps}">
+					<tr th:attr="data-emp=${emp.empId}">
+						<td th:attr="data-empd=${dept.deptId}">[[ ${dept.deptName} ]]</td>
+						<td>[[ ${emp.empName} ]]</td>
+						<td>[[ ${emp.jobTitle} ]]</td>
+						<td><input class="form-check-input" type="checkbox">
+						</td>
+					</tr>
+					</th:block>
+				</tbody>
+			</table>
+		    <button type="button" class="btn btn-info mb-2 d-grid w-100 chk-emps-btn" data-bs-dismiss="offcanvas">선택</button>
+		  </div>
+		</div>
+		
 	</div>
 	</div>
 	</div>
+
+<script>
+	$(function(){
+		
+		$('.chk-reps-btn').on('click', function(e){
+			
+			let tr = $('input[name="resp"]:checked').closest('tr');
+			
+			$('#respEmpId').val(tr.data('resp'));
+			$('#deptId').val(tr.find('td').eq(0).data('respd'));
+			
+			$('#respEmpId').parent().append($(`<span>${tr.find('td').eq(1).text()}</span>`));
+			$('#deptId').parent().append($(`<span>${tr.find('td').eq(0).text()}</span>`));
+			
+		})
+		
+		$('.chk-emps-btn').on('click', function(e){
+			
+			let trs = $('#chk-emps table input[type="checkbox"]:checked').closest('tr');
+			let area = $('#add-emp');
+			
+			trs.each(function(idx,ele){
+				let tr = $(ele);
+				
+				let creatTag = $(`<span>
+									<input type="hidden"
+							   		 	   value="${tr.data('emp')}" name="taskEmps[${idx}].taskEmpId" readonly />
+						   		 	<input type="hidden"
+							   		 	   value="${tr.find('td').eq(0).data('empd')}" name="taskEmps[${idx}].deptName" readonly />
+							   		<span>${tr.find('td').eq(0).text()} ${tr.find('td').eq(1).text()}</span>
+							   		&emsp;
+						      	  </span>`);
+				
+				area.append(creatTag);
+				
+			})
+			
+		})
+		
+		$('#chktime').on('click', 'button', function() {
+			let time = $('#chktime').find('input').val();
+			let day = getNow();
+			
+			$('#taskStartDt').val(day + " " + time);
+			$('#taskDueDt').val(day + " " + "18:00");
+			
+		})
+		
+		
+		
+	})
+
+	
+	function getNow(){
+	let now = new Date();
+	let year = now.getFullYear();
+	let month = now.getMonth() + 1;
+	let day = now.getDate();
+	
+	month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+	
+	let date = year + '-' + month + '-' + day;
+	return date;
+}
+
+</script>
 
 </th:block>
 		
