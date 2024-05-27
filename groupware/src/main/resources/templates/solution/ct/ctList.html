@@ -89,7 +89,7 @@
 											<td>[[ ${CtVO.ctAmt} ]]</td>
 											<td
 												th:class="${CtVO.ctStat == '0A2a' ? 'table-secondary' : ''}">
-												[[ ${CtVO.ctStat} ]]</td>
+												[[ ${CtVO.ctStatName} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctStartDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctEndDt, "yyyy-MM-dd")} ]]</td>
 										</tr>
@@ -157,6 +157,13 @@
 		    
 		    // 검색버튼 이벤트 처리
 		    $(".searchbtn").on("click", function(e) {
+		        updateParams();
+		        let page = 1;
+		        showTable(page);
+		    });
+		    
+		    // 검색입력창 엔터시 이벤트 처리
+		    $(".searchKey").on("change", function(e) {
 		        updateParams();
 		        let page = 1;
 		        showTable(page);

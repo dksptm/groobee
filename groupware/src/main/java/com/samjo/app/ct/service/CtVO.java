@@ -14,6 +14,7 @@ public class CtVO {
 	private String custNo;
 	private String custName;
 	private String ctStat;
+	private String ctStatName;
 	private Date ctStartDt;
 	private Date ctEndDt;
 	private int ctAmt;

@@ -7,9 +7,10 @@
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
 				<h5 class="card-header">계약 상세조회</h5>
+
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-hover">
+						<table class="table table-hover table-bordered">
 							<tr>
 								<th>계약번호</th>
 								<td>[[ ${ctVO.ctNo} ]]</td>
@@ -33,11 +34,15 @@
 								<td colspan="2">[[ ${ctVO.ctFile} ]]</td>
 							</tr>
 						</table>
-						
+
 						<!-- PDF출력 -->
-						<!-- <iframe width="100%" height="600" src="./viewer.html?file=파일경로"></iframe> -->
-						
-						<table class="table table-hover mt-5">
+						<!-- 사용중 계정목록 -->
+						<button type="button" class="btn btn-secondary pdfbtn mt-2">계약서 미리보기</button>
+						<div class="collapse" id="collapsePDF">
+							<iframe class="mt-1" src="/files/test.pdf" title="example" width="100%" height="500" frameborder="0"></iframe>
+						</div>
+
+						<table class="table table-hover table-bordered mt-5">
 							<tr>
 								<th>계약시작일</th>
 								<td>[[ ${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')} ]]</td>
@@ -58,35 +63,60 @@
 							</tr>
 							<tr>
 								<th>현재 사용중인 모듈</th>
-								<td colspan="3">
-									<span th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
-									<span th:each="module : ${ctVO.modList}">
-								        <span th:if="${module.modName != null}" th:text="${module.modName} + ' | '"></span>
-								    </span>
-								</td>
+								<td colspan="3"><span
+									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
+									<span th:each="module : ${ctVO.modList}"> <span
+										th:if="${module.modName != null}"
+										th:text="${module.modName} + ' | '"></span>
+								</span></td>
 							</tr>
 						</table>
-						
-						<table class="table table-hover mt-5">
-							<tr>
-								<th>계정ID</th>
-								<th>이메일</th>
-								<th>이름</th>
-								<th>직급</th>
-								<th>권한</th>
-							</tr>
-							<th:block th:each="empVO : ${ctVO.empList}">
+
+						<!-- 사용중 계정목록 -->
+						<button type="button" class="btn btn-secondary testbtn mt-2">사용중
+							계정목록</button>
+						<div class="collapse" id="collapseTable">
+							<table class="table table-hover table-bordered mt-1">
 								<tr>
-									<td>[[ ${empVO.empId} ]]</td>
-									<td>[[ ${empVO.emailAddr} ]]</td>
-									<td>[[ ${empVO.empName} ]]</td>
-									<td>[[ ${empVO.jobTitle} ]]</td>
-									<td>[[ ${empVO.permName} ]]</td>
+									<th>계정ID</th>
+									<th>이메일</th>
+									<th>이름</th>
+									<th>직급</th>
+									<th>권한</th>
 								</tr>
-							</th:block>
-						</table>
+								<th:block th:each="empVO : ${ctVO.empList}">
+									<tr>
+										<td>[[ ${empVO.empId} ]]</td>
+										<td>[[ ${empVO.emailAddr} ]]</td>
+										<td>[[ ${empVO.empName} ]]</td>
+										<td>[[ ${empVO.jobTitle} ]]</td>
+										<td>[[ ${empVO.permName} ]]</td>
+									</tr>
+								</th:block>
+							</table>
+						</div>
 					</div>
+				<div class="d-flex align-items-end flex-column mt-3">
+					<button type="button"
+						th:onclick="|location.href='@{/sol/ctUpdate/}${ctVO.ctNo}'|"
+						class="btn btn-primary mt-auto p-2">수정</button>
 				</div>
+				</div>
+				<script>
+					//console.log(${#authentication.principal.empId});
+					$(document).ready(function() {
+						$('.testbtn').click(function() {
+							$('#collapseTable').slideToggle();
+						})
+
+					});
+					$(document).ready(function() {
+						$('.pdfbtn').click(function() {
+							$('#collapsePDF').slideToggle();
+						})
+
+					});
+				</script>
 			</div>
 		</div>
 	</th:block>
