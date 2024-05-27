@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.util.SecuUtil;
+import com.samjo.app.emp.service.DeptService;
+import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
@@ -22,10 +24,12 @@ import com.samjo.app.project.service.ProjectVO;
 public class TaskController {
 	
 	ProjectService projectService;
+	DeptService deptService;
 	
 	@Autowired
-	public TaskController(ProjectService projectService) {
+	public TaskController(ProjectService projectService, DeptService deptService) {
 		this.projectService = projectService;
+		this.deptService = deptService;
 	}
 	
 	// 상시(주기적)업무 전체 조회
@@ -37,12 +41,24 @@ public class TaskController {
 		}
 	
 	// 상시(주기적)업무 등록
-		@GetMapping("reguInsert")
-		public String reguInsertForm(Model model) {
-			model.addAttribute("projects", new ProjectVO());
-			return "project/regu/insert";
-		}
+	@GetMapping("reguInsert")
+	public String reguInsertForm(Model model) {
 		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			List<EmpVO> resp = deptService.respMngrList(empVO.getCustNo());
+			DeptVO dept = deptService.myDeptEmps(empVO.getDeptId());
+			model.addAttribute("resp", resp);					
+			model.addAttribute("dept", dept);					
+			model.addAttribute("taskRegu", new ProjectVO());
+			return "project/regu/insert";
+		} else {
+			return "test/test";
+		}
+	}
+		
+	
 		@PostMapping("reguInsert")
 		public String reguInsertProcess(ProjectVO projectVO) {
 			int rId = projectService.prjtInsert(projectVO);

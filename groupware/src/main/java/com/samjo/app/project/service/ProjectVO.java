@@ -32,7 +32,7 @@ public class ProjectVO {
 	private String crePerd;
 	private String active;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date fileDt;
+	private Date reguDt;
 	private String respEmpId;
 	
 	//프로젝트
