@@ -45,6 +45,12 @@
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
+										<td class="text-white">_</td>
+										<td class="form-control">정렬조건</td>
+										<td><select class="form-select searchSelect">
+												<option value="s.sent_dt">최근순</option>
+												<option value="s.sent_dt DESC">오래된순</option>
+										</select></td>
 									</tr>
 								</table>
 								<span class="position-absolute top-50 end-0 translate-middle-y">
@@ -56,7 +62,7 @@
 					</nav>
 				</div>
 					<div id="inboxTable">
-						<!-- 계약 목록 출력 -->
+						<!-- 메일 목록 출력 -->
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
@@ -74,8 +80,12 @@
 											<td>[[ ${emailVO.sender} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<td>점검</td>
-											<!--*/<td th:text="${#emailVO.recpType}"></td>/*-->
+											<th:block th:if="${emailVO.refer == searchVO.recp}">
+										    	<td>참조메일</td>
+											</th:block>
+											<th:block th:if="${emailVO.refer != searchVO.recp}">
+										    	<td>수신메일</td>
+											</th:block>
 											<td><input type="radio" name="check" th:value="${emailVO.senEmailNo}"></td>
 										</tr>
 									</th:block>
@@ -118,6 +128,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -181,29 +192,56 @@
 			}
 			
 			//검색 AJAX 함수
+			//function showTable(page) { 
+				//$.ajax({
+					//url : '/viewInboxList',
+					//type : 'POST',
+					//beforeSend : function(xhr) {
+						//xhr.setRequestHeader(header, token);
+					//},
+					//data : {
+						//page : page,
+						//recEmailNo : recEmailNo,
+						//sentDt : sentDt,
+						//sdStart : sdStart,
+						//recpType : recpType,
+						//sdEnd : sdEnd,
+						//emSort : emSort,
+						//keyword : keyword,
+						//searchCondition : searchCondition
+					//},
+					//dataType : 'Text',
+					//success : function(result) {
+						//$('#inboxTable').replaceWith(result);
+					//}
+				//});
+			//}
+			
 			function showTable(page) { 
-				$.ajax({
-					url : '/viewInboxList',
-					type : 'POST',
-					beforeSend : function(xhr) {
-						xhr.setRequestHeader(header, token);
-					},
-					data : {
-						page : page,
-						recEmailNo : recEmailNo,
-						sentDt : sentDt,
-						sdStart : sdStart,
-						sdEnd : sdEnd,
-						emSort : emSort,
-						keyword : keyword,
-						searchCondition : searchCondition
-					},
-					dataType : 'Text',
-					success : function(result) {
-						$('#inboxTable').replaceWith(result);
-					}
-				});
-			}
+    $.ajax({
+        url: '/viewInboxList',
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        contentType: 'application/json', // 데이터 타입을 JSON으로 설정
+        dataType: 'json', // 응답을 JSON으로 받도록 설정
+        data: JSON.stringify({
+            page: page,
+            recEmailNo: recEmailNo,
+            sentDt: sentDt,
+            sdStart: sdStart,
+            recpType: recpType,
+            sdEnd: sdEnd,
+            emSort: emSort,
+            keyword: keyword,
+            searchCondition: searchCondition
+        }),
+        success: function(result) {
+            $('#inboxTable').replaceWith(result);
+        }
+    });
+}
 		</script>
 	</th:block>
 </body>

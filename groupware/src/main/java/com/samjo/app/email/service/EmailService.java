@@ -47,8 +47,10 @@ public interface EmailService {
 	// 수신한 이메일의 파일 내려받기
 	public EmailVO getFile(EmailVO emailVO);
 	
-	//전체 페이징(받은메일)
+	//뭔가 잘못됨 이건 나중에 지우자
 	public int count(String empId);
+	
+	//받은메일 페이징
 	public int countMyInbox(SearchVO searchVO);
 	
 	//전체 페이징(보낸메일)

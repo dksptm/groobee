@@ -52,13 +52,14 @@
   	</select>
   
   <!-- 받은메일 페이징 -->
-  	<select id="countMyInbox" parameterType="SearchVO" resultType="int">
-		SELECT  COUNT(*)
-		FROM    inbox
+  	<select id="countMyInbox" parameterType="SearchVO">
+        SELECT COUNT(*)
+        FROM inbox r JOIN email s
+                     ON (s.sen_email_no = r.sen_email_no)
 		WHERE	recp = #{recp}	
-		OR      refer = #{refer}
+		OR      refer = #{refer, jdbcType=VARCHAR}
 		<if test="keyword != null and keyword != ''">
-			AND ${searchCondition} Like '%' || #{keyword} || '%'
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
 		<if test ="recpType != null and recpType !='' ">
 			AND recp_type = #{recpType}
