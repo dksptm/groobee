@@ -16,22 +16,43 @@ FROM (SELECT rownum rn,
                                j.emp_no,
                                i.wk_in,
                                i.wk_out,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_yn) wk_yn,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_stat) wk_stat,
-                               (select sub_code_name
-                               from sub_code
-                               where sub_code_id = wk_site) wk_site
+                               get_codename(wk_yn) wk_yn,
+                               get_codename(wk_stat) wk_stat,
+                               get_codename(wk_site) wk_site
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
                          ORDER BY dt) e
-                   WHERE dt <![CDATA[<=]]>  #{oneDate}
-                   <if test="empNo != null and empNo != ''"> 
-                   and emp_no = #{empNo}
+                   <include refid="select"></include>
+                             ) w
+            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
+WHERE t.rn > (#{page} -1) * 5
+  </select>
+	<!-- 페이징 위한 count.(조건집어넣기 제대로안되는중) -->
+ 	<select id="workcount">
+		SELECT count(*)
+		FROM (SELECT
+                    i.dt,
+                    j.emp_name,
+                    j.emp_no,
+                    i.wk_in,
+                    i.wk_out,
+                    get_codename(wk_yn) wk_yn,
+                    get_codename(wk_stat) wk_stat,
+                    get_codename(wk_site) wk_site
+                    FROM emp j join wk i
+                                 on j.emp_id = i.emp_id)
+		<include refid="select"></include>
+	</select>
+	
+	<!-- 조건문 -->
+	<sql id="select">
+	<where>
+					<if test="empNo != null and empNo != ''"> 
+                   		and emp_no = #{empNo}
                     </if>
+					<if test="oneDate != null">
+					AND dt <![CDATA[<=]]>  #{oneDate}
+					</if>
                     <if test="wkYn != null and wkYn != ''"> 
                               and wk_yn   = #{wkYn}
                     </if>
@@ -41,15 +62,8 @@ FROM (SELECT rownum rn,
                     <if test="wkSite != null and wkSite != ''">  
                              and wk_site = #{wkSite} 
                     </if>
-                             ) w
-            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
-WHERE t.rn > (#{page} -1) * 5
-  </select>
-	<!-- 페이징 위한 count.(조건집어넣기 제대로안되는중) -->
- 	<select id="workcount">
-		SELECT count(*)
-		FROM wk
-	</select>
+    </where>
+	</sql>
 	<!-- worklist랑 똑같이 최신화해야함-->
 	<select id="managerWorkList" resultType="WorkManagerVO">
 	SELECT l.*
@@ -124,15 +138,9 @@ select
        i.wk_out,
        i.wk_in_loc,
        i.wk_out_loc,
-       (select sub_code_name
-        from sub_code
-        where sub_code_id = wk_yn) wk_yn,
-        (select sub_code_name
-         from sub_code
-         where sub_code_id = wk_stat) wk_stat,
-        (select sub_code_name
-         from sub_code
-         where sub_code_id = wk_site) wk_site
+       get_codename(wk_yn) wk_yn,
+       get_codename(wk_stat) wk_stat,
+       get_codename(wk_site) wk_site
 from emp j join wk i
              on j.emp_id = i.emp_id
 where dt = #{dt} and emp_No = #{empNo}

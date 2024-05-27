@@ -25,8 +25,8 @@ public class WorkServiceImpl implements WorkService{
 	
 	// 전체 데이터 수
 	@Override
-	public int workcount() {
-		return workMapper.workcount();
+	public int workcount(WorkSearchVO worksearchVO) {
+		return workMapper.workcount(worksearchVO);
 	}
 	
 	// 출근 수정

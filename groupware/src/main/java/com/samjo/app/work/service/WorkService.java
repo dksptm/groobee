@@ -6,7 +6,7 @@ import java.util.List;
 public interface WorkService {
 
 	// 전체 페이지 수
-	public int workcount();
+	public int workcount(WorkSearchVO worksearchVO);
 	public int managercount();
 	
 	// 근태 전체 조회

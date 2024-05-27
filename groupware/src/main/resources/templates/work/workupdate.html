@@ -14,8 +14,9 @@
 						<h2 style="text-align: center">수정 화면</h2>
 						<p>
 						<hr>
-						<table class="table table-striped-columns" 
-						th:each="list : ${info}" id="infos">
+						<div>
+							<table class="table table-striped-columns"
+								th:each="list : ${workup}" id="up">
 								<tr>
 									<th>사원번호</th>
 									<td>[[${list.empNo}]]</td>
@@ -28,10 +29,10 @@
 									<th>근무여부</th>
 									<td>[[${list.wkSite}]]</td>
 								</tr>
-								</table>
-								<br>
-								<table class="table table-striped-columns" 
-						th:each="list : ${info}" id="infos">
+							</table>
+							<br>
+							<table class="table table-striped-columns"
+								th:each="list : ${workup}" id="up">
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
@@ -50,14 +51,15 @@
 									<td>[[${list.wkYn}]]</td>
 									<td>[[${list.wkStat}]]</td>
 								</tr>
-						</table>
+							</table>
+						</div>
 					</div>
 					<div>
-					<br>
-					<p>
-						<button type="submit" class="btn btn-primary">수정</button>
-						<button type="submit" class="btn btn-primary">취소</button>
-					</p>
+						<br>
+						<p>
+							<button type="submit" class="btn btn-primary">수정</button>
+							<button type="submit" class="btn btn-primary">취소</button>
+						</p>
 					</div>
 				</div>
 			</div>

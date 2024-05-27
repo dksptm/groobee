@@ -29,13 +29,19 @@ public class WorkControll {
 	// 일반 페이지 전체 조회
 	@GetMapping("worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
-		 Date date = new Date();
+		 //Date date = new Date();
 		 //SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+         
 
-		
-		  if (worksearchVO.getOneDate() == null) { 
-			  worksearchVO.setOneDate(date); 
-			  }
+//		 System.out.println("TEST : "+worksearchVO.getEmpId());
+//		  if (worksearchVO.getEmpId() == null) {
+//			  worksearchVO.setEmpId();
+//			  }
+			 
+		 
+			/*
+			 * if (worksearchVO.getOneDate() == null) { worksearchVO.setOneDate(date); }
+			 */
 		 
 		/*
 		 * if (worksearchVO.getWkYn() == null) { worksearchVO.setWkYn("근무일"); }
@@ -52,7 +58,7 @@ public class WorkControll {
 		}
 		List<WorkVO> list = workService.workList(worksearchVO);
 		model.addAttribute("list", list);
-		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount());
+		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
 		model.addAttribute("filter", workpageDTO);
 		return "work/worklist";
 	}
@@ -88,22 +94,28 @@ public class WorkControll {
 	 * String insertwork(WorkVO workVO) { return "work/workinsert"; }
 	 */	
 
-	// 수정처리..(상세페이지에서)실수
-	@RequestMapping("workupdate")
+	// 수정처리화면
+	@GetMapping("workupdate")
 	public String updatework(WorkVO workVO, Model model) {
 		//WorkVO work = workService.updateWork(workVO);
 		model.addAttribute("workup", workVO);
 		return "work/workupdate";
 	}
+	// 수정 처리
+	@PostMapping("workupdate")
+	@ResponseBody
+	public String updaate(WorkVO workVO, Model model) {
+		return "work/workupdate";
+	}
 
 	
-	  // 출근 업데이트(최초 한번만 등록)
+	  // 출근 업데이트 처리(최초 한번만 업데이트)
 	  // request.getRemoteAddr();(ipcheck)
 		  @PostMapping("workin")
 		  @ResponseBody
 		  public WorkVO workin(WorkVO workVO) {
 			  return workVO;
-		  }		  
+		  }
 		  
 		  // 퇴근 업데이트(최초 이후 계속 업데이트)
 		  @PostMapping("workout")

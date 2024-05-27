@@ -33,7 +33,7 @@ public class LoginUserVO implements UserDetails {
 		auth.add(new SimpleGrantedAuthority(getEmpStat()));
 		return auth;
 	}
-
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
