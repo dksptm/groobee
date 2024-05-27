@@ -19,6 +19,7 @@ import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.ct.service.CtDTO;
+import com.samjo.app.email.service.EmailDTO;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -37,21 +38,48 @@ public class EmailController {
 	// 받은메일 전체조회
 	@GetMapping("inboxList")
 	public String inboxList(SearchVO searchVO, Model model) {
-		if(searchVO.getPage() == 0) {
+		//페이지 세팅
+		if(searchVO.getPage() <= 0) {
 			searchVO.setPage(1);
 		}
+		//접속중인 계정 정보 받아오기.
 		EmpVO empVO = SecuUtil.getLoginEmp();
-		String eid = empVO.getEmpId();
-		searchVO.setRecp(eid);
+		
+		//접속중인 계정의 id와, 고객사id 받아오기
+		String custId = empVO.getCustNo();
+		String recp = empVO.getEmpId();
+		
+		//searchVO에 담기.
+		searchVO.setRecp(recp);
+		searchVO.setCustNo(custId);
 		List<EmailVO> list = emailService.inboxList(searchVO);
-		model.addAttribute("inboxList", list);
-		CtDTO ctDTO = new CtDTO(searchVO.getPage(), emailService.count(eid)); 
+		model.addAttribute("list", list);
+		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO)); 
 		//위 코드가 좀 이상함. 페이징에 대한 이해가 덜되어서 그런가..
-		model.addAttribute("CtDTO", ctDTO);
-		model.addAttribute("eid", eid);
+		model.addAttribute("EmailDTO", emailDTO);
         model.addAttribute("searchVO", searchVO);
 		
 		return "email/inboxList";
+	}
+	
+	// 받은메일 검색/페이징 처리
+	@PostMapping("viewInboxList")
+	public String viewInboxPage(SearchVO searchVO, Model model) {
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		String custId = empVO.getCustNo();
+		String eid = empVO.getEmpId();
+		searchVO.setRecp(eid);
+		searchVO.setCustNo(custId);
+		List<EmailVO> list = emailService.inboxList(searchVO);
+		model.addAttribute("list", list);
+		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.count(eid)); 
+		model.addAttribute("EmailDTO", emailDTO);
+        model.addAttribute("searchVO", searchVO);
+		
+		return "email/inboxList :: #inboxTable";
 	}
 	
 	// 받은메일 상세조회
@@ -72,33 +100,32 @@ public class EmailController {
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
 			LoginUserVO loginUserVO = (LoginUserVO) principal;
-		String empId = loginUserVO.getEmpId();
-		String custNo = loginUserVO.getCustNo();
-		
-		EmpVO empVO = new EmpVO();
-		empVO.setEmpId(empId);
-		empVO.setCustNo(custNo);
-		
-		//내가 누군지 알아야 내가 속한 회사의 empList를 가져올 수 있다.
-		List<EmpVO> list = emailService.getEmpList(empVO);
-		model.addAttribute("getEmpList", list);
-		return "email/emailWrite";
-		} else {
-			System.out.println("principal is not instanceof LoginUserVO");
-		} return "/";
+			String empId = loginUserVO.getEmpId();
+			String custNo = loginUserVO.getCustNo();
+			
+			EmpVO empVO = new EmpVO();
+			empVO.setEmpId(empId);
+			empVO.setCustNo(custNo);
+			
+			//내가 누군지 알아야 내가 속한 회사의 empList를 가져올 수 있다.
+			List<EmpVO> list = emailService.getEmpList(empVO);
+			model.addAttribute("getEmpList", list);
+			return "email/emailWrite";
+		} 
+		return "/";
 	}
 	
 	// 주소록 가져와서 모달창에 뿌려주기 위한.(페이지가 아닌 데이터를 리턴하기 위한.)
-	@ResponseBody
-	public List<EmpVO> getEmpList(@RequestBody EmpVO empVO, HttpServletRequest req) {
-		HttpSession session = req.getSession();
-		String myCustNo = (String) session.getAttribute("custNo");
-		EmpVO myEmpVO = new EmpVO();
-		//사용자 세션의 custNo 정보를 담은 EmpVO를 파라미터로 SQL(Mapper)로 전달한다, 페이지는 전달 X
-		myEmpVO.setCustNo(myCustNo);
-		
-		return emailService.getEmpList(myEmpVO);
-	}
+//	@ResponseBody
+//	public List<EmpVO> getEmpList(@RequestBody EmpVO empVO, HttpServletRequest req) {
+//		HttpSession session = req.getSession();
+//		String myCustNo = (String) session.getAttribute("custNo");
+//		EmpVO myEmpVO = new EmpVO();
+//		//사용자 세션의 custNo 정보를 담은 EmpVO를 파라미터로 SQL(Mapper)로 전달한다, 페이지는 전달 X
+//		myEmpVO.setCustNo(myCustNo);
+//		
+//		return emailService.getEmpList(myEmpVO);
+//	}
 	
 	
 	@PostMapping("emailSend")
@@ -106,11 +133,11 @@ public class EmailController {
 		//리퀘스트 바디(교재 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
 		//수정. 그냥 폼데이터 받는걸로 변경	
 		int SenEmailNo = emailService.emailInsert(emailVO);
-		if(!filelist[0].isEmpty()) {
-			emailFileUploadService.uploadFileInfo(filelist, emailVO.getSender(), emailVO.getSenEmailNo() );
-		}
 		if(SenEmailNo != -1) {
 			return"/"; //redirect:emailInfo?senEmailNo=" + SenEmailNo; //인서트 성공시, 보낸메일 상세조회 페이지 이동.
+		}
+		if(!filelist[0].isEmpty()) {
+			emailFileUploadService.uploadFileInfo(filelist, emailVO.getSender(), emailVO.getSenEmailNo() );
 		}
 		return "email/emailWrite";
 	}

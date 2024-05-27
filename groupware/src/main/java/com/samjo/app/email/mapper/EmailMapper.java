@@ -52,7 +52,7 @@ public interface EmailMapper {
 	public int count(@Param("eid")String empId);
 	
 	// 한 emp가 recp이거나, refer인 메일
-	public List<EmailVO> countMyInbox(@Param("eid")String Empid, @Param("sch")SearchVO searchVO);
+	public int countMyInbox(SearchVO searchVO);
 	
 	//전체 페이지(보낸메일)
 	public int countSend();
