@@ -48,7 +48,8 @@ public interface EmailService {
 	public EmailVO getFile(EmailVO emailVO);
 	
 	//전체 페이징(받은메일)
-	public int count();
+	public int count(String empId);
+	public List<EmailVO> countMyInbox(String EmpId, SearchVO searchVO);
 	
 	//전체 페이징(보낸메일)
 	public int countSend();
