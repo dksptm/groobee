@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
@@ -20,9 +21,11 @@ public interface ProjectMapper {
 	// 프로젝트 삭제
 	public int deletePrjt(@Param("prjtId")int prjtId);
 	
-	// 프로젝트 하위 - 프로젝트업무 //
+	// 프로젝트 하위 - 업무 //
 	// 프로젝트 업무 조회
-	public List<ProjectVO> selectTaskAllList();
+	public List<ProjectVO> selectTaskAllList(SearchVO searchVO);
+	//프로젝트 업무 페이징
+	public int taskCount(SearchVO searchVO);
 	// 프로젝트 업무 등록
 	public int insertTask(@Param("pj") ProjectVO projectVO);
 	// 프로젝트 단건조회

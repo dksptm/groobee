@@ -3,8 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.project.mapper.ProjectMapper">
-
-	<!-- 프로젝트(상위), 프로젝트(하위), 업무공통(효주) // 협력업체, 상시업무는 task-mapper에 -->
+	<!-- 프로젝트(상위), 상시업무는, 업무공통(효주) // 프로젝트(하위), 협력업체 task-mapper.xml에 -->
 	
 	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
@@ -65,6 +64,7 @@
 							,#{custNo})
 		
 	</insert>
+	
 	<!-- 프로젝트(상위) 수정 prjt테이블만 수정.  -->
 	<update id="updatePrjt" parameterType="ProjectVO">
 		SET        		prjt_name = #{prjtName}
@@ -76,7 +76,6 @@
 		                ,resp_mngr_id = #{respMngrId}
 		                ,cust = #{cust}
 		WHERE prjt_id = #{prjtId}
-		
 	</update>	
 		
 	<!-- 프로젝트(상위) 삭제-->
@@ -85,98 +84,30 @@
 		WHERE prjt_id = #{prjtId}
 	</delete>
 	
-	<!-- 프로젝트(하위) 업무 전체 조회 -->
-	<select id="selectTaskAllList" resultType="ProjectVO">
-	SELECT        t.task_no
-			      ,t.task_name
-			      ,t.task_start_dt
-			      ,t.task_due_dt
-	              ,e.task_emp_id
-	              
-	FROM task_common t JOIN task_emps e
-			       ON (t.task_no = e.task_no)
-	ORDER BY t.task_no
+  <!-- 상시(주기적) 업무 조회 -->
+	<select id="selectReguAllList" resultType="ProjectVO">
+	SELECT 			t.task_no
+			       ,t.task_name
+			       ,t.task_start_dt
+			       ,r.regu_id
+			       ,r.cre_perd
+			       ,r.active
+	FROM 	task_common t JOIN regu_stad r 
+			         ON (t.standard_no = r.regu_id)
 	</select>
 	
-	<!-- 프로젝트(하위) 단건 -->
-	<select id="selectTask" resultType="ProjectVO">
-		SELECT p.prjt_id    
-	        ,p.prjt_name
-	        ,p.prjt_stat
-	        ,e.dept_name
-	        ,t.task_start_dt
-	        ,t.task_due_dt
-	        ,t.task_no
-	        ,m.emp_name
-	        ,p.purpose
-        	,p.smry
-		FROM  task_common t JOIN task_emps e
-			              ON t.task_no = e.task_no
-	               	 JOIN prjt p 
-	                     ON p.prjt_id = t.standard_no
-	               	 JOIN emp m
-	                    ON m.emp_id = p.resp_mngr_id
-	  WHERE t.task_no = #{taskNo}          
-     </select>
-	<!-- 프로젝트(하위) 업무 등록 -->
-	<insert id="insertTask" parameterType="ProjectVO"> 
-			<selectKey keyProperty="taskNo" 
-			resultType="Integer"
-			order="BEFORE">
-			SELECT NVL(MAX(task_no),0) +1 
-			FROM task_common
-		</selectKey>
-		INSERT ALL 
-			INTO  task_common(
-						    task_no,
-						    task_name,
-						    task_purpose,
-						    task_cntn,
-						    task_start_dt,
-						    task_due_dt,
-						    task_type,
-						    standard_no,
-						    prjt_mat,
-						    dept_id,
-						    cust_no  )
-				VALUES (
-							    #{pj.taskNo},
-							    #{pj.taskName},
-							    #{pj.taskPurpose},
-							    #{pj.taskCntn},
-							    #{pj.taskStartDt},
-							    #{pj.taskDueDt},
-							    #{pj.taskType},
-							    #{pj.standardNo},
-							    #{pj.prjtMat},
-							    #{pj.deptId},
-							    #{pj.custNo} )
-				<foreach collection="pj.taskEmps" item="te" >
-				INTO task_emps (
-						    task_no,
-						    task_emp_id,
-						    dept_id,
-						    dept_name,
-						    cust_no )
-				    VALUES (
-						     #{pj.taskNo},
-						     #{te.taskEmpId},
-						     #{te.deptId},
-						     #{te.deptName},
-						     #{pj.custNo})
-				</foreach>			 
-				 select 1 from dual
- 		</insert>
-	<!-- 프로젝트(하위) 업무 수정 -->
-	
-	
-	
-	<!-- 프로젝트(하위) 업무 삭제-->
-	<delete id="deleteTask" parameterType="int">
-		DELETE FROM task_common
-		WHERE task_no = #{taskNo}
-	</delete>	
-	
+	<!-- 상시(주기적)업무 등록 -->
+  	
+  	
+  	<!-- 상시(주기적)업무 수정 -->
+  	
+  	
+	<!-- 상시(주기적)업무 삭제 -->  
+	<delete id="deleteRegu" parameterType="int">
+		DELETE FROM regu_stad
+		WHERE regu_id = #{reguId}
+	</delete>
+	  
 	
 	<!-- 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명. -->
 	<select id="selectTasks" resultType="ProjectVO">

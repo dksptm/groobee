@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.util.SecuUtil;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 
@@ -47,9 +49,9 @@ public class TaskController {
 			String uri = null;
 			
 			if(rId > -1) {
-				uri = "redirect:prjtInfo?prjtId=" + rId;
+				uri = "" ;
 			} else {
-				uri = "reguAllList";
+				uri = "";
 			}
 			return uri;
 		}
@@ -98,15 +100,20 @@ public class TaskController {
 			model.addAttribute("coopCo", findVO);
 			return "project/coopCo/list";
 		}
-		// 협력업체 등록
+		// 협력업체 등록 (모달)
 		@GetMapping("coopInsert")
 		public String coopInsertForm(Model model) {
 			model.addAttribute("coopCo", new ProjectVO());
 			return "project/coopCo/list";
 		}
+		// 협력업체 등록 처리
 		@ResponseBody
 		@PostMapping("coopInsert")
-		public String coopInsertProcess(ProjectVO projectVO) {
+		public String coopInsertProcess(@RequestBody ProjectVO projectVO) {
+			
+
+			//ProjectVO.setTaskNo(int);
+			
 			int cNo =  projectService.coopInsert(projectVO);
 			String uri = null;
 			

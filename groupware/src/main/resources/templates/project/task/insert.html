@@ -45,7 +45,7 @@
                     <tr>
                         <th>협력부서명</th>
                         <td>
-                            <select class="form-select" style="width:100px" th:field="*{deptId}">
+                            <select class="form-select" style="width:100px" th:field="*{coDeptId}">
                                 <option value="">협력부서명</option>
                                 <option  th:each=" dept : ${dept}" th:value="${dept.deptId}" th:text="${dept.deptName}"></option>
                             </select>

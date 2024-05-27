@@ -6,7 +6,7 @@
 
 
 (function () {
-let menu, animate;
+	let menu, animate;
   // Initialize menu
   //-----------------
 

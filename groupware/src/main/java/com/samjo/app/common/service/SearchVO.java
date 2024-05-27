@@ -50,4 +50,18 @@ public class SearchVO {
 	private String sender;
 	private boolean hasFile; //첨부파일 유무 -> 있으면 클립이미지
 	
+	
+	// 업무 관련
+	private int taskNo;
+	private String taskName;
+	private String taskType;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date taskStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date taskDue;
+	private String prjtName;
+	private String prjtMat;
+	private String taskDt;
+	private String taskSort;
+
 }
