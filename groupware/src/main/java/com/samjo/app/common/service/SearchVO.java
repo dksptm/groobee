@@ -59,14 +59,15 @@ public class SearchVO {
 	// 업무 관련
 	private int taskNo;
 	private String taskName;
+	private String taskSort;
 	private String taskType;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date taskStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date taskDue;
+	private String taskDt;
 	private String prjtName;
 	private String prjtMat;
-	private String taskDt;
-	private String taskSort;
-
+	private int participantsCnt;
+	
 }
