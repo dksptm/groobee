@@ -64,6 +64,12 @@ public class ModuleController {
 	}
 
 	// 템플릿 전체조회
+	/**
+	 * 
+	 * @param searchVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("solTempList")
 	public String tempList(SearchVO searchVO, Model model) {
 		if (searchVO.getPage() <= 0) {
