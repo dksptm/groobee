@@ -65,7 +65,6 @@ public class ModuleController {
 
 	// 템플릿 전체조회
 	/**
-	 * 
 	 * @param searchVO
 	 * @param model
 	 * @return
@@ -92,12 +91,10 @@ public class ModuleController {
 
 	// 템플릿 등록 화면
 	@GetMapping("insertSolTemp")
-	public String InsertTemplate(@ModelAttribute TempVO tempVO, Model model) {
+	public String InsertTemplate(TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
 		model.addAttribute("custlist", list);
-		if (tempVO != null) {
-			model.addAttribute("tempVO", tempVO);
-		}
+	
 		return "solution/module/insertTemp";
 	}
 	
@@ -106,8 +103,7 @@ public class ModuleController {
 		@ResponseBody
 		public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
 			tempVO.setTempImg(moduleservice.saveImg(binaryData));
-			moduleservice.tempInsert(tempVO);
-			return "solution/module/templateList";
+			return moduleservice.tempInsert(tempVO);
 		}
 
 	// 템플릿 수정 화면

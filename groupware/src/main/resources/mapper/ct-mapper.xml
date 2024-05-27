@@ -13,6 +13,7 @@
 			FROM (SELECT ct.ct_no,
 						ct.cust_no,
 						c.cust_name,
+						get_codename(ct.ct_stat) as ct_stat_name,
 						ct.ct_stat,
 						ct.ct_start_dt,
 						ct.ct_end_dt,
@@ -23,25 +24,7 @@
 						ct.ct_file
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
-				<where>
-					<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
-					</if>
-					<if test="ctStat != null and ctStat != ''">
-						AND ct.ct_stat LIKE #{ctStat}
-					</if>
-					<choose>
-						<when test="ctStart != null and ctEnd != null">
-							AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
-						</when>
-						<when test="(ctStart != null) and (ctEnd == null)">
-							AND ${ctDt} >= #{ctStart}
-						</when>
-						<when test="(ctEnd != null) and (ctStart == null)">						
-							AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-						</when>
-					</choose>
-				</where>
+				<include refid="testsql" />
 				ORDER BY ${ctSort},cust_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10
@@ -52,6 +35,10 @@
 		SELECT  COUNT(*)
 		FROM ct ct JOIN cust c
 					ON (ct.cust_no = c.cust_no)
+  		<include refid="testsql" />
+	</select>
+	
+	<sql id="testsql">
 		<where>
 			<if test="keyword != null and keyword != ''">
 				AND ${searchCondition} LIKE '%' || #{keyword} || '%'
@@ -59,24 +46,18 @@
 			<if test="ctStat != null and ctStat != ''">
 				AND ct.ct_stat LIKE #{ctStat}
 			</if>
-			<choose>
-				<when test="ctStart != null and ctEnd != null">
-					AND ${ctDt} BETWEEN #{ctStart} AND #{ctEnd}
-				</when>
-				<when test="(ctStart != null) and (ctEnd == null)">
-					AND ${ctDt} >= #{ctStart}
-				</when>
-				<when test="(ctEnd != null) and (ctStart == null)">						
-					AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-				</when> 
-			</choose>
+			<if test="ctStart != null">
+				AND ${ctDt} >= #{ctStart}
+			</if>
+			<if test="ctEnd != null">						
+				AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+			</if> 
 		</where>
-	</select>
-	
+	</sql>
 	<!-- 계약 상세조회 -->
 	<select id="ctInfo" resultType="CtVO">
 		SELECT ct.ct_no,
-			   ct.ct_stat,
+			   get_codename(ct.ct_stat) as ct_stat,
 		       ct.cust_no,
 		       c.cust_name,
 		       c.brn,

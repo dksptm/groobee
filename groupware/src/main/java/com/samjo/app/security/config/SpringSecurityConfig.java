@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +42,11 @@ public class SpringSecurityConfig {
 					.logoutSuccessUrl("/");
 
 		http.csrf();
-
+		http.headers().frameOptions().sameOrigin();
+		//.addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://permitted-site.example.com"));
+        
+		
 		return http.build();
 	}
+	
 }

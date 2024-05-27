@@ -26,18 +26,16 @@ import com.samjo.app.solmodule.service.ModuleService;
 import com.samjo.app.solmodule.service.ModuleVO;
 import com.samjo.app.solmodule.service.TempSearchVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ModuleServiceImpl implements ModuleService {
 
 	@Value("${file.upload.path}")
 	private String uploadPath;
 
-	SolModMapper solmodMapper;
-
-	@Autowired
-	public ModuleServiceImpl(SolModMapper solmodMapper) {
-		this.solmodMapper = solmodMapper;
-	}
+	final SolModMapper solmodMapper;
 
 	@Override
 	public List<ModuleVO> modList() {

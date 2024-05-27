@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -61,5 +62,14 @@ public class CtController {
 		CtVO ctVO = ctservice.ctInfo(ctNo);
 		model.addAttribute("ctVO", ctVO);
 		return "solution/ct/ctInfo";
+	}
+	
+	//계약 수정 화면
+	@GetMapping("sol/ctUpdate/{ctNo}")
+	public String ctUpdatePage(@PathVariable int ctNo, Model model){
+		CtVO ctVO = new CtVO();
+		ctVO.setCtNo(ctNo);
+		model.addAttribute("ctNo", ctNo);
+		return "solution/ct/ctUpdate";
 	}
 }

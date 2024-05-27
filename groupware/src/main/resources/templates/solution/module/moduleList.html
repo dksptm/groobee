@@ -25,11 +25,11 @@
 										<td>[[ ${ModuleVO.modId} ]]</td>
 										<td>[[ ${ModuleVO.modName} ]]</td>
 										<td th:if="${ModuleVO.modStat == '1A1a'}"
-											class="table-success">[[ ${ModuleVO.modStat} ]]</td>
+											class="table-success">[[ ${ModuleVO.modStatName} ]]</td>
 										<td th:if="${ModuleVO.modStat == '1A2a'}" class="table-danger">[[
-											${ModuleVO.modStat} ]]</td>
+											${ModuleVO.modStatName} ]]</td>
 										<td th:if="${ModuleVO.modStat == '1A3a'}" class="table-secondary">[[
-											${ModuleVO.modStat} ]]</td>	
+											${ModuleVO.modStatName} ]]</td>	
 										<td>[[ ${ModuleVO.modInfo} ]]</td>
 									</tr>
 								</th:block>
