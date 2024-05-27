@@ -37,15 +37,19 @@
 						</div>
 					</form>
 					<br>
-
-
+					<!-- 사원계정 접속시 사원번호 사원명 가리기
+					<th:block sec:authorize="hasAuthority('1D3d')">
+					
+					출근, 퇴근 값안들어가면 행에 색상 적용,
+					지각, 조퇴, 오전반차, 오후반차 셀색상변경
+					 -->
 					<div id="table">
 							<table class="table table-striped-columns">
 								<thead>
 									<tr>
 										<th>날짜</th>
-										<th th:block sec:authorize="hasAuthority('1D3d')">사원번호</th>
-										<th th:block sec:authorize="hasAuthority('1D3d')">사원명</th>
+										<th >사원명</th>
+										<th >사원번호</th>
 										<th>출근시간</th>
 										<th>퇴근시간</th>
 										<th>근무지</th>
@@ -54,15 +58,22 @@
 									</tr>
 								</thead>
 								<tbody th:each="info : ${list}" id="infos">
-									<tr th:onclick="|location.href='@{/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${#authentication.principal.empId})}'|">
-									<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-										<td th:block sec:authorize="hasAuthority('1D3d')">[[${info.empNo}]]</td>
-										<td th:block sec:authorize="hasAuthority('1D3d')">[[${#authentication.name}]]</td>
+									<tr th:onclick="|location.href='@{/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empNo=${info.empNo})}'|">
+									    <td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
+										<td >[[${info.empName}]]</td>
+										<td >[[${info.empNo}]]</td>
 										<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
 										<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>
-										<td>[[${info.wkYn}]]</td>
-										<td>[[${info.wkStat}]]</td>
-										<td>[[${info.wkSite}]]</td>
+										<td th:if ="${info.wkYn == '근무일'}">[[${info.wkYn}]]</td>
+										<td th:if ="${info.wkYn == '연차'}" class="table-warning">[[${info.wkYn}]]</td>
+										<td th:if ="${info.wkYn == '오전반차'}" class="table-success">[[${info.wkYn}]]</td>
+										<td th:if ="${info.wkYn == '오후반차'}" class="table-success">[[${info.wkYn}]]</td>
+										<td th:if ="${info.wkStat == '정상근무'}">[[${info.wkStat}]]</td>
+										<td th:if ="${info.wkStat == '결근'}" class="table-danger">[[${info.wkStat}]]</td>
+										<td th:if ="${info.wkStat == '지각'}" class="table-info">[[${info.wkStat}]]</td>
+										<td th:if ="${info.wkStat == '조퇴'}" class="table-secondary">[[${info.wkStat}]]</td>
+										<td th:if ="${info.wkSite == '내근'}">[[${info.wkSite}]]</td>
+										<td th:if ="${info.wkSite == '외근'}" class="table-light">[[${info.wkSite}]]</td>
 									</tr>
 								</tbody>
 							</table>
@@ -71,21 +82,21 @@
 						<nav aria-label="Page navigation">
 							<ul class="pagination">
 								<th:block th:if="${filter.prev}">
-									<li class="page-item prev disabled"><a class="page-link"
-										th:href="|worklist?page=${filter.startPage - 1 }|"><i
-											class="bx bx-chevron-left"></i></a></li>
+									<li class="page-item prev disabled">
+									<a class="page-link"
+										th:href="|worklist?page=${filter.startPage - 1 }|">
+										<i class="bx bx-chevron-left"></i></a></li>
 								</th:block>
-								<th:block
-									th:each="num : ${#numbers.sequence(1, filter.endPage)}">
+								<th:block th:each="num : ${#numbers.sequence(1, filter.endPage)}">
 									<li class="page-item"
 										th:attrappend="class=${num ==  filter.page ? 'active' : ' '}">
 										<a th:href="|worklist?page=${num}|" class="page-link">[[${num}]]</a>
 									</li>
 								</th:block>
 								<th:block th:if="${filter.next}">
-									<li class="page-item next"><a class="page-link"
-										th:href="|worklist?page=${filter.endPage + 1 }|"><i
-											class="bx bx-chevron-right"></i></a></li>
+									<li class="page-item next">
+									<a class="page-link" th:href="|worklist?page=${filter.endPage + 1 }|">
+									<i class="bx bx-chevron-right"></i></a></li>
 								</th:block>
 							</ul>
 						</nav>
@@ -110,6 +121,7 @@
 					url : 'worklist',
 					method : 'Get',
 					data : {
+						page : 1,
 						oneDate : oneDate,
 						wkYn : wkYn,
 						wkStat : wkStat,
@@ -131,17 +143,33 @@
 			
 			function wkin() {
 				
+				let empName = 
+			    let dt = time
+					
 				$.ajax({
-					url : 'worklist',
-					method : 'POST'
-			},
-			success : function() {
-				console.log(wkin)
-			}
-			
-			function wkout(){
-				let wkout = 1;
-			}
+					url : 'workin',
+					method : 'POST',
+					data :{empId: empId
+						      dt: dt},
+				    success : function(workin){
+				    	console.log(workin);
+				    	
+				    }
+				})
+			};
+				var today = new Date();
+				
+				var year = today.getFullYear();
+				var month = ('0' + (today.getMonth() + 1)).slice(-2);
+				var day = ('0' + today.getDate()).slice(-2);
+				
+				var date = year + '-' + minth + '-' + day; // date = 현재 날짜
+				
+				var hours = ('0' + today.getHours()).slice(-2);
+				var minutes =('0' + today.getMinutes()).slice(-2);
+				var seconds = ('0'+ today.getSeconds()).slice(-2);
+				
+				var time = hours + ':' + minutes + ':' + seconds; // time = 현재 시간
 				
 		</script>
 	</th:block>

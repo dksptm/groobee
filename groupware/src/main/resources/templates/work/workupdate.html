@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+
+<body>
+	<th:block layout:fragment="Content">
+		<div class="test">
+			<div class="d-flex justify-content-center">
+				<div class="card my-4 col-8">
+					<br>
+					<div>
+						<br>
+						<h2 style="text-align: center">수정 화면</h2>
+						<p>
+						<hr>
+						<table class="table table-striped-columns" 
+						th:each="list : ${info}" id="infos">
+								<tr>
+									<th>사원번호</th>
+									<td>[[${list.empNo}]]</td>
+									<th>사원명</th>
+									<td>[[${list.empName}]]</td>
+								</tr>
+								<tr>
+									<th>부서</th>
+									<td>[[${#authentication.principal.deptId}]]</td>
+									<th>근무여부</th>
+									<td>[[${list.wkSite}]]</td>
+								</tr>
+								</table>
+								<br>
+								<table class="table table-striped-columns" 
+						th:each="list : ${info}" id="infos">
+								<tr>
+									<th>날짜</th>
+									<th>출근시간</th>
+									<th>퇴근시간</th>
+									<th>출근위치</th>
+									<th>퇴근위치</th>
+									<th>근무지</th>
+									<th>근무상태</th>
+								</tr>
+								<tr>
+									<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
+									<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
+									<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
+									<td>[[${list.wkInLoc}]]</td>
+									<td>[[${list.wkOutLoc}]]</td>
+									<td>[[${list.wkYn}]]</td>
+									<td>[[${list.wkStat}]]</td>
+								</tr>
+						</table>
+					</div>
+					<div>
+					<br>
+					<p>
+						<button type="submit" class="btn btn-primary">수정</button>
+						<button type="submit" class="btn btn-primary">취소</button>
+					</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<script>
+		
+	</script>
+	</th:block>
+</body>
+</html>

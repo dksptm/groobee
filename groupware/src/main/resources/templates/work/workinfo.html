@@ -2,44 +2,70 @@
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
+
 <body>
 	<th:block layout:fragment="Content">
-	
-	<div>
-		<table class="table table-striped-columns">
-			<thead>
-				<tr>
-					<th>사원명</th>
-					<th>날짜</th>
-					<th>출근시간</th>
-					<th>퇴근시간</th>
-					<th>출근위치</th>
-					<th>퇴근위치</th>
-					<th>근무지</th>
-					<th>근무상태</th>
-					<th>근무여부</th>
-				</tr>
-			</thead>
-			<tbody th:each="list : ${info}" id="infos">
-				<tr>
-					<td>[[${#authentication.name}]]</td>
-					<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
-					<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
-					<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
-					<td>[[${list.wkInLoc}]]</td>
-					<td>[[${list.wkOutLoc}]]</td>
-					<td>[[${list.wkYn}]]</td>
-					<td>[[${list.wkStat}]]</td>
-					<td>[[${list.wkSite}]]</td>
-				</tr>
-
-			</tbody>
-		</table>
-	</div>
-	<div>
-	<button type="button" class="btn btn-primary" th:onclick="|location.href=@|">수정</button>
-	</div>
-
+		<div class="test">
+			<div class="d-flex justify-content-center">
+				<div class="card my-4 col-8">
+					<br>
+					<div>
+						<br>
+						<h2 style="text-align: center">상세 조회</h2>
+						<p>
+						<hr>
+						<table class="table table-striped-columns" 
+						th:each="list : ${info}" id="infos">
+								<tr>
+									<th>사원번호</th>
+									<td>[[${list.empNo}]]</td>
+									<th>사원명</th>
+									<td>[[${list.empName}]]</td>
+								</tr>
+								<tr>
+									<th>부서</th>
+									<td>[[${#authentication.principal.deptId}]]</td>
+									<th>근무여부</th>
+									<td>[[${list.wkSite}]]</td>
+								</tr>
+								</table>
+								<br>
+								<table class="table table-striped-columns" 
+						th:each="list : ${info}" id="infos">
+								<tr>
+									<th>날짜</th>
+									<th>출근시간</th>
+									<th>퇴근시간</th>
+									<th>출근위치</th>
+									<th>퇴근위치</th>
+									<th>근무지</th>
+									<th>근무상태</th>
+								</tr>
+								<tr>
+									<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
+									<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
+									<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
+									<td>[[${list.wkInLoc}]]</td>
+									<td>[[${list.wkOutLoc}]]</td>
+									<td>[[${list.wkYn}]]</td>
+									<td>[[${list.wkStat}]]</td>
+								</tr>
+						</table>
+					</div>
+					<div>
+					<br>
+					<p>
+						<button type="button" class="btn btn-primary"
+						th:onclick="|location.href='@{/workupdate(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empNo=${info.empNo})}'|">수정</button>
+					</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<script>
+		
+	</script>
 	</th:block>
 </body>
 </html>
