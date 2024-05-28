@@ -98,6 +98,7 @@
 		            ON(e.job_no = j.job_no)
 		           JOIN perm p
 		            ON(j.perm_id = p.perm_id)
+		WHERE e.cust_no = #{custNo}
 	</select>	
 	
 	<!-- 계약등록 모듈목록조회 -->
@@ -110,4 +111,87 @@
 		ORDER BY mod_id 
 	</select>
 	
+	<!-- 계약 수정처리 -->
+	<update id="ctUpdate" parameterType="CtVO">
+		UPDATE ct
+		SET
+			cust_no = #{custNo},
+			ct_start_dt = #{ctStartDt},
+			ct_end_dt = #{ctEndDt},
+			ct_amt = #{ctAmt},
+			use_mod_cnt = #{useModCnt},
+			max_emps = #{maxEmps},
+			cur_emps = #{curEmps},
+			ct_file = #{ctFile}
+		WHERE ct_no = #{ctNo}
+	</update>
+	
+	<!-- 계약 이력등록 -->
+	<insert id="ctHist">
+		INSERT INTO ct_hist (ct_hist_no, 
+							 ct_no, 
+							 ct_start_dt,
+							 ct_end_dt, 
+							 ct_amt, 
+							 use_mod_cnt, 
+							 max_emps, 
+							 cust_no)
+		SELECT
+			(SELECT NVL(MAX(ct_hist_no), 0) + 1 AS ct_hist_no
+	  		 FROM ct_hist),
+			ct_no,
+			ct_start_dt,
+			ct_end_dt,
+			ct_amt,
+			use_mod_cnt,
+			max_emps,
+			cust_no
+		FROM ct
+		WHERE ct_no = #{ctNo}
+	</insert>
+	
+	<!-- 신규사용 모듈 등록 -->
+	<insert id="useModInsert" parameterType="ModuleVO">
+	<selectKey  keyProperty="modHistNo"
+				resultType="int"
+				order="BEFORE">
+		SELECT NVL(MAX(mod_hist_no), 0) + 1 as mod_hist_no
+		FROM use_mod
+	</selectKey>
+		INSERT INTO use_mod (
+								mod_hist_no,
+								mod_id,
+								ct_no,
+								cust_no,
+								cust_name,
+								use_start_dt,
+								mod_use_stat
+							  )
+		  VALUES (
+			#{modHistNo},
+			#{modId},
+			#{ctNo},
+			#{custNo},
+			#{custName},
+			#{useStartDt},
+			'1B1b'
+		  )
+	</insert>
+	
+	<!-- 사용종료 모듈 갱신 -->
+	<update id="useModUpdate">
+		UPDATE use_mod
+		SET
+			use_end_dt = sysdate,
+			mod_use_stat = '1B2b'
+		WHERE ct_no = #{ctNo}
+	</update>
+	
+	<!-- 계약변경이력 -->
+	<select id="selectCtHist" resultType="CtVO">
+		SELECT *
+		FROM ct_hist
+		WHERE ct_no = #{CtNo}
+		ORDER BY ct_hist_no
+	</select>
 </mapper>

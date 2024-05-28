@@ -8,7 +8,10 @@
 			<div class="card my-4 col-10">
 				<h5 class="card-header">계약 수정</h5>
 				<div class="card-body ">
-					<form>
+					<form id="updateForm"
+						th:action="@{/sol/ctUpdateProcess/{ctNo}(ctNo=${ctVO.ctNo})}"
+						method="post">
+
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>계약번호</th>
@@ -95,8 +98,8 @@
 						<p class="text-danger">계약은 계약서, 계약종료일, 계약금액, 계약모듈개수, 최대사용인원,
 							현재사용중 모듈만 수정가능합니다.</p>
 						<div class="d-flex align-items-endflex-column mt-3">
-							<button class="btn btn-primary mt-2">수정</button>
-							<button class="btn btn-primary mt-2" type="button"
+							<button type="button" class="btn btn-primary mt-2 updateBtn">수정</button>
+							<button type="button" class="btn btn-primary mt-2"
 								th:onclick="|location.href='@{/sol/ctInfo/}@{${ctVO.ctNo}}'|">취소</button>
 						</div>
 					</form>
@@ -151,47 +154,60 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
+			//계약서 변경버튼
+			$('.changebtn').on("click", function() {
+			    let fileInput = $('#uploadfile');
+
+			    if (fileInput.length) {
+			        fileInput.remove();
+			        $('.changebtn').html('계약서 변경');
+			    } else {
+			        let parentDiv = $(this).parent(); 
+			        $('<input>', {type: 'file', id: 'uploadfile', 
+			        	class: 'form-control w-50 mt-2', accept: '.pdf' 
+			        }).appendTo(parentDiv); 
+			        $('.changebtn').html('변경취소');
+			    }
+			});
+
+			//사용중 모듈 모달 체크박스 디폴트체크
 			let modAry = [];
 			$(function(e){
-				let arrA = [[${ctVO.modList}]];
-				let arrB = [[${modlist}]];
-				let arrR = arrA.filter(obj1 => arrB.some(obj2 => obj1.modId == obj2.modId ));
-				arrR.forEach(function(item, idx, arr){ 
-					$('input:checkbox[id='+item.modName+']').prop('checked',true);
-					modAry.push(item.modName);
-				});
+			    let arrA = [[${ctVO.modList}]];
+			    let arrB = [[${modlist}]];
+			    let arrR = arrA.filter(obj1 => arrB.some(obj2 => obj1.modId == obj2.modId ));
+			    arrR.forEach(function(item, idx, arr){ 
+			        $('input:checkbox[id='+item.modName+']').prop('checked',true);
+			        modAry.push({ modId: item.modId, modName: item.modName });
+			    });
+			    addIdModSpan();
 			});
 			
-			$('.changebtn').on("click", function() {
-				if($('#ctFile').attr('type') == 'text'){
-					$('#ctFile').attr("type", "file");
-					$('#ctFile').attr("accept", ".pdf");
-					$('.changebtn').html('변경취소');
-				}else if($('#ctFile').attr('type') == 'file'){
-					$('#ctFile').attr("type", "text");
-					$('#ctFile').val([[${ctVO.ctFile}]])
-					$('.changebtn').html('계약서 변경');
-				}
+			//계약서 표시방식 처리
+			$(function(e){
+				let ctFileVal = [[ ${ctVO.ctFile} ]];
+			    let splitAry = ctFileVal.split('_');
+			    let resultText = splitAry[splitAry.length - 1];
+			    $('#ctFile').text(resultText);
 			});
 
-			
+			//모듈변경 모달 체크박스 체크 항목 반영
 			$(".modcheck").on("change", function(e) {
-				if ($(this).is(":checked")) {
-					modAry.push(e.target.id);
-				} else {
-					for(let i = 0; i < modAry.length; i++) {
-						  if(modAry[i] === e.target.id)  {
-						    modAry.splice(i, 1);
-						    i--;
-						  }
-					  }
-				}
-				let text = modAry.join(" | ") + " |";
-				$('.modlistSpan').text(text);
-				$('#useModCnt').attr('min', totalChecked);
+			    if ($(this).is(":checked")) {
+			        modAry.push({ modId: e.target.value, modName: e.target.id });
+			    } else {
+			        for(let i = 0; i < modAry.length; i++) {
+			            if(modAry[i].modName === e.target.id) {
+			                modAry.splice(i, 1);
+			                i--;
+			            }
+			        }
+			    }
+			    addIdModSpan();
+			    $('#useModCnt').attr('min', totalChecked);
 			});
-			
 
+			//계약모듈 갯수와 사용 모듈갯수 동기화
 			let totalChecked = [[${#lists.size(ctVO.modList)}]]; // 설정 끝
 			function CountChecked(field) {
 			let maxChecked = $('#useModCnt').val();   //선택가능한 체크박스 갯수
@@ -208,6 +224,66 @@
 		    	}
 			}
 			    
+			// 사용중 모듈 span에 모듈id를 id로 부여 함수
+			function addIdModSpan() {
+			    let spanContent = modAry.map(item => 
+			        `<span id="${item.modId}">${item.modName} | </span>`
+			    ).join("");
+			    $('.modlistSpan').html(spanContent);
+			}
+			
+			// 파일명 표시
+			$(document).on('change', '#uploadfile', function() {
+			    let filename = $(this).val().split('\\').pop();
+			    $('#ctFile').val(filename);
+			});
+			
+			//수정 버튼 기능
+			$('.updateBtn').on('click', function(e){
+				e.preventDefault();
+
+			    let formData = new FormData($('#updateForm')[0]);
+
+			    // 모듈 ID 배열 가져오기
+			    let modIds = [];
+			    $('.modcheck:checked').each(function() {
+			        modIds.push($(this).val());
+			    });
+
+			    // 모듈 ID 배열을 FormData에 추가
+			    formData.append("modIds", modIds);
+			    
+			    // 파일 입력 상자가 존재하는 경우 FormData에 파일 추가
+			    let fileInput = $('#uploadfile');
+			    if (fileInput.length) {
+			        let file = fileInput[0].files[0];
+			        formData.append("uploadfile", file);
+			    }
+			    
+			    // Ajax 요청
+			    $.ajax({
+			        url: '/sol/ctUpdateProcess/' + [[${ctVO.ctNo}]],
+			        beforeSend: function(xhr){
+			            xhr.setRequestHeader(header, token);
+			        },
+			        type: 'POST',
+			        processData: false,
+			        contentType: false,
+			        data: formData,
+			        dataType: 'Text',
+			        success: function(result){
+			            console.log(result);
+			            if (result === "Success") {
+                        	window.location.href = "/sol/ctInfo/" + [[${ctVO.ctNo}]];
+	                    } else {
+	                        alert('수정 오류');
+	                    }
+			        },
+			        error: function(reject){ 
+			            console.log(reject);
+			        }
+			    });
+			});
 		</script>
 	</th:block>
 </body>
