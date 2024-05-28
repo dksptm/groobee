@@ -14,4 +14,6 @@ public class TaskEmpsVO {
 	private String custNo;
 	
 	private Integer result;
+	private String taskEmpName;
+	private String codeName;
 }

@@ -14,10 +14,10 @@
 		<hr>
 		<div class="m-3 p-3 shadow-lg rounded">
 			
-			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
-			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
-			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="text" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			<p>로그인Id <input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			부서ID <input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			회사ID <input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			사원명 <input type="hidden" th:value="${#authentication.name}" name="draptName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			<hr>
 			

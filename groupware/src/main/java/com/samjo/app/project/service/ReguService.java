@@ -1,6 +1,7 @@
 package com.samjo.app.project.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReguService {
 	
@@ -12,5 +13,11 @@ public interface ReguService {
 	
 	// 기존 상시업무 목록
 	public List<ProjectVO> reguStadList(String custNo);
+	
+	// 단건조회
+	public ProjectVO reguInfo(String custNo, Integer taskNo);
+	
+	// 담당자 업무완료.
+	public Map<String, Object> reguCmpltModify(List<TaskEmpsVO> emps);
 	
 }
