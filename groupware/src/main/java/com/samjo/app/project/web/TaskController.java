@@ -39,39 +39,8 @@ public class TaskController {
 			model.addAttribute("projects", list);
 			return "project/regu/list";
 		}
-	
-	// 상시(주기적)업무 등록
-	@GetMapping("reguInsert")
-	public String reguInsertForm(Model model) {
-		
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		
-		if(empVO != null) {
-			List<EmpVO> resp = deptService.respMngrList(empVO.getCustNo());
-			DeptVO dept = deptService.myDeptEmps(empVO.getDeptId());
-			model.addAttribute("resp", resp);					
-			model.addAttribute("dept", dept);					
-			model.addAttribute("taskRegu", new ProjectVO());
-			return "project/regu/insert";
-		} else {
-			return "test/test";
-		}
-	}
 		
 	
-		@PostMapping("reguInsert")
-		public String reguInsertProcess(ProjectVO projectVO) {
-			int rId = projectService.prjtInsert(projectVO);
-			String uri = null;
-			
-			if(rId > -1) {
-				uri = "" ;
-			} else {
-				uri = "";
-			}
-			return uri;
-		}
-		
 		// 상시 단건
 		@GetMapping("reguInfo")
 		public String reguInfo(ProjectVO projectVO, Model model) {
