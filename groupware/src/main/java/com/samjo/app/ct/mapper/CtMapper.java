@@ -21,4 +21,7 @@ public interface CtMapper {
 	public List<EmpVO> selectEmpList(int CtNo);
 	//계약 상세조회-계약변경이력
 	
+	//계약 수정-모듈목록조회
+	public List<ModuleVO> selecetModAll();
+	
 }

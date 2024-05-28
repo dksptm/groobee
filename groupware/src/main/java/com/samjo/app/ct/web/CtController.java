@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -14,6 +13,7 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.service.CtDTO;
 import com.samjo.app.ct.service.CtService;
 import com.samjo.app.ct.service.CtVO;
+import com.samjo.app.solmodule.service.ModuleVO;
 
 @Controller
 public class CtController {
@@ -67,6 +67,8 @@ public class CtController {
 	//계약 수정 화면
 	@GetMapping("sol/ctUpdate/{ctNo}")
 	public String ctUpdatePage(@PathVariable int ctNo, Model model){
+		List<ModuleVO> modlist = ctservice.modList();
+		model.addAttribute("modlist", modlist);
 		CtVO ctVO = ctservice.ctInfo(ctNo);
 		model.addAttribute("ctVO", ctVO);
 		return "solution/ct/ctUpdate";

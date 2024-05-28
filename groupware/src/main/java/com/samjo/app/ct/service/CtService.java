@@ -3,6 +3,7 @@ package com.samjo.app.ct.service;
 import java.util.List;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.solmodule.service.ModuleVO;
 
 public interface CtService {
 
@@ -12,4 +13,6 @@ public interface CtService {
 	public int count(SearchVO searchVO);
 	//계약 상세조회
 	public CtVO ctInfo(int ctNO);
+	//모듈목록 조회
+	public List<ModuleVO> modList();
 }

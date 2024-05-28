@@ -10,6 +10,7 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.mapper.CtMapper;
 import com.samjo.app.ct.service.CtService;
 import com.samjo.app.ct.service.CtVO;
+import com.samjo.app.solmodule.service.ModuleVO;
 
 @Service
 public class CtServiceImpl implements CtService{
@@ -37,6 +38,11 @@ public class CtServiceImpl implements CtService{
 		ctVO.setModList(ctMapper.selectModList(ctNO));
 		ctVO.setEmpList(ctMapper.selectEmpList(ctNO));
 		return ctVO; 
+	}
+
+	@Override
+	public List<ModuleVO> modList() {
+		return ctMapper.selecetModAll();
 	}
 
 }

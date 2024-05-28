@@ -54,6 +54,7 @@
 			</if> 
 		</where>
 	</sql>
+	
 	<!-- 계약 상세조회 -->
 	<select id="ctInfo" resultType="CtVO">
 		SELECT ct.ct_no,
@@ -76,7 +77,10 @@
 	
 	<!-- 계약 상세조회-이용중 모듈목록 -->
 	<select id="selectModList" resultType="ModuleVO">
-		SELECT 	m.mod_name
+		SELECT 	m.mod_id, 
+			   	m.mod_name,
+			   	m.mod_stat,
+			   	m.mod_info
 		FROM 	use_mod um JOIN mod m
 		                	ON (um.mod_id = m.mod_id)
 		WHERE 	um.mod_use_stat = '1B1b'
@@ -95,5 +99,15 @@
 		           JOIN perm p
 		            ON(j.perm_id = p.perm_id)
 	</select>	
+	
+	<!-- 계약등록 모듈목록조회 -->
+	<select id="selecetModAll">
+		SELECT mod_id, 
+			   mod_name,
+			   mod_stat,
+			   mod_info
+		FROM mod
+		ORDER BY mod_id 
+	</select>
 	
 </mapper>

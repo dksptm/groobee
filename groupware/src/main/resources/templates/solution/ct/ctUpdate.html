@@ -8,7 +8,7 @@
 			<div class="card my-4 col-10">
 				<h5 class="card-header">계약 수정</h5>
 				<div class="card-body ">
-					<form >
+					<form>
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>계약번호</th>
@@ -40,8 +40,8 @@
 									<div class="row">
 										<input class="form-control col-sm-5" type="text"
 											th:field="${ctVO.ctFile}" style="width: 70%" readOnly />
-										<button class="btn btn-secondary ms-3 col-sm-2 changebtn" type="button">계약서
-											변경</button>
+										<button class="btn btn-secondary ms-3 col-sm-2 changebtn"
+											type="button">계약서 변경</button>
 									</div>
 								</td>
 							</tr>
@@ -63,15 +63,16 @@
 							<tr>
 								<th>계약금액</th>
 								<td><input class="form-control" type="text"
-									th:field="${ctVO.ctAmt}" readOnly /></td>
+									th:field="${ctVO.ctAmt}" /></td>
 								<th>계약모듈 갯수</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.useModCnt}" readOnly /></td>
+								<td><input class="form-control" type="number"
+									th:field="${ctVO.useModCnt}"
+									th:min="${#lists.size(ctVO.modList)}" /></td>
 							</tr>
 							<tr>
 								<th>최대사용인원</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.maxEmps}" readOnly /></td>
+								<td><input class="form-control" type="number"
+									th:field="${ctVO.maxEmps}" th:min="${ctVO.curEmps}" /></td>
 								<th>현재사용인원</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.curEmps}" readOnly /></td>
@@ -80,31 +81,133 @@
 								<th>현재 사용중인 모듈</th>
 								<td colspan="3"><span
 									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
-									<span th:each="module : ${ctVO.modList}"> <span
-										th:if="${module.modName != null}"
-										th:text="${module.modName} + ' | '"></span>
-								</span> <span>
-										<button class="btn btn-secondary ms-3">모듈 변경</button>
+									<span class="modlistSpan"> <th:block
+											th:each="module : ${ctVO.modList}">
+											<span th:if="${module.modName != null}"
+												th:text="${module.modName} + ' | '"></span>
+										</th:block></span><span>
+										<button type="button" class="btn btn-secondary ms-3 modBtn"
+											data-bs-toggle="modal" data-bs-target="#ModModal">모듈
+											변경</button>
 								</span></td>
 							</tr>
 						</table>
-						<button class="btn btn-primary mt-2" >수정</button>
-						<button class="btn btn-primary mt-2" >취소</button>
+						<p class="text-danger">계약은 계약서, 계약종료일, 계약금액, 계약모듈개수, 최대사용인원,
+							현재사용중 모듈만 수정가능합니다.</p>
+						<div class="d-flex align-items-endflex-column mt-3">
+							<button class="btn btn-primary mt-2">수정</button>
+							<button class="btn btn-primary mt-2" type="button"
+								th:onclick="|location.href='@{/sol/ctInfo/}@{${ctVO.ctNo}}'|">취소</button>
+						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 
-		<script>
+		<!-- 모듈 선택 모달화면 -->
+		<div class="modal fade" id="ModModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">사용가능 모듈 목록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>모듈번호</th>
+									<th>모듈명</th>
+									<th>선택</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="ModuleVO : ${modlist}">
+									<tr id="modTr">
+										<td>[[ ${ModuleVO.modId} ]]</td>
+										<td>[[ ${ModuleVO.modName} ]]</td>
+										<td><input onclick="CountChecked(this)" type="checkbox"
+											name="check" class="modcheck" th:value="${ModuleVO.modId}"
+											th:id="${ModuleVO.modName}"></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary selectCust"
+							data-bs-dismiss="modal">선택완료</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script th:inline="javascript">
 			// CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
-			$('.changebtn').on("click", function(){
-				$('#ctFile').attr("type", "file");
-				$('#ctFile').attr("accept", ".pdf");
+			let modAry = [];
+			$(function(e){
+				let arrA = [[${ctVO.modList}]];
+				let arrB = [[${modlist}]];
+				let arrR = arrA.filter(obj1 => arrB.some(obj2 => obj1.modId == obj2.modId ));
+				arrR.forEach(function(item, idx, arr){ 
+					$('input:checkbox[id='+item.modName+']').prop('checked',true);
+					modAry.push(item.modName);
+				});
 			});
 			
+			$('.changebtn').on("click", function() {
+				if($('#ctFile').attr('type') == 'text'){
+					$('#ctFile').attr("type", "file");
+					$('#ctFile').attr("accept", ".pdf");
+					$('.changebtn').html('변경취소');
+				}else if($('#ctFile').attr('type') == 'file'){
+					$('#ctFile').attr("type", "text");
+					$('#ctFile').val([[${ctVO.ctFile}]])
+					$('.changebtn').html('계약서 변경');
+				}
+			});
+
+			
+			$(".modcheck").on("change", function(e) {
+				if ($(this).is(":checked")) {
+					modAry.push(e.target.id);
+				} else {
+					for(let i = 0; i < modAry.length; i++) {
+						  if(modAry[i] === e.target.id)  {
+						    modAry.splice(i, 1);
+						    i--;
+						  }
+					  }
+				}
+				let text = modAry.join(" | ") + " |";
+				$('.modlistSpan').text(text);
+				$('#useModCnt').attr('min', totalChecked);
+			});
+			
+
+			let totalChecked = [[${#lists.size(ctVO.modList)}]]; // 설정 끝
+			function CountChecked(field) {
+			let maxChecked = $('#useModCnt').val();   //선택가능한 체크박스 갯수
+				
+			    if (field.checked) // input check 박스가 체크되면 
+			        totalChecked += 1; // totalChecked 증가
+			    else // 체크가 아니면
+			        totalChecked -= 1; // totalChecked 감소
+
+			    if (totalChecked > maxChecked) { // totalchecked 수가 maxchecked수보다 크다면
+			        alert ("최대 "+maxChecked+"개 까지만 가능합니다."); // 팝업창 띄움
+			    field.checked = false;
+			    totalChecked -= 1;
+		    	}
+			}
+			    
 		</script>
 	</th:block>
 </body>
