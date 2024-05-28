@@ -27,7 +27,8 @@ public interface WorkMapper {
 	// 페이지 상세 조회
 	public WorkVO selectWork(WorkVO workVO);
 	// 관리자 페이지 수정
-	public int updateWork(WorkVO workVO);
+	public WorkVO updateWork(WorkVO workVO);
+	public int update(WorkVO workVO);
 	
 	
 	

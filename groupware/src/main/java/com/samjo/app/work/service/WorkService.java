@@ -1,6 +1,7 @@
 package com.samjo.app.work.service;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface WorkService {
@@ -27,6 +28,8 @@ public interface WorkService {
 	// 전체페이지의 상세 조회
 	public WorkVO selectWork(WorkVO workVO);
 	
-	// 전체페이지의 수정
-	public int updateWork(WorkVO workVO);
+	// 전체페이지의 수정페이지
+	public WorkVO updateWork(WorkVO workVO);
+	// 수정 처리
+	public Map<String, Object> update(WorkVO workVO);
 }
