@@ -7,14 +7,14 @@
 	
 	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO">
-		SELECT p.prjt_id 
-			  ,p.prjt_name  
-		      ,p.prjt_start_dt
-		      ,p.prjt_due_dt
-		      ,p.purpose
-		      ,p.smry
-		      ,p.prjt_stat 
-		FROM prjt p 
+		SELECT prjt_id 
+			  ,prjt_name  
+		      ,prjt_start_dt
+		      ,prjt_due_dt
+		      ,purpose
+		      ,smry
+		      ,get_codename(prjt_stat) as prjt_stat
+		FROM prjt 
 	</select>
 	
 	<!-- 프로젝트(상위) 단건 -->

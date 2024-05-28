@@ -46,11 +46,7 @@
 										</select></td>
 									</tr>
 									<tr>
-									<td class="form-control" taskDt>기간</td>
-<!-- 										<td><select class="form-select taskDt">
-												<option value="t.task_start_dt">시작일</option>
-												<option value="t.task_due_dt">종료일</option>
-										</select> -->
+									<td class="form-control" >기간</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
@@ -95,14 +91,14 @@
 								<tbody>
 									<th:block th:each="task : ${list}">
 										<tr
-											th:onclick="|location.href='@{/task/Info/}@{${task.taskNo}}'|">
+											th:onclick="|location.href='/tsInfo/${task.taskNo}'|">
 											<td>[[ ${task.taskNo} ]]</td>
 											<td>[[ ${task.prjtName} ]]</td>
 											<td>[[ ${task.taskName} ]]</td>
 											<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
 											<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${task.participantsCnt} ]]</td>
-											<td>[[ ${task.progress} ]]</td>
+											<td>[[ ${task.participantsCnt} ]] 명</td>
+											<td>[[ ${task.progress} ]] %</td>
 											<td
 												th:class="${task.prjtMat == '5B2b' ? 'table-secondary' : ''}">
 												[[ ${task.prjtMat} ]]</td>

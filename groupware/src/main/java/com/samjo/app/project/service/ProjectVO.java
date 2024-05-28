@@ -27,6 +27,10 @@ public class ProjectVO {
 	private int ptCnt;
 	private int participantsCnt;
 	private int progress;
+	
+	// 업무참여자 목록
+	private List<ProjectVO> taskEmpList;
+	
 	//상시업무기준
 	private String reguId;
 	private String creType;
@@ -60,8 +64,9 @@ public class ProjectVO {
     List<TaskEmpsVO> taskEmps;
     private String taskStat;
     private String taskEmpId;
-    
     private String coDeptId;
+    private String empName;
+    
     
 	// 업무문서
 	private String docNo;
@@ -70,6 +75,7 @@ public class ProjectVO {
 	
 	private String custNo;
 
-
+	// 프로시저 결과반환.
+	private Integer result;
 	
 }
