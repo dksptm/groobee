@@ -14,4 +14,6 @@ public class TaskEmpsVO {
 	private String custNo;
 	
 	private Integer result;
+	// 참여자선택 체크 비활성화
+	private boolean checked;
 }
