@@ -242,7 +242,6 @@
 		$('#docInsertForm').submit(async function(e){
 			// submit 중지.
 			e.preventDefault();
-			//const submitDoc = this;
 			
 			let temp = document.querySelector('#tempId').value;
 			if(temp == "public01") {
@@ -253,10 +252,30 @@
 			if(!docCheck()) return;
 			
 			// 
-			if(confirm('저장할까요?')) {
-				
-				this.submit();
-			}
+			
+		    Swal.fire({
+		      title: '문서를 저장하시겠습니까?',
+		      text: "",
+		      icon: 'warning',
+		      showCancelButton: true,
+		      confirmButtonColor: '#3085d6',
+		      cancelButtonColor: '#d33',
+		      confirmButtonText: '승인',
+		      cancelButtonText: '취소',
+		      reverseButtons: true, // 버튼 순서 거꾸로
+		      
+		    }).then((result) => {
+		      if (result.isConfirmed) {
+		    	  Swal.fire({
+						icon: 'success',               
+					  	title: '문서저장 완료.',    
+					  	text: '', 
+					});
+					
+					this.submit();
+		      }
+		    })
+			
 			
 		})// 작성완료end.
 			

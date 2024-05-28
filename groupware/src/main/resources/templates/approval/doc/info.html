@@ -275,14 +275,25 @@
 					
 					let finChk = document.querySelector('div[data-fl]').dataset.fl;
 					if(finChk <= 1) {
-						alert('결재자가 없습니다.\n다시확인해주세요.');
+						
+						Swal.fire({
+							icon: 'error',               
+						  	title: '상신 확인 필요',    
+						  	text: '결재자가 없습니다. 결재자를 추가하세요.', 
+						});
 						return;
 					}
 					
 					let obj = getObj('goApr');
 					
 					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						
+						Swal.fire({
+							icon: 'error',               
+						  	title: '상신 확인 필요',    
+						  	text: '문서번호가 없거나, 기안자가 없습니다.', 
+						});
+						
 						return;
 					}
 					
@@ -300,10 +311,20 @@
 					.then(res => res.json())
 					.then(ret => {
 						if(ret.OUT == 'Y'){
-							alert('상신완료!');
+							
+							Swal.fire({
+								icon: 'success',               
+							  	title: '상신완료!',    
+							  	text: '문서가 상신되었습니다.', 
+							});
+							
 							location.href = "/docInfo?docNo=" + obj.docNo;
 						} else {
-							alert('상신실패!');
+							Swal.fire({
+								icon: 'error',               
+							  	title: '상신실패!',    
+							  	text: '-', 
+							});
 							//location.href = "/docList";
 							console.log(ret);
 						}
@@ -319,7 +340,13 @@
 					let obj = getObj('aprOk');
 					
 					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						
+						Swal.fire({
+							icon: 'error',               
+						  	title: '결재실패!',    
+						  	text: '문서번호가 없거나, 기안자가 없습니다.', 
+						});
+						
 						return;
 					}
 					
@@ -338,13 +365,25 @@
 					.then(ret => {
 						console.log(ret);
 						if(ret.OUT == 'GO_NEXT'){
-							alert('결재완료!\n다음결재자에게 전달됩니다.');
+							Swal.fire({
+								icon: 'success',               
+							  	title: '결재완료!',    
+							  	text: '다음결재자에게 전달됩니다.', 
+							});
 							location.href = "/docInfo?docNo=" + obj.docNo;
 						} else if(ret.OUT == 'APR_CMPLT') {
-							alert('결재완료!\n해당 문서가 최종결재 완료되었습니다.');
+							Swal.fire({
+								icon: 'success',               
+							  	title: '결재완료!',    
+							  	text: '해당 문서가 최종결재되었습니다.', 
+							});
 							location.href = "/docInfo?docNo=" + obj.docNo;
 						} else {
-							alert('결재실패!');
+							Swal.fire({
+								icon: 'error',               
+							  	title: '결재실패!',    
+							  	text: '-', 
+							});
 							location.href = "/docList";
 						} 
 					})
@@ -359,7 +398,11 @@
 					let obj = getObj('aprNg');
 					
 					if(obj == null) {
-						alert('문서번호가 없거나, 기안자가 없습니다.\n다시확인해주세요.');
+						Swal.fire({
+							icon: 'error',               
+						  	title: '결재실패!',    
+						  	text: '문서번호가 없거나, 기안자가 없습니다.', 
+						});
 						return;
 					}
 					
@@ -378,15 +421,27 @@
 					.then(ret => {
 						console.log(ret);
 						if(ret.OUT == 'OK') {
-							alert('반려완료!\n기안자에게 알립니다.');
+							Swal.fire({
+								icon: 'warning',               
+							  	title: '반려완료!',    
+							  	text: '기안자에게 알립니다.', 
+							});
 							console.log(ret);
 							location.href = "docInfo?docNo=" + obj.docNo;
 						} else if(ret.OUT == 'NG') {
-							alert('반려실패!\n다시확인해주세요.');
+							Swal.fire({
+								icon: 'error',               
+							  	title: '결재실패!',    
+							  	text: '-', 
+							});
 							console.log(ret);
 							//location.href = "/docList";
 						} else {
-							alert('오류!');
+							Swal.fire({
+								icon: 'error',               
+							  	title: '오류!',    
+							  	text: '-', 
+							});
 							//location.href = "/docList";
 						} 
 					})

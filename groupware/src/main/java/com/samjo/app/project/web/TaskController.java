@@ -117,6 +117,7 @@ public class TaskController {
 			ProjectVO projectVO = taskService.taskInfo(taskNo);
 			model.addAttribute("task", projectVO);
 			return "project/task/tsInfo";
+		
 		}
 		
 		// 업무참여자 수정

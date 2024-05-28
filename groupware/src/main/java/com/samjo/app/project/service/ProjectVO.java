@@ -39,6 +39,8 @@ public class ProjectVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date reguDt;
 	private String respEmpId;
+	private String respEmpName;
+	private String codeName; //...
 	
 	//프로젝트
 	private String prjtId;

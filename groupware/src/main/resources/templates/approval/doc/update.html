@@ -392,11 +392,19 @@
 						
 						// 나머지 템플릿은 알아서 저장됨
 						
-						alert('문서등록 완료.');
-	
+						Swal.fire({
+							icon: 'success',               
+						  	title: '문서등록 완료.',    
+						  	text: '', 
+						});
+						
 						this.submit();
 					} catch {
-						alert('문서등록 오류');
+						Swal.fire({
+							icon: 'error',               
+						  	title: '문서등록 오류.',    
+						  	text: '', 
+						});
 					}
 				}
 				
