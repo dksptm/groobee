@@ -39,9 +39,7 @@
 										</select></td>
 									</tr>
 									<tr>
-										<td><select class="form-select sentDt">
-												<option value="s.sentDt">수신날짜</option>
-										</select></td>
+										<td class="form-select sentDt">수신날짜</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
@@ -163,7 +161,7 @@
 			});
 			
 			//페이징 링크 처리
-			$(document).on("click", $(".pagebtn"), function(e){
+			$(document).on("click", ".pagebtn", function(e){
 				e.preventDefault();
 				let page = e.target.id;
 				showTable(page);
@@ -176,7 +174,6 @@
 		        searchCondition = $('.searchKeySelect').val();
 		        
 		        //기간 검색 처리
-		        sentDt = $('.sentDt').val();
 		        sdStart = $('.fromDt').val();
 		        sdEnd = $('.toDt').val();
 		        
@@ -225,11 +222,10 @@
             xhr.setRequestHeader(header, token);
         },
         contentType: 'application/json', // 데이터 타입을 JSON으로 설정
-        dataType: 'json', // 응답을 JSON으로 받도록 설정
+        dataType: 'text', // 응답을 JSON으로 받도록 설정 / 한게 실패의 이유였다. 컨트롤러가 String으로 반환하므로 text로 받아야 했다.-스승님-
         data: JSON.stringify({
             page: page,
             recEmailNo: recEmailNo,
-            sentDt: sentDt,
             sdStart: sdStart,
             recpType: recpType,
             sdEnd: sdEnd,

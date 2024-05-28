@@ -84,32 +84,12 @@ public class EmailController {
         model.addAttribute("list", list);
         EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO)); 
         model.addAttribute("EmailDTO", emailDTO);
+        model.addAttribute("searchVO", searchVO);
         
         return "email/inboxList :: #inboxTable";
     }
 	
-	
-	// 받은메일 검색/페이징 처리
-//	@PostMapping("viewInboxList")
-//	public String viewInboxPage( SearchVO searchVO, Model model) {
-//		if (searchVO.getPage() <= 0) {
-//			searchVO.setPage(1);
-//		}
-//		EmpVO empVO = SecuUtil.getLoginEmp();
-//		String custId = empVO.getCustNo();
-//		String eid = empVO.getEmpId();
-//		searchVO.setRecp(eid);
-//		searchVO.setCustNo(custId);
-//		List<EmailVO> list = emailService.inboxList(searchVO);
-//		model.addAttribute("list", list);
-//		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO)); 
-//		model.addAttribute("EmailDTO", emailDTO);
-//        //model.addAttribute("searchVO", searchVO);
-//		
-//		return "email/inboxList :: #inboxTable";
-//	}
-	
-	// 받은메일 상세조회
+	// 받은메일 상세조회 -> 전체조회에서 행을 클릭하고 넘어옴
 	@GetMapping("inboxInfo")
 	public String inboxInfo(EmailVO emailVO, Model model) {
 		// rfindVO 객체에 Service의 실행 결과를 담는다

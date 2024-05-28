@@ -25,23 +25,18 @@
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  r.email_stat = '3B1b' <!-- if걸고 수신자,참조자 구별하기 -->
 				    <if test="keyword != null and keyword != ''">
-				    	AND ${searchCondition} Like '%' || #{keyword} || '%'
-				    </if>
-				    <if test ="recpType != null and recpType !='' ">
-				    	AND r.recp_type LIKE #{recpType}
-				    </if>
-				    <choose>
-					    <when test="sdStart != null and sdEnd != null">
-						    AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
-					    </when>
-					    <when test="(sdStart != null) and (sdEnd == null)">
-						    AND ${sentDt} >= #{sdStart}
-					    </when>
-					    <when test="(sdEnd != null) and (sdStart == null)">						
-						    AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
-					    </when>
-				    </choose>
-				    ORDER BY sent_Dt ASC ) t
+						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test ="recpType != null and recpType !='' ">
+						AND r.recp_type LIKE #{recpType}
+					</if>
+					<if test="sdStart != null">
+						AND s.sent_Dt >= #{sdStart}
+					</if>
+					<if test="ctEnd != null">						
+						AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+					</if>
+				    ORDER BY sent_Dt DESC ) t
 				WHERE rownum <![CDATA[<=]]> (#{page} * 10)) g
 		WHERE g.rn > (#{page} -1) * 10
   	</select>
@@ -62,20 +57,49 @@
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
 		<if test ="recpType != null and recpType !='' ">
-			AND recp_type = #{recpType}
+			AND r.recp_type LIKE #{recpType}
 		</if>
-			<choose>
-				<when test="sdStart != null and sdEnd != null">
-					AND ${sentDt} BETWEEN #{sdStart} AND #{sdEnd}
-				</when>
-				<when test="(sdStart != null) and (sdEnd == null)">
-					AND ${sentDt} >= #{sdStart}
-				</when>
-				<when test="(sdEnd != null) and (sdStart == null)">						
-					AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
-				</when>
-			</choose>
+		<if test="sdStart != null">
+			AND s.sent_Dt >= #{sdStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+		</if>
 	</select>
+  
+  <sql id = "testsql">
+  	<where>
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test ="recpType != null and recpType !='' ">
+			AND r.recp_type LIKE #{recpType}
+		</if>
+		<if test="sdStart != null">
+			AND ${sentDt} >= #{sdStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND ${sentDt} <![CDATA[<=]]> #{sdEnd}
+		</if>
+	</where> 
+  </sql>
+
+  <select id="selectInbox" resultType="EmailVO">
+	  SELECT s.sen_email_no,
+	         r.rec_email_no,
+	         s.sender,
+	         r.recp,
+	         r.refer,
+	         s.title,
+	         s.cntn,
+	         s.email_stat,
+	         r.email_stat,
+	         r.cust_no
+	  FROM   email s JOIN inbox r
+	                 ON s.sen_email_no = r.sen_email_no
+	  WHERE  r.cust_no = #{custNo, jdbcType=VARCHAR}
+  </select>
+  
   
   <!-- email,inbox 단건조회시 첨부파일 조회 -->
   	<select id="selectEmailFile" resultType="EmailFileVO">
