@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.samjo.app.project.service.ProjectVO;
 
 import lombok.Data;
@@ -29,6 +28,8 @@ public class SearchVO {
 	private Date dtStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dtEnd;
+	
+	private String path;
 	
 	// 계약 관련.
 	private String ctName;

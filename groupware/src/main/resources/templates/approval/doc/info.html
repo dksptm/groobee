@@ -14,17 +14,32 @@
 		<hr>
 		<div class="m-3 p-3 shadow-lg rounded">
 			
-			<p>로그인Id <input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
-			부서ID <input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
-			회사ID <input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="hidden" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			<p><input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			<input type="hidden" th:value="${#authentication.name}" name="draptName" readonly /></p>
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
-			<hr>
 			
-			<!-- ------------------------- 상신/수정/목록/삭제 버튼 START ------------------------- -->
-			<div class="card-body text-end mx-4">
-				<!-- 목록 버튼 -->
-				<button type="button" th:onclick="|location.href='@{/docList}'|" class="btn rounded-pill btn-primary">목록</button>
+			<div class="card-body d-flex justify-content-between py-3 px-0">
+			<!-- ------------------------- 목록버튼( + 검색 ) ------------------------- -->
+			<div class="text-start">
+				<form th:action="@{{urlVar}(urlVar=${search.path})}" method="get" th:object="${search}">
+					<!-- 목록 버튼 -->
+					<button type="submit" class="btn btn-primary">목록으로</button>
+					<input th:field="*{keywordCondition}" type="hidden" readonly />
+					<input th:field="*{keyword}" type="hidden" readonly  />
+					<input th:field="*{aprStatCondition}" type="hidden" readonly  />
+					<input th:field="*{docStatCondition}" type="hidden" readonly  />
+					<input th:field="*{draftStatCondition}" type="hidden" readonly  />
+					<input th:field="*{sortCondition}" type="hidden" readonly  />
+					<input th:field="*{dateCondition}" type="hidden" readonly  />
+					<input th:field="*{dtStart}" type="hidden" readonly  />
+					<input th:field="*{dtEnd}" type="hidden" readonly  />
+					<input th:field="*{page}" type="hidden" readonly  />
+				</form>			
+			</div>
+			<!-- ------------------------- 상신/수정/삭제 버튼 START ------------------------- -->
+			<div class="text-end">
 				<!-- 상신전 상태 & 작성자=로그인한사람 -->
 				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
 					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상신</button>
@@ -43,6 +58,7 @@
 					</th:block>
 				</th:block>
 			</div> 
+			</div>
 			<!-- ------------------------- 상신/수정/목록/삭제 버튼 END ------------------------- -->
 			
 			<div class="card-body row" id="doc-info-pdf">
@@ -159,16 +175,16 @@
 				</div>
 				<!-- ------------------------- 결재라인 END --------------------------->
 				
-				<div class="mt-3">
+				<!-- <div class="mt-3">
 				
 					<h4>완료문서 PDF보기</h4>
-					<!-- <form id="formPDF" th:action="|/docPDF/${doc.docNo}|" method="post" target="_blank" >
+					<form id="formPDF" th:action="|/docPDF/${doc.docNo}|" method="post" target="_blank" >
 					<h5>
-					<input type="hidden" name="html" value="" /> -->
+					<input type="hidden" name="html" value="" />
 					<button  type="button" id="toPDF">새창보기</button>
-					<!-- </h5> --><!--  -->
-				<!-- </form> -->
-				</div>
+					</h5> --><!-- 
+				</form>
+				</div> -->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
 				<div class="d-flex justify-content-end">

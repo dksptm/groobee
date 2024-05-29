@@ -5,6 +5,12 @@
 
 <th:block layout:fragment="Content">
 
+<style>
+.offcanvas.offcanvas-end.regu{
+	width: 600px; 
+}
+</style>
+
 <div class="container-xxl flex-grow-1">
 	<div class="flex-xl-nowrap row">
 	<div class="row">
@@ -173,7 +179,7 @@
 		</div>
 		
 		<!-- Enable Body scrolling -->
-		<div class="offcanvas offcanvas-end w-80" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-regus" aria-labelledby="offcanvasScrollLabel">
+		<div class="offcanvas offcanvas-end regu" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-regus" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
 		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">업무 선택</h5>
 		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>

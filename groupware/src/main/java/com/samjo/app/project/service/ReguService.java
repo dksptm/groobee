@@ -3,6 +3,8 @@ package com.samjo.app.project.service;
 import java.util.List;
 import java.util.Map;
 
+import com.samjo.app.common.service.SearchVO;
+
 public interface ReguService {
 	
 	// 처음 상시업무 등록(regu_stad + task_common + task_emps)
@@ -17,7 +19,11 @@ public interface ReguService {
 	// 단건조회
 	public ProjectVO reguInfo(String custNo, Integer taskNo);
 	
-	// 담당자 업무완료.
+	// 담당자 업무완료 처리.
 	public Map<String, Object> reguCmpltModify(List<TaskEmpsVO> emps);
+	
+	// 전체조회
+	public List<ProjectVO> reguTaskList(String custNo, SearchVO search);
+	public int countReguTasks(String custNo, SearchVO search);
 	
 }

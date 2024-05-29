@@ -376,6 +376,7 @@
 			  	,g.title
 			  	,g.draft_name
 			  	,g.doc_stat_name
+			  	,g.doc_stat
 			    ,g.draft_dt
 			    ,g.cmplt_dt
 		FROM    
@@ -388,6 +389,7 @@
 				        ,d.title
 				        ,d.draft_name
 				        ,get_codename(d.doc_stat) AS doc_stat_name
+				        ,d.doc_stat
 				        ,d.draft_dt
 				        ,d.cmplt_dt
 				FROM 

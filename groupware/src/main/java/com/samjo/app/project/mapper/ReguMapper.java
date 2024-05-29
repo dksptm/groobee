@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskEmpsVO;
 
@@ -23,5 +24,9 @@ public interface ReguMapper {
 	
 	// 담당업무 완료
 	public void reguTaskEmpOk(TaskEmpsVO taskEmpsVO);
+	
+	// 상시업무 전체조회.
+	public List<ProjectVO> selectReguTaskAll(@Param("cno") String custNo, @Param("sch") SearchVO search);
+	public int countReguTasks(@Param("cno") String custNo, @Param("sch") SearchVO search);
 	
 }
