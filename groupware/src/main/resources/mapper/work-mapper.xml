@@ -157,7 +157,7 @@ where dt = #{dt} and emp_No = #{empNo}
           wk_yn = #{wkYn},
           wk_stat = #{wkStat},
           wt_site = #{wkSite}
-   WHERE dt = #{dt} AND emp_id = #{empId}
+   WHERE dt = #{dt} AND emp_No = #{empNo}
    </update>
    
    

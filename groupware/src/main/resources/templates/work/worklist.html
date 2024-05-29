@@ -51,7 +51,7 @@
 								<thead>
 									<tr>
 										<th>날짜</th>
-										<th >사원명</th>
+										<th>사원명</th>
 										<th >사원번호</th>
 										<th>출근시간</th>
 										<th>퇴근시간</th>
@@ -63,7 +63,7 @@
 								<tbody th:each="info : ${list}" id="infos">
 									<tr th:onclick="|location.href='@{/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empNo=${info.empNo})}'|">
 									    <td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-										<td >[[${info.empName}]]</td>
+										<td>[[${info.empName}]]</td>
 										<td id="empNo">[[${info.empNo}]]</td>
 										<td>[[${#dates.format(info.wkIn, "HH:mm:ss")}]]</td>
 										<td>[[${#dates.format(info.wkOut, "HH:mm:ss")}]]</td>

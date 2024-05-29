@@ -105,6 +105,7 @@ public class WorkControll {
 	@PostMapping("workupdate")
 	@ResponseBody
 	public Map<String, Object> update(WorkVO workVO) {
+		
 		return workService.update(workVO);
 	}
 

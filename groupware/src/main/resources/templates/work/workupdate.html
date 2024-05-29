@@ -7,46 +7,76 @@
 	<th:block layout:fragment="Content">
 		<div class="test">
 			<div class="d-flex justify-content-center">
-				<div class="card my-4 col-8">
+				<div class="card my-4 col-12">
 					<br>
 						<br>
 						<h2 style="text-align: center">수정 화면</h2>
 						<p>
 						<hr>
-						<form action="/workupdate" method="post" th:object="${info}">
-						<table id="up">
+						<form action="/workupdate" method="post" th:object="${workVO}">
+						<table id="up" class="table table-striped-columns">
 								<tr>
 									<th>사원번호</th>
-									<td>11025</td>
+									<th>부서</th>
 									<th>사원명</th>
-									<td>[[${#authentication.principal.empName}]]</td>
+									<th>근무여부</th>
 								</tr>
 								<tr>
-									<th>부서</th>
-									<td>[[${#authentication.principal.deptId}]]</td>
-									<th>근무여부</th>
-									<td><input type="text" th:filed="*{wkSite}"></td>
+									<td>[[*{empNo}]]</td>
+									<td>[[*{#authentication.principal.deptId}]]</td>
+									<td>[[*{empName}]]
+									</td>
+									<td>
+									<select th:filed="*{wkSite}" class="form-select">
+									<option value="2A1a">근무일</option>
+									<option value="2A2a">연차</option>
+									<option value="2A3a">오전반차</option>
+									<option value="2A4a">오후반차</option>
+									</select>
+									</td>
 								</tr>
 							</table>
 							<br>
-							<table>
+							<table class="table table-striped-columns">
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
 									<th>퇴근시간</th>
 									<th>출근위치</th>
 									<th>퇴근위치</th>
-									<th>근무지</th>
 									<th>근무상태</th>
+									<th>근무지</th>
 								</tr>
 								<tr>
-									<td><input type="date" th:filed="*{list.dt}"></td>
-									<td><input type="date" th:filed="*{wkIn}"></td>
-									<td><input type="date" th:filed="*{wkOut}"></td>
-									<td><input type="text" th:filed="*{wkInLoc}"></td>
-									<td><input type="text" th:filed="*{wkOutLoc}"></td>
-									<td><input type="text" th:filed="*{wkYn}"></td>
-									<td><input type="text" th:filed="*{wkStat}"></td>
+									<td>[[*{#dates.format(dt, "yyyy/MM/dd")}]]</td>
+									<td><input type="time" th:filed="*{wkIn}"></td>
+									<td><input type="time" th:filed="*{wkOut}"></td>
+									<td>
+									<select th:filed="*{wkInLoc}" class="form-select">
+									<option value="대구">대구본사</option>
+									<option value="부산">부산지점</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkOutLoc}" class="form-select">
+									<option value="대구">대구본사</option>
+									<option value="부산">부산지점</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkStat}" class="form-select">
+									<option value="2B1b">정상근무</option>
+									<option value="2B2b">결근</option>
+									<option value="2B3b">지각</option>
+									<option value="2B4b">조퇴</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkYn}" class="form-select">
+									<option value="3C1c">내근</option>
+									<option value="3C2c">외근</option>
+									</select>
+									</td>
 								</tr>
 							</table>
 					<div>
@@ -60,7 +90,6 @@
 				</div>
 			</div>
 		</div>
-	</th:block>
 	<script>
 		
 	</script>
