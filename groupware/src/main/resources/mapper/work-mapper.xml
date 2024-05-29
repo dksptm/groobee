@@ -144,7 +144,6 @@ select
 from emp j join wk i
              on j.emp_id = i.emp_id
 where dt = #{dt} and emp_No = #{empNo}
-
    </select>
    
    <!-- 상세페이지에서 작동하는 업데이트 -->

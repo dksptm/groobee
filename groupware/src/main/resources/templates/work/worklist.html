@@ -36,7 +36,7 @@
 								<option value="내근" selected>내근</option>
 								<option value="외근">외근</option>
 							</select>
-							<button type="submit" class="btn btn-primary test" id="filter">검색</button>
+							<button type="button" class="btn btn-primary test" id="filter">검색</button>
 						</div>
 					</form>
 					<br>
@@ -110,7 +110,7 @@
 			</div>
 		</div>
 		<script>
-			
+		let {date,time} = today();
 		
 		
 			$('#filter').on('click', filters);
@@ -145,41 +145,34 @@
 							}   
 					})
 			};
-			 $('#wkin').on('click', wkin);
 			
-			$('#wkout').on('click', wkout);
 			
-			function wkin() {
-			let empId = $('#id').val();
-			let times = time;
-			let dt = date;
+			 $('#wkIn').on('click', wkins);
+			
+			//$('#wkout').on('click', wkout);
+			
+			function wkins() {
+				let empId = $('#id').val();
+				let times = time;
+				console.log(empId,times);
+			
+			
+
 			
 				$.ajax({
 					url : 'workin',
 					method :'POST',
 					data :{
-				           dt: dt,
+				           dt: times,
 				           empId: empId
 					},
-				    success : function(){
-				    	
+				    success : function(result){
+				    console.log(result);
 				    }
 				})
 			};
-				var today = new Date();
-				
-				var year = today.getFullYear();
-				var month = ('0' + (today.getMonth() + 1)).slice(-2);
-				var day = ('0' + today.getDate()).slice(-2);
-				
-				var date = year + '-' + minth + '-' + day; // date = 현재 날짜
-				
-				var hours = ('0' + today.getHours()).slice(-2);
-				var minutes =('0' + today.getMinutes()).slice(-2);
-				var seconds = ('0'+ today.getSeconds()).slice(-2);
-				
-				var time = hours + ':' + minutes + ':' + seconds; // time = 현재 시간
-				
+			
+		
 		</script>
 	</th:block>
 </body>

@@ -96,9 +96,9 @@ public class WorkControll {
 	// 수정처리화면
 	@GetMapping("workupdate")
 	public String updatework(WorkVO workVO, Model model) {
-		WorkVO work = workService.updateWork(workVO);
-		model.addAttribute("workup", work);
-		return "work/workupdate";
+		WorkVO work = workService.selectWork(workVO);
+		model.addAttribute("info", work);
+		return "work/Workupdate";
 	}
 	
 	// 수정 처리

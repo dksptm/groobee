@@ -58,10 +58,10 @@ public class WorkServiceImpl implements WorkService{
 		return workMapper.selectWork(workVO);
 	}
 	// 페이지 수정
-	@Override
-	public WorkVO updateWork(WorkVO workVO) {
-		return workMapper.updateWork(workVO);
-	}
+	//@Override
+	//public WorkVO updateWork(WorkVO workVO) {
+	//	return workMapper.updateWork(workVO);
+	//}
 
 	@Override
 	public int managercount() {
@@ -71,7 +71,7 @@ public class WorkServiceImpl implements WorkService{
 	@Override
 	public Map<String, Object> update(WorkVO workVO) {
 		
-		return null;
+		return update(workVO);
 	}
 	
 	

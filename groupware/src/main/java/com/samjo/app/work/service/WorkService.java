@@ -29,7 +29,7 @@ public interface WorkService {
 	public WorkVO selectWork(WorkVO workVO);
 	
 	// 전체페이지의 수정페이지
-	public WorkVO updateWork(WorkVO workVO);
+	//public WorkVO updateWork(WorkVO workVO);
 	// 수정 처리
 	public Map<String, Object> update(WorkVO workVO);
 }

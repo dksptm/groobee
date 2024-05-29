@@ -9,30 +9,27 @@
 			<div class="d-flex justify-content-center">
 				<div class="card my-4 col-8">
 					<br>
-					<div>
 						<br>
 						<h2 style="text-align: center">수정 화면</h2>
 						<p>
 						<hr>
-						<div>
-							<table class="table table-striped-columns"
-								th:each="list : ${workup}" id="up">
+						<form action="/workupdate" method="post" th:object="${info}">
+						<table id="up">
 								<tr>
 									<th>사원번호</th>
-									<td>[[${list.empNo}]]</td>
+									<td>11025</td>
 									<th>사원명</th>
-									<td>[[${list.empName}]]</td>
+									<td>[[${#authentication.principal.empName}]]</td>
 								</tr>
 								<tr>
 									<th>부서</th>
 									<td>[[${#authentication.principal.deptId}]]</td>
 									<th>근무여부</th>
-									<td>[[${list.wkSite}]]</td>
+									<td><input type="text" th:filed="*{wkSite}"></td>
 								</tr>
 							</table>
 							<br>
-							<table class="table table-striped-columns"
-								th:each="list : ${workup}" id="up">
+							<table>
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
@@ -43,24 +40,23 @@
 									<th>근무상태</th>
 								</tr>
 								<tr>
-									<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
-									<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
-									<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
-									<td>[[${list.wkInLoc}]]</td>
-									<td>[[${list.wkOutLoc}]]</td>
-									<td>[[${list.wkYn}]]</td>
-									<td>[[${list.wkStat}]]</td>
+									<td><input type="date" th:filed="*{list.dt}"></td>
+									<td><input type="date" th:filed="*{wkIn}"></td>
+									<td><input type="date" th:filed="*{wkOut}"></td>
+									<td><input type="text" th:filed="*{wkInLoc}"></td>
+									<td><input type="text" th:filed="*{wkOutLoc}"></td>
+									<td><input type="text" th:filed="*{wkYn}"></td>
+									<td><input type="text" th:filed="*{wkStat}"></td>
 								</tr>
 							</table>
-						</div>
-					</div>
 					<div>
 						<br>
 						<p>
-							<button type="submit" class="btn btn-primary">수정</button>
-							<button type="submit" class="btn btn-primary">취소</button>
+							<button type="submit" class="btn btn-primary" id="up">수정</button>
+							<a type="button" href="worklist" class="btn btn-primary" id="re">취소</a>
 						</p>
 					</div>
+					</form>
 				</div>
 			</div>
 		</div>

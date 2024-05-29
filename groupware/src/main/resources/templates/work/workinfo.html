@@ -18,20 +18,20 @@
 						th:each="list : ${info}" id="infos">
 								<tr>
 									<th>사원번호</th>
-									<td>[[${list.empNo}]]</td>
 									<th>사원명</th>
-									<td>[[${list.empName}]]</td>
+									<th>부서</th>
+									<th>근무여부</th>
 								</tr>
 								<tr>
-									<th>부서</th>
+									<td>[[${list.empNo}]]</td>
+									<td>[[${list.empName}]]</td>
 									<td>[[${#authentication.principal.deptId}]]</td>
-									<th>근무여부</th>
 									<td>[[${list.wkSite}]]</td>
 								</tr>
 								</table>
 								<br>
 								<table class="table table-striped-columns" 
-						th:each="list : ${info}" id="infos">
+									th:each="list : ${info}" id="infos">
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
