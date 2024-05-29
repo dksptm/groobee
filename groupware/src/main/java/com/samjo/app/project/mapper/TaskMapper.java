@@ -21,10 +21,13 @@ public interface TaskMapper {
 		// 프로젝트 단건조회
 		public ProjectVO selectTask(int taskNo);
 		// 프로젝트 업무 참여자 조회
-		public List<ProjectVO> selectTaskEmpList(int taskNo);
+		public List<TaskEmpsVO> selectTaskEmpList(int taskNo);
 		
 		// 프로젝트 참여자 수정(프로시저)
 		public void updateTaskEmp(TaskEmpsVO emp);
+		// 업무모두완료시 -> 프로젝트완료상태 (프로시저)
+		//public void updatePrjt(TaskEmpsVO emp);
+		
 		// 프로젝트 업무 수정
 		public int updateTask(ProjectVO projectVO);
 		// 프로젝트 업무 삭제
@@ -41,6 +44,5 @@ public interface TaskMapper {
 		public int updateCoop(ProjectVO projectVO);
 		// 협력업체 삭제
 		 public int deleteCoop(@Param("coopCoNo")int coopCoNo);
-		
 		
 }

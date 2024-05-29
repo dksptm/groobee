@@ -42,7 +42,7 @@ public class TaskServiceImpl implements TaskService{
 	public ProjectVO taskInfo(int taskNo) {
 		ProjectVO projectVO = new ProjectVO();
 		projectVO = taskMapper.selectTask(taskNo);
-		projectVO.setTaskEmpList(taskMapper.selectTaskEmpList(taskNo));
+		projectVO.setTaskEmps(taskMapper.selectTaskEmpList(taskNo));
 		return projectVO;
 	}
 	
@@ -57,9 +57,13 @@ public class TaskServiceImpl implements TaskService{
 		List<TaskEmpsVO> emps = projectVO.getTaskEmps();
 		Map<String, Object> map = new HashMap<>();
 		
+		
 		for(TaskEmpsVO emp : emps) {
 			taskMapper.updateTaskEmp(emp);
 		}
+		
+		// 매퍼.xml에 추가한 프로시져 호출. 
+		//taskMapper.updateTaskEmp(emp);
 		
 		map.put("OUT", emps);
 		return map;

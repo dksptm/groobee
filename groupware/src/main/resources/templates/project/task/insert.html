@@ -10,10 +10,10 @@
                 <div style="text-align: center;">
                     <button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
                     <button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
-                    <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button>
+<!--                     <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button> -->
                 </div>
 				<br>	
-                <h3>프로젝트 업무 등록 수정</h3>
+                <h3>프로젝트 업무 등록</h3>
                 <table id="taskForm" class="table">
                 	  <tr>
                         <th>프로젝트</th>
@@ -39,10 +39,10 @@
                     </tr>
                     <tr>
                         <th>부서참여인원</th>
-                        <td><button type="button" class="btn btn-primary" id="deptEmpBtn" data-bs-toggle="modal" data-bs-target="#deptEmpModal">등록</button>
+                        <td><button type="button" class="btn btn-primary" id="deptEmpBtn" data-bs-toggle="modal" data-bs-target="#deptEmpModal">선택</button>
                             <table> <tbody id="deptEmpList"></tbody></table>
                     </tr>
-                    <tr>
+<!--                     <tr>
                         <th>협력부서명</th>
                         <td>
                             <select class="form-select" style="width:100px" th:field="*{coDeptId}">
@@ -57,7 +57,7 @@
                     	 <table> <tbody id="coDeptEmpList"></tbody></table>
                     	 </td>
                     </tr>
-                    <tr>
+                    <tr> -->
                         <th>시작일</th>
                         <td><input type="date" th:field="*{taskStartDt}"></td>
                     </tr>
@@ -244,7 +244,6 @@
 					    },
 						success : function(data){
 							alert('프로젝트업무 등록에 성공했습니다.');
-							location.reload();
 						},
 						error : function(err){
 							alert('프로젝트업무 등록에 실패했습니다.');

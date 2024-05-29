@@ -41,7 +41,7 @@
 	<insert id="insertPrjt" parameterType="ProjectVO"> 
 			<selectKey keyProperty="prjtId" order="BEFORE"
 			resultType="string">
-			SELECT 'CPJ'||LPAD(NVL((MAX(TO_NUMBER(SUBSTR(prjt_id, -4)))),0 + 1), 4, '0') 
+			SELECT 'CPJ'||LPAD(NVL((MAX(TO_NUMBER(SUBSTR(prjt_id, -4)))),0) + 1, 4, '0') 
 			FROM prjt
 		</selectKey>
 		INSERT INTO prjt (prjt_id 

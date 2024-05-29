@@ -1,6 +1,5 @@
 package com.samjo.app.project.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,6 @@ import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskDTO;
 import com.samjo.app.project.service.TaskEmpsVO;
 import com.samjo.app.project.service.TaskService;
-import com.samjo.app.emp.service.EmpVO;
 @Controller
 public class TaskController {
 	
@@ -93,7 +91,7 @@ public class TaskController {
 		}
 		
 		@PostMapping("task/insert")
-		public String taskInsertProcess(@RequestBody ProjectVO projectVO) {
+		public String taskInsertProcess(@RequestBody ProjectVO projectVO,Model model) {
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();
 			
@@ -101,12 +99,13 @@ public class TaskController {
 			projectVO.setPrjtMat("5B1b");
 			projectVO.setCustNo(empVO.getCustNo());
 			
-			int taskNo = taskService.taskInsert(projectVO);
+			model.addAttribute("task", new ProjectVO());
 			
+			int taskNo = taskService.taskInsert(projectVO);
 			String uri = null;
 
 			if (taskNo > -1) {
-				uri = "project/task/tsList";
+				uri = "redirect:/taskAllList";
 			} else {
 				uri = "test/test";
 			}
@@ -116,24 +115,7 @@ public class TaskController {
 		// 프로젝트(하위) 업무 단건
 		@GetMapping("tsInfo/{taskNo}")
 		public String taskInfo(@PathVariable int taskNo, Model model) {
-			ProjectVO projectVO = taskService.taskInfo(taskNo);
-			
-			// TaskEmp 리스트를 생성ㅚ하고 직원 목록 추가
-		    List<TaskEmpsVO> TaskEmps = new ArrayList<>();
-		    
-		
-			for (TaskEmpsVO  taskemp : TaskEmps ) {
-		        TaskEmpsVO taskEmp = new TaskEmpsVO();
-		        
-		        taskEmp.setTaskEmpId(taskemp.getTaskEmpId()); 
-		        taskEmp.setChecked(false); // 초기에는 모두 체크되지 않은 상태
-		       
-		        TaskEmps.add(taskEmp);
-		    }
-
-		    projectVO.setTaskEmps(TaskEmps);
-
-			
+			ProjectVO projectVO = taskService.taskInfo(taskNo);	
 			model.addAttribute("task", projectVO);
 			return "project/task/tsInfo";
 		
@@ -165,7 +147,7 @@ public class TaskController {
 
 		// 프로젝트(하위) 업무 삭제
 		@GetMapping("taskDelete")
-		public String empDelete(ProjectVO projectVO) {
+		public String taskDelete(ProjectVO projectVO) {
 			taskService.taskDelete(projectVO);
 			return "redirect:taskAllList";
 		}
