@@ -72,9 +72,9 @@ public class ProjectController {
 		String uri = null;
 
 		if (pId > -1) {
-			uri = "true";
+			uri = "redirect:/prjtAllList";
 		} else {
-			uri = "fail";
+			uri = "test/test";
 		}
 		return uri;
 	}

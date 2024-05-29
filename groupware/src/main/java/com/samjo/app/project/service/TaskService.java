@@ -22,6 +22,7 @@ public interface TaskService {
 	// 프로젝트 업무 삭제
 	public Map<String, Object> taskDelete(ProjectVO projectVO);
 	
+	
 	// 협력업체 조회
 	public List<ProjectVO> CoopCoAllList();
 	// 협력업체 등록

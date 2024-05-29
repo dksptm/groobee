@@ -12,8 +12,8 @@ public class TaskEmpsVO {
 	private String deptName;
 	private String cmplt;
 	private String custNo;
+	private String empName;
 	
 	private Integer result;
-	// 참여자선택 체크 비활성화
-	private boolean checked;
+
 }

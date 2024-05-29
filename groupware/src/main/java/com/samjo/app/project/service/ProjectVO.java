@@ -28,9 +28,6 @@ public class ProjectVO {
 	private int participantsCnt;
 	private int progress;
 	
-	// 업무참여자 목록
-	private List<ProjectVO> taskEmpList;
-	
 	//상시업무기준
 	private String reguId;
 	private String creType;

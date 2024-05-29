@@ -111,12 +111,12 @@
 	</select>
 	
 	<!-- 프로젝트 참여자 조회 -->
-	<select id="selectTaskEmpList" resultType="ProjectVO">
+	<select id="selectTaskEmpList" resultType="TaskEmpsVO">
 		SELECT te.task_no
 			    ,te.task_emp_id
 			    ,te.dept_name
-			    ,e.emp_id
 			    ,e.emp_name
+			    ,te.cmplt
 			FROM task_emps te JOIN emp e 
 								ON te.task_emp_Id = e.emp_id
 		WHERE te.task_no = #{taskNo}
@@ -179,6 +179,16 @@
 				#{taskNo, mode=IN, jdbcType=INTEGER},
 				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
 				#{result, mode=OUT, jdbcType=INTEGER}
+			)
+		}	
+	</update>
+		
+	<!-- 업무완료->프로젝트상태완료  프로시저-->
+	<update id="updatePrjt" parameterType="TaskEmpsVO" statementType="CALLABLE">
+		{CALL
+			prjt_ok(
+				#{prjtId, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=VARCHAR}
 			)
 		}	
 	</update>
