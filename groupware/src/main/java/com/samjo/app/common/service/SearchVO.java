@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.samjo.app.project.service.ProjectVO;
 
 import lombok.Data;
@@ -45,6 +46,7 @@ public class SearchVO {
 	// 이메일 관련 inboxList, emailList, wastedList 전부 공유
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sentDt;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sdStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
