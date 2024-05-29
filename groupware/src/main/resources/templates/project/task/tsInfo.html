@@ -56,7 +56,7 @@
 							<tbody>
 								<th:block th:each="te : ${task.taskEmpList}">
 									<tr>
-										<td>[[ ${te.deptName}]]</td>
+										<td>[[ ${te}]]</td>
 										<td>[[ ${te.empName}]]&ensp;
 											<input type="checkbox" class="btn btn-primary mt-2 task-emp-ok" 
 											th:disabled="${te.checked}" th:checked="${te.checked}"/>
