@@ -1,5 +1,6 @@
 package com.samjo.app.project.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,9 @@ import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskDTO;
+import com.samjo.app.project.service.TaskEmpsVO;
 import com.samjo.app.project.service.TaskService;
-
+import com.samjo.app.emp.service.EmpVO;
 @Controller
 public class TaskController {
 	
@@ -47,7 +49,7 @@ public class TaskController {
 			if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
 				searchVO.setTaskSort("task_no");
 			}
-			System.out.println(searchVO);
+			//System.out.println(searchVO);
 			List<ProjectVO> list = taskService.taskAllList(searchVO);
 			model.addAttribute("list", list);
 			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
@@ -58,8 +60,8 @@ public class TaskController {
 		//프로젝트 업무 조회페이지 검색/페이징 처리
 		@PostMapping("viewTsList")
 		public String viewTsListPage(SearchVO searchVO, Model model) {
-			System.out.println("searchVO: "+searchVO);
-			System.out.println("startDay : "+ searchVO.getTaskStart());
+			//System.out.println("searchVO: "+searchVO);
+			//System.out.println("startDay : "+ searchVO.getTaskStart());
 			if (searchVO.getPage() <= 0) {
 				searchVO.setPage(1);
 			}
@@ -115,6 +117,23 @@ public class TaskController {
 		@GetMapping("tsInfo/{taskNo}")
 		public String taskInfo(@PathVariable int taskNo, Model model) {
 			ProjectVO projectVO = taskService.taskInfo(taskNo);
+			
+			// TaskEmp 리스트를 생성ㅚ하고 직원 목록 추가
+		    List<TaskEmpsVO> TaskEmps = new ArrayList<>();
+		    
+		
+			for (TaskEmpsVO  taskemp : TaskEmps ) {
+		        TaskEmpsVO taskEmp = new TaskEmpsVO();
+		        
+		        taskEmp.setTaskEmpId(taskemp.getTaskEmpId()); 
+		        taskEmp.setChecked(false); // 초기에는 모두 체크되지 않은 상태
+		       
+		        TaskEmps.add(taskEmp);
+		    }
+
+		    projectVO.setTaskEmps(TaskEmps);
+
+			
 			model.addAttribute("task", projectVO);
 			return "project/task/tsInfo";
 		
