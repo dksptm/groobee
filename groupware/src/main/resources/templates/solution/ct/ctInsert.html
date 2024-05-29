@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">계약 수정</h5>
+				<div class="card-body ">
+					<form id="updateForm"
+						th:action="@{/sol/ctUpdateProcess/{ctNo}(ctNo=${ctVO.ctNo})}"
+						method="post">
+
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>계약번호</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.ctNo}" readOnly /></td>
+								<th>계약상태</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.ctStat}" readOnly /></td>
+							</tr>
+							<tr>
+								<th>고객번호</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.custNo}" readOnly /></td>
+								<th>사업자번호</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.brn}" readOnly /></td>
+							</tr>
+							<tr>
+								<th>상호명</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.custName}" readOnly /></td>
+								<th>대표자</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.rep}" readOnly /></td>
+							</tr>
+							<tr>
+								<th>계약서</th>
+								<td colspan="3">
+									<div class="row">
+										<input class="form-control col-sm-5" type="text"
+											th:field="${ctVO.ctFile}" style="width: 70%" readOnly />
+										<button class="btn btn-secondary ms-3 col-sm-2 changebtn"
+											type="button">계약서 변경</button>
+									</div>
+								</td>
+							</tr>
+						</table>
+
+						<table class="table table-hover table-bordered mt-5">
+							<tr>
+								<th>계약시작일</th>
+								<td><input class="form-control" type="date" id="ctStartDt"
+									name="ctStartDt"
+									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
+									readOnly /></td>
+								<th>계약종료일</th>
+								<td><input class="form-control" type="date" id="ctEndDt"
+									name="ctEndDt"
+									th:min="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
+									th:value="${#dates.format(ctVO.ctEndDt, 'yyyy-MM-dd')}" /></td>
+							</tr>
+							<tr>
+								<th>계약금액</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.ctAmt}" /></td>
+								<th>계약모듈 갯수</th>
+								<td><input class="form-control" type="number"
+									th:field="${ctVO.useModCnt}"
+									th:min="${#lists.size(ctVO.modList)}" /></td>
+							</tr>
+							<tr>
+								<th>최대사용인원</th>
+								<td><input class="form-control" type="number"
+									th:field="${ctVO.maxEmps}" th:min="${ctVO.curEmps}" /></td>
+								<th>현재사용인원</th>
+								<td><input class="form-control" type="text"
+									th:field="${ctVO.curEmps}" readOnly /></td>
+							</tr>
+							<tr>
+								<th>현재 사용중인 모듈</th>
+								<td colspan="3"><span
+									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
+									<span class="modlistSpan"> <th:block
+											th:each="module : ${ctVO.modList}">
+											<span th:if="${module.modName != null}"
+												th:text="${module.modName} + ' | '"></span>
+										</th:block></span><span>
+										<button type="button" class="btn btn-secondary ms-3 modBtn"
+											data-bs-toggle="modal" data-bs-target="#ModModal">모듈
+											변경</button>
+								</span></td>
+							</tr>
+						</table>
+						<p class="text-danger">계약은 계약서, 계약종료일, 계약금액, 계약모듈개수, 최대사용인원,
+							현재사용중 모듈만 수정가능합니다.</p>
+						<div class="d-flex align-items-endflex-column mt-3">
+							<button type="button" class="btn btn-primary mt-2 updateBtn">수정</button>
+							<button type="button" class="btn btn-primary mt-2"
+								th:onclick="|location.href='@{/sol/ctInfo/}@{${ctVO.ctNo}}'|">취소</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- 모듈 선택 모달화면 -->
+		<div class="modal fade" id="ModModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">사용가능 모듈 목록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>모듈번호</th>
+									<th>모듈명</th>
+									<th>선택</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="ModuleVO : ${modlist}">
+									<tr id="modTr">
+										<td>[[ ${ModuleVO.modId} ]]</td>
+										<td>[[ ${ModuleVO.modName} ]]</td>
+										<td><input onclick="CountChecked(this)" type="checkbox"
+											name="check" class="modcheck" th:value="${ModuleVO.modId}"
+											th:id="${ModuleVO.modName}"></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary selectCust"
+							data-bs-dismiss="modal">선택완료</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script th:inline="javascript">
+			// CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
+			
+			//계약서 변경버튼
+			$('.changebtn').on("click", function() {
+			    let fileInput = $('#uploadfile');
+
+			    if (fileInput.length) {
+			        fileInput.remove();
+			        $('.changebtn').html('계약서 변경');
+			    } else {
+			        let parentDiv = $(this).parent(); 
+			        $('<input>', {type: 'file', id: 'uploadfile', 
+			        	class: 'form-control w-50 mt-2', accept: '.pdf' 
+			        }).appendTo(parentDiv); 
+			        $('.changebtn').html('변경취소');
+			    }
+			});
+
+			//사용중 모듈 모달 체크박스 디폴트체크
+			let modAry = [];
+			$(function(e){
+			    let arrA = [[${ctVO.modList}]];
+			    let arrB = [[${modlist}]];
+			    let arrR = arrA.filter(obj1 => arrB.some(obj2 => obj1.modId == obj2.modId ));
+			    arrR.forEach(function(item, idx, arr){ 
+			        $('input:checkbox[id='+item.modName+']').prop('checked',true);
+			        modAry.push({ modId: item.modId, modName: item.modName });
+			    });
+			    addIdModSpan();
+			});
+			
+			//계약서 표시방식 처리
+			$(function(e){
+				let ctFileVal = [[ ${ctVO.ctFile} ]];
+			    let splitAry = ctFileVal.split('_');
+			    let resultText = splitAry[splitAry.length - 1];
+			    $('#ctFile').text(resultText);
+			});
+
+			//모듈변경 모달 체크박스 체크 항목 반영
+			$(".modcheck").on("change", function(e) {
+			    if ($(this).is(":checked")) {
+			        modAry.push({ modId: e.target.value, modName: e.target.id });
+			    } else {
+			        for(let i = 0; i < modAry.length; i++) {
+			            if(modAry[i].modName === e.target.id) {
+			                modAry.splice(i, 1);
+			                i--;
+			            }
+			        }
+			    }
+			    addIdModSpan();
+			    $('#useModCnt').attr('min', totalChecked);
+			});
+
+			//계약모듈 갯수와 사용 모듈갯수 동기화
+			let totalChecked = [[${#lists.size(ctVO.modList)}]]; // 설정 끝
+			function CountChecked(field) {
+			let maxChecked = $('#useModCnt').val();   //선택가능한 체크박스 갯수
+				
+			    if (field.checked) // input check 박스가 체크되면 
+			        totalChecked += 1; // totalChecked 증가
+			    else // 체크가 아니면
+			        totalChecked -= 1; // totalChecked 감소
+
+			    if (totalChecked > maxChecked) { // totalchecked 수가 maxchecked수보다 크다면
+			        alert ("최대 "+maxChecked+"개 까지만 가능합니다."); // 팝업창 띄움
+			    field.checked = false;
+			    totalChecked -= 1;
+		    	}
+			}
+			    
+			// 사용중 모듈 span에 모듈id를 id로 부여 함수
+			function addIdModSpan() {
+			    let spanContent = modAry.map(item => 
+			        `<span id="${item.modId}">${item.modName} | </span>`
+			    ).join("");
+			    $('.modlistSpan').html(spanContent);
+			}
+			
+			// 파일명 표시
+			$(document).on('change', '#uploadfile', function() {
+			    let filename = $(this).val().split('\\').pop();
+			    $('#ctFile').val(filename);
+			});
+			
+			//수정 버튼 기능
+			$('.updateBtn').on('click', function(e){
+				e.preventDefault();
+
+			    let formData = new FormData($('#updateForm')[0]);
+
+			    // 모듈 ID 배열 가져오기
+			    let modIds = [];
+			    $('.modcheck:checked').each(function() {
+			        modIds.push($(this).val());
+			    });
+
+			    // 모듈 ID 배열을 FormData에 추가
+			    formData.append("modIds", modIds);
+			    
+			    // 파일 입력 상자가 존재하는 경우 FormData에 파일 추가
+			    let fileInput = $('#uploadfile');
+			    if (fileInput.length) {
+			        let file = fileInput[0].files[0];
+			        formData.append("uploadfile", file);
+			    }
+			    
+			    // Ajax 요청
+			    $.ajax({
+			        url: '/sol/ctUpdateProcess/' + [[${ctVO.ctNo}]],
+			        beforeSend: function(xhr){
+			            xhr.setRequestHeader(header, token);
+			        },
+			        type: 'POST',
+			        processData: false,
+			        contentType: false,
+			        data: formData,
+			        dataType: 'Text',
+			        success: function(result){
+			            console.log(result);
+			            if (result === "Success") {
+                        	window.location.href = "/sol/ctInfo/" + [[${ctVO.ctNo}]];
+	                    } else {
+	                        alert('수정 오류');
+	                    }
+			        },
+			        error: function(reject){ 
+			            console.log(reject);
+			        }
+			    });
+			});
+		</script>
+	</th:block>
+</body>
+</html>

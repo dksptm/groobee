@@ -64,6 +64,16 @@ public class CtController {
 		return "solution/ct/ctInfo";
 	}
 
+	//계약 등록
+	@GetMapping("sol/ctInsert")
+	public String ctInsert(Model model) {
+		List<ModuleVO> modlist = ctservice.modList();
+		model.addAttribute("modlist", modlist);
+		CtVO ctVO = new CtVO();
+		model.addAttribute("ctVO", ctVO);
+		return "solution/ct/ctInsert";
+	}
+	
 	// 계약 수정 화면
 	@GetMapping("sol/ctUpdate/{ctNo}")
 	public String ctUpdatePage(@PathVariable int ctNo, Model model) {
