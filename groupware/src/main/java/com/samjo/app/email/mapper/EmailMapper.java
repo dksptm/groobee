@@ -16,7 +16,7 @@ public interface EmailMapper {
 	public List<EmailVO> selectInboxAll(SearchVO searchVO);
 	
 	// 받은메일 상세조회
-	public EmailVO selectInbox(EmailVO emailVO);
+	public EmailVO selectInbox(String senEmailNo);
 	
 	// 메일 발송(emailSend)
 	public int insertEmail(EmailVO emailVO);

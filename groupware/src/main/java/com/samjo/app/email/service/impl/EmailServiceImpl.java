@@ -3,6 +3,7 @@ package com.samjo.app.email.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.common.service.SearchVO;
@@ -15,9 +16,8 @@ import com.samjo.app.emp.service.EmpVO;
 @Service
 public class EmailServiceImpl implements EmailService {
 	
+	
 	EmailMapper emailMapper;
-	
-	
 	
 	@Autowired
 	public EmailServiceImpl(EmailMapper emailMapper) {
@@ -30,10 +30,13 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.selectInboxAll(searchVO);
 	}
 
-	//받은메일함 단건조회
+	//받은메일함 상세조회
 	@Override
-	public EmailVO inboxInfo(EmailVO emailVO) {
-		return emailMapper.selectInbox(emailVO);
+	public EmailVO inboxInfo(String senEmailNo) {
+		EmailVO emailVO = new EmailVO();
+		emailVO = emailMapper.selectInbox(senEmailNo);
+		// 스승님과 달리, 나는 이메일 정보에 list를 담을 일이 없다.
+		return emailVO;
 	}
 	
 	//메일 발송
@@ -124,7 +127,7 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.restoreMail();
 	}
 	
-	//한 emp가 recp,refer인 모든 메일
+	//받은메일 페이징
 	@Override
 	public int countMyInbox(SearchVO searchVO) {
 		return emailMapper.countMyInbox(searchVO);

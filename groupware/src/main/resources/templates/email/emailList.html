@@ -39,7 +39,7 @@
 										<td class="text-white">_</td>
 										<td class="form-control">정렬조건</td>
 										<td><select class="form-select searchSelect">
-												<option value="s.sent_dt">최근순</option>
+												<option value="s.sent_dt ASC">최근순</option>
 												<option value="s.sent_dt DESC">오래된순</option>
 										</select></td>
 									</tr>
@@ -181,31 +181,6 @@
 		        emSort = $('.searchSelect').val();
 			}
 			
-			//검색 AJAX 함수
-			//function showTable(page) { 
-				//$.ajax({
-					//url : '/viewInboxList',
-					//type : 'POST',
-					//beforeSend : function(xhr) {
-						//xhr.setRequestHeader(header, token);
-					//},
-					//data : {
-						//page : page,
-						//recEmailNo : recEmailNo,
-						//sentDt : sentDt,
-						//sdStart : sdStart,
-						//recpType : recpType,
-						//sdEnd : sdEnd,
-						//emSort : emSort,
-						//keyword : keyword,
-						//searchCondition : searchCondition
-					//},
-					//dataType : 'Text',
-					//success : function(result) {
-						//$('#inboxTable').replaceWith(result);
-					//}
-				//});
-			//}
 			
 			function showTable(page) { 
     $.ajax({

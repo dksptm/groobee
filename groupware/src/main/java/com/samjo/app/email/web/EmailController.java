@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,15 +43,14 @@ public class EmailController {
 			searchVO.setPage(1);
 		}
 		if(searchVO.getEmSort() == null || searchVO.getEmSort().trim().isEmpty()) {
-			searchVO.setEmSort("rec_email_no");
+			searchVO.setEmSort("s.sent_Dt DESC");
 		}
 		//받은 메일의 수신자. 접속중인 계정 정보 받아오기.
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
 		//접속중인 계정의 id와, 고객사id 받아오기.
 		String custNo = empVO.getCustNo();
-		String recp = empVO.getEmpId();
-		
+		String recp = empVO.getEmpId(); 
 		//searchVO에 담기.
 		searchVO.setRecp(recp);
 		searchVO.setCustNo(custNo);
@@ -75,6 +75,9 @@ public class EmailController {
         if (searchVO.getPage() <= 0) {
             searchVO.setPage(1);
         }
+		if(searchVO.getEmSort() == null || searchVO.getEmSort().trim().isEmpty()) {
+			searchVO.setEmSort("s.sent_Dt DESC");
+		}
         EmpVO empVO = SecuUtil.getLoginEmp();
         String custId = empVO.getCustNo();
         String eid = empVO.getEmpId();
@@ -90,15 +93,23 @@ public class EmailController {
     }
 	
 	// 받은메일 상세조회 -> 전체조회에서 행을 클릭하고 넘어옴
-	@GetMapping("inboxInfo")
-	public String inboxInfo(EmailVO emailVO, Model model) {
+    // 어소리티에서 계정id값, 고객번호값 받아와서, 그걸 매퍼까지 들고 간다
+    // 쿼리에 영향을 끼치게 되므로, 로그인 한 사람은 자기와 관련된 정보만 받게 된다.
+	@GetMapping("inboxInfo/{senEmailNo}")
+	public String inboxInfo(@PathVariable String senEmailNo, Model model) {
+//		Object principal = authentication.getPrincipal();
+//		if (principal instanceof LoginUserVO) {
+//			LoginUserVO loginUserVO = (LoginUserVO) principal;}
+		
 		// rfindVO 객체에 Service의 실행 결과를 담는다
-		EmailVO rfindVO = emailService.inboxInfo(emailVO);
+		EmailVO rfindVO = emailService.inboxInfo(senEmailNo);
 		// 데이터를 전달하는 model 객체에 rfindVO와 페이지에 제공될 이름 "emailInfo"를 담는다
 		model.addAttribute("inboxInfo", rfindVO);
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
+		
 		return "email/inboxInfo";
 	}
+	
 	
 	// 메일작성
 	@GetMapping("emailWrite")
