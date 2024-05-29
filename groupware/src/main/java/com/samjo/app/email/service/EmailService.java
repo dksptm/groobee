@@ -10,7 +10,7 @@ public interface EmailService {
 	public List<EmailVO> inboxList(SearchVO searchVO);
 	
 	// 받은메일 상세조회
-	public EmailVO inboxInfo(EmailVO emailVO);
+	public EmailVO inboxInfo(String senEmailNo);
 	
 	// 메일 작성
 	public int emailInsert(EmailVO emailVO);

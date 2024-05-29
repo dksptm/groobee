@@ -14,12 +14,11 @@
 	<th:block layout:fragment="Content">
 		<div class="container mt-4">
 			<h3 class="mb-4">받은 메일 상세</h3>
-			<form name="insertForm" th:action="@{/emailSend}" method="post"
-				th:object="${EmailVO}" id="emailInsertForm" enctype = "multipart/form-data">
+			<form name="inboxInfoForm" 
+				th:object="${EmailVO}" id="inboxInfoForm" enctype = "multipart/form-data">
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 				<div class="mb-3 row">
 					<div>
-						<!-- <input type="hidden" name="custNo" th:value="${session.getAttribute('custNo')}"> -->
 						<input type="hidden" name="custNo"
 							th:value="${#authentication.principal.custNo}">
 					</div>
