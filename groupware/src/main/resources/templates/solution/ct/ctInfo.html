@@ -12,26 +12,27 @@
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
-								<th>계약번호</th>
+								<th class="table-secondary">계약번호</th>
 								<td>[[ ${ctVO.ctNo} ]]</td>
-								<th>계약상태</th>
+								<th class="table-secondary">계약상태</th>
 								<td>[[ ${ctVO.ctStat} ]]</td>
 							</tr>
 							<tr>
-								<th>고객번호</th>
+								<th class="table-secondary">고객번호</th>
 								<td>[[ ${ctVO.custNo} ]]</td>
-								<th>사업자번호</th>
+								<th class="table-secondary">사업자번호</th>
 								<td>[[ ${ctVO.brn} ]]</td>
 							</tr>
 							<tr>
-								<th>상호명</th>
+								<th class="table-secondary">상호명</th>
 								<td>[[ ${ctVO.custName} ]]</td>
-								<th>대표자</th>
+								<th class="table-secondary">대표자</th>
 								<td>[[ ${ctVO.rep} ]]</td>
 							</tr>
 							<tr>
-								<th colspan="2">계약서</th>
-								<td colspan="2">[[ ${#strings.substringAfter(ctVO.ctFile, '_')} ]]</td>
+								<th colspan="1" class="table-secondary">계약서</th>
+								<td colspan="3">[[ ${#strings.substringAfter(ctVO.ctFile,
+									'_')} ]]</td>
 							</tr>
 						</table>
 
@@ -39,31 +40,31 @@
 						<button type="button" class="btn btn-secondary pdfbtn mt-2">계약서
 							미리보기</button>
 						<div class="collapse" id="collapsePDF">
-							<iframe class="mt-1" th:src="|/files/${ctVO.ctFile}|" title="example"
-								width="100%" height="500" frameborder="0"></iframe>
+							<iframe class="mt-1" th:src="|/files/${ctVO.ctFile}|"
+								title="example" width="100%" height="500" frameborder="0"></iframe>
 						</div>
 
 						<table class="table table-hover table-bordered mt-5">
 							<tr>
-								<th>계약시작일</th>
+								<th class="table-secondary">계약시작일</th>
 								<td>[[ ${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')} ]]</td>
-								<th>계약종료일</th>
+								<th class="table-secondary">계약종료일</th>
 								<td>[[ ${#dates.format(ctVO.ctEndDt, 'yyyy-MM-dd')} ]]</td>
 							</tr>
 							<tr>
-								<th>계약금액</th>
+								<th class="table-secondary">계약금액</th>
 								<td>[[ ${ctVO.ctAmt}]]</td>
-								<th>계약모듈 갯수</th>
+								<th class="table-secondary">계약모듈 갯수</th>
 								<td>[[ ${ctVO.useModCnt} ]]</td>
 							</tr>
 							<tr>
-								<th>최대사용인원</th>
+								<th class="table-secondary">최대사용인원</th>
 								<td>[[ ${ctVO.maxEmps} ]]</td>
-								<th>현재사용인원</th>
+								<th class="table-secondary">현재사용인원</th>
 								<td>[[ ${ctVO.curEmps} ]]</td>
 							</tr>
 							<tr>
-								<th>현재 사용중인 모듈</th>
+								<th class="table-secondary">현재 사용중인 모듈</th>
 								<td colspan="3"><span
 									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
 									<span th:each="module : ${ctVO.modList}"> <span
@@ -77,51 +78,86 @@
 						<button type="button" class="btn btn-secondary testbtn mt-2">사용중
 							계정목록</button>
 						<div class="collapse" id="collapseTable">
-							<table class="table table-hover table-bordered mt-1">
-								<tr>
-									<th>계정ID</th>
-									<th>이메일</th>
-									<th>이름</th>
-									<th>직급</th>
-									<th>권한</th>
-								</tr>
-								<th:block th:each="empVO : ${ctVO.empList}">
+							<th:block th:if="${#arrays.length(ctVO.empList)} != 0">
+								<table class="table table-hover table-bordered mt-1">
 									<tr>
-										<td>[[ ${empVO.empId} ]]</td>
-										<td>[[ ${empVO.emailAddr} ]]</td>
-										<td>[[ ${empVO.empName} ]]</td>
-										<td>[[ ${empVO.jobTitle} ]]</td>
-										<td>[[ ${empVO.permName} ]]</td>
+										<th class="table-secondary">계정ID</th>
+										<th class="table-secondary">이메일</th>
+										<th class="table-secondary">이름</th>
+										<th class="table-secondary">직급</th>
+										<th class="table-secondary">권한</th>
 									</tr>
-								</th:block>
-							</table>
+									<th:block th:each="empVO : ${ctVO.empList}">
+										<tr>
+											<td>[[ ${empVO.empId} ]]</td>
+											<td>[[ ${empVO.emailAddr} ]]</td>
+											<td>[[ ${empVO.empName} ]]</td>
+											<td>[[ ${empVO.jobTitle} ]]</td>
+											<td>[[ ${empVO.permName} ]]</td>
+										</tr>
+									</th:block>
+								</table>
+							</th:block>
+							<th:block th:unless="${#arrays.length(ctVO.empList)} != 0">
+								<p class="text-center mt-4">현재 등록된 계정이 없습니다.</p>
+							</th:block>
 						</div>
 
 						<!-- 계약변경이력 -->
 						<button type="button" class="btn btn-secondary histbtn mt-2">계약변경이력</button>
 						<div class="collapse" id="collapseHist">
-							<table class="table table-hover table-bordered mt-1">
-								<tr>
-									<th>변경날짜</th>
-									<th>계약시작일</th>
-									<th>계약종료일</th>
-									<th>계약금액</th>
-									<th>모듈개수</th>
-									<!-- <th>사용모듈</th> -->
-									<th>최대인원</th>
-								</tr>
-								<th:block th:each="list : ${ctVO.ctList}">
+							<th:block th:if="${#arrays.length(ctVO.ctList)} != 0">
+								<table class="table table-hover table-bordered mt-1 histTable">
 									<tr>
-										<td>[[ ${#dates.format(list.chgDt, 'yyyy-MM-dd')} ]]</td>
-										<td>[[ ${#dates.format(list.ctStartDt, 'yyyy-MM-dd')} ]]</td>
-										<td>[[ ${#dates.format(list.ctEndDt, 'yyyy-MM-dd')} ]]</td>
-										<td>[[ ${list.ctAmt} ]]</td>
-										<td>[[ ${list.useModCnt} ]]</td>
-										<!-- <td>TEST</td> -->
-										<td>[[ ${list.maxEmps} ]]</td>
+										<th class="table-secondary">변경날짜</th>
+										<th class="table-secondary">계약시작일</th>
+										<th class="table-secondary">계약종료일</th>
+										<th class="table-secondary">계약금액</th>
+										<th class="table-secondary">모듈개수</th>
+										<th class="table-secondary">사용모듈</th>
+										<th class="table-secondary">최대인원</th>
 									</tr>
-								</th:block>
-							</table>
+									<th:block th:each="list : ${ctVO.ctList}">
+										<tr>
+											<td>[[ ${#dates.format(list.chgDt, 'yyyy-MM-dd')} ]]</td>
+											<td class="updateCheck">[[
+												${#dates.format(list.ctStartDt, 'yyyy-MM-dd')} ]]</td>
+											<td class="updateCheck">[[ ${#dates.format(list.ctEndDt,
+												'yyyy-MM-dd')} ]]</td>
+											<td class="updateCheck">[[ ${list.ctAmt} ]]</td>
+											<td class="updateCheck">[[ ${list.useModCnt} ]]</td>
+											<td class="updateCheck">
+												<span th:text="${#lists.isEmpty(list.modHist)} ? '사용중인 모듈 없음.':'|'"></span>
+													<th:block th:each="module : ${list.modHist}">
+														<span th:if="${module.modName != null}" th:text="${module.modName} + ' | '">
+														</span>
+													</th:block>
+											</td>
+											<td class="updateCheck">[[ ${list.maxEmps} ]]</td>
+										</tr>
+									</th:block>
+										<tr>
+											<td class="table-secondary">현재 계약내역</td>
+											<td class="updateCheck">[[
+												${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')} ]]</td>
+											<td class="updateCheck">[[ ${#dates.format(ctVO.ctEndDt,
+												'yyyy-MM-dd')} ]]</td>
+											<td class="updateCheck">[[ ${ctVO.ctAmt}]]</td>
+											<td class="updateCheck">[[ ${ctVO.useModCnt} ]]</td>
+											<td class="updateCheck">
+												<span th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
+													<th:block th:each="module : ${ctVO.modList}">
+														<span th:if="${module.modName != null}" th:text="${module.modName} + ' | '">
+														</span>
+													</th:block>
+											</td>
+											<td class="updateCheck">[[ ${ctVO.maxEmps} ]]</td>
+										</tr>
+								</table>
+							</th:block>
+							<th:block th:unless="${#arrays.length(ctVO.ctList)} != 0">
+								<p class="text-center mt-4">현재 계약 변경이력이 없습니다.</p>
+							</th:block>
 						</div>
 					</div>
 					<div class="d-flex align-items-end flex-column mt-3">
@@ -131,25 +167,35 @@
 					</div>
 				</div>
 				<script>
-					//console.log(${#authentication.principal.empId});
-					$(document).ready(function() {
-						$('.testbtn').click(function() {
-							$('#collapseTable').slideToggle();
-						})
+					$(document)
+							.ready(
+									function() {
+										$('.testbtn').click(function() {
+											$('#collapseTable').slideToggle();
+										})
+										$('.pdfbtn').click(function() {
+											$('#collapsePDF').slideToggle();
+										})
+										$('.histbtn').click(function() {
+											$('#collapseHist').slideToggle();
+										})
+										
+										let test = $('.histTable').find(
+												'.updateCheck')
+										let histTd = $('.updateCheck');
+										$('.updateCheck').each(
+											function() {
+												let idx = $(this).index();
+												let thisTag = $(this).eq(0);
+												let upTag = $(this).parent().prev().children().eq(idx);
+												console.log(upTag.html().replace(/ /g, ''));
+												console.log(thisTag.html().replace(/ /g, ''));
+												if (upTag.hasClass('updateCheck') && upTag.text().replace(/ /g, '') !== thisTag.text().replace(/ /g, '')) {
+													thisTag.addClass("table-success");
+												}
+											});
 
-					});
-					$(document).ready(function() {
-						$('.pdfbtn').click(function() {
-							$('#collapsePDF').slideToggle();
-						})
-
-					});
-					$(document).ready(function() {
-						$('.histbtn').click(function() {
-							$('#collapseHist').slideToggle();
-						})
-
-					});
+									});
 				</script>
 			</div>
 		</div>

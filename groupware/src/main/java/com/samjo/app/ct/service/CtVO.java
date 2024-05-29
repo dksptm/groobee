@@ -42,4 +42,6 @@ public class CtVO {
 	private List<EmpVO> empList;
 	//상세정보 - 계약변경이력
 	private List<CtVO> ctList;
+	//상세정보 - 계약변경이력(모듈)
+	private List<ModuleVO> modHist;
 }

@@ -6,7 +6,7 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">계약 수정</h5>
+				<h5 class="card-header">계약 등록</h5>
 				<div class="card-body ">
 					<form id="updateForm"
 						th:action="@{/sol/ctUpdateProcess/{ctNo}(ctNo=${ctVO.ctNo})}"
@@ -95,10 +95,8 @@
 								</span></td>
 							</tr>
 						</table>
-						<p class="text-danger">계약은 계약서, 계약종료일, 계약금액, 계약모듈개수, 최대사용인원,
-							현재사용중 모듈만 수정가능합니다.</p>
 						<div class="d-flex align-items-endflex-column mt-3">
-							<button type="button" class="btn btn-primary mt-2 updateBtn">수정</button>
+							<button type="button" class="btn btn-primary mt-2 updateBtn">등록</button>
 							<button type="button" class="btn btn-primary mt-2"
 								th:onclick="|location.href='@{/sol/ctInfo/}@{${ctVO.ctNo}}'|">취소</button>
 						</div>
