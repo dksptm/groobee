@@ -2,15 +2,14 @@ package com.samjo.app.work.web;
 
 
 
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.work.service.WorkManagerSearchVO;
@@ -97,15 +96,16 @@ public class WorkControll {
 	// 수정처리화면
 	@GetMapping("workupdate")
 	public String updatework(WorkVO workVO, Model model) {
-		//WorkVO work = workService.updateWork(workVO);
-		model.addAttribute("workup", workVO);
+		WorkVO work = workService.updateWork(workVO);
+		model.addAttribute("workup", work);
 		return "work/workupdate";
 	}
+	
 	// 수정 처리
 	@PostMapping("workupdate")
 	@ResponseBody
-	public String updaate(WorkVO workVO, Model model) {
-		return "work/workupdate";
+	public Map<String, Object> update(WorkVO workVO) {
+		return workService.update(workVO);
 	}
 
 	

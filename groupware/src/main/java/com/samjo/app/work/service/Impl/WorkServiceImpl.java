@@ -1,6 +1,7 @@
 package com.samjo.app.work.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,13 +59,19 @@ public class WorkServiceImpl implements WorkService{
 	}
 	// 페이지 수정
 	@Override
-	public int updateWork(WorkVO workVO) {
+	public WorkVO updateWork(WorkVO workVO) {
 		return workMapper.updateWork(workVO);
 	}
 
 	@Override
 	public int managercount() {
 		return workMapper.managercount();
+	}
+
+	@Override
+	public Map<String, Object> update(WorkVO workVO) {
+		
+		return null;
 	}
 	
 	
