@@ -1,5 +1,6 @@
 package com.samjo.app.project.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -7,112 +8,179 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
-
-
+import com.samjo.app.project.service.TaskDTO;
+import com.samjo.app.project.service.TaskEmpsVO;
+import com.samjo.app.project.service.TaskService;
+import com.samjo.app.emp.service.EmpVO;
 @Controller
 public class TaskController {
 	
 	ProjectService projectService;
 	DeptService deptService;
+	TaskService taskService;
 	
 	@Autowired
-	public TaskController(ProjectService projectService, DeptService deptService) {
+	public TaskController(ProjectService projectService, DeptService deptService, TaskService taskService) {
 		this.projectService = projectService;
 		this.deptService = deptService;
+		this.taskService = taskService;
 	}
 	
-	// 상시(주기적)업무 전체 조회
-		@GetMapping("reguAllList")
-		public String reguAllList(Model model) {
-			List<ProjectVO> list = projectService.reguAllList();
-			model.addAttribute("projects", list);
-			return "project/regu/list";
+	// 프로젝트(하위) 업무 전체조회
+		@GetMapping("taskAllList")
+		public String taskListPage(SearchVO searchVO, Model model) {
+			if (searchVO.getPage() <= 0) {
+				searchVO.setPage(1);
+			}
+			if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
+				searchVO.setTaskSort("task_no");
+			}
+			//System.out.println(searchVO);
+			List<ProjectVO> list = taskService.taskAllList(searchVO);
+			model.addAttribute("list", list);
+			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+			model.addAttribute("TaskDTO", taskDTO);
+			return "project/task/tsList";
 		}
-	
-	// 상시(주기적)업무 등록
-	@GetMapping("reguInsert")
-	public String reguInsertForm(Model model) {
 		
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		
-		if(empVO != null) {
-			List<EmpVO> resp = deptService.respMngrList(empVO.getCustNo());
-			DeptVO dept = deptService.myDeptEmps(empVO.getDeptId());
-			model.addAttribute("resp", resp);					
-			model.addAttribute("dept", dept);					
-			model.addAttribute("taskRegu", new ProjectVO());
-			return "project/regu/insert";
-		} else {
-			return "test/test";
+		//프로젝트 업무 조회페이지 검색/페이징 처리
+		@PostMapping("viewTsList")
+		public String viewTsListPage(SearchVO searchVO, Model model) {
+			//System.out.println("searchVO: "+searchVO);
+			//System.out.println("startDay : "+ searchVO.getTaskStart());
+			if (searchVO.getPage() <= 0) {
+				searchVO.setPage(1);
+			}
+			if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
+				searchVO.setTaskSort("task_no");
+			}
+			List<ProjectVO> list = taskService.taskAllList(searchVO);
+			model.addAttribute("list", list);
+			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+			model.addAttribute("TaskDTO", taskDTO);
+			return "project/task/tsList :: #taskTable";
 		}
-	}
-		
-	
-		@PostMapping("reguInsert")
-		public String reguInsertProcess(ProjectVO projectVO) {
-			int rId = projectService.prjtInsert(projectVO);
-			String uri = null;
+		 
+		// 프로젝트(하위) 업무 등록
+		@GetMapping("taskInsert")
+		public String taskInsertForm(Model model) {
+			List<DeptVO> list = deptService.deptAllList();
+			model.addAttribute("dept", list);
 			
-			if(rId > -1) {
-				uri = "" ;
+			List<ProjectVO> plist = projectService.PrjtAllList();
+			model.addAttribute("plist", plist);
+			
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
+			model.addAttribute("emp", elist);
+			
+			model.addAttribute("task", new ProjectVO());
+			return "project/task/insert";
+		}
+		
+		@PostMapping("task/insert")
+		public String taskInsertProcess(@RequestBody ProjectVO projectVO) {
+			
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			
+			projectVO.setTaskType("5A1a");
+			projectVO.setPrjtMat("5B1b");
+			projectVO.setCustNo(empVO.getCustNo());
+			
+			int taskNo = taskService.taskInsert(projectVO);
+			
+			String uri = null;
+
+			if (taskNo > -1) {
+				uri = "project/task/tsList";
 			} else {
-				uri = "";
+				uri = "test/test";
 			}
 			return uri;
 		}
 		
-		// 상시 단건
-		@GetMapping("reguInfo")
-		public String reguInfo(ProjectVO projectVO, Model model) {
-			ProjectVO findVO = projectService.coopInfo(projectVO);
-			model.addAttribute("coopCo", findVO);
-			return "project/regu/list";
-		}
-		
-		// 상시 수정
-		@PostMapping("reguUpdate")
-		public String reguUpdateForm(@RequestParam String reguId, Model model) {
-			ProjectVO projectVO = new ProjectVO();
-			projectVO.setReguId(reguId);
+		// 프로젝트(하위) 업무 단건
+		@GetMapping("tsInfo/{taskNo}")
+		public String taskInfo(@PathVariable int taskNo, Model model) {
+			ProjectVO projectVO = taskService.taskInfo(taskNo);
 			
-			ProjectVO findVO = projectService.reguInfo(projectVO);
-			model.addAttribute("reguInfo", findVO);
-			return "project/regu/list";
-		}
-		/*@ResponseBody
-		public Map<String, Object> reguUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-			return projectService.reguUpdate(projectVO);
-		}*/
+			// TaskEmp 리스트를 생성ㅚ하고 직원 목록 추가
+		    List<TaskEmpsVO> TaskEmps = new ArrayList<>();
+		    
 		
-		// 상시 삭제 
-		@GetMapping("reguDelete")
-		public String reguDelete(ProjectVO projectVO) {
-			projectService.reguDelete(projectVO);
-		return "redirect:reguAllList";
+			for (TaskEmpsVO  taskemp : TaskEmps ) {
+		        TaskEmpsVO taskEmp = new TaskEmpsVO();
+		        
+		        taskEmp.setTaskEmpId(taskemp.getTaskEmpId()); 
+		        taskEmp.setChecked(false); // 초기에는 모두 체크되지 않은 상태
+		       
+		        TaskEmps.add(taskEmp);
+		    }
+
+		    projectVO.setTaskEmps(TaskEmps);
+
+			
+			model.addAttribute("task", projectVO);
+			return "project/task/tsInfo";
+		
+		}
+		
+		// 업무참여자 수정
+		@ResponseBody
+		@PutMapping("taskOk/{taskNo}")
+		public Map<String, Object> taskOk(@PathVariable Integer taskNo, @RequestBody ProjectVO projectVO) {
+			System.out.println("프로젝트VO=====>" + projectVO);
+			
+			return taskService.taskOk(projectVO);
+		}
+		
+		// 프로젝트(하위) 업무 수정
+		@PostMapping("taskUpdate/{taskNo}")
+		public String taskUpdate(@PathVariable int taskNo, Model model) {
+			ProjectVO projectVO = new ProjectVO();
+			projectVO.setTaskNo(taskNo);
+
+			ProjectVO findVO = taskService.taskInfo(taskNo);
+			model.addAttribute("taskInfo", findVO);
+			return "project/task/list";
+		}
+		/*
+		 * @ResponseBody public Map<String, Object> taskUpdateProcessAjax(@RequestBody
+		 * ProjectVO projectVO) { return projectService.taskUpdate(projectVO); }
+		 */
+
+		// 프로젝트(하위) 업무 삭제
+		@GetMapping("taskDelete")
+		public String empDelete(ProjectVO projectVO) {
+			taskService.taskDelete(projectVO);
+			return "redirect:taskAllList";
 		}
 	
 		// 협력업체 전체 조회
 		@GetMapping("coopAllList")
 		public String coopAllList(Model model) {
-			List<ProjectVO> list = projectService.CoopCoAllList();
+			List<ProjectVO> list = taskService.CoopCoAllList();
 			model.addAttribute("coopCo", list);
 			return "project/coopCo/list";
 		}
 		// 협력업체 단건조회.
 		@GetMapping("coopInfo")
 		public String coopInfo(ProjectVO projectVO, Model model) {
-			ProjectVO findVO = projectService.coopInfo(projectVO);
+			ProjectVO findVO = taskService.coopInfo(projectVO);
 			model.addAttribute("coopCo", findVO);
 			return "project/coopCo/list";
 		}
@@ -130,7 +198,7 @@ public class TaskController {
 
 			//ProjectVO.setTaskNo(int);
 			
-			int cNo =  projectService.coopInsert(projectVO);
+			int cNo =  taskService.coopInsert(projectVO);
 			String uri = null;
 			
 			if(cNo > -1) {
@@ -147,20 +215,20 @@ public class TaskController {
 			ProjectVO projectVO = new ProjectVO();
 			projectVO.setCoopCoNo(coopCoNo);
 			
-			ProjectVO findVO = projectService.coopInfo(projectVO);
+			ProjectVO findVO = taskService.coopInfo(projectVO);
 			model.addAttribute("coopInfo", findVO);
 			return "project/coopCo/list";
 		}
 		
 		@ResponseBody
 		public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-			return projectService.coopUpdate(projectVO);
+			return taskService.coopUpdate(projectVO);
 		}
 		
 		// 협력업체 삭제
 		@GetMapping("coopDelete")
 		public String coopDelete(ProjectVO projectVO) {
-			projectService.coopDelete(projectVO);
+			taskService.coopDelete(projectVO);
 		return "redirect:coopAllList";
 		}
 		

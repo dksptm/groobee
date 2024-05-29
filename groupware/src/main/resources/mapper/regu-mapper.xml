@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.samjo.app.project.mapper.ReguMapper">
+
+	<!-- 한 업무의 참여자 가져오는 map -->
+	<resultMap type="ProjectVO" id="reguMap">
+		<id property="taskNo" column="task_no" />
+		<result property="standardNo" column="standard_no" />
+		<result property="deptName" column="dept_name" />
+		<result property="taskName" column="task_name" />
+		<result property="taskPurpose" column="task_purpose" />
+		<result property="taskCntn" column="task_cntn" />
+		<result property="respEmpName" column="resp_emp_name" />		
+		<result property="creType" column="cre_type" />		
+		<result property="crePerd" column="cre_perd" />
+		<result property="taskStartDt" column="task_start_dt" />
+		<result property="taskDueDt" column="task_due_dt" />
+		<result property="prjtMat" column="prjt_mat" />
+		<collection property="taskEmps" column="task_no" javaType="java.util.List" ofType="TaskEmpsVO" select="reguMapEmps">
+			<id property="taskEmpId" column="task_emp_id"/>
+			<result property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="taskEmpName" column="task_emp_name"/>
+			<result property="cmplt" column="cmplt"/>
+			<result property="codeName" column="code_name"/>
+			<result property="result" column="result"/>
+		</collection>
+	</resultMap>
+
+	<select id="selectReguAll" resultType="ProjectVO">
+		SELECT  
+				g.regu_id
+		       ,g.task_name
+		       ,g.task_purpose
+		       ,g.task_cntn
+		       ,g.resp_emp_id
+		       ,get_emptitle(g.resp_emp_id) as resp_emp_name
+		       ,g.cre_type
+		       ,get_codename(g.cre_type)	as code_name
+		       ,g.cre_perd 
+		       ,g.dept_id
+		       ,get_deptname(g.dept_id)		as dept_name
+		       ,g.rn
+		FROM  
+			  (
+		        SELECT  ROW_NUMBER() OVER (PARTITION BY regu_id ORDER BY task_no) rn
+		        	   ,rs.*
+		        	   ,tc.*
+		        FROM   task_common tc JOIN regu_stad rs 
+		        				      ON (rs.regu_id = tc.standard_no)
+		        WHERE  rs.cust_no = #{cno}
+		      ) g
+		WHERE 
+			  g.rn = 1
+		ORDER BY 
+			  g.regu_id
+	</select>
+
+	<insert id="insertRegu" parameterType="ProjectVO">
+		<selectKey keyProperty="reguId" resultType="string" order="BEFORE">
+			SELECT 'CRG'||LPAD((NVL((MAX(TO_NUMBER(SUBSTR(regu_id, -4)))),0) + 1), 4, '0') 
+			FROM regu_stad
+		</selectKey>
+		INSERT INTO regu_stad (
+		                         regu_id
+		                        ,cre_type
+		                        ,cre_perd
+		                        ,active
+		                        ,regu_dt
+		                        ,resp_emp_id
+		                        ,cust_no)
+		    VALUES(
+		             #{reguId}
+		            ,#{creType}
+		            ,#{crePerd}
+		            ,'5D1d'
+		            ,SYSDATE
+		            ,#{respEmpId}
+		            ,#{custNo})
+	</insert>
+	
+	<insert id="insertReguTaskEmp" parameterType="ProjectVO">
+		<selectKey keyProperty="taskNo" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(task_no),0) +1 
+			FROM   task_common
+		</selectKey>
+		INSERT ALL
+		    INTO task_common
+		    			(
+							 task_no
+							,task_name
+							,task_purpose
+							,task_cntn
+							,task_start_dt
+							,task_due_dt
+							,task_type
+							,standard_no
+							,prjt_mat
+							,dept_id
+							,cust_no
+		                 )
+		      VALUES
+		      		(
+		                 #{taskNo}
+		                ,#{taskName}
+		                ,#{taskPurpose}
+		                ,#{taskCntn}
+		                ,#{taskStartDt}
+		                ,#{taskDueDt}
+		                ,'5A2a'
+		                ,#{reguId}
+		                ,'5B1b'
+		                ,#{deptId}
+		                ,#{custNo}
+		            )
+			<foreach collection="taskEmps" item="emp">
+		    INTO task_emps
+		    		(
+	                     task_no
+	                    ,task_emp_id
+	                    ,dept_id
+	                    ,dept_name
+	                    ,cmplt
+	                    ,cust_no
+		            )
+		      VALUES
+		      		(
+		                 #{taskNo}
+		                ,#{emp.taskEmpId}
+		                ,#{emp.deptId}
+		                ,get_deptname(#{emp.deptId})
+		                ,'5F2f'
+		                ,#{custNo}
+		            )
+			</foreach>		    
+		SELECT * FROM DUAL
+	</insert>
+	
+	<select id="selectRegu" parameterType="map" resultMap="reguMap">
+		SELECT
+			    tc.standard_no 
+		       ,tc.task_no
+		       ,get_deptname(tc.dept_id)     as dept_name
+		       ,tc.task_name 
+		       ,tc.task_purpose
+		       ,tc.task_cntn 
+		       ,get_emptitle(rs.resp_emp_id) as resp_emp_name
+		       ,get_codename(rs.cre_type) 	 as cre_type
+		       ,rs.cre_perd 
+		       ,tc.task_start_dt 
+		       ,tc.task_due_dt 
+		       ,get_codename(tc.prjt_mat) 	 as prjt_mat
+		FROM   
+			   task_common tc JOIN regu_stad rs
+		                        ON (tc.standard_no = rs.regu_id)
+		WHERE
+			   rs.cust_no LIKE #{cno}
+		AND 
+		       tc.task_type LIKE '5A2a'
+		AND
+		       tc.task_no = #{tno}
+	</select>
+	
+	<select id="reguMapEmps" resultType="TaskEmpsVO">
+		SELECT
+				dept_id
+		       ,task_emp_id
+		       ,dept_name 
+		       ,get_emptitle(task_emp_id) 			as task_emp_name
+		       ,get_codename(cmplt)       			as code_name
+		       ,cmplt
+		       ,DECODE(cmplt, '5F1f', 1, '5F2f', 0) as result
+		FROM   
+				task_emps
+		WHERE  
+				task_no = #{task_no}	
+	</select>
+	
+	<!-- 담당자 업무완료 프로시저. -->
+	<update id="reguTaskEmpOk" parameterType="TaskEmpsVO" statementType="CALLABLE">
+		{CALL
+			regu_emp_ok(
+				#{taskNo, mode=IN, jdbcType=INTEGER},
+				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=VARCHAR}
+			)
+		}	
+	</update>
+
+</mapper>

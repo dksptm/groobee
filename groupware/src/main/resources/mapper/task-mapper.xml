@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.samjo.app.project.mapper.ProjectMapper">
+<mapper namespace="com.samjo.app.project.mapper.TaskMapper">
 	<!-- 프로젝트업무(하위), 협력업체 -->
 
 	<!-- 프로젝트(하위) 업무 전체 조회 -->
@@ -15,9 +15,9 @@
 									p.prjt_name, 
 									t.task_name, 
 									t.task_start_dt, 
-									t.task_due_dt, 
-									t.task_type, 	
-									t.prjt_mat, 
+									t.task_due_dt,
+									get_codename(t.task_type) as task_type, 
+									get_codename(t.prjt_mat) as prjt_mat, 	
 									(SELECT COUNT(*)
 										FROM task_emps te
 										WHERE te.task_no = t.task_no) AS participants_cnt,
@@ -42,13 +42,13 @@
 					</if>
 				<choose>
 					<when test="taskStart != null and taskDue != null">
-						AND ${taskDt} <![CDATA[>=]]> #{taskStart}  AND ${taskDt} <![CDATA[<=]]> #{taskDue}
+						AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
 					</when>
 					<when test="(taskStart != null) and (taskDue == null)">
-						AND ${taskDt} >= #{taskStart}
+						AND t.task_start_dt >= #{taskStart}
 					</when>
 					<when test="(taskDue != null) and (taskStart == null)">
-						AND ${taskDt} <![CDATA[<=]]> #{taskDue}
+						AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
 					</when>
 				</choose>
 				</where>
@@ -74,46 +74,61 @@
 				AND t.prjt_mat LIKE #{prjtMat}
 		</if>
 		<choose>
-			<when test="taskStart != null and taskDue != null">
-					AND ${taskDt} <![CDATA[>=]]> #{taskStart}  AND ${taskDt} <![CDATA[<=]]> #{taskDue}
-			</when>
-			<when test="(taskStart != null) and (taskDue == null)">
-				AND ${taskDt} >= #{taskStart}
-			</when>
-			<when test="(taskDue != null) and (taskStart == null)">
-				AND ${taskDt} <![CDATA[<=]]> #{taskDue}
-			</when>
+				<when test="taskStart != null and taskDue != null">
+					AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				</when>
+				<when test="(taskStart != null) and (taskDue == null)">
+					AND t.task_start_dt >= #{taskStart}
+				</when>
+				<when test="(taskDue != null) and (taskStart == null)">
+					AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				</when>
 		</choose>
 		</where>
 	</select>
 
 	<!-- 프로젝트(하위) 단건 -->
 	<select id="selectTask" resultType="ProjectVO">
-		SELECT p.prjt_id
+		SELECT   p.prjt_id
 				,p.prjt_name
-				,p.prjt_stat
-				,e.dept_name
+                ,t.task_no
+                ,t.task_name
 				,t.task_start_dt
 				,t.task_due_dt
-				,t.task_no
-				,m.emp_name
-				,p.purpose
-				,p.smry
-		FROM task_common t JOIN task_emps e
-							ON t.task_no = e.task_no
-						JOIN prjt p
+				,t.task_purpose
+				,t.task_cntn
+				,get_codename(t.prjt_mat) as prjt_mat
+				,(SELECT
+				        CASE
+				        WHEN COUNT(*) = 0 THEN 0
+				        ELSE TRUNC(SUM(CASE WHEN te.cmplt= '5F1f' THEN 1 ELSE 0 END) * 100.0 /COUNT(*))
+				        END
+				    FROM task_emps te
+				    WHERE te.task_no = t.task_no) AS progress
+		FROM task_common t JOIN prjt p
 							ON p.prjt_id = t.standard_no
-						JOIN emp m
-							ON m.emp_id = p.resp_mngr_id
-		WHERE t.task_no = #{taskNo}
+		WHERE t.task_no =  #{taskNo}
 	</select>
+	
+	<!-- 프로젝트 참여자 조회 -->
+	<select id="selectTaskEmpList" resultType="ProjectVO">
+		SELECT te.task_no
+			    ,te.task_emp_id
+			    ,te.dept_name
+			    ,e.emp_id
+			    ,e.emp_name
+			FROM task_emps te JOIN emp e 
+								ON te.task_emp_Id = e.emp_id
+		WHERE te.task_no = #{taskNo}
+	</select>
+	
 	<!-- 프로젝트(하위) 업무 등록 -->
 	<insert id="insertTask" parameterType="ProjectVO">
 		<selectKey keyProperty="pj.taskNo" resultType="Integer"
 			order="BEFORE">
 			SELECT NVL(MAX(task_no),0) +1
 			FROM task_common
-		</selectKey>
+	</selectKey>
 		INSERT ALL
 		INTO task_common(
 							task_no,
@@ -156,10 +171,22 @@
 		</foreach>
 		select 1 from dual
 	</insert>
+	
+	<!-- 프로젝트(하위) 업무 참여자 수정 프로시저-->
+	<update id="updateTaskEmp" parameterType="TaskEmpsVO" statementType="CALLABLE">
+		{CALL
+			task_ok(
+				#{taskNo, mode=IN, jdbcType=INTEGER},
+				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=INTEGER}
+			)
+		}	
+	</update>
+		
 	<!-- 프로젝트(하위) 업무 수정 -->
+	
 
-
-
+	
 	<!-- 프로젝트(하위) 업무 삭제 -->
 	<delete id="deleteTask" parameterType="int">
 		DELETE FROM task_common
@@ -169,7 +196,6 @@
 
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO">
-
 		SELECT   coop_co_no
 				,task_no
 				,co_name

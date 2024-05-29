@@ -82,6 +82,12 @@ public class ModuleController {
 	}
 
 	// 템플릿 상세 화면
+	/**
+	 * 
+	 * @param tempNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("solTempInfo/{tempNo}")
 	public String tempInfo(@PathVariable String tempNo, Model model) {
 		TempVO tempVO = moduleservice.tempInfo(tempNo);
@@ -90,6 +96,12 @@ public class ModuleController {
 	}
 
 	// 템플릿 등록 화면
+	/**
+	 * 
+	 * @param tempVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("insertSolTemp")
 	public String InsertTemplate(TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
@@ -99,14 +111,26 @@ public class ModuleController {
 	}
 	
 	// 템플릿 등록 처리
-		@PostMapping("insertSolTemp")
-		@ResponseBody
-		public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
-			tempVO.setTempImg(moduleservice.saveImg(binaryData));
-			return moduleservice.tempInsert(tempVO);
-		}
+	/**
+	 * 
+	 * @param tempVO
+	 * @param binaryData
+	 * @return
+	 */
+	@PostMapping("insertSolTemp")
+	@ResponseBody
+	public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
+		tempVO.setTempImg(moduleservice.saveImg(binaryData));
+		return moduleservice.tempInsert(tempVO);
+	}
 
 	// 템플릿 수정 화면
+	/**
+	 * 
+	 * @param tempVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("updateSolTemp")
 	public String UpdateTemplate(@ModelAttribute TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
@@ -117,6 +141,13 @@ public class ModuleController {
 	}
 
 	// 템플릿 수정 처리
+	/**
+	 * 
+	 * @param id
+	 * @param tempVO
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("tempUpdate/{id}")
 	public String tempUpdate(@PathVariable String id, @ModelAttribute TempVO tempVO, Model model) {
 		tempVO.setTempNo(id);
@@ -125,6 +156,11 @@ public class ModuleController {
 	}
 	
 	//템플릿 삭제 처리
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("tempDelete/{id}")
 	public String tempDelete(@PathVariable String id) {
 		TempVO tempVO = new TempVO();
@@ -132,8 +168,6 @@ public class ModuleController {
 		moduleservice.tempDelete(tempVO);
 		return "redirect:/solTempList";
 	}
-
-	
 
 	// 미리보기 이미지 저장 샘플
 	@ResponseBody

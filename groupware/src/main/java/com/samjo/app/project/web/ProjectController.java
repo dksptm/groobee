@@ -8,20 +8,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
-import com.samjo.app.ct.service.CtDTO;
-import com.samjo.app.ct.service.CtVO;
 import com.samjo.app.emp.service.DeptService;
-import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
-import com.samjo.app.project.service.TaskDTO;
+
 
 @Controller
 public class ProjectController {
@@ -40,7 +34,7 @@ public class ProjectController {
 	public String prjtAllList(Model model) {
 		List<ProjectVO> list = projectService.PrjtAllList();
 		model.addAttribute("projects", list);
-		return "project/prjt/list";
+		return "project/prjt/pjList";
 	}
 
 	// 프로젝트 단건조회
@@ -108,109 +102,6 @@ public class ProjectController {
 		return "redirect:prjtAllList";
 	}
 
-	// 프로젝트(하위) 업무 전체조회
-	@GetMapping("taskAllList")
-	public String taskListPage(SearchVO searchVO, Model model) {
-		if (searchVO.getPage() <= 0) {
-			searchVO.setPage(1);
-		}
-		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
-			searchVO.setTaskSort("task_no");
-		}
-		System.out.println(searchVO);
-		List<ProjectVO> list = projectService.taskAllList(searchVO);
-		model.addAttribute("list", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
-		model.addAttribute("TaskDTO", taskDTO);
-		return "project/task/tsList";
-	}
 	
-	//프로젝트 업무 조회페이지 검색/페이징 처리
-	@PostMapping("viewTsList")
-	public String viewTsListPage(SearchVO searchVO, Model model) {
-		System.out.println("searchVO: "+searchVO);
-		System.out.println("startDay : "+ searchVO.getTaskStart());
-		if (searchVO.getPage() <= 0) {
-			searchVO.setPage(1);
-		}
-		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
-			searchVO.setTaskSort("task_no");
-		}
-		List<ProjectVO> list = projectService.taskAllList(searchVO);
-		model.addAttribute("list", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
-		model.addAttribute("TaskDTO", taskDTO);
-		return "project/task/tsList :: #taskTable";
-	}
-	 
-	// 프로젝트(하위) 업무 등록
-	@GetMapping("taskInsert")
-	public String taskInsertForm(Model model) {
-		List<DeptVO> list = deptService.deptAllList();
-		model.addAttribute("dept", list);
-		
-		List<ProjectVO> plist = projectService.PrjtAllList();
-		model.addAttribute("plist", plist);
-		
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
-		model.addAttribute("emp", elist);
-		
-		model.addAttribute("task", new ProjectVO());
-		return "project/task/insert";
-	}
-	
-	@PostMapping("task/insert")
-	public String taskInsertProcess(@RequestBody ProjectVO projectVO) {
-		
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		
-		projectVO.setTaskType("5A1a");
-		projectVO.setPrjtMat("5B1b");
-		projectVO.setCustNo(empVO.getCustNo());
-		
-		int taskNo = projectService.taskInsert(projectVO);
-		
-		String uri = null;
-
-		if (taskNo > -1) {
-			uri = "task/tsList";
-		} else {
-			uri = "false";
-		}
-		return uri;
-	}
-	
-	
-	// 프로젝트(하위) 업무 단건
-	@GetMapping("taskInfo")
-	public String taskInfo(ProjectVO projectVO, Model model) {
-		ProjectVO findVO = projectService.taskInfo(projectVO);
-		model.addAttribute("task", findVO);
-		return "project/task/Info";
-	}
-
-	// 프로젝트(하위) 업무 수정
-	@PostMapping("taskUpdate")
-	public String taskUpdateForm(@RequestParam Integer taskNo, Model model) {
-		ProjectVO projectVO = new ProjectVO();
-		projectVO.setTaskNo(taskNo);
-
-		ProjectVO findVO = projectService.taskInfo(projectVO);
-		model.addAttribute("taskInfo", findVO);
-		return "project/task/list";
-	}
-
-	@ResponseBody
-	public Map<String, Object> taskUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-		return projectService.taskUpdate(projectVO);
-	}
-
-	// 프로젝트(하위) 업무 삭제
-	@GetMapping("taskDelete")
-	public String empDelete(ProjectVO projectVO) {
-		projectService.taskDelete(projectVO);
-		return "redirect:taskAllList";
-	}
 
 }

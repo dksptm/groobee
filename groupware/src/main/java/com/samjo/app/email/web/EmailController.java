@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
-import com.samjo.app.ct.service.CtDTO;
 import com.samjo.app.email.service.EmailDTO;
 import com.samjo.app.email.service.EmailService;
 import com.samjo.app.email.service.EmailVO;
@@ -42,47 +41,55 @@ public class EmailController {
 		if(searchVO.getPage() <= 0) {
 			searchVO.setPage(1);
 		}
-		//접속중인 계정 정보 받아오기.
+		if(searchVO.getEmSort() == null || searchVO.getEmSort().trim().isEmpty()) {
+			searchVO.setEmSort("rec_email_no");
+		}
+		//받은 메일의 수신자. 접속중인 계정 정보 받아오기.
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
-		//접속중인 계정의 id와, 고객사id 받아오기
-		String custId = empVO.getCustNo();
+		//접속중인 계정의 id와, 고객사id 받아오기.
+		String custNo = empVO.getCustNo();
 		String recp = empVO.getEmpId();
 		
 		//searchVO에 담기.
 		searchVO.setRecp(recp);
-		searchVO.setCustNo(custId);
+		searchVO.setCustNo(custNo);
+		
+		//매퍼 쿼리에 searchVO를 실어 보내고, 결과를 받아 list에 담기.
 		List<EmailVO> list = emailService.inboxList(searchVO);
+		
+		//이 list는 타임리프로 보낼 것이므로, model에 담기.
 		model.addAttribute("list", list);
+		
+		//PageDTO에 해당하는 EmailDTO에 
 		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO)); 
-		//위 코드가 좀 이상함. 페이징에 대한 이해가 덜되어서 그런가..
 		model.addAttribute("EmailDTO", emailDTO);
         model.addAttribute("searchVO", searchVO);
 		
 		return "email/inboxList";
 	}
 	
-	// 받은메일 검색/페이징 처리
-	@PostMapping("viewInboxList")
-	public String viewInboxPage(SearchVO searchVO, Model model) {
-		if (searchVO.getPage() <= 0) {
-			searchVO.setPage(1);
-		}
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		String custId = empVO.getCustNo();
-		String eid = empVO.getEmpId();
-		searchVO.setRecp(eid);
-		searchVO.setCustNo(custId);
-		List<EmailVO> list = emailService.inboxList(searchVO);
-		model.addAttribute("list", list);
-		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.count(eid)); 
-		model.addAttribute("EmailDTO", emailDTO);
+    // 받은메일 검색/페이징 처리 AJAX 받는 걸로 바꿔보기
+    @PostMapping("viewInboxList")
+    public String viewInboxPage(@RequestBody SearchVO searchVO, Model model) {
+        if (searchVO.getPage() <= 0) {
+            searchVO.setPage(1);
+        }
+        EmpVO empVO = SecuUtil.getLoginEmp();
+        String custId = empVO.getCustNo();
+        String eid = empVO.getEmpId();
+        searchVO.setRecp(eid);
+        searchVO.setCustNo(custId);
+        List<EmailVO> list = emailService.inboxList(searchVO);
+        model.addAttribute("list", list);
+        EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO)); 
+        model.addAttribute("EmailDTO", emailDTO);
         model.addAttribute("searchVO", searchVO);
-		
-		return "email/inboxList :: #inboxTable";
-	}
+        
+        return "email/inboxList :: #inboxTable";
+    }
 	
-	// 받은메일 상세조회
+	// 받은메일 상세조회 -> 전체조회에서 행을 클릭하고 넘어옴
 	@GetMapping("inboxInfo")
 	public String inboxInfo(EmailVO emailVO, Model model) {
 		// rfindVO 객체에 Service의 실행 결과를 담는다

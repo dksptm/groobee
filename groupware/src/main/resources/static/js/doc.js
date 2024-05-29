@@ -139,7 +139,6 @@ const getHtml = function() {
 	    },
 	    success: function(html) {
 	    	 editor.setData(html);
-	    	 console.log(html);
 	    },
 	    error: function(err){
 	    	console.log('ERR : ', err);
@@ -220,18 +219,35 @@ const inTaskName = () => {
 /* 필수입력 항목선택.*/
 function docCheck(e) {
 	if($('#title').val() == '') {
-		alert('제목은 필수입력 항목입니다.');
+	
+		Swal.fire({
+			icon: 'error',               
+		  	title: '입력 확인',    
+		  	text: '제목은 필수입력 항목입니다.', 
+		});
 		$('#title').focus();
 		return false;
 	}
+	
 	if($('#tempId').val() == 'no-data') {
-		alert('템플릿을 선택해주세요.');
+	
+		Swal.fire({
+			icon: 'error',               
+		  	title: '입력 확인',    
+		  	text: '템플릿을 선택해주세요.', 
+		});
 		$('#tempId').focus();
 		return false;
 	}
+	
 	if($('#tempId').val() == 'public01') {
-		if($('#ptoType').val() == '' || $('#sdt').val() == '' || $('#edt').val() ==''){
-			alert('휴가원은 휴가종류, 시작/종료날짜\n모두 선택해야 합니다.');
+		if($('#ptoType').val() == 'no-data' || $('#sdt').val() == '' || $('#edt').val() ==''){
+		
+			Swal.fire({
+				icon: 'error',               
+			  	title: '입력 확인',    
+			  	text: '휴가원은 휴가종류, 시작/종료날짜 모두 선택해야 합니다.', 
+			});
 			return false;
 		}
 	}
@@ -251,10 +267,13 @@ function ptoForm() {
 /* 휴가원 등록 */
 const ptoSubmit = () => {
 	
+	$('div#pto > input[name="pto.ptoStartDt"]').remove();
+	$('div#pto > input[name="pto.ptoEndDt"]').remove();
+	
 	let ptoStartDt = $('#sdt').val() + ' ' + $('#stime').val();
-	$('div#pto').append($('<input name="pto.ptoStartDt" />').val(ptoStartDt));
+	$('div#pto').append($('<input type="hidden" name="pto.ptoStartDt" />').val(ptoStartDt));
 	let ptoEndDt = $('#edt').val() + ' ' + $('#etime').val()
-	$('div#pto').append($('<input name="pto.ptoEndDt" />').val(ptoEndDt));
+	$('div#pto').append($('<input type="hidden" name="pto.ptoEndDt" />').val(ptoEndDt));
 
 }
 
