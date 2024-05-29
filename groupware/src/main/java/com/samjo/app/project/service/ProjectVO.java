@@ -76,5 +76,6 @@ public class ProjectVO {
 
 	// 프로시저 결과반환.
 	private Integer result;
+	private String ret;
 	
 }

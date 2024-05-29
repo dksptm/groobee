@@ -188,7 +188,7 @@
 		{CALL
 			prjt_ok(
 				#{prjtId, mode=IN, jdbcType=VARCHAR},
-				#{result, mode=OUT, jdbcType=VARCHAR}
+				#{ret, mode=OUT, jdbcType=VARCHAR}
 			)
 		}	
 	</update>

@@ -59,11 +59,19 @@ public class TaskServiceImpl implements TaskService{
 		
 		
 		for(TaskEmpsVO emp : emps) {
+			// task_emps u..
 			taskMapper.updateTaskEmp(emp);
+			System.out.println("emp.getResult()--------->"+emp.getResult());
+			// task_common u (100)
+			if(emp.getResult() == 100) {
+				// prjt u
+				System.out.println("프로젝트프로시저 시작--------------!");
+				taskMapper.updatePrjt(projectVO);
+			}
 		}
 		
 		// 매퍼.xml에 추가한 프로시져 호출. 
-		//taskMapper.updateTaskEmp(emp);
+		
 		
 		map.put("OUT", emps);
 		return map;
