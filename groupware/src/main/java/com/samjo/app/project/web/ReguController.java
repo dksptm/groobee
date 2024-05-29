@@ -1,6 +1,5 @@
 package com.samjo.app.project.web;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.PageDTO;
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.DeptVO;
@@ -63,16 +64,24 @@ public class ReguController {
 	// 상시업무등록 - 등록.
 	@PostMapping("reguInsert")
 	public String reguInsertProcess(ProjectVO projectVO, String flag) {
-		int ret = 0;
+		int result = 0;
 		
 		// (flag == YES) => 기존 상시업무에 등록.
 		if(flag.equals("YES")) {
-			ret = reguService.reguCommonInsert(projectVO);
-			System.out.println("기존 상시업무 등록결과 --------> " + ret);			
+			
+			result = reguService.reguCommonInsert(projectVO);
+			if(result > 0) {
+				return "redirect:reguInfo?taskNo=" + result;
+			}
+			
 		} else if(flag.equals("NO")) {
-			ret = reguService.reguStadInsert(projectVO);
-			System.out.println("처음 상시업무 등록결과 --------> " + ret);			
-		}
+			
+			result = reguService.reguStadInsert(projectVO);
+			if(result > 0) {
+				return "redirect:reguInfo?taskNo=" + result;
+			}
+			
+		} 
 		
 		return "test/test";
 	}
@@ -83,10 +92,17 @@ public class ReguController {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
-		ProjectVO findVO = reguService.reguInfo(empVO.getCustNo(), taskNo);
-		model.addAttribute("regu", findVO);
-		
-		return "project/regu/info";
+		if(empVO != null) {
+			
+			ProjectVO findVO = reguService.reguInfo(empVO.getCustNo(), taskNo);
+			model.addAttribute("regu", findVO);
+			
+			return "project/regu/info";
+			
+		} else {
+			
+			return "test/test";
+		}
 	}
 	
 	// 담당업무 완료
@@ -96,6 +112,41 @@ public class ReguController {
 												@RequestBody List<TaskEmpsVO> emps) {
 		
 		return reguService.reguCmpltModify(emps);
+	}
+	
+	// 전체조회
+	@GetMapping("reguList")
+	public String reguTaskList(SearchVO searchVO, Model model) {
+		
+		checkSearch(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			List<ProjectVO> list = reguService.reguTaskList(empVO.getCustNo(), searchVO);
+			int count = reguService.countReguTasks(empVO.getCustNo(), searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
+			
+			model.addAttribute("list", list);
+			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("search", searchVO);
+			model.addAttribute("path", "reguList"); 
+			
+			return "project/regu/list.html";
+			
+		} else {
+			
+			return "test/test";
+		}
+		
+	}
+	
+	// SearchVO check
+	public SearchVO checkSearch(SearchVO searchVO) {
+		if(searchVO.getPage() == 0) {
+			searchVO.setPage(1);
+		}
+		return searchVO;
 	}
 
 }

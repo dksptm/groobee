@@ -117,9 +117,13 @@
 						icon: 'success',
 					    title: '담당업무 완료처리!',
 					    text: '진행도를 확인하세요',
-					});
-					console.log(result);
-					//location.reload();
+					})
+					.then((result) => {
+						if(result.value){
+							location.reload();
+						}
+					})
+					
 				},
 				error : function(err){
 					alert('실패');

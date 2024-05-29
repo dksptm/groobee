@@ -83,30 +83,6 @@ public class DocController {
         }
 	}
 	
-	@PostMapping("myDocList/view")
-	public String myDocListView(SearchVO searchVO, Model model) {
-		
-		searchVO = checkSearch(searchVO);
-		EmpVO empVO = SecuUtil.getLoginEmp();
-		
-		if(empVO != null) {
-			
-			List<DocVO> list = docService.getMyDocList(empVO.getEmpId(), searchVO);
-	        PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.countEmpDocs(empVO.getEmpId(), searchVO));
-	        
-	        model.addAttribute("list", list);
-	        model.addAttribute("pageDTO", pageDTO);
-	        model.addAttribute("search", searchVO);
-	        model.addAttribute("path", "myDocList");
-	        
-            return "approval/list/empDocs";
-            
-        } else {
-        	
-        	return "test/test";
-        }
-	}
-	
 	// 한 직원이 현재 결재해야할 문서리스트.
 	@GetMapping("myAprList")
 	public String myAprList(SearchVO searchVO, Model model) {
@@ -175,6 +151,7 @@ public class DocController {
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
+			model.addAttribute("path", "docCmplt"); 
 			
 			return "approval/list/cmplt";
 			
@@ -187,8 +164,9 @@ public class DocController {
 	
 	// 문서 상세정보.
 	@GetMapping("docInfo")
-	public String docInfo(DocVO docVO, Model model) {
+	public String docInfo(DocVO docVO, SearchVO searchVO, Model model) {
 		
+		searchVO = checkSearch(searchVO);
 		DocVO findVO = docService.docInfo(docVO);
 		List<EmpVO> refs = docService.docRefs(docVO.getDocNo());
 		List<ProjectVO> tasks = docService.docTasks(docVO.getDocNo());
@@ -196,6 +174,7 @@ public class DocController {
 		model.addAttribute("doc", findVO);
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("emps", refs);
+		model.addAttribute("search", searchVO);
 		
 		return "approval/doc/info";
 		

@@ -76,6 +76,18 @@ $(function(){
 		
 	});
 	
+	// tr클릭해서 문서상세로 이동
+	$('tr.go-doc-info').on('click', function(e) {
+		
+		let createInput = $('<input type="hidden" name="docNo" />').val($(this).data('dno'));
+		searchForm.append(createInput);
+		searchForm.attr('action', '/docInfo');
+		
+		searchForm.submit();
+		
+	});
+	
+	
 })
 
 </script>

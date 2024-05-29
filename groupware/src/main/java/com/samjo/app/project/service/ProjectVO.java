@@ -15,9 +15,9 @@ public class ProjectVO {
 	private String taskName;
 	private String taskPurpose;
 	private String taskCntn;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private Date taskStartDt;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private Date taskDueDt;
 	private String taskType;
 	private String standardNo;
@@ -38,6 +38,7 @@ public class ProjectVO {
 	private String respEmpId;
 	private String respEmpName;
 	private String codeName; //...
+	private String matName;
 	
 	//프로젝트
 	private String prjtId;
