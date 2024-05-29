@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.service.CtDTO;
@@ -64,7 +63,7 @@ public class CtController {
 		return "solution/ct/ctInfo";
 	}
 
-	//계약 등록
+	//계약 등록 화면
 	@GetMapping("sol/ctInsert")
 	public String ctInsert(Model model) {
 		List<ModuleVO> modlist = ctservice.modList();
@@ -88,9 +87,6 @@ public class CtController {
 	@PostMapping("sol/ctUpdateProcess/{ctNo}")
 	@ResponseBody
 	public String ctUpdateProcess(@PathVariable int ctNo, CtVO ctVO, String[] modIds, Model model) {
-		//ctservice.modUpdate(ctVO, modIds);
-		System.out.println("CT : " + ctVO);
-		System.out.println("modIds: " + Arrays.toString(modIds));
 		ctservice.ctUpdate(ctVO, modIds);
 		return "Success";
 	}

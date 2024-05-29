@@ -184,7 +184,8 @@
 		SET
 			use_end_dt = sysdate,
 			mod_use_stat = '1B2b'
-		WHERE ct_no = #{ctNo}
+		WHERE use_end_dt IS NULL
+		AND ct_no = #{ctNo}
 	</update>
 	
 	<!-- 계약변경이력 -->
@@ -193,5 +194,15 @@
 		FROM ct_hist
 		WHERE ct_no = #{CtNo}
 		ORDER BY ct_hist_no
+	</select>
+	
+	<!-- 계약변경이력(모듈) -->
+	<select id="selectModHist" resultType="ModuleVO">
+		SELECT 	u.mod_id,
+				m.mod_name
+		FROM use_mod u JOIN mod m
+						ON(u.mod_id = m.mod_id) 
+		WHERE use_end_dt = #{chgDt}
+		ORDER BY u.mod_id
 	</select>
 </mapper>

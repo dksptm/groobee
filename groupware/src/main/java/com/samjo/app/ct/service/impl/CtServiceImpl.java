@@ -42,18 +42,24 @@ public class CtServiceImpl implements CtService{
 	@Override
 	public CtVO ctInfo(int ctNO) {
 		CtVO ctVO = new CtVO();
+		List<CtVO> cthist = ctMapper.selectCtHist(ctNO);
+		for(CtVO ctvo : cthist) {
+			ctvo.setModHist(ctMapper.selectModHist(ctvo.getChgDt()));
+		}
 		ctVO = ctMapper.ctInfo(ctNO);
 		ctVO.setModList(ctMapper.selectModList(ctNO));
 		ctVO.setEmpList(ctMapper.selectEmpList(ctVO.getCustNo()));
-		ctVO.setCtList(ctMapper.selectCtHist(ctNO));
+		ctVO.setCtList(cthist);
 		return ctVO; 
 	}
 
+	//모듈조회
 	@Override
 	public List<ModuleVO> modList() {
 		return ctMapper.selecetModAll();
 	}
-
+	
+	//계약 수정처리
 	@Override
 	public Map<String, Object> ctUpdate(CtVO ctVO, String[] modIds) {
 		if(ctVO.getUploadfile() != null) {

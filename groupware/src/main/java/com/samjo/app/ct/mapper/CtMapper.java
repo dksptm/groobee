@@ -1,5 +1,6 @@
 package com.samjo.app.ct.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.samjo.app.common.service.SearchVO;
@@ -21,6 +22,8 @@ public interface CtMapper {
 	public List<EmpVO> selectEmpList(String custNo);
 	//계약 상세조회-계약변경이력
 	public List<CtVO> selectCtHist(int CtNo);
+	//계약 상세조회-계약변경이력(모듈)
+	public List<ModuleVO> selectModHist(Date chgDt);
 	//계약 수정-모듈목록조회
 	public List<ModuleVO> selecetModAll();
 	//계약 수정처리
