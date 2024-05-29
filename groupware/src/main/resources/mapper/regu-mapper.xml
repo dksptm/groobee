@@ -198,7 +198,7 @@
 	</update>
 	
 	<!-- 업무번호 기준 전체조회 -->
-	<select id="selectReguTaskAll" parameterType="map" resultMap="reguMap">
+	<select id="selectReguTaskAll" parameterType="map" resultType="ProjectVO">
 		SELECT
 		        g.rn
 		       ,g.standard_no 
@@ -213,10 +213,12 @@
 		       ,g.cre_type
 		       ,g.participants_cnt
 		       ,g.pt_cnt
+		       ,g.progress
+		       ,g.resp_emp_id
 		FROM
 		        (
 		            SELECT
-		                    ROW_NUMBER() OVER (ORDER BY tc.task_no DESC) rn
+		                    ROW_NUMBER() OVER (ORDER BY te.progress DESC) rn
 		                   ,tc.standard_no 
 		                   ,tc.task_no
 		                   ,tc.dept_id
@@ -226,17 +228,19 @@
 		                   ,tc.prjt_mat
 		                   ,rs.active
 		                   ,rs.cre_type
+		                   ,rs.resp_emp_id
 		                   ,te.participants_cnt
 		                   ,te.pt_cnt
+		                   ,te.progress
 		            FROM   
 		                   task_common tc JOIN regu_stad rs
 		                                    ON (tc.standard_no = rs.regu_id)
-		                                  JOIN (SELECT  COUNT(task_no) participants_cnt
-		                                               ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
-		                                                                             ELSE 0
-		                                                    END) pt_cnt
-		                                               ,task_no 
-		                                        FROM   task_emps
+		                                  JOIN (SELECT    COUNT(task_no) as participants_cnt
+		                                                 ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
+		                                                      ELSE 0 END) as pt_cnt
+		                                                 ,(SUM(CASE cmplt WHEN '5F1f' THEN 1 ELSE 0 END) / COUNT(task_no)) * 100 as progress 
+		                                                 ,task_no 
+		                                        FROM     task_emps
 		                                        GROUP BY task_no) te
 		                                    ON (tc.task_no = te.task_no)
 		            WHERE
@@ -245,9 +249,9 @@
 		                   tc.task_type = '5A2a'
 		        ) g
 		WHERE 
-				g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+				g.rn <![CDATA[<=]]> (#{sch.page} * 10)
 		AND   
-				g.rn > (#{sch.page} - 1) * 5
+				g.rn > (#{sch.page} - 1) * 10
 	</select>
 			
 	<select id="countReguTasks" parameterType="map" resultType="int">

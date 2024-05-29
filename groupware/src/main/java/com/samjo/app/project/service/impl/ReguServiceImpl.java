@@ -110,29 +110,7 @@ public class ReguServiceImpl implements ReguService {
 	// 전체조회
 	@Override
 	public List<ProjectVO> reguTaskList(String custNo, SearchVO search) {
-		List<ProjectVO> list = reguMapper.selectReguTaskAll(custNo, search);
-		
-		for(ProjectVO pj : list) {
-			List<TaskEmpsVO> emps = pj.getTaskEmps();
-			
-			// 진행률 계산.
-			double total = emps.size();
-			int cmplt = 0;
-			
-			for(TaskEmpsVO emp : emps) {
-				cmplt += emp.getResult();
-			}
-			
-			double per =  ((double) cmplt / total) * 100;
-			int result = (int) Math.floor(per);
-			
-			// vo 담기.
-			pj.setProgress(result);
-			pj.setParticipantsCnt((int) total);
-			
-		}
-		
-		return list;
+		return reguMapper.selectReguTaskAll(custNo, search);
 	}
 
 	@Override

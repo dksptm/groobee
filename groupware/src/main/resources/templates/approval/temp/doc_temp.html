@@ -88,14 +88,17 @@
 		</div>
 	</div>	
 	
-	<!-- <script type="module" th:src="@{/samjo/approval.js}"></script> -->
 	<script>
 	$(document).ready(function() {
-	    // 원하는 날짜를 설정합니다. 예: 2024년 5월 17일
-	    //var preselectedDate = '2024-05-17';
 	    
-	    // 날짜를 미리 선택하고 disabled 상태로 설정합니다.
-	   // $('#myDateInput').val(preselectedDate).attr('disabled', 'disabled');
+		//기간 검색 범위처리
+		$('#sdt').on('change', function(e){
+			$('input#edt').attr('min', this.value);
+		});
+		$('#edt').on('change', function(e){
+			$('input#sdt').attr('max', this.value);
+		});
+		
 	});
 	</script>
 </th:block>
