@@ -199,37 +199,57 @@
 	
 	<!-- 업무번호 기준 전체조회 -->
 	<select id="selectReguTaskAll" parameterType="map" resultMap="reguMap">
-		SELECT      g.rn
-			       ,g.standard_no 
-			       ,g.task_no
-			       ,get_deptname(g.dept_id)     as dept_name
-			       ,g.task_name 
-			       ,g.task_start_dt 
-			       ,g.task_due_dt 
-			       ,get_codename(g.prjt_mat) 	 as mat_name
-			       ,g.prjt_mat
-			       ,g.active
-			       ,g.cre_type
-		FROM    
-			    (
-			        SELECT /*+ INDEX_DESC(TC TASK_COMMON_TASK_NO_PK) */
-			                rownum rn
-			               ,tc.*
-			               ,rs.*
-			        FROM   
-			               task_common tc JOIN regu_stad rs
-			                                ON (tc.standard_no = rs.regu_id)
-			        WHERE
-			               rs.cust_no LIKE #{cno}
-			        AND 
-			               tc.task_type LIKE '5A2a'
-			        AND
-			               rownum <![CDATA[<=]]> (#{sch.page} * 10)
-			     ) g
-		WHERE
-				 g.rn > (#{sch.page} - 1) * 10	
+		SELECT
+		        g.rn
+		       ,g.standard_no 
+		       ,g.task_no
+		       ,get_deptname(g.dept_id)     as dept_name
+		       ,g.task_name 
+		       ,g.task_start_dt 
+		       ,g.task_due_dt 
+		       ,get_codename(g.prjt_mat) 	 as mat_name
+		       ,g.prjt_mat
+		       ,g.active
+		       ,g.cre_type
+		       ,g.participants_cnt
+		       ,g.pt_cnt
+		FROM
+		        (
+		            SELECT
+		                    ROW_NUMBER() OVER (ORDER BY tc.task_no DESC) rn
+		                   ,tc.standard_no 
+		                   ,tc.task_no
+		                   ,tc.dept_id
+		                   ,tc.task_name 
+		                   ,tc.task_start_dt 
+		                   ,tc.task_due_dt 
+		                   ,tc.prjt_mat
+		                   ,rs.active
+		                   ,rs.cre_type
+		                   ,te.participants_cnt
+		                   ,te.pt_cnt
+		            FROM   
+		                   task_common tc JOIN regu_stad rs
+		                                    ON (tc.standard_no = rs.regu_id)
+		                                  JOIN (SELECT  COUNT(task_no) participants_cnt
+		                                               ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
+		                                                                             ELSE 0
+		                                                    END) pt_cnt
+		                                               ,task_no 
+		                                        FROM   task_emps
+		                                        GROUP BY task_no) te
+		                                    ON (tc.task_no = te.task_no)
+		            WHERE
+		                   rs.cust_no = #{cno}
+		            AND 
+		                   tc.task_type = '5A2a'
+		        ) g
+		WHERE 
+				g.rn <![CDATA[<=]]> (#{sch.page} * 5)
+		AND   
+				g.rn > (#{sch.page} - 1) * 5
 	</select>
-	
+			
 	<select id="countReguTasks" parameterType="map" resultType="int">
 		SELECT count(*)
 		FROM   task_common tc JOIN regu_stad rs
