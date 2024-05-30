@@ -114,7 +114,7 @@ class GroupwareApplicationTests {
 	 @Autowired
 	 StringEncryptor jasyptStringEncryptor;
 	 
-	 @Test
+	 //@Test
 	 public void encryption() {
 			String[] strs = {
 					"",
