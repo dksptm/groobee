@@ -189,7 +189,8 @@
 	<!-- 담당자 업무완료 프로시저. -->
 	<update id="reguTaskEmpOk" parameterType="TaskEmpsVO" statementType="CALLABLE">
 		{CALL
-			regu_emp_ok(
+			regu_emp_ok(			
+				#{flag, mode=IN, jdbcType=VARCHAR},
 				#{taskNo, mode=IN, jdbcType=INTEGER},
 				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
 				#{result, mode=OUT, jdbcType=VARCHAR}
@@ -218,7 +219,7 @@
 		FROM
 		        (
 		            SELECT
-		                    ROW_NUMBER() OVER (ORDER BY te.progress DESC) rn
+		                    ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
 		                   ,tc.standard_no 
 		                   ,tc.task_no
 		                   ,tc.dept_id
@@ -247,6 +248,29 @@
 		                   rs.cust_no = #{cno}
 		            AND 
 		                   tc.task_type = '5A2a'
+		                   
+						   <if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+								AND	tc.prjt_mat = #{sch.prjtMat}
+						   </if>
+						   <if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+								AND	rs.cre_type = #{sch.searchCondition}
+						   </if>
+						   <if test="sch.dtStart != null">
+								AND	tc.task_start_dt >= #{sch.dtStart}
+						   </if>
+						   <if test="sch.dtEnd != null">
+								AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+						   </if>
+		                   <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+		                   		<choose>
+		                   			<when test="sch.keywordCondition == 'resp_emp_name'">
+										AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+		                   			</when>
+			                   		<otherwise>
+										AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+			                   		</otherwise>
+		                   		</choose>
+						   </if>
 		        ) g
 		WHERE 
 				g.rn <![CDATA[<=]]> (#{sch.page} * 10)
@@ -260,6 +284,28 @@
 		                        ON (tc.standard_no = rs.regu_id)
 		WHERE  rs.cust_no LIKE #{cno}
 		AND    tc.task_type LIKE '5A2a'	
+			<if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+				AND	tc.prjt_mat = #{sch.prjtMat}
+			</if>
+			<if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+				AND	rs.cre_type = #{sch.searchCondition}
+			</if>
+			<if test="sch.dtStart != null">
+				AND	tc.task_start_dt >= #{sch.dtStart}
+			</if>
+			<if test="sch.dtEnd != null">
+				AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+			</if>
+			<if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+				<choose>
+					<when test="sch.keywordCondition == 'resp_emp_name'">
+						AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+			        </when>
+			        <otherwise>
+						AND	${sch.keywordCondition} LIKE '%' ||#{sch.keyword}||'%'
+              		</otherwise>
+             	</choose>
+			</if>
 	</select>
 
 </mapper>

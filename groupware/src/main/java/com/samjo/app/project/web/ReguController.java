@@ -146,6 +146,9 @@ public class ReguController {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
+		if(searchVO.getSortCondition() == null) {
+			searchVO.setSortCondition("tc.task_no DESC");
+		}
 		return searchVO;
 	}
 

@@ -47,7 +47,7 @@
 				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
 					<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
 						<input type="checkbox" class="form-check-input mt-0 regu-emp-ok" aria-label="Checkbox for following text input"
-							   th:checked="${te.cmplt == '5F1f'}" th:disabled="${te.cmplt == '5F1f'}">
+							   th:checked="${te.cmplt == '5F1f'}">
 					</div>
 					<input th:value="${te.taskEmpName}" type="text" class="form-control" aria-label="Text input with checkbox"
 						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
@@ -57,7 +57,7 @@
 				</div>
 			</td>
 			<td>
-				<button type="button" class="btn btn-primary regu-emp-ok-btn">담당업무 완료</button>
+				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
 			</td>
 		</tr>
 	</table>		
@@ -82,55 +82,54 @@
 
 	function reguEmpOk() {
 		let checkList = $('input[type="checkbox"].regu-emp-ok:checked').parent();
+		let uncheckList = $('input[type="checkbox"].regu-emp-ok').not(':checked').parent();
+
 		let param = [];
 		
 		checkList.each((idx, ele) => {
 			let obj = {};
 			obj['taskNo'] = tno;
-			obj['taskEmpId'] = ele.dataset.teid; 
+			obj['taskEmpId'] = ele.dataset.teid;
+			obj['flag'] = 'Y';
 			param.push(obj);
 		})
 		
-		if(param.length == 0) {
-			
-			Swal.fire({
-				icon: 'error',
-			    title: '체크박스 확인',
-			    text: '선택한 담당자가 한명도 없어요.',
-			});
-			
-			return;
-			
-		} else {
-			
-			// 담당자 수정 아작스.
-			$.ajax({
-				type: 'PUT',
-				url : '/reguInfo/ok/' + tno,
-				contentType : 'application/json',
-				data :  JSON.stringify(param),
-				beforeSend: function(xhr) {
-			        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
-			    },
-				success : function(result){
-					Swal.fire({
-						icon: 'success',
-					    title: '담당업무 완료처리!',
-					    text: '진행도를 확인하세요',
-					})
-					.then((result) => {
-						if(result.value){
-							location.reload();
-						}
-					})
-					
-				},
-				error : function(err){
-					alert('실패');
-				}
-			});
-		}
+		uncheckList.each((idx, ele) => {
+			let obj = {};
+			obj['taskNo'] = tno;
+			obj['taskEmpId'] = ele.dataset.teid;
+			obj['flag'] = 'N';
+			param.push(obj);
+		})
 		
+		// 담당자 수정 아작스.
+		$.ajax({
+			type: 'PUT',
+			url : '/reguInfo/ok/' + tno,
+			contentType : 'application/json',
+			data :  JSON.stringify(param),
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+			success : function(result){
+				
+				Swal.fire({
+					icon: 'success',
+				    title: '업무처리건 반영완료!',
+				    text: '진행도를 확인하세요',
+				})
+				.then((result) => {
+					if(result.value){
+						location.reload();
+					}
+				})
+				
+			},
+			error : function(err){
+				alert('실패');
+			}
+		});
+			
 	}
 
 </script>
