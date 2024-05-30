@@ -105,24 +105,23 @@ public class WorkControll {
 	@PostMapping("workupdate")
 	@ResponseBody
 	public Map<String, Object> update(WorkVO workVO) {
-		
 		return workService.update(workVO);
 	}
 
 	
 	  // 출근 업데이트 처리(최초 한번만 업데이트)
 	  // request.getRemoteAddr();(ipcheck)
-		  @PostMapping("workin")
+		  @PostMapping("worklist")
 		  @ResponseBody
-		  public WorkVO workin(WorkVO workVO) {
-			  return workVO;
+		  public Map<String, Object> workin(WorkVO workVO) {
+			  return workService.workin(workVO);
 		  }
 		  
 		  // 퇴근 업데이트(최초 이후 계속 업데이트)
-		  @PostMapping("workout")
+		  @PostMapping("worklist")
 		  @ResponseBody
-		  public WorkVO workout(WorkVO workVO) {
-			  return workVO;
+		  public Map<String, Object> workout(WorkVO workVO) {
+			  return workService.workout(workVO);
 		  }
 		 
 

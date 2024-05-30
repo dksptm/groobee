@@ -16,9 +16,9 @@ public interface WorkMapper {
 	// 근태관리 전체출퇴근조회
 	public List<WorkVO> selectAllList(WorkSearchVO worksearchVO);
 	// 출근 업데이트
-	public int workin();
+	public int workin(WorkVO workVO);
 	// 퇴근 업데이트
-	public int workout();
+	public int workout(WorkVO workVO);
 	// 출근등록
 	public int insertWork(WorkVO workVo);
 	

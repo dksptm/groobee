@@ -14,10 +14,10 @@ public interface WorkService {
 	public List<WorkVO> workList(WorkSearchVO worksearchVO);
 	
 	// 출근버튼
-	public int workin();
+	public Map<String, Object> workin(WorkVO workVo);
 	
 	// 퇴근버튼
-	public int workout();
+	public Map<String, Object> workout(WorkVO workVo);
 	
 	// 출근등록
 	public int insertWork(WorkVO workVo);
