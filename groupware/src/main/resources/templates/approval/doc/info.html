@@ -4,7 +4,6 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-	
 	<div class="container-xxl flex-grow-1 container-p-y">
 	<div class="row flex-xl-nowrap">
 	<div class="DocSearch-content col-12 container-p-y">
@@ -237,8 +236,9 @@
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
-	
+    const contextPath = $('#contextPathHolder').attr('href');
+    
+    
 		$(function(){
 			
 			ClassicEditor
@@ -502,7 +502,7 @@
 								  	text: '문서가 삭제되었습니다.', 
 								});
 								
-								location.href = "//cust/doc/mydoc";
+								location.href = contextPath + "cust/doc/mydoc";
 								
 							} else {
 								

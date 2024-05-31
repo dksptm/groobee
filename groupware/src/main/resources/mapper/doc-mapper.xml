@@ -487,7 +487,7 @@
 		
 	<!-- 한 문서 상세정보. -->
 	<select id="selectDoc" resultType="DocVO">
-		SELECT d.doc_no
+		SELECT   d.doc_no
 				,d.draft
 		        ,e.emp_name as draft_name
 		        ,d.dept_id
@@ -504,10 +504,11 @@
 		        ,d.doc_stat
 		        ,get_codename(d.doc_stat) 	AS doc_stat_name
 				,d.cmplt_dt
-		FROM doc d JOIN emp e 
-		             ON(d.draft = e.emp_id)
-		           JOIN dept dt 
-		             ON(d.dept_id = dt.dept_id)
+				,d.cust_no
+		FROM    doc d JOIN emp e 
+		                ON (d.draft = e.emp_id)
+		              JOIN dept dt 
+		             	ON (d.dept_id = dt.dept_id)
 		WHERE doc_no = #{docNo}
 	</select>
 	

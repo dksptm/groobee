@@ -4,6 +4,7 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
+
 <style>
 .modal-dialog {
     max-width: 900px; 
@@ -14,14 +15,13 @@
 }
 </style>
 
-	<div class="container-xxl flex-grow-1 container-p-y">
-	<div class="row flex-xl-nowrap">
-	<div class="DocSearch-content col-12 container-p-y">
-		<div class="row m-3 p-3">
-			<h2 class="m-0 p-0 doc-page-title">문서작성</h2>
+	<div class="container-xxl flex-grow-1">
+	<div class="flex-xl-nowrap row">
+	<div class="row">
+		<div class="row mt-3 pt-3">
+			<h2 class="ms-3">문서작성</h2>
 		</div>
-		<hr>
-		<div class="row m-3 p-3 bg-white shadow-lg rounded">
+		<div class="row m-3 p-3 bg-white">
 		<form id="docInsertForm" th:action="@{/cust/doc/insert}" method="post" th:object="${doc}" enctype="multipart/form-data">
 		
 			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
@@ -31,16 +31,16 @@
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" readonly />
 			
 			<!-- 작성완료/취소 버튼 -->
-			<div class="m-3 text-end">
-				<button type="submit" class="btn rounded-pill btn-primary btn-lg">작성완료</button>
+			<div class="mb-3 text-end">
+				<button type="submit" class="btn btn-primary">작성완료</button>
 				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
-						class="btn rounded-pill btn-secondary btn-lg">작성취소</button>
+						class="btn  btn-secondary">작성취소</button>
 			</div>
 			
 			<div class="card-body row">
 			
 				<!-- 결재자 공간 -->
-				<div class="border border-3 p-3 col-4 input-tag-css">
+				<div class="border border-dark border-end p-3 col-4 input-tag-css">
 					<!-- 모달버튼 : 결재자 -->
 					<button type="button" class="btn btn-outline-secondary doc-modal-btn-apr" 
 							data-bs-toggle="modal" data-bs-target="#docModalAprs">결재자 선택</button>
@@ -52,7 +52,7 @@
 				</div>
 				
 				<!-- 참조자 공간 -->
-				<div class="border border-3 p-3 col-4">
+				<div class="border border-dark border-end p-3 col-4">
 					<!-- 모달버튼 : 참조자  -->
 					<button type="button" class="btn btn-outline-secondary doc-modal-btn-refs" data-bs-toggle="modal" 
 							data-bs-target="#docModalRefs">참조자 선택</button>
@@ -63,7 +63,7 @@
 				</div>
 				
 				<!-- 업무선택 공간 -->
-				<div class="border border-3 p-3 col-4">
+				<div class="border border-dark p-3 col-4">
 					<!-- 모달버튼 : 업무선택 -->
 					<button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" data-bs-toggle="modal"
 							data-bs-target="#docModalTasks">업무 선택</button>
@@ -123,53 +123,58 @@
 					</div>
 				</div>
 				<!-- -------------------------------- 모달영역 END -------------------------------- -->
-				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
-				<div class="col-8 mt-3 p-0">
-	    			<input type="text" class="form-control border border-3" th:field="*{title}" 
-	    				   aria-describedby="basic-addon14" placeholder="제목을 입력하세요." />
-				</div>
-				<div class="col-4 p-0 mt-3">
-					<select class="form-select border border-3" th:field="*{tempId}">
-						<option value="no-data">템플릿옵션을 선택하세요.</option>
-						<th:block th:each="temp : ${temps}">
-		                <option th:value="${temp.tempNo}"
-		                	 th:attr="data-temp=${temp.saveName}">[[ ${temp.tempName} ]]</option>
-	                    </th:block>
-					</select>
-				</div>
+				<!-- ------------------------- 제목-템플릿-첨부파일-내용 영역 START ------------------------- -->
 				
-				<div class="col-8 p-0 mt-3"></div>
-				<div class="col-4 p-0 mt-3 text-end">
-					<input type="file" name="filelist" class="form-control" multiple>
-				</div>
-				
-				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
-				
-				<!-- ---------------------------- 내용영역 START ---------------------------- -->
-				<div class="p-0 mt-3">
-					<div class="card p-0 text-center cntn-slide">
-					<br><br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br><br>
-					</div>
-					
-					<div class="col-md-12">
-						
-						<div id="textArea" style="hight:500px;">
-						<textarea name="cntn" id="cntn"></textarea>
-						</div>
-						
-						<!-- PTO fragment -->
-						<div id="tempPTO">
-							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
-						</div>
-						
-						<!-- EXT fragment -->
-						<div id="tempEXT">
-							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
-						</div>
+				<table class="table table-bordered border-dark mt-3">
+					<thead>
+						<tr>
+							<td class="col-1 text-center align-middle"><b>제&emsp;&emsp;목</b></td>
+							<td>
+	    						<input type="text" class="form-control-plaintext" th:field="*{title}"/>
+							</td>
+							<td class="col-4">
+								<select class="form-select" th:field="*{tempId}">
+									<option value="no-data">템플릿옵션을 선택하세요.</option>
+									<th:block th:each="temp : ${temps}">
+					                <option th:value="${temp.tempNo}"
+					                	 th:attr="data-temp=${temp.saveName}">[[ ${temp.tempName} ]]</option>
+				                    </th:block>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="col-1 text-center align-middle"><b>첨부파일</b></td>
+							<td colspan="2">
+								<input type="file" name="filelist" class="form-control" multiple>
+							</td>
+						</tr>
+						<tr>
+							<td class="col-1 text-center align-top"><b>내&emsp;&emsp;용</b></td>
+							<td colspan="2" class="content-area-td">
 									
-					</div>
-				</div>
-				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+									<div class="text-center cntn-slide">
+									<br><br><h5>내용을 작성하려면 템플릿을 선택하세요</h5><br><br><br>
+									</div>
+									
+									<div id="textArea" class="collapse" style="hight:500px;display:none;overflow: hidden;">
+										<textarea name="cntn" id="cntn"></textarea>
+									</div>
+						
+									<!-- EXT fragment -->
+									<div id="tempEXT" class="collapse" style="display:none;overflow: hidden;">
+										<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
+									</div>
+								
+									<!-- PTO fragment -->
+									<div id="tempPTO" class="collapse" style="display:none;overflow: hidden;">
+										<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
+									</div>
+									
+							</td>
+						</tr>
+					</thead>
+				</table>
+				<!-- ------------------------- 제목-템플릿-첨부파일-내용 영역 END ------------------------- -->
 			</div>
 		</form>
 		</div>
@@ -184,10 +189,7 @@
 		// input태그정리, 초기화면 cntn 숨기기.
 		$('.input-tag-css input').css('border','none').css('width','50px').css('background','transparent');
 		$('#finalLine').val(1);
-		$('#textArea').slideUp();
-		$('#tempPTO').slideUp();
-		$('#tempEXT').slideUp();
-		
+
 		// 템플릿 선택.
 		$('#tempId').on('change', tempChange);
 		
@@ -213,7 +215,7 @@
 		// 모달열기 - 결재자.
 		$('.doc-modal-btn-apr').on('click', function(e) {
 			let dept = $('input[name="deptId"]').val();
-			$('#docModalAprs .modal-body').load("getDeptEmps?deptId="+ dept);
+			$('#docModalAprs .modal-body').load(contextPath + "getDeptEmps?deptId="+ dept);
 			$('#docModalAprs').modal();
 		})
 		// 모달에서 - 선택한 결재자 가져오기.
@@ -222,7 +224,7 @@
 		// 모달열기 - 참조자.
 		$('.doc-modal-btn-refs').on('click', function(e) {
 			let cust = $('input[name="custNo"]').val();
-			$('#docModalRefs .modal-body').load("getCustEmps?custNo="+ cust);
+			$('#docModalRefs .modal-body').load(contextPath + "getCustEmps?custNo="+ cust);
 			$('#docModalRefs').modal();				
 		})
 		// 모달에서 - 선택한 참조자 가져오기.
@@ -231,7 +233,7 @@
 		// 모달열기 - 업무.
 		$('.doc-modal-btn-tasks').on('click', function(e) {
 			let cust = $('input[name="custNo"]').val();
-			$('#docModalTasks .modal-body').load("getMyTasks?custNo="+ cust);
+			$('#docModalTasks .modal-body').load(contextPath + "getMyTasks?custNo="+ cust);
 			$('#docModalTasks').modal();				
 		})
 		// 모달에서 - name부여.

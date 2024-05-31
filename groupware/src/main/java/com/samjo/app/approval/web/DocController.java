@@ -228,6 +228,7 @@ public class DocController {
 	// 문서수정 -양식
 	@GetMapping("docUpdate")
 	public String docUpdateForm(@RequestParam Integer no, Model model) {
+		
 		DocVO docVO = new DocVO();
 		docVO.setDocNo(no);
 		DocVO findVO = docService.docInfo(docVO);
@@ -247,6 +248,8 @@ public class DocController {
 	@PostMapping("docUpdate")
 	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, String flag) {
 		
+		System.out.println("docVO 수정반영 => " + docVO);
+		
 		// (flag == YES) => 기존 첨부파일 삭제.
 		if(flag.equals("YES")) {
 			List<String> savaFileNames = docService.getDocFileSavaNames(docVO);
@@ -257,8 +260,6 @@ public class DocController {
 		
 		// 첨부파일 디렉토리 저장.
 		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
-		
-		System.out.println(filelist == null);
 		
 		if(filelist != null && !filelist[0].isEmpty()) {
 			fileInfoList = fileUploadService.uploadFileInfo(filelist);			

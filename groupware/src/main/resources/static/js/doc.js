@@ -4,15 +4,28 @@ console.log('static/js/doc.js');
 
 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+const contextPath = $('#contextPathHolder').attr('href');
 
 let editor;
+
+function tdHeight() {
+    let td = $('td.content-area-td');
+    let div = td.find('div').not(':visible');
+    
+    if (div) {
+    	let size = div.clientHeight;
+    	td.height(size);
+    }
+}
+
 
 /* 템플릿 체인지 이벤트 : 등록 */
 const tempChange = function() {
 
 	// 안내메시지 숨기기.
 	$('.cntn-slide').slideUp();
-	// 휴가원,지출결의 숨기기
+	
+	// 휴가원 등 숨기기
 	$('#textArea').hide();
 	$('#tempEXT').slideUp();
 	$('#tempPTO').slideUp();
@@ -28,25 +41,27 @@ const tempChange = function() {
 		}
 	}
 	
-	// 옵션값 선택안함/휴가원/지출결의
+	// 옵션값 선택안함
 	if(opt.val() == 'no-data') {
 		$('.cntn-slide').slideDown();
 		return;
 	}
 	
+	// 옵션값 휴가원
 	if(opt.val() == 'public01') {
-		$('#tempPTO').slideDown();
+		$('#tempPTO').slideDown(800, "linear");
 		ptoForm();
+		tdHeight();
 		return;
 	}
 	
 	if(opt.val() == 'TP001') {
-		$('#tempEXT').slideDown();
+		$('#tempEXT').slideDown(800, "linear");
 		return;
 	}
 	
 	// 옵션값 그 외.
-	$('#textArea').slideDown();
+	$('#textArea').slideDown(800, "linear");
 	if (!editor) {
         console.log('에디터 없음');
         ClassicEditor
@@ -58,6 +73,7 @@ const tempChange = function() {
             .then(newEditor => {
                 editor = newEditor;
                 getHtml();
+                tdHeight();
             })
             .catch(error => {
                 console.error(error);
@@ -66,6 +82,7 @@ const tempChange = function() {
     	console.log('에디터 있음');
     	editor.setData('');
         getHtml();
+        tdHeight();
     }
     
 }
@@ -76,7 +93,7 @@ const tempChangeUpdate = function() {
 	// 안내메시지 숨기기.
 	$('.cntn-slide').slideUp();
 	// 휴가원,지출결의 숨기기
-	$('#textArea').hide();
+	$('#textArea').slideUp();
 	$('#tempEXT').slideUp();
 	$('#tempPTO').slideUp();
 	$('div#pto').find('input, textarea').val('');
@@ -91,25 +108,26 @@ const tempChangeUpdate = function() {
 		}
 	}
 	
-	// 옵션값 선택안함/휴가원/지출결의
+	// 옵션값 선택안함
 	if(opt.val() == 'no-data') {
 		$('.cntn-slide').slideDown();
 		return;
 	}
 	
+	// 옵션값 휴가원
 	if(opt.val() == 'public01') {
-		$('#tempPTO').slideDown();
+		$('#tempPTO').slideDown(800, "linear");
 		ptoForm();
 		return;
 	}
 	
 	if(opt.val() == 'TP001') {
-		$('#tempEXT').slideDown();
+		$('#tempEXT').slideDown(800, "linear");
 		return;
 	}
 	
 	// 옵션값 그 외.
-	$('#textArea').show();
+	$('#textArea').slideDown(800, "linear");
 	$('#textArea').children('*').remove();
 	$('#textArea').append($('<textarea name="cntn" id="cntn"></textarea>'));
 	ClassicEditor
@@ -117,6 +135,7 @@ const tempChangeUpdate = function() {
         .then(newEditor => {
             editor = newEditor;
             getHtml();
+            tdHeight();
         })
         .catch(error => {
             console.error(error);
@@ -132,7 +151,7 @@ const getHtml = function() {
 
 	// ajax로 템플릿 경로통해 가져오기.
 	$.ajax({
-		url : 'files/' + tempPath,
+		url : contextPath + 'files/' + tempPath,
 		dataType: "html",
 		beforeSend: function(xhr) {
 	        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
