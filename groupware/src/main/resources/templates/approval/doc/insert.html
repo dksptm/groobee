@@ -24,12 +24,11 @@
 		<div class="row m-3 p-3 bg-white shadow-lg rounded">
 		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}" enctype="multipart/form-data">
 		
-			<p>로그인Id <input type="text" th:value="${#authentication.principal.empId}" name="draft" readonly />
-			부서ID <input type="text" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
-			회사ID <input type="text" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			사원명 <input type="text" th:value="${#authentication.name}" name="draftName" readonly />
-			문서번호 <input type="text" name="docNo" th:value="${doc.docNo}" readonly /></p>
-			<hr>
+			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
+			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+			<input type="hidden" th:value="${#authentication.name}" name="draftName" readonly />
+			<input type="hidden" name="docNo" th:value="${doc.docNo}" readonly />
 			
 			<!-- 작성완료/취소 버튼 -->
 			<div class="m-3 text-end">

@@ -18,5 +18,6 @@ public class TaskEmpsVO {
 
 	private String taskEmpName;
 	private String codeName;
+	private String flag;
 	
 }

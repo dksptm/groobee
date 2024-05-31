@@ -73,15 +73,22 @@
 				<tr>
 					<th>생성유형</th>
 					<td><select class="form-select" th:field="*{creType}">
+							<option value="no-data" selected>유형선택</option>
 						    <option value="5C1c">매일</option>
 						    <option value="5C2c">매주</option>
 						    <option value="5C3c">매월</option>
 					  	</select>
 					</td>
 					<th>생성주기</th>
-					<td id="chktime" class="d-flex">
-						<input type="time" class="form-control flex-fill" min="09:00" max="18:00"  />
+					<!-- <td id="chktime" class="d-flex">
+						<input type="time" class="form-control flex-fill cre-type" min="09:00" max="18:00"  />
 						<button type="button" class="btn btn-primary ms-1">+</button>
+					</td> -->
+					<td id="creOpt">
+						<select class="form-select">
+						<option value="0">날짜선택</option></select>
+						<button type="button" class="btn btn-primary ms-1">+</button>
+						<input name="crePerd" value="-1" type="number"  />
 					</td>
 				</tr>
 				<tr>
@@ -315,18 +322,74 @@
 			
 		})
 		
+		// 생성유형 바꿀때마다 옵션값 달라짐
+		$('#creType').on('change', function(e){
+			let chk = this.value;
+			
+			let select = $('#creOpt > select');
+			let createOpt = $('<option></option>');
+			let week = ["일","월","화","수","목","금","토"];
+			
+			if(chk == '5C1c') {
+				select.children().remove();
+				for(let i=9 ; i<=18 ; i++){
+					let copy = createOpt.clone();
+					copy.val(i);
+					copy.text(i + "시");
+					select.append(copy);
+				}
+				
+			} else if(chk == '5C2c') {
+				select.children().remove();
+				for(let i=0 ; i<5 ; i++){
+					let copy = createOpt.clone();
+					copy.val(i);
+					copy.text(week[i]);
+					select.append(copy);
+				}
+				
+			} else if (chk == '5C3c') {
+				select.children().remove();
+				for(let i=1 ; i<=31 ; i++){
+					let copy = createOpt.clone();
+					copy.val(i);
+					copy.text(i + "일");
+					select.append(copy);
+				}
+				
+			}
+			
+		});
+		
 		// 생성주기 -> 시작,종료날짜 정하기
-		$('#chktime').on('click', 'button', function() {
+		$('#creOpt').on('click', 'button', function() {
+			$('#creOpt').find('input[name="crePerd"]').remove();
+			let type = $('#creType').val();
+			let perd = $('#creOpt > select').val();
+			
+			let result = getDate(type, perd);
+			
+			if(result != '') {
+				$('#taskStartDt').val(result);
+			}
+			
+			$('input[name="crePerd"]').val(perd);
+			
+			
+		})
+		
+		// 생성주기 -> 시작,종료날짜 정하기
+		/* $('#chktime').on('click', 'button', function() {
 			$('#chktime').find('input[name="crePerd"]').remove();
 			let time = $('#chktime').find('input').val();
-			let day = getNow();
+			let day = getDate();
 			
 			$('#taskStartDt').val(day + " " + time);
 			$('#taskDueDt').val(day + " " + "18:00");
 			
 			$('#chktime').append($(`<input type="hidden" value="${time}" name="crePerd" />`));
 			
-		})
+		}) */
 		
 		// 등록
 		$('#reguInsertForm').submit(function(e) {
@@ -364,17 +427,37 @@
 		
 	})
 	
-	function getNow(){
+	function getDate(type, perd){
 		let now = new Date();
-		let year = now.getFullYear();
-		let month = now.getMonth() + 1;
-		let day = now.getDate();
-	
-		month = month < 10 ? '0' + month : month;
-	    day = day < 10 ? '0' + day : day;
 		
-		let date = year + '-' + month + '-' + day;
-		return date;
+		let year = now.getFullYear();
+		let month = now.getMonth();
+		let day = now.getDate();
+		
+		
+		
+ 		month = month < 10 ? '0' + month : month;
+	    day = day < 10 ? '0' + day : day; 
+		
+	    
+	    
+	    if(type == '5C1c') {
+	    	
+	    	let si = Number(perd);
+	    	return year + "-" + month + "-" + day + "T" + si;
+	    	
+	    } else if(type == '5C2c') {
+	    	
+	    	let sun = now.getDate() - now.getDay();
+	    	let yoil = sun + Number(perd);
+	    	return year + "-" + month + "-" + yoil + "T" + "00:00";
+	    	
+	    } else if(type == '5C3c') {
+	    	
+	    	return new Date(year, month, Number(perd));
+	    }
+	    
+		return '';
 	}
 	
 	function reguReset() {
@@ -445,7 +528,7 @@
 			return false;
 		}
 		
-		if($('input[name="crePerd"]').length != 1) {
+		if($('input[name="crePerd"]').val() == 'no-data') {
 			
 			Swal.fire({
 				icon: 'error',               

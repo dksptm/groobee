@@ -8,51 +8,67 @@
 		<div class="m-3">
 			<h2>상시 업무 조회</h2>
 		</div>
-		<div class="table-responsive bg-white p-3">
+		<div class="table-responsive p-3">
 			
-			<div class="d-flex justify-content-center p-3">
+			<div class="d-flex justify-content-center table-responsive sch-area">
 				<!-- 검색공간 -->
-				<form>
-				<table style="border:1px solid black;" class="table text-center">
+				<form action="/reguList" method="get" th:object="${search}" id="searchForm">
+				<input th:field="*{page}" type="hidden"  />
+				<table class="table table-borderless table-sm table-primary">
 					<tr>
-						<td>시작</td><td><input type="date" class="form-control" /></td>
+						<td>시작</td><td><input th:field="*{dtStart}" type="date" class="form-control" /></td>
 						<td>~</td>
-						<td>마감</td><td><input type="date" class="form-control" /></td>
+						<td>마감</td><td><input th:field="*{dtEnd}" type="date" class="form-control" /></td>
 						
 						<td>완료여부</td>
-						<td><select class="form-select">
-								<option class="form-control">전체</option>
+						<td><select th:field="*{prjtMat}" class="form-select">
+								<option value="all" class="form-control">전체</option>
 								<option value="5B1b" class="form-control">업무진행중</option>
 								<option value="5B2b" class="form-control">업무완료</option>
 							</select></td>
 					</tr>
 					<tr>
-						<td><select class="form-select">
-								<option value="tc.taskName" class="form-control">업무명</option>
-								<option value="tc.taskNo" class="form-control">업무번호</option>
-								<option value="..." class="form-control">책임자</option>
+						<td><select th:field="*{keywordCondition}" class="form-select">
+								<option value="all" class="form-control">검색선택</option>
+								<option value="tc.task_name" class="form-control">업무명</option>
+								<option value="tc.task_no" class="form-control">업무번호</option>
+								<option value="resp_emp_name" class="form-control">책임자</option>
 							</select></td>
-						<td colspan="4"><input type="text" class="form-control" /></td>
-						<td>정렬기준</td>
-						<td><select class="form-select">
-								<option value="">업무번호 ↓</option>
-								<option value="" selected >업무번호 ↑</option>
-								<option value="">업무명(ㄱ-ㅎ)</option>
-								<option value="">업무명(ㅎ-ㄱ)</option>
-								<option value="">진행도 ↓</option>
-								<option value="">진행도 ↑</option>
-								<option value="">참여인원수 ↓</option>
-								<option value="">참여인원수 ↑</option>
+						<td colspan="4"><input th:field="*{keyword}" type="text" class="form-control" /></td>
+						<td>생성유형</td>
+						<td><select th:field="*{searchCondition}" class="form-select">
+								<option value="all" class="form-control">전체</option>
+								<option value="5C1c" class="form-control">매일</option>
+								<option value="5C2c" class="form-control">매주</option>
+								<option value="5C3c" class="form-control">매월</option>
 							</select></td>
 					</tr>
+					<tr>
+						<td>정렬기준</td>
+						<td><select th:field="*{sortCondition}" class="form-select">
+								<option value="tc.task_no">업무번호 ↓</option>
+								<option value="tc.task_no DESC" selected >업무번호 ↑</option>
+								<option value="tc.task_name">업무명(ㄱ-ㅎ)</option>
+								<option value="tc.task_name DESC">업무명(ㅎ-ㄱ)</option>
+								<option value="te.progress">진행도 ↓</option>
+								<option value="te.progress DESC">진행도 ↑</option>
+								<option value="te.participants_cnt">참여인원수 ↓</option>
+								<option value="te.participants_cnt DESC">참여인원수 ↑</option>
+							</select></td>
+						<td colspan="5">
+							<div class="text-end">
+								<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+								<button class="btn btn-secondary ms-2"
+								type="reset"
+								th:onclick="|location.href='@{reguList}'|">초기화</button>
+							</div>						
+						</td>
+					</tr>
 				</table>
-				<div class="text-end">
-					<button type="button" class="btn btn-info">검색</button>
-				</div>
 				</form>
 			</div>
 			
-			<table class="table table-hover text-center">
+			<table class="table table-hover text-center bg-white">
 				<thead class="table-dark">
 					<tr>
 						<td>업무번호</td>
@@ -66,7 +82,7 @@
 				</thead>
 				<tbody>
 					<th:block th:each="regu : ${list}">
-					<tr>
+					<tr th:attr="data-tno=${regu.taskNo}" class="go-regu-info">
 						<td>[[ ${regu.taskNo} ]]</td>
 						<td>[[ ${regu.taskName} ]]</td>
 						<td>[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd hh:mm a')} ]]</td>
@@ -82,11 +98,106 @@
 			</table>
 			<div>
 				<!-- 페이징공간 -->
+				<th:block th:if="${pageDTO.totalCnt} != 0">
+				<nav aria-label="Page navigation">
+					<ul class="pagination justify-content-center">
+						<th:block th:if="${pageDTO.prev}">
+							<li class="page-item prev">
+								<a th:href="${pageDTO.startPage - 1}"
+								   class="page-link"><i class="bx bx-chevron-left"></i></a>
+							</li>
+						</th:block>
+						<th:block th:each="num : ${#numbers.sequence(pageDTO.startPage, pageDTO.endPage)}">
+							<li class="page-item "
+								th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
+								<a th:href="${num}" class="page-link">[[${num}]]</a>
+							</li>
+						</th:block>
+						<th:block th:if="${pageDTO.next}">
+							<li class="page-item next">
+								<a th:href="${pageDTO.endPage + 1}"
+								   class="page-link"><i class="bx bx-chevron-right"></i></a>
+							</li>
+						</th:block>
+					</ul>
+				</nav>
+				</th:block>
+				<th:block th:unless="${pageDTO.totalCnt} != 0">
+					<p>현재 문서가 없습니다.</p>
+				</th:block>
 			</div>
 		</div>
 	</div>
 
-	<script>	
+	<script>
+	
+	$(function(){
+		
+		
+		// 토글
+		$('.sch-toggle').on('click', function(e){
+			$('.sch-area').slideToggle(600, 'linear');
+		})
+		
+		//기간 검색 범위처리
+		$('input[name="dtStart"]').on('change', function(e){
+			$('input[name="dtEnd"]').attr('min', this.value);
+		});
+		$('input[name="dtEnd"]').on('change', function(e){
+			$('input[name="dtStart"]').attr('max', this.value);
+		});
+		
+		// 검색어를 클릭없이 페이지클릭만으로 submit 되는점 수정.
+		const searchForm = $('#searchForm');
+		
+		const begin = {
+			keywordCondition : $('#keywordCondition').val(),
+			keyword : $('#keyword').val(),
+			draftStatCondition : $('#prjtMat').val(),
+			aprStatCondition : $('#searchCondition').val(),
+			dtStart : $('#dtStart').val(),
+			dtEnd : $('#dtEnd').val(),
+			sortCondition : $('#sortCondition').val()
+		}
+		
+		// 페이징 a태그
+		$('li.page-item a').on('click', function(e){
+			e.preventDefault();
+			let pageNum = $(this).attr('href');
+			
+			$('#keywordCondition').val(begin.keywordCondition);
+			$('#keyword').val(begin.keyword);
+			$('#prjtMat').val(begin.prjtMat);
+			$('#searchCondition').val(begin.searchCondition);
+			$('#dtStart').val(begin.dtStart);
+			$('#dtEnd').val(begin.dtEnd);
+			$('#sortCondition').val(begin.sortCondition);
+			
+			searchForm.find('input[name="page"]').val(pageNum);
+			searchForm.submit();
+		});
+		
+		// 검색버튼
+		$('#schBtn').on('click', function(e) {
+			
+			$('input[name="page"]').val('1');
+			searchForm.submit();
+			
+		});
+		
+		// tr클릭해서 문서상세로 이동
+		$('tr.go-regu-info').on('click', function(e) {
+
+			let createInput = $('<input type="text" name="taskNo" />').val($(this).data('tno'));
+			searchForm.prepend(createInput);
+			searchForm.attr('action', '/reguInfo');
+			
+			searchForm.submit();
+			
+		});
+		
+	})
+	
 	</script>
 
 </th:block>

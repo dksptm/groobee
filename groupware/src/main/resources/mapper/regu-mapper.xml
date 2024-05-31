@@ -189,7 +189,8 @@
 	<!-- 담당자 업무완료 프로시저. -->
 	<update id="reguTaskEmpOk" parameterType="TaskEmpsVO" statementType="CALLABLE">
 		{CALL
-			regu_emp_ok(
+			regu_emp_ok(			
+				#{flag, mode=IN, jdbcType=VARCHAR},
 				#{taskNo, mode=IN, jdbcType=INTEGER},
 				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
 				#{result, mode=OUT, jdbcType=VARCHAR}
@@ -198,44 +199,113 @@
 	</update>
 	
 	<!-- 업무번호 기준 전체조회 -->
-	<select id="selectReguTaskAll" parameterType="map" resultMap="reguMap">
-		SELECT      g.rn
-			       ,g.standard_no 
-			       ,g.task_no
-			       ,get_deptname(g.dept_id)     as dept_name
-			       ,g.task_name 
-			       ,g.task_start_dt 
-			       ,g.task_due_dt 
-			       ,get_codename(g.prjt_mat) 	 as mat_name
-			       ,g.prjt_mat
-			       ,g.active
-			       ,g.cre_type
-		FROM    
-			    (
-			        SELECT /*+ INDEX_DESC(TC TASK_COMMON_TASK_NO_PK) */
-			                rownum rn
-			               ,tc.*
-			               ,rs.*
-			        FROM   
-			               task_common tc JOIN regu_stad rs
-			                                ON (tc.standard_no = rs.regu_id)
-			        WHERE
-			               rs.cust_no LIKE #{cno}
-			        AND 
-			               tc.task_type LIKE '5A2a'
-			        AND
-			               rownum <![CDATA[<=]]> (#{sch.page} * 10)
-			     ) g
-		WHERE
-				 g.rn > (#{sch.page} - 1) * 10	
+	<select id="selectReguTaskAll" parameterType="map" resultType="ProjectVO">
+		SELECT
+		        g.rn
+		       ,g.standard_no 
+		       ,g.task_no
+		       ,get_deptname(g.dept_id)     as dept_name
+		       ,g.task_name 
+		       ,g.task_start_dt 
+		       ,g.task_due_dt 
+		       ,get_codename(g.prjt_mat) 	 as mat_name
+		       ,g.prjt_mat
+		       ,g.active
+		       ,g.cre_type
+		       ,g.participants_cnt
+		       ,g.pt_cnt
+		       ,g.progress
+		       ,g.resp_emp_id
+		FROM
+		        (
+		            SELECT
+		                    ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
+		                   ,tc.standard_no 
+		                   ,tc.task_no
+		                   ,tc.dept_id
+		                   ,tc.task_name 
+		                   ,tc.task_start_dt 
+		                   ,tc.task_due_dt 
+		                   ,tc.prjt_mat
+		                   ,rs.active
+		                   ,rs.cre_type
+		                   ,rs.resp_emp_id
+		                   ,te.participants_cnt
+		                   ,te.pt_cnt
+		                   ,te.progress
+		            FROM   
+		                   task_common tc JOIN regu_stad rs
+		                                    ON (tc.standard_no = rs.regu_id)
+		                                  JOIN (SELECT    COUNT(task_no) as participants_cnt
+		                                                 ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
+		                                                      ELSE 0 END) as pt_cnt
+		                                                 ,(SUM(CASE cmplt WHEN '5F1f' THEN 1 ELSE 0 END) / COUNT(task_no)) * 100 as progress 
+		                                                 ,task_no 
+		                                        FROM     task_emps
+		                                        GROUP BY task_no) te
+		                                    ON (tc.task_no = te.task_no)
+		            WHERE
+		                   rs.cust_no = #{cno}
+		            AND 
+		                   tc.task_type = '5A2a'
+		                   
+						   <if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+								AND	tc.prjt_mat = #{sch.prjtMat}
+						   </if>
+						   <if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+								AND	rs.cre_type = #{sch.searchCondition}
+						   </if>
+						   <if test="sch.dtStart != null">
+								AND	tc.task_start_dt >= #{sch.dtStart}
+						   </if>
+						   <if test="sch.dtEnd != null">
+								AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+						   </if>
+		                   <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+		                   		<choose>
+		                   			<when test="sch.keywordCondition == 'resp_emp_name'">
+										AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+		                   			</when>
+			                   		<otherwise>
+										AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+			                   		</otherwise>
+		                   		</choose>
+						   </if>
+		        ) g
+		WHERE 
+				g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND   
+				g.rn > (#{sch.page} - 1) * 10
 	</select>
-	
+			
 	<select id="countReguTasks" parameterType="map" resultType="int">
 		SELECT count(*)
 		FROM   task_common tc JOIN regu_stad rs
 		                        ON (tc.standard_no = rs.regu_id)
 		WHERE  rs.cust_no LIKE #{cno}
 		AND    tc.task_type LIKE '5A2a'	
+			<if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+				AND	tc.prjt_mat = #{sch.prjtMat}
+			</if>
+			<if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+				AND	rs.cre_type = #{sch.searchCondition}
+			</if>
+			<if test="sch.dtStart != null">
+				AND	tc.task_start_dt >= #{sch.dtStart}
+			</if>
+			<if test="sch.dtEnd != null">
+				AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+			</if>
+			<if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+				<choose>
+					<when test="sch.keywordCondition == 'resp_emp_name'">
+						AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+			        </when>
+			        <otherwise>
+						AND	${sch.keywordCondition} LIKE '%' ||#{sch.keyword}||'%'
+              		</otherwise>
+             	</choose>
+			</if>
 	</select>
 
 </mapper>
