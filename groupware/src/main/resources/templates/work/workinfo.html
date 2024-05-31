@@ -18,28 +18,28 @@
 						th:each="list : ${info}" id="infos">
 								<tr>
 									<th>사원번호</th>
-									<td>[[${list.empNo}]]</td>
 									<th>사원명</th>
-									<td>[[${list.empName}]]</td>
+									<th>부서</th>
+									<th>근무여부</th>
 								</tr>
 								<tr>
-									<th>부서</th>
+									<td>[[${list.empNo}]]</td>
+									<td>[[${list.empName}]]</td>
 									<td>[[${#authentication.principal.deptId}]]</td>
-									<th>근무여부</th>
 									<td>[[${list.wkSite}]]</td>
 								</tr>
 								</table>
 								<br>
 								<table class="table table-striped-columns" 
-						th:each="list : ${info}" id="infos">
+									th:each="list : ${info}" id="infos">
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
 									<th>퇴근시간</th>
 									<th>출근위치</th>
 									<th>퇴근위치</th>
-									<th>근무지</th>
 									<th>근무상태</th>
+									<th>근무지</th>
 								</tr>
 								<tr>
 									<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
@@ -47,8 +47,8 @@
 									<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
 									<td>[[${list.wkInLoc}]]</td>
 									<td>[[${list.wkOutLoc}]]</td>
-									<td>[[${list.wkYn}]]</td>
 									<td>[[${list.wkStat}]]</td>
+									<td>[[${list.wkYn}]]</td>
 								</tr>
 						</table>
 					</div>
@@ -56,7 +56,7 @@
 					<br>
 					<p>
 						<button type="button" class="btn btn-primary"
-						th:onclick="|location.href='@{/workupdate(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empNo=${info.empNo})}'|">수정</button>
+						th:onclick="|location.href='@{/workupdate(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empNo=${info.empNo}, empName=${info.empName})}'|">수정</button>
 					</p>
 					</div>
 				</div>

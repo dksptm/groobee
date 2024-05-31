@@ -16,4 +16,8 @@ public class TaskEmpsVO {
 	
 	private Integer result;
 
+	private String taskEmpName;
+	private String codeName;
+	private String flag;
+	
 }

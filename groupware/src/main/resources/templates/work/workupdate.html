@@ -7,66 +7,103 @@
 	<th:block layout:fragment="Content">
 		<div class="test">
 			<div class="d-flex justify-content-center">
-				<div class="card my-4 col-8">
+				<div class="card my-4 col-12">
 					<br>
-					<div>
 						<br>
 						<h2 style="text-align: center">수정 화면</h2>
-						<p>
+						<br>
 						<hr>
-						<div>
-							<table class="table table-striped-columns"
-								th:each="list : ${workup}" id="up">
+						<form action="/workupdate" method="post" th:object="${workVO}" id="forms">
+						<table id="up" class="table table-striped-columns">
 								<tr>
 									<th>사원번호</th>
-									<td>[[${list.empNo}]]</td>
+									<th>부서</th>
 									<th>사원명</th>
-									<td>[[${list.empName}]]</td>
+									<th>근무여부</th>
 								</tr>
 								<tr>
-									<th>부서</th>
-									<td>[[${#authentication.principal.deptId}]]</td>
-									<th>근무여부</th>
-									<td>[[${list.wkSite}]]</td>
+									<td>[[*{empNo}]]</td>
+									<td>[[*{#authentication.principal.deptId}]]</td>
+									<td>[[*{empName}]]</td>
+									<td>
+									<select th:filed="*{wkSite}" class="form-select">
+									<option value="2A1a">근무일</option>
+									<option value="2A2a">연차</option>
+									<option value="2A3a">오전반차</option>
+									<option value="2A4a">오후반차</option>
+									</select>
+									</td>
 								</tr>
 							</table>
 							<br>
-							<table class="table table-striped-columns"
-								th:each="list : ${workup}" id="up">
+							<table class="table table-striped-columns">
 								<tr>
 									<th>날짜</th>
 									<th>출근시간</th>
 									<th>퇴근시간</th>
 									<th>출근위치</th>
 									<th>퇴근위치</th>
-									<th>근무지</th>
 									<th>근무상태</th>
+									<th>근무지</th>
 								</tr>
 								<tr>
-									<td>[[${#dates.format(list.dt, "yyyy/MM/dd")}]]</td>
-									<td>[[${#dates.format(list.wkIn, "HH:mm:ss")}]]</td>
-									<td>[[${#dates.format(list.wkOut, "HH:mm:ss")}]]</td>
-									<td>[[${list.wkInLoc}]]</td>
-									<td>[[${list.wkOutLoc}]]</td>
-									<td>[[${list.wkYn}]]</td>
-									<td>[[${list.wkStat}]]</td>
+									<td>[[*{#dates.format(dt, "yyyy/MM/dd")}]]</td>
+									<td><input type="time" th:filed="*{wkIn}"></td>
+									<td><input type="time" th:filed="*{wkOut}"></td>
+									<td>
+									<select th:filed="*{wkInLoc}" class="form-select">
+									<option value="대구본사">대구본사</option>
+									<option value="부산지점">부산지점</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkOutLoc}" class="form-select">
+									<option value="대구본사">대구본사</option>
+									<option value="부산지점">부산지점</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkStat}" class="form-select">
+									<option value="2B1b">정상근무</option>
+									<option value="2B2b">결근</option>
+									<option value="2B3b">지각</option>
+									<option value="2B4b">조퇴</option>
+									</select>
+									</td>
+									<td>
+									<select th:filed="*{wkYn}" class="form-select">
+									<option value="3C1c">내근</option>
+									<option value="3C2c">외근</option>
+									</select>
+									</td>
 								</tr>
 							</table>
-						</div>
-					</div>
 					<div>
 						<br>
 						<p>
-							<button type="submit" class="btn btn-primary">수정</button>
-							<button type="submit" class="btn btn-primary">취소</button>
+							<button type="submit" class="btn btn-primary" id="up">수정</button>
+							<a type="button" href="worklist" class="btn btn-primary">취소</a>
 						</p>
 					</div>
+					</form>
 				</div>
 			</div>
 		</div>
-	</th:block>
 	<script>
+		/* $('#id').on('click', updateAjax);
 		
+		function updateAjax() {
+			
+		}
+		console.log(formObj)
+		function data() {
+			let forms = $('#forms').serializeArray();
+			let formObj = {}
+			forms.forEach(inputTag => {
+				formObj[inputTag.name] = inputTag.value;
+			})
+			return formObj;
+		} */
 	</script>
 	</th:block>
 </body>

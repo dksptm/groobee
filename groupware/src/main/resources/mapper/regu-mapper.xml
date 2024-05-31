@@ -5,6 +5,34 @@
 
 <mapper namespace="com.samjo.app.project.mapper.ReguMapper">
 
+	<!-- 한 업무의 참여자 가져오는 map -->
+	<resultMap type="ProjectVO" id="reguMap">
+		<id property="taskNo" column="task_no" />
+		<result property="standardNo" column="standard_no" />
+		<result property="deptName" column="dept_name" />
+		<result property="taskName" column="task_name" />
+		<result property="taskPurpose" column="task_purpose" />
+		<result property="taskCntn" column="task_cntn" />
+		<result property="respEmpName" column="resp_emp_name" />		
+		<result property="creType" column="cre_type" />		
+		<result property="crePerd" column="cre_perd" />
+		<result property="taskStartDt" column="task_start_dt" />
+		<result property="taskDueDt" column="task_due_dt" />
+		<result property="prjtMat" column="prjt_mat" />
+		<result property="matName" column="mat_name" />
+		<result property="active" column="active" />
+		<collection property="taskEmps" column="task_no" javaType="java.util.List" ofType="TaskEmpsVO" select="reguMapEmps">
+			<id property="taskEmpId" column="task_emp_id"/>
+			<result property="deptId" column="dept_id"/>
+			<result property="deptName" column="dept_name"/>
+			<result property="taskEmpName" column="task_emp_name"/>
+			<result property="cmplt" column="cmplt"/>
+			<result property="codeName" column="code_name"/>
+			<result property="result" column="result"/>
+		</collection>
+	</resultMap>
+
+	<!-- 등록 시 기존 상시(틀) 가져오기 -->
 	<select id="selectReguAll" resultType="ProjectVO">
 		SELECT  
 				g.regu_id
@@ -34,6 +62,7 @@
 			  g.regu_id
 	</select>
 
+	<!-- regu_stad 등록 -->
 	<insert id="insertRegu" parameterType="ProjectVO">
 		<selectKey keyProperty="reguId" resultType="string" order="BEFORE">
 			SELECT 'CRG'||LPAD((NVL((MAX(TO_NUMBER(SUBSTR(regu_id, -4)))),0) + 1), 4, '0') 
@@ -57,6 +86,7 @@
 		            ,#{custNo})
 	</insert>
 	
+	<!-- regu_stad 있는 상태에서 task_common, task_emps 등록  -->
 	<insert id="insertReguTaskEmp" parameterType="ProjectVO">
 		<selectKey keyProperty="taskNo" resultType="int" order="BEFORE">
 			SELECT NVL(MAX(task_no),0) +1 
@@ -113,5 +143,169 @@
 			</foreach>		    
 		SELECT * FROM DUAL
 	</insert>
+	
+	<!-- 단건조회 -->
+	<select id="selectRegu" parameterType="map" resultMap="reguMap">
+		SELECT
+			    tc.standard_no 
+		       ,tc.task_no
+		       ,get_deptname(tc.dept_id)     as dept_name
+		       ,tc.task_name 
+		       ,tc.task_purpose
+		       ,tc.task_cntn 
+		       ,get_emptitle(rs.resp_emp_id) as resp_emp_name
+		       ,get_codename(rs.cre_type) 	 as cre_type
+		       ,rs.cre_perd 
+		       ,tc.task_start_dt 
+		       ,tc.task_due_dt 
+		       ,get_codename(tc.prjt_mat) 	 as prjt_mat
+		FROM   
+			   task_common tc JOIN regu_stad rs
+		                        ON (tc.standard_no = rs.regu_id)
+		WHERE
+			   rs.cust_no LIKE #{cno}
+		AND 
+		       tc.task_type LIKE '5A2a'
+		AND
+		       tc.task_no = #{tno}
+	</select>
+	
+	<!-- reguMap 사용할경우 같이 실행되는 쿼리. -->
+	<select id="reguMapEmps" resultType="TaskEmpsVO">
+		SELECT
+				dept_id
+		       ,task_emp_id
+		       ,dept_name 
+		       ,get_emptitle(task_emp_id) 			as task_emp_name
+		       ,get_codename(cmplt)       			as code_name
+		       ,cmplt
+		       ,DECODE(cmplt, '5F1f', 1, '5F2f', 0) as result
+		FROM   
+				task_emps
+		WHERE  
+				task_no = #{task_no}	
+	</select>
+	
+	<!-- 담당자 업무완료 프로시저. -->
+	<update id="reguTaskEmpOk" parameterType="TaskEmpsVO" statementType="CALLABLE">
+		{CALL
+			regu_emp_ok(			
+				#{flag, mode=IN, jdbcType=VARCHAR},
+				#{taskNo, mode=IN, jdbcType=INTEGER},
+				#{taskEmpId, mode=IN, jdbcType=VARCHAR},
+				#{result, mode=OUT, jdbcType=VARCHAR}
+			)
+		}	
+	</update>
+	
+	<!-- 업무번호 기준 전체조회 -->
+	<select id="selectReguTaskAll" parameterType="map" resultType="ProjectVO">
+		SELECT
+		        g.rn
+		       ,g.standard_no 
+		       ,g.task_no
+		       ,get_deptname(g.dept_id)     as dept_name
+		       ,g.task_name 
+		       ,g.task_start_dt 
+		       ,g.task_due_dt 
+		       ,get_codename(g.prjt_mat) 	 as mat_name
+		       ,g.prjt_mat
+		       ,g.active
+		       ,g.cre_type
+		       ,g.participants_cnt
+		       ,g.pt_cnt
+		       ,g.progress
+		       ,g.resp_emp_id
+		FROM
+		        (
+		            SELECT
+		                    ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
+		                   ,tc.standard_no 
+		                   ,tc.task_no
+		                   ,tc.dept_id
+		                   ,tc.task_name 
+		                   ,tc.task_start_dt 
+		                   ,tc.task_due_dt 
+		                   ,tc.prjt_mat
+		                   ,rs.active
+		                   ,rs.cre_type
+		                   ,rs.resp_emp_id
+		                   ,te.participants_cnt
+		                   ,te.pt_cnt
+		                   ,te.progress
+		            FROM   
+		                   task_common tc JOIN regu_stad rs
+		                                    ON (tc.standard_no = rs.regu_id)
+		                                  JOIN (SELECT    COUNT(task_no) as participants_cnt
+		                                                 ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
+		                                                      ELSE 0 END) as pt_cnt
+		                                                 ,(SUM(CASE cmplt WHEN '5F1f' THEN 1 ELSE 0 END) / COUNT(task_no)) * 100 as progress 
+		                                                 ,task_no 
+		                                        FROM     task_emps
+		                                        GROUP BY task_no) te
+		                                    ON (tc.task_no = te.task_no)
+		            WHERE
+		                   rs.cust_no = #{cno}
+		            AND 
+		                   tc.task_type = '5A2a'
+		                   
+						   <if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+								AND	tc.prjt_mat = #{sch.prjtMat}
+						   </if>
+						   <if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+								AND	rs.cre_type = #{sch.searchCondition}
+						   </if>
+						   <if test="sch.dtStart != null">
+								AND	tc.task_start_dt >= #{sch.dtStart}
+						   </if>
+						   <if test="sch.dtEnd != null">
+								AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+						   </if>
+		                   <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+		                   		<choose>
+		                   			<when test="sch.keywordCondition == 'resp_emp_name'">
+										AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+		                   			</when>
+			                   		<otherwise>
+										AND	${sch.keywordCondition} LIKE '%' || #{sch.keyword} || '%'
+			                   		</otherwise>
+		                   		</choose>
+						   </if>
+		        ) g
+		WHERE 
+				g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND   
+				g.rn > (#{sch.page} - 1) * 10
+	</select>
+			
+	<select id="countReguTasks" parameterType="map" resultType="int">
+		SELECT count(*)
+		FROM   task_common tc JOIN regu_stad rs
+		                        ON (tc.standard_no = rs.regu_id)
+		WHERE  rs.cust_no LIKE #{cno}
+		AND    tc.task_type LIKE '5A2a'	
+			<if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
+				AND	tc.prjt_mat = #{sch.prjtMat}
+			</if>
+			<if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+				AND	rs.cre_type = #{sch.searchCondition}
+			</if>
+			<if test="sch.dtStart != null">
+				AND	tc.task_start_dt >= #{sch.dtStart}
+			</if>
+			<if test="sch.dtEnd != null">
+				AND	tc.task_due_dt <![CDATA[<=]]> #{sch.dtEnd}
+			</if>
+			<if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+				<choose>
+					<when test="sch.keywordCondition == 'resp_emp_name'">
+						AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
+			        </when>
+			        <otherwise>
+						AND	${sch.keywordCondition} LIKE '%' ||#{sch.keyword}||'%'
+              		</otherwise>
+             	</choose>
+			</if>
+	</select>
 
 </mapper>

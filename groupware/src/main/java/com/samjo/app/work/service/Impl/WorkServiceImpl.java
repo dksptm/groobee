@@ -1,6 +1,8 @@
 package com.samjo.app.work.service.Impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,13 +33,39 @@ public class WorkServiceImpl implements WorkService{
 	
 	// 출근 수정
 	@Override
-	public int workin() {
-		return workMapper.workin();
+	public Map<String, Object> workin(WorkVO workVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result = workMapper.workin(workVO);
+		
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		// map.target = { employeeId : '', lastName : '', ...}
+		map.put("target", workVO);
+		
+		return map;
 	}
 	// 퇴근 수정	
 	@Override
-	public int workout() {
-		return workMapper.workout();
+	public Map<String, Object> workout(WorkVO workVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result = workMapper.workout(workVO);
+		
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		// map.target = { employeeId : '', lastName : '', ...}
+		map.put("target", workVO);
+		
+		return map;
 	}
 	// 등록
 	@Override
@@ -57,14 +85,32 @@ public class WorkServiceImpl implements WorkService{
 		return workMapper.selectWork(workVO);
 	}
 	// 페이지 수정
-	@Override
-	public int updateWork(WorkVO workVO) {
-		return workMapper.updateWork(workVO);
-	}
+	//@Override
+	//public WorkVO updateWork(WorkVO workVO) {
+	//	return workMapper.updateWork(workVO);
+	//}
 
 	@Override
 	public int managercount() {
 		return workMapper.managercount();
+	}
+
+	@Override
+	public Map<String, Object> update(WorkVO workVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result = workMapper.update(workVO);
+		
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		// map.target = { employeeId : '', lastName : '', ...}
+		map.put("target", workVO);
+		
+		return map;
 	}
 	
 	

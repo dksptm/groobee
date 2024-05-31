@@ -49,6 +49,7 @@ $(function(){
 		sortCondition : $('#sortCondition').val()
 	}
 	
+	// 페이징 a태그
 	$('li.page-item a').on('click', function(e){
 		e.preventDefault();
 		let pageNum = $(this).attr('href');
@@ -67,12 +68,25 @@ $(function(){
 		searchForm.submit();
 	});
 	
+	// 검색버튼
 	$('#schBtn').on('click', function(e) {
 		
 		$('#page').val('1');
 		searchForm.submit();
 		
 	});
+	
+	// tr클릭해서 문서상세로 이동
+	$('tr.go-doc-info').on('click', function(e) {
+		
+		let createInput = $('<input type="hidden" name="docNo" />').val($(this).data('dno'));
+		searchForm.append(createInput);
+		searchForm.attr('action', '/docInfo');
+		
+		searchForm.submit();
+		
+	});
+	
 	
 })
 

@@ -6,7 +6,7 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">계약 수정</h5>
+				<h5 class="card-header">계약 등록</h5>
 				<div class="card-body ">
 					<form id="updateForm"
 						th:action="@{/sol/ctUpdateProcess/{ctNo}(ctNo=${ctVO.ctNo})}"
@@ -15,11 +15,9 @@
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>계약번호</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.ctNo}" readOnly /></td>
-								<th>계약상태</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.ctStat}" readOnly /></td>
+								<td><input class="form-control" type="text" placeholder="자동등록" disabled /></td>
+								<th>고객정보 불러오기</th>
+								<td><button type="button" class="btn btn-primary">고객선택</button></td>
 							</tr>
 							<tr>
 								<th>고객번호</th>
@@ -41,10 +39,8 @@
 								<th>계약서</th>
 								<td colspan="3">
 									<div class="row">
-										<input class="form-control col-sm-5" type="text"
-											th:field="${ctVO.ctFile}" style="width: 70%" readOnly />
-										<button class="btn btn-secondary ms-3 col-sm-2 changebtn"
-											type="button">계약서 변경</button>
+										<input class="form-control col-sm-5" type="file"
+											th:field="${ctVO.ctFile}" style="width: 70%" accept=".pdf" />
 									</div>
 								</td>
 							</tr>
@@ -55,50 +51,41 @@
 								<th>계약시작일</th>
 								<td><input class="form-control" type="date" id="ctStartDt"
 									name="ctStartDt"
-									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
-									readOnly /></td>
+									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"/></td>
 								<th>계약종료일</th>
 								<td><input class="form-control" type="date" id="ctEndDt"
 									name="ctEndDt"
-									th:min="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
 									th:value="${#dates.format(ctVO.ctEndDt, 'yyyy-MM-dd')}" /></td>
 							</tr>
 							<tr>
-								<th>계약금액</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.ctAmt}" /></td>
 								<th>계약모듈 갯수</th>
 								<td><input class="form-control" type="number"
-									th:field="${ctVO.useModCnt}"
-									th:min="${#lists.size(ctVO.modList)}" /></td>
-							</tr>
-							<tr>
+									th:field="${ctVO.useModCnt}" /></td>
 								<th>최대사용인원</th>
 								<td><input class="form-control" type="number"
 									th:field="${ctVO.maxEmps}" th:min="${ctVO.curEmps}" /></td>
-								<th>현재사용인원</th>
-								<td><input class="form-control" type="text"
-									th:field="${ctVO.curEmps}" readOnly /></td>
 							</tr>
 							<tr>
-								<th>현재 사용중인 모듈</th>
-								<td colspan="3"><span
-									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
-									<span class="modlistSpan"> <th:block
-											th:each="module : ${ctVO.modList}">
-											<span th:if="${module.modName != null}"
-												th:text="${module.modName} + ' | '"></span>
-										</th:block></span><span>
+								<th>사용 모듈</th>
+								<td colspan="3">
+								<span
+									th:text="'|'"></span>
+									<span class="modlistSpan"></span>
+									<span>
 										<button type="button" class="btn btn-secondary ms-3 modBtn"
 											data-bs-toggle="modal" data-bs-target="#ModModal">모듈
-											변경</button>
-								</span></td>
+											선택</button>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>계약금액</th>
+								<td colspan="3"><input class="form-control" type="number"
+									th:field="${ctVO.ctAmt}" /></td>
 							</tr>
 						</table>
-						<p class="text-danger">계약은 계약서, 계약종료일, 계약금액, 계약모듈개수, 최대사용인원,
-							현재사용중 모듈만 수정가능합니다.</p>
 						<div class="d-flex align-items-endflex-column mt-3">
-							<button type="button" class="btn btn-primary mt-2 updateBtn">수정</button>
+							<button type="button" class="btn btn-primary mt-2 updateBtn">등록</button>
 							<button type="button" class="btn btn-primary mt-2"
 								th:onclick="|location.href='@{/sol/ctInfo/}@{${ctVO.ctNo}}'|">취소</button>
 						</div>
@@ -123,7 +110,6 @@
 								<tr>
 									<th>모듈번호</th>
 									<th>모듈명</th>
-									<th>모듈상태</th>
 									<th>선택</th>
 								</tr>
 							</thead>
@@ -132,7 +118,6 @@
 									<tr id="modTr">
 										<td>[[ ${ModuleVO.modId} ]]</td>
 										<td>[[ ${ModuleVO.modName} ]]</td>
-										<td>[[ ${ModuleVO.modStat} ]]</td>
 										<td><input onclick="CountChecked(this)" type="checkbox"
 											name="check" class="modcheck" th:value="${ModuleVO.modId}"
 											th:id="${ModuleVO.modName}"></td>
@@ -156,44 +141,8 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
-			//계약서 변경버튼
-			$('.changebtn').on("click", function() {
-			    let fileInput = $('#uploadfile');
-
-			    if (fileInput.length) {
-			        fileInput.remove();
-			        $('.changebtn').html('계약서 변경');
-			    } else {
-			        let parentDiv = $(this).parent(); 
-			        $('<input>', {type: 'file', id: 'uploadfile', 
-			        	class: 'form-control w-50 mt-2', accept: '.pdf' 
-			        }).appendTo(parentDiv); 
-			        $('.changebtn').html('변경취소');
-			    }
-			});
-
-			//사용중 모듈 모달 체크박스 디폴트체크
-			let modAry = [];
-			$(function(e){
-			    let arrA = [[${ctVO.modList}]];
-			    let arrB = [[${modlist}]];
-			    let arrR = arrA.filter(obj1 => arrB.some(obj2 => obj1.modId == obj2.modId ));
-			    arrR.forEach(function(item, idx, arr){ 
-			        $('input:checkbox[id='+item.modName+']').prop('checked',true);
-			        modAry.push({ modId: item.modId, modName: item.modName });
-			    });
-			    addIdModSpan();
-			});
-			
-			//계약서 표시방식 처리
-			$(function(e){
-				let ctFileVal = [[ ${ctVO.ctFile} ]];
-			    let splitAry = ctFileVal.split('_');
-			    let resultText = splitAry[splitAry.length - 1];
-			    $('#ctFile').text(resultText);
-			});
-
 			//모듈변경 모달 체크박스 체크 항목 반영
+			let modAry = [];
 			$(".modcheck").on("change", function(e) {
 			    if ($(this).is(":checked")) {
 			        modAry.push({ modId: e.target.value, modName: e.target.id });
@@ -210,17 +159,17 @@
 			});
 
 			//계약모듈 갯수와 사용 모듈갯수 동기화
-			let totalChecked = [[${#lists.size(ctVO.modList)}]];
+			let totalChecked = 0; // 설정 끝
 			function CountChecked(field) {
-			let maxChecked = $('#useModCnt').val();
+			let maxChecked = $('#useModCnt').val();   //선택가능한 체크박스 갯수
 				
-			    if (field.checked)
-			        totalChecked += 1;
-			    else
-			        totalChecked -= 1;
+			    if (field.checked) // input check 박스가 체크되면 
+			        totalChecked += 1; // totalChecked 증가
+			    else // 체크가 아니면
+			        totalChecked -= 1; // totalChecked 감소
 
-			    if (totalChecked > maxChecked) { 
-			        alert ("최대 "+maxChecked+"개 까지만 가능합니다."); 
+			    if (totalChecked > maxChecked) { // totalchecked 수가 maxchecked수보다 크다면
+			        alert ("최대 "+maxChecked+"개 까지만 가능합니다. 계약모듈 갯수를 확인해주세요"); // 팝업창 띄움
 			    field.checked = false;
 			    totalChecked -= 1;
 		    	}

@@ -35,16 +35,20 @@
 										<td><select class="form-select" id = "recpType">
 												<option value="reall">전체</option>
 												<option value="3A1a">수신자</option>
-												<option value="3A2a">참조자</option>
+												<option value="3A1b">참조자</option>
 										</select></td>
 									</tr>
 									<tr>
-										<td><select class="form-select sentDt">
-												<option value="s.sentDt">수신날짜</option>
-										</select></td>
+										<td class="form-select sentDt">수신날짜</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
+										<td class="text-white">_</td>
+										<td class="form-control">정렬조건</td>
+										<td><select class="form-select searchSelect">
+												<option value="s.sent_dt DESC">최근순</option>
+												<option value="s.sent_dt">오래된순</option>
+										</select></td>
 									</tr>
 								</table>
 								<span class="position-absolute top-50 end-0 translate-middle-y">
@@ -56,7 +60,7 @@
 					</nav>
 				</div>
 					<div id="inboxTable">
-						<!-- 계약 목록 출력 -->
+						<!-- 메일 목록 출력 -->
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
@@ -70,13 +74,22 @@
 								</thead>
 								<tbody>
 									<th:block th:each="emailVO : ${list}">
-										<tr><!--*/ th:onclick="|location.href='@{/email/inboxInfo/}@{${EmailVO.senEmailNo}}'|"> */--> 
+										<tr th:onclick="|location.href='@{/cust/inboxInfo/}@{${emailVO.senEmailNo}}'|">
 											<td>[[ ${emailVO.sender} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<td>점검</td>
-											<!--*/<td th:text="${#emailVO.recpType}"></td>/*-->
-											<td><input type="radio" name="check" th:value="${emailVO.senEmailNo}"></td>
+											<td>
+												<th:block th:if="${emailVO.recp == searchVO.recp}">
+											    	셀프
+												</th:block>
+												<th:block th:if="${emailVO.refer != searchVO.recp}">
+											    	수신
+												</th:block>
+												<th:block th:if="${emailVO.refer == searchVO.recp}">
+											    	참조
+												</th:block>
+											</td>	
+											<td><input type="checkbox" name="check" th:value="${emailVO.recEmailNo}"></td>
 										</tr>
 									</th:block>
 								</tbody>
@@ -118,6 +131,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -151,8 +165,15 @@
 				showTable(page);
 			});
 			
+		    // 검색입력창 엔터시 이벤트 처리
+		    $(".searchKey").on("change", function(e) {
+		        updateParams();
+		        let page = 1;
+		        showTable(page);
+		    });
+			
 			//페이징 링크 처리
-			$(document).on("click", $(".pagebtn"), function(e){
+			$(document).on("click", ".pagebtn", function(e){
 				e.preventDefault();
 				let page = e.target.id;
 				showTable(page);
@@ -165,13 +186,12 @@
 		        searchCondition = $('.searchKeySelect').val();
 		        
 		        //기간 검색 처리
-		        sentDt = $('.sentDt').val();
 		        sdStart = $('.fromDt').val();
 		        sdEnd = $('.toDt').val();
 		        
 		        // 수신자/참조자 검색처리
 		        if ($('#recpType').val() != 'reall') {
-		            recpType = $('.recpType').val();
+		            recpType = $('#recpType').val();
 		        } else {
 		        	recpType = null;
 		        }
@@ -180,30 +200,32 @@
 		        emSort = $('.searchSelect').val();
 			}
 			
-			//검색 AJAX 함수
-			function showTable(page) { 
-				$.ajax({
-					url : '/viewInboxList',
-					type : 'POST',
-					beforeSend : function(xhr) {
-						xhr.setRequestHeader(header, token);
-					},
-					data : {
-						page : page,
-						recEmailNo : recEmailNo,
-						sentDt : sentDt,
-						sdStart : sdStart,
-						sdEnd : sdEnd,
-						emSort : emSort,
-						keyword : keyword,
-						searchCondition : searchCondition
-					},
-					dataType : 'Text',
-					success : function(result) {
-						$('#inboxTable').replaceWith(result);
-					}
-				});
-			}
+	function showTable(page) { 
+    $.ajax({
+        url: '/cust/viewInboxList',
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        contentType: 'application/json', // 데이터 타입을 JSON으로 설정
+        // 응답을 JSON으로 받도록 설정 / 한게 실패의 이유였다. 컨트롤러가 String으로 반환하므로 text로 받아야 했다.-스승님-
+        // 만일 받는것도 json으로 받고싶다면 컨트롤러 메서드 리턴타입을 Map으로 해야 했으며, 좀 더 복잡한 처리과정이 추가됨
+        dataType: 'text', 
+        data: JSON.stringify({
+            page: page,
+            recEmailNo: recEmailNo,
+            sdStart: sdStart,
+            recpType: recpType,
+            sdEnd: sdEnd,
+            emSort: emSort,
+            keyword: keyword,
+            searchCondition: searchCondition
+        }),
+        success: function(result) {
+            $('#inboxTable').replaceWith(result);
+        }
+    });
+}
 		</script>
 	</th:block>
 </body>

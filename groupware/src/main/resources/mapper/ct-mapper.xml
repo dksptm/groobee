@@ -24,6 +24,7 @@
 						ct.ct_file
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
+				WHERE ct.cust_no NOT IN '0000'
 				<include refid="testsql" />
 				ORDER BY ${ctSort},cust_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
@@ -39,21 +40,20 @@
 	</select>
 	
 	<sql id="testsql">
-		<where>
-			<if test="keyword != null and keyword != ''">
-				AND ${searchCondition} LIKE '%' || #{keyword} || '%'
-			</if>
-			<if test="ctStat != null and ctStat != ''">
-				AND ct.ct_stat LIKE #{ctStat}
-			</if>
-			<if test="ctStart != null">
-				AND ${ctDt} >= #{ctStart}
-			</if>
-			<if test="ctEnd != null">						
-				AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-			</if> 
-		</where>
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="ctStat != null and ctStat != ''">
+			AND ct.ct_stat LIKE #{ctStat}
+		</if>
+		<if test="ctStart != null">
+			AND ${ctDt} >= #{ctStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+		</if> 
 	</sql>
+	
 	<!-- 계약 상세조회 -->
 	<select id="ctInfo" resultType="CtVO">
 		SELECT ct.ct_no,
@@ -76,7 +76,10 @@
 	
 	<!-- 계약 상세조회-이용중 모듈목록 -->
 	<select id="selectModList" resultType="ModuleVO">
-		SELECT 	m.mod_name
+		SELECT 	m.mod_id, 
+			   	m.mod_name,
+			   	m.mod_stat,
+			   	m.mod_info
 		FROM 	use_mod um JOIN mod m
 		                	ON (um.mod_id = m.mod_id)
 		WHERE 	um.mod_use_stat = '1B1b'
@@ -94,6 +97,135 @@
 		            ON(e.job_no = j.job_no)
 		           JOIN perm p
 		            ON(j.perm_id = p.perm_id)
+		WHERE e.cust_no = #{custNo}
 	</select>	
 	
+	<!-- 계약등록 모듈목록조회 -->
+	<select id="selecetModAll">
+		SELECT mod_id, 
+			   mod_name,
+			   get_codename(mod_stat) as mod_stat,
+			   mod_info
+		FROM mod
+		ORDER BY mod_id 
+	</select>
+	
+	<!-- 계약 수정처리 -->
+	<update id="ctUpdate" parameterType="CtVO">
+		UPDATE ct
+		SET
+			cust_no = #{custNo},
+			ct_start_dt = #{ctStartDt},
+			ct_end_dt = #{ctEndDt},
+			ct_amt = #{ctAmt},
+			use_mod_cnt = #{useModCnt},
+			max_emps = #{maxEmps},
+			cur_emps = #{curEmps},
+			ct_file = #{ctFile}
+		WHERE ct_no = #{ctNo}
+	</update>
+	
+	<!-- 계약 이력등록 -->
+	<insert id="ctHist">
+		INSERT INTO ct_hist (ct_hist_no, 
+							 ct_no, 
+							 ct_start_dt,
+							 ct_end_dt, 
+							 ct_amt, 
+							 use_mod_cnt, 
+							 max_emps, 
+							 cust_no)
+		SELECT
+			(SELECT NVL(MAX(ct_hist_no), 0) + 1 AS ct_hist_no
+	  		 FROM ct_hist),
+			ct_no,
+			ct_start_dt,
+			ct_end_dt,
+			ct_amt,
+			use_mod_cnt,
+			max_emps,
+			cust_no
+		FROM ct
+		WHERE ct_no = #{ctNo}
+	</insert>
+	
+	<!-- 신규사용 모듈 등록 -->
+	<insert id="useModInsert" parameterType="ModuleVO">
+	<selectKey  keyProperty="modHistNo"
+				resultType="int"
+				order="BEFORE">
+		SELECT NVL(MAX(mod_hist_no), 0) + 1 as mod_hist_no
+		FROM use_mod
+	</selectKey>
+		INSERT INTO use_mod (
+								mod_hist_no,
+								mod_id,
+								ct_no,
+								cust_no,
+								cust_name,
+								use_start_dt,
+								mod_use_stat
+							  )
+		  VALUES (
+			#{modHistNo},
+			#{modId},
+			#{ctNo},
+			#{custNo},
+			#{custName},
+			#{useStartDt},
+			'1B1b'
+		  )
+	</insert>
+	
+	<!-- 사용종료 모듈 갱신 -->
+	<update id="useModUpdate">
+		UPDATE use_mod
+		SET
+			use_end_dt = sysdate,
+			mod_use_stat = '1B2b'
+		WHERE use_end_dt IS NULL
+		AND ct_no = #{ctNo}
+	</update>
+	
+	<!-- 계약변경이력 -->
+	<select id="selectCtHist" resultType="CtVO">
+		SELECT *
+		FROM ct_hist
+		WHERE ct_no = #{CtNo}
+		ORDER BY ct_hist_no
+	</select>
+	
+	<!-- 계약변경이력(모듈) -->
+	<select id="selectModHist" resultType="ModuleVO">
+		SELECT 	u.mod_id,
+				m.mod_name
+		FROM use_mod u JOIN mod m
+						ON(u.mod_id = m.mod_id) 
+		WHERE use_end_dt = #{chgDt}
+		ORDER BY u.mod_id
+	</select>
+	
+	<!-- 계약신규등록 -->
+	<insert id="ctInsert" parameterType="CtVO">
+		INSERT INTO ct(ct_no,
+					   ct_stat,
+				       cust_no,
+				       ct_file,
+				       ct_start_dt,
+				       ct_end_dt,
+				       ct_amt,
+				       use_mod_cnt,
+				       max_emps,
+				       cur_emps)
+		VALUES(#{ct_no},
+			   #{ct_stat},
+			   #{cust_no},
+			   #{ct_file},
+			   #{ct_start_dt},
+			   #{ct_end_dt},
+			   #{ct_amt},
+			   #{use_mod_cnt},
+			   #{max_emps},
+			   1)
+	</insert>
 </mapper>

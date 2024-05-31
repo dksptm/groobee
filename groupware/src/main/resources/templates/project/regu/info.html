@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+
+<div class="container container-p-y mt-3">
+	<h2>상시업무 상세조회</h2>
+<div class="bg-light p-3">
+<div class="table-responsive">
+	
+	<table class="table table-bordered text-center">
+		<tr>
+			<td class="fw-bold col-2">업무명</td>
+				<td>[[ ${regu.taskName} ]]</td>
+			<td class="fw-bold col-2">업무번호</td>
+				<td>[[ ${regu.taskNo} ]]</td>
+			<td class="fw-bold col-2">진행도</td>
+				<td>[[ ${regu.progress} ]] %</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">개요</td>
+				<td colspan="5">[[ ${regu.taskPurpose} ]]</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">목적</td>
+				<td colspan="5">[[ ${regu.taskCntn} ]]</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">부서명</td>
+				<td>[[ ${regu.deptName} ]]</td>
+			<td class="fw-bold">책임자</td>
+				<td>[[ ${regu.respEmpName} ]]</td>
+			<td class="fw-bold">업무상태</td>
+				<td>[[ ${regu.prjtMat} ]]</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">시작</td>
+				<td colspan="2">[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd hh:mm a')} ]]</td>
+			<td class="fw-bold">마감</td>
+				<td colspan="2">[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd hh:mm a')} ]]</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">담당자</td>
+			<td colspan="4">
+				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
+					<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
+						<input type="checkbox" class="form-check-input mt-0 regu-emp-ok" aria-label="Checkbox for following text input"
+							   th:checked="${te.cmplt == '5F1f'}">
+					</div>
+					<input th:value="${te.taskEmpName}" type="text" class="form-control" aria-label="Text input with checkbox"
+						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
+					<input th:value="${te.codeName}" type="text" class="form-control" aria-label="Text input with checkbox"
+						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
+					<input th:value="${te.taskEmpId}" type="hidden" readonly />
+				</div>
+			</td>
+			<td>
+				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
+			</td>
+		</tr>
+	</table>		
+		
+</div>
+</div>
+</div>
+
+<script th:inline="javascript" >
+
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	
+	let tno = [[${regu.taskNo}]];
+	
+	$(function(){
+		
+		// 담당업무 완료버튼.
+		$('button.regu-emp-ok-btn').on('click', reguEmpOk);
+		
+	})//end.
+
+	function reguEmpOk() {
+		let checkList = $('input[type="checkbox"].regu-emp-ok:checked').parent();
+		let uncheckList = $('input[type="checkbox"].regu-emp-ok').not(':checked').parent();
+
+		let param = [];
+		
+		checkList.each((idx, ele) => {
+			let obj = {};
+			obj['taskNo'] = tno;
+			obj['taskEmpId'] = ele.dataset.teid;
+			obj['flag'] = 'Y';
+			param.push(obj);
+		})
+		
+		uncheckList.each((idx, ele) => {
+			let obj = {};
+			obj['taskNo'] = tno;
+			obj['taskEmpId'] = ele.dataset.teid;
+			obj['flag'] = 'N';
+			param.push(obj);
+		})
+		
+		// 담당자 수정 아작스.
+		$.ajax({
+			type: 'PUT',
+			url : '/reguInfo/ok/' + tno,
+			contentType : 'application/json',
+			data :  JSON.stringify(param),
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+			success : function(result){
+				
+				Swal.fire({
+					icon: 'success',
+				    title: '업무처리건 반영완료!',
+				    text: '진행도를 확인하세요',
+				})
+				.then((result) => {
+					if(result.value){
+						location.reload();
+					}
+				})
+				
+			},
+			error : function(err){
+				alert('실패');
+			}
+		});
+			
+	}
+
+</script>
+
+</th:block>
+		
+</html>

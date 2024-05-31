@@ -29,6 +29,8 @@ public class SearchVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dtEnd;
 	
+	private String path;
+	
 	// 계약 관련.
 	private String ctName;
 	private String ctStat;
@@ -45,6 +47,7 @@ public class SearchVO {
 	// 이메일 관련 inboxList, emailList, wastedList 전부 공유
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sentDt;
+	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sdStart;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -16,7 +16,7 @@ public interface EmailMapper {
 	public List<EmailVO> selectInboxAll(SearchVO searchVO);
 	
 	// 받은메일 상세조회
-	public EmailVO selectInbox(EmailVO emailVO);
+	public EmailVO selectInbox(String senEmailNo);
 	
 	// 메일 발송(emailSend)
 	public int insertEmail(EmailVO emailVO);
@@ -25,13 +25,13 @@ public interface EmailMapper {
 	public int insertEmailFile(EmailFileVO emailFileVO);
 	
 	// 보낸메일 전체조회
-	public List<EmailVO> selectEmailAll();
+	public List<EmailVO> selectEmailAll(SearchVO searchVO);
 	
 	// 보낸메일 상세조회
-	public EmailVO selectEmail(EmailVO emailVO);
+	public EmailVO selectEmail(String senEmailNo);
 	
 	// 휴지통 전체조회
-	public List<EmailVO> wastedList();
+	public List<EmailVO> wastedList(SearchVO searchVO);
 	
 	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
 	public EmailVO deleteEmail(EmailVO emailVO);
@@ -54,11 +54,13 @@ public interface EmailMapper {
 	// 한 emp가 recp이거나, refer인 메일
 	public int countMyInbox(SearchVO searchVO);
 	
+	public int countMyEmail(SearchVO searchVO);
+	
 	//전체 페이지(보낸메일)
 	public int countSend();
 	
 	//전체 페이지(휴지통)
-	public int countWasted();
+	public int countWasted(SearchVO searchVO);
 	
 	//휴지통 복원
 	public List<EmailVO> restoreMail();

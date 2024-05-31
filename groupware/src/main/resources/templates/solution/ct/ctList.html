@@ -5,7 +5,7 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-10">
+			<div style="min-width:880px" class="card my-4 col-10">
 				<h5 class="card-header">계약 현황</h5>
 				<div class="card-body ">
 
@@ -13,14 +13,15 @@
 					<p class="navbar-brand">검색조건</p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
-							<button class="navbar-toggler" type="button"
+							<!-- <button class="navbar-toggler" type="button"
 								data-bs-toggle="collapse"
 								data-bs-target="#navbarSupportedContent"
 								aria-controls="navbarSupportedContent" aria-expanded="false"
 								aria-label="Toggle navigation">
 								<span class="navbar-toggler-icon"></span>
 							</button>
-							<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<div class="collapse navbar-collapse min-vw-100" id="navbarSupportedContent"> -->
+							<div class="" id="navbarSupportedContent">
 								<table>
 									<tr>
 										<td><select class="form-select searchKeySelect">
@@ -37,6 +38,10 @@
 												<option value="0A1a">계약중</option>
 												<option value="0A2a">계약종료</option>
 										</select></td>
+										<td>
+										<button class="btn btn-outline-success searchbtn bg-light"
+										type="submit">검색</button>
+										</td>
 									</tr>
 									<tr>
 										<td><select class="form-select ctDt">
@@ -58,10 +63,10 @@
 										</select></td>
 									</tr>
 								</table>
-								<span class="position-absolute top-50 end-0 translate-middle-y">
+								<!-- <span class="position-absolute top-50 end-0 translate-middle-y">
 									<button class="btn btn-outline-success searchbtn bg-light"
 										type="submit">검색</button>
-								</span>
+								</span> -->
 							</div>
 						</div>
 					</nav>
@@ -70,7 +75,7 @@
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
-									<tr>
+									<tr class="table-secondary">
 										<th>계약번호</th>
 										<th>고객번호</th>
 										<th>상호명</th>
