@@ -9,7 +9,7 @@
 				<h5 class="card-header">업무 상세조회</h5>
 				
 				<div class="card-body">
-				<input type="text" th:value="${task.taskNo}" name="taskNo" />
+				<input type="hidden" th:value="${task.taskNo}" name="taskNo" />
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
@@ -125,7 +125,7 @@
 			}
 			
 			// 삭제 버튼
-			$('#delBtn').on('click', function() {
+		/* 	$('#delBtn').on('click', function() {
 
 			    $.ajax({
 			        type: 'GET',
@@ -141,7 +141,7 @@
 			            location.reload();
 			        }
 			    });
-			});
+			}); */
 			
 		</script>
 

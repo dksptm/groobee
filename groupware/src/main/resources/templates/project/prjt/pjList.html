@@ -32,9 +32,9 @@
 										<td class="text-white">_</td>
 										<td class="form-control">진행상태</td>
 										<td><select class="form-select prjtStat">
-												<option value="statAll">전체</option>
-												<option value="5B1b">프로젝트진행중</option>
-												<option value="5B2b">프로젝트완료</option>
+												<option value="">전체</option>
+												<option value="5E1e">프로젝트진행중</option>
+												<option value="5E2e">프로젝트완료</option>
 										</select></td>
 									</tr>
 									<tr>
@@ -69,24 +69,23 @@
 									<tr>
 										<th>프로젝트ID</th>
 										<th>프로젝트명</th>
-										<th>프로젝트진행상황</th>
+										<th>진행상황</th>
 										<th>시작일</th>
 										<th>마감일</th>
 										<th>개요</th>
-										<th>내용</th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="pjlist : ${pjlist}">
-										<tr>
+										<tr 
+											>
 											<td>[[ ${pjlist.prjtId} ]]</td>
 											<td>[[ ${pjlist.prjtName} ]]</td>
 											<td
-												th:class="${pjlist.prjtStat == '5E2e' ? 'table-secondary' : ''}">
+												th:class="${pjlist.prjtStat == '5E2e' ? 'table-secondary' : ''}">[[ ${pjlist.prjtStat} ]]</td>
 											<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
 											<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${pjlist.purpose} ]]</td>
-											<td>[[ ${pjlist.smry} ]]</td>
 										</tr>
 									</th:block>
 								</tbody>
@@ -95,32 +94,32 @@
 						
 						<!-- 페이징 -->
 						<div class="paging mt-2">
-							<th:block th:if="${PrjtDTO.totalCnt} != 0">
+							<th:block th:if="${TaskDTO.totalCnt} != 0">
 								<nav aria-label="Page navigation">
 									<ul class="pagination justify-content-center">
 
-										<th:block th:if="${PrjtDTO.prev}">
+										<th:block th:if="${TaskDTO.prev}">
 											<li class="page-item prev"><a href="#"
-												th:id="${PrjtDTO.startPage - 1 }" class="page-link pagebtn"><i
+												th:id="${TaskDTO.startPage - 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
-											th:each="num : ${#numbers.sequence(1, PrjtDTO.endPage)}">
+											th:each="num : ${#numbers.sequence(1, TaskDTO.endPage)}">
 											<li class="page-item "
-												th:attrappend="class=${num ==  PrjtDTO.page ? 'active' : ' '}">
+												th:attrappend="class=${num ==  TaskDTO.page ? 'active' : ' '}">
 												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
-										<th:block th:if="${PrjtDTO.next}">
+										<th:block th:if="${TaskDTO.next}">
 											<li class="page-item next"><a href="#"
-												th:id="${PrjtDTO.endPage + 1 }" class="page-link pagebtn"><i
+												th:id="${TaskDTO.endPage + 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
 								</nav>
 							</th:block>
-							<th:block th:unless="${PrjtDTO.totalCnt} != 0">
-								<p class="text-center mt-4">현재 프로젝트가 없습니다.</p>
+							<th:block th:unless="${TaskDTO.totalCnt} != 0">
+								<p class="text-center mt-4">현재 등록된 업무가 없습니다.</p>
 							</th:block>
 						</div>
 						<!-- /페이징 -->
@@ -150,7 +149,7 @@
 		let prjtDt;
 		let prjtStart;
 		let prjtDue;
-		let taskSort;
+		let prjtSort;
 		
 		//검색버튼 이벤트 처리
 		$(".searchbtn").on("click", function(e) {
@@ -181,7 +180,7 @@
 			if ($('.prjtStat').val() != 'statAll') {
 				prjtStat = $('.prjtStat').val();
 	        } else {
-	        	prjtMat = null;
+	        	prjtStat = null;
 	        }
 			
 			// 정렬 처리
@@ -213,8 +212,8 @@
 			});
 		}		
 			
-			// 삭제버튼 : 삭제 후 리스트로 이동 
-			/*$(function() {
+/* 			// 삭제버튼 : 삭제 후 리스트로 이동 
+			$(function() {
 				$('#prjtDelBtn').on('click', function() {
 
 					let prjtId = $(this).data('');
@@ -232,7 +231,7 @@
 						}
 					}); 
 				});
-			});*/
+			}); */
 		</script>
 	</th:block>
 </body>

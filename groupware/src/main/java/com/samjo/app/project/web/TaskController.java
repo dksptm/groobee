@@ -79,8 +79,8 @@ public class TaskController {
 			List<DeptVO> list = deptService.deptAllList();
 			model.addAttribute("dept", list);
 			
-			List<ProjectVO> plist = projectService.PrjtAllList(searchVO);
-			model.addAttribute("plist", plist);
+			List<ProjectVO> pjlist = projectService.prjtList(searchVO);
+			model.addAttribute("pjlist", pjlist);
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();
 			List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
@@ -151,14 +151,42 @@ public class TaskController {
 			taskService.taskDelete(projectVO);
 			return "redirect:taskAllList";
 		}
-	
+		
 		// 협력업체 전체 조회
 		@GetMapping("coopAllList")
-		public String coopAllList(Model model) {
-			List<ProjectVO> list = taskService.CoopCoAllList();
-			model.addAttribute("coopCo", list);
+		public String coopAllList(SearchVO searchVO, Model model) {
+			if (searchVO.getPage() <= 0) {
+				searchVO.setPage(1);
+			}
+			if (searchVO.getCoSort() == null || searchVO.getCoSort().trim().isEmpty()) {
+				searchVO.setCoSort("coop_co_no");
+			}
+			
+			List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
+			model.addAttribute("clist", list);
+			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+			model.addAttribute("TaskDTO", taskDTO);
 			return "project/coopCo/list";
 		}
+		
+		// 협력업체 조회페이지 검색/페이징 처리
+		@PostMapping("viewCoList")
+		public String viewCoListPage(SearchVO searchVO, Model model) {
+
+			if (searchVO.getPage() <= 0) {
+				searchVO.setPage(1);
+			}
+			if (searchVO.getCoSort() == null || searchVO.getCoSort().trim().isEmpty()) {
+					searchVO.setCoSort("coop_co_no");
+			}
+				List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
+				model.addAttribute("clist", list);
+				TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+				model.addAttribute("TaskDTO", taskDTO);
+				return "project/coopCo/list :: #coTable";
+		}
+		
+		
 		// 협력업체 단건조회.
 		@GetMapping("coopInfo")
 		public String coopInfo(ProjectVO projectVO, Model model) {
@@ -169,17 +197,21 @@ public class TaskController {
 		// 협력업체 등록 (모달)
 		@GetMapping("coopInsert")
 		   public String coopInsertForm(@PathVariable("taskNo") int taskNo, Model model) {
-	        ProjectVO projectVO = new ProjectVO();
-	        projectVO.setTaskNo(taskNo); // task_no를 ProjectVO에 설정
+	        
+			ProjectVO projectVO = new ProjectVO();
+	        projectVO.setTaskNo(taskNo); 
+	        
 	        model.addAttribute("coopCo", projectVO);
 	        return "project/coopCo/list";
 	    }
 		// 협력업체 등록 처리
 		@ResponseBody
 		@PostMapping("coopInsert")
-		public String coopInsertProcess(@RequestBody ProjectVO projectVO) {
+		public String coopInsertProcess(@RequestBody Model model, int taskNo) {
+			ProjectVO projectVO = new ProjectVO();
+			projectVO.setTaskNo(taskNo); 
 			
-			//ProjectVO.setTaskNo(int);
+
 			int cNo =  taskService.coopInsert(projectVO);
 			String uri = null;
 			
@@ -218,19 +250,17 @@ public class TaskController {
 		    Map<String, Object> deletionResult = projectService.coopDelete(projectVO);
 		    if (deletionResult.containsKey("coopCoNo")) {
 		        Long deletedCoopCoNo = (Long) deletionResult.get("coopCoNo");
-		        // 삭제 성공한 경우에 대한 처리 (예: 메시지 표시)
+		        // 삭제 성공한 경우에 대한 처리 
 		        model.addAttribute("deletedCoopCoNo", deletedCoopCoNo);
 		        model.addAttribute("message", "협력업체 삭제에 성공했습니다.");
 		    } else {
-		        // 삭제 실패한 경우에 대한 처리 (예: 메시지 표시)
+		        // 삭제 실패한 경우에 대한 처리 
 		        model.addAttribute("message", "협력업체 삭제에 실패했습니다.");
 		    }
 		    return "redirect:coopAllList";
 		}*/
 		
-		
-		
-	
+				
 		//효주 -----
 		@GetMapping("getMyTasks")
 		public String getMyTasks(@RequestParam String custNo, Model model) {

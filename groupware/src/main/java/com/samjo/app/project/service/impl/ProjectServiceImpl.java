@@ -36,11 +36,15 @@ public class ProjectServiceImpl implements ProjectService {
 	public int count(SearchVO searchVO) {
 		return projectMapper.prjtCount(searchVO);
 	}
-
+	
+	@Override // 프로젝트 단순조회 taskInsert용
+	public List<ProjectVO> prjtList(SearchVO searchVO) {
+		return projectMapper.prjtList(searchVO);
+	}
 	
 	@Override // 프로젝트 단건조회
-	public ProjectVO prjtInfo(ProjectVO projectVO) {
-		return projectMapper.selectPrjt(projectVO);
+	public ProjectVO prjtInfo(String prjtId) {
+		return projectMapper.selectPrjt(prjtId);
 	}
 	
 	@Override // 프로젝트 등록

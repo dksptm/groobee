@@ -80,5 +80,9 @@ public class SearchVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date prjtDue;
 	private String prjtDt;
-
+	
+	private String coopCoNo;
+	private String coSort;
+	private String coName;
+	
 }

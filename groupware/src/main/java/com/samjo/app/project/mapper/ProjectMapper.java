@@ -13,9 +13,12 @@ public interface ProjectMapper {
 	public List<ProjectVO> selectPrjtAllList(SearchVO searchVO);
 	// 프로젝트 페이징
 	public int prjtCount(SearchVO searchVO);
+	// 프로젝트 단순조회 taskinsert용
+	public List<ProjectVO> prjtList(SearchVO searchVO);
 	
 	// 프로젝트 단건조회
-	public ProjectVO selectPrjt(ProjectVO projectVO);
+	public ProjectVO selectPrjt(String prjtId);
+	
 	// 프로젝트 등록
 	public int insertPrjt(ProjectVO projectVO);
 	

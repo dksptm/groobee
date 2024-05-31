@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,36 +44,34 @@ public class ProjectController {
 		
 		List<ProjectVO> list = projectService.PrjtAllList(searchVO);
 		model.addAttribute("pjlist", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(),projectService.count(searchVO));
-		model.addAttribute("PrjtDTO", taskDTO);
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+		model.addAttribute("TaskDTO", taskDTO);
 		return "project/prjt/pjList";
 	}
-	//프로젝트 조회페이지 검색/페이징 처리
-			@PostMapping("viewPjList")
-			public String viewPjListPage(SearchVO searchVO, Model model) {
-				//System.out.println("searchVO: "+searchVO);
-				//System.out.println("startDay : "+ searchVO.getTaskStart());
-				if (searchVO.getPage() <= 0) {
-					searchVO.setPage(1);
-				}
-				if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
-					searchVO.setPrjtSort("prjt_id");
-				}
-				List<ProjectVO> list = projectService.PrjtAllList(searchVO);
-				model.addAttribute("list", list);
-				TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
-				model.addAttribute("TaskDTO", taskDTO);
-				return "project/prjt/pjList :: #prjtTable";
-			}
 	
+	//프로젝트 조회페이지 검색/페이징 처리
+	@PostMapping("viewPjList")
+	public String viewPjListPage(SearchVO searchVO, Model model) {
+
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
+				searchVO.setPrjtSort("prjt_id");
+		}
+			List<ProjectVO> list = projectService.PrjtAllList(searchVO);
+			model.addAttribute("pjlist", list);
+			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+			model.addAttribute("TaskDTO", taskDTO);
+			return "project/prjt/pjList :: #prjtTable";
+	}
 	
 	// 프로젝트 단건조회
-	@GetMapping("prjtInfo")
-	public String prjtInfo(ProjectVO projectVO, Model model) {
-		ProjectVO findVO = projectService.prjtInfo(projectVO);
-		model.addAttribute("projects", findVO);
-		System.out.println(findVO);
-		return "project/prjt/info";
+	@GetMapping("prjtInfo/{prjtId}")
+	public String prjtInfo(@PathVariable String prjtId, Model model) {
+		ProjectVO projectVO = projectService.prjtInfo(prjtId);
+		model.addAttribute("pjlist", projectVO);
+		return "project/prjt/pjInfo";
 	}
 
 	// 프로젝트 등록
@@ -108,11 +107,13 @@ public class ProjectController {
 		return uri;
 	}
 
+	
+	/*
 	// 프로젝트 수정 - 페이지
 	@GetMapping("prjtUpdate")
 	public String prjtUpdateForm(ProjectVO projectVO, Model model) {
 
-		ProjectVO findVO = projectService.prjtInfo(projectVO);
+		ProjectVO findVO = projectService.prjtInfo(prjtId);
 		model.addAttribute("prjtInfo", findVO);
 		return "project/prjt/update";
 	}
@@ -130,7 +131,6 @@ public class ProjectController {
 		projectService.prjtDelete(projectVO);
 		return "redirect:prjtAllList";
 	}
-
 	
-
+	 */
 }

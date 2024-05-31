@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">프로젝트 상세조회</h5>
+				
+				<div class="card-body">
+				<input type="hidden" th:value="${pjlist.prjtId}" name="prjtId" />
+					<div class="table-responsive">
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>프로젝트ID</th>
+								<td id="pid">[[ ${pjlist.prjtId}]]</td>
+								<th>프로젝트명</th>
+								<td>[[ ${pjlist.prjtName}]]</td>
+								<th>책임자</th>
+								<td>[[ ${pjlist.empName}]] </td>
+								<th>진행상황</th>
+								<td>[[ ${pjlist.prjtStat}]]</td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>시작일</th>
+								<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
+								<th>마감일</th>
+								<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")}]]</td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>목적</th>
+									<td>[[ ${pjlist.purpose}]]</td>
+									<th>개요</th>
+									<td>[[ ${pjlist.smry}]]</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+
+						<div style="text-align: center">
+							<button type="button" class="btn btn-secondary  mt-2" >목록으로</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+
+		</script>
+	</th:block>
+</body>
+</html>
