@@ -4,17 +4,22 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
 	
 	// 프로젝트 조회
-	public List<ProjectVO> selectPrjtAllList();
+	public List<ProjectVO> selectPrjtAllList(SearchVO searchVO);
+	// 프로젝트 페이징
+	public int prjtCount(SearchVO searchVO);
+	
 	// 프로젝트 단건조회
 	public ProjectVO selectPrjt(ProjectVO projectVO);
 	// 프로젝트 등록
 	public int insertPrjt(ProjectVO projectVO);
+	
+	
 	// 프로젝트 수정
 	public int updatePrjt(ProjectVO projectVO);
 	// 프로젝트 삭제

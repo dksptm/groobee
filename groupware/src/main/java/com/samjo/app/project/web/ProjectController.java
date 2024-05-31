@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
+import com.samjo.app.project.service.TaskDTO;
 
 
 @Controller
@@ -31,12 +33,39 @@ public class ProjectController {
 
 	// 프로젝트 전체 조회
 	@GetMapping("prjtAllList")
-	public String prjtAllList(Model model) {
-		List<ProjectVO> list = projectService.PrjtAllList();
-		model.addAttribute("projects", list);
+	public String prjtListPage(SearchVO searchVO, Model model) {
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
+			searchVO.setPrjtSort("prjt_id");
+		}
+		
+		List<ProjectVO> list = projectService.PrjtAllList(searchVO);
+		model.addAttribute("pjlist", list);
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(),projectService.count(searchVO));
+		model.addAttribute("PrjtDTO", taskDTO);
 		return "project/prjt/pjList";
 	}
-
+	//프로젝트 조회페이지 검색/페이징 처리
+			@PostMapping("viewPjList")
+			public String viewPjListPage(SearchVO searchVO, Model model) {
+				//System.out.println("searchVO: "+searchVO);
+				//System.out.println("startDay : "+ searchVO.getTaskStart());
+				if (searchVO.getPage() <= 0) {
+					searchVO.setPage(1);
+				}
+				if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
+					searchVO.setPrjtSort("prjt_id");
+				}
+				List<ProjectVO> list = projectService.PrjtAllList(searchVO);
+				model.addAttribute("list", list);
+				TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+				model.addAttribute("TaskDTO", taskDTO);
+				return "project/prjt/pjList :: #prjtTable";
+			}
+	
+	
 	// 프로젝트 단건조회
 	@GetMapping("prjtInfo")
 	public String prjtInfo(ProjectVO projectVO, Model model) {

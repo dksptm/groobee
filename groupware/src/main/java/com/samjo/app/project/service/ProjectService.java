@@ -8,9 +8,12 @@ import org.apache.ibatis.annotations.Param;
 import com.samjo.app.common.service.SearchVO;
 
 public interface ProjectService {
-	// 프로젝트 상위 //
+	
 	// 프로젝트 조회
-	public List<ProjectVO> PrjtAllList();
+	public List<ProjectVO> PrjtAllList(SearchVO searchVO);
+	// 프로젝트 업무 페이징
+	public int count(SearchVO searchVO);
+	
 	// 프로젝트 단건조회
 	public ProjectVO prjtInfo(ProjectVO projectVO);
 	// 프로젝트 등록

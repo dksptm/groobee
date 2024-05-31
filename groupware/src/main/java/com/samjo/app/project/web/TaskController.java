@@ -75,11 +75,11 @@ public class TaskController {
 		 
 		// 프로젝트(하위) 업무 등록
 		@GetMapping("taskInsert")
-		public String taskInsertForm(Model model) {
+		public String taskInsertForm(SearchVO searchVO, Model model) {
 			List<DeptVO> list = deptService.deptAllList();
 			model.addAttribute("dept", list);
 			
-			List<ProjectVO> plist = projectService.PrjtAllList();
+			List<ProjectVO> plist = projectService.PrjtAllList(searchVO);
 			model.addAttribute("plist", plist);
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();
@@ -168,18 +168,18 @@ public class TaskController {
 		}
 		// 협력업체 등록 (모달)
 		@GetMapping("coopInsert")
-		public String coopInsertForm(Model model) {
-			model.addAttribute("coopCo", new ProjectVO());
-			return "project/coopCo/list";
-		}
+		   public String coopInsertForm(@PathVariable("taskNo") int taskNo, Model model) {
+	        ProjectVO projectVO = new ProjectVO();
+	        projectVO.setTaskNo(taskNo); // task_no를 ProjectVO에 설정
+	        model.addAttribute("coopCo", projectVO);
+	        return "project/coopCo/list";
+	    }
 		// 협력업체 등록 처리
 		@ResponseBody
 		@PostMapping("coopInsert")
 		public String coopInsertProcess(@RequestBody ProjectVO projectVO) {
 			
-
 			//ProjectVO.setTaskNo(int);
-			
 			int cNo =  taskService.coopInsert(projectVO);
 			String uri = null;
 			

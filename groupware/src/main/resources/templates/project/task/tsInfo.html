@@ -14,7 +14,7 @@
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>프로젝트ID</th>
-								<td>[[ ${task.prjtId}]]</td>
+								<td id="pid">[[ ${task.prjtId}]]</td>
 								<th>프로젝트명</th>
 								<td>[[ ${task.prjtName}]]</td>
 								<th>업무명</th>
@@ -59,7 +59,7 @@
 										<td>[[ ${te.deptName}]]</td>
 										<td>[[ ${te.empName}]]&ensp;
 											<input type="checkbox" class="btn btn-primary mt-2 task-emp-ok" 
-											 th:disabled="${te.cmplt == '5F1f'}" th:checked="${te.cmplt  == '5F1f'}"/>
+											 	th:disabled="${te.cmplt == '5F1f'}" th:checked="${te.cmplt  == '5F1f'}"/>
 											<input type="hidden" th:value="${te.taskEmpId}" class="task-emp-id" />
 										</td>
 									</tr>
@@ -89,7 +89,7 @@
 			
 			
 			function taskOK() {
-				let chkEmps = $(".task-emp-ok:checked").next();
+				let chkEmps = $(".task-emp-ok:checked").not(':disabled').next();
 				let taskNo = $('input[name="taskNo"]').val();
 				
 				let taskEmps = []
@@ -99,6 +99,10 @@
 				}
 				
 				let param = {taskEmps};
+				
+				param["prjtId"] = $("#pid").text();
+				
+				
 				
 				$.ajax({
 					type: 'PUT',

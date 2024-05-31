@@ -28,9 +28,15 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override // 프로젝트 전체조회
-	public List<ProjectVO> PrjtAllList() {
-		return projectMapper.selectPrjtAllList();
+	public List<ProjectVO> PrjtAllList(SearchVO searchVO) {
+		return projectMapper.selectPrjtAllList(searchVO);
 	}
+	
+	@Override // 프로젝트 페이징
+	public int count(SearchVO searchVO) {
+		return projectMapper.prjtCount(searchVO);
+	}
+
 	
 	@Override // 프로젝트 단건조회
 	public ProjectVO prjtInfo(ProjectVO projectVO) {
@@ -75,6 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectTasks(custNo);
 	}
 	// 효주 끝.
+
 
 
 }

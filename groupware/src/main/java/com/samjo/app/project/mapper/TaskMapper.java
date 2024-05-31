@@ -26,7 +26,7 @@ public interface TaskMapper {
 		// 프로젝트 참여자 수정(프로시저)
 		public void updateTaskEmp(TaskEmpsVO emp);
 		// 업무모두완료시 -> 프로젝트완료상태 (프로시저)
-		//public void updatePrjt(TaskEmpsVO emp);
+		public void updatePrjt(ProjectVO projectVO);
 		
 		// 프로젝트 업무 수정
 		public int updateTask(ProjectVO projectVO);
