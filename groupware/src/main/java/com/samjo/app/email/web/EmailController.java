@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.email.service.EmailDTO;
@@ -100,15 +99,21 @@ public class EmailController {
 	public String inboxInfo(@PathVariable String senEmailNo, Model model) {
 		EmpVO currentUser = SecuUtil.getLoginEmp();
 		// VO 객체에 Service의 실행 결과를 담는다
-		EmailVO emailVO = emailService.inboxInfo(senEmailNo);
 		// 데이터를 전달하는 model 객체에 rfindVO와 페이지에 제공될 이름 "emailInfo"를 담는다
-		String sender = emailVO.getSender();
+		EmailVO emailVO = emailService.inboxInfo(senEmailNo);
+		String recp = emailVO.getRecp();
+		String refer = emailVO.getRefer();
 		String userId = currentUser.getEmpId();
-
-		if (!sender.equals(userId)) {
-			return "redirect:/home";
+		
+		// 로그인 유저id가, 읽으려는 메일의 수신자, 참조자 어느것에도 해당하지 않는 경우 (하나라도 해당시 조회가능)
+		// (즉 url에 메일 PK만 적어서 남의 메일을 보려 할 경우) => 홈으로 튕겨 보낸다.
+		// 접속자가 수신자가 아니고(AND) 참조자가 NULL이면서 접속자가 참조자도 아닌 경우
+		if (!recp.equals(userId)) {
+		    if (refer == null || !refer.equals(userId)) {
+		        return "redirect:/home";
+		    }
 		}
-
+		
 		model.addAttribute("emailVO", emailVO);
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
 
@@ -178,7 +183,9 @@ public class EmailController {
 		// 데이터를 전달하는 model 객체에 rfindVO와 페이지에 제공될 이름 "emailInfo"를 담는다
 		String sender = emailVO.getSender();
 		String userId = currentUser.getEmpId();
-
+		
+		// 발신자가 내가 아니면.
+		// (즉 url에 메일 PK만 적어서 남의 메일을 보려 할 경우) => 홈으로 튕겨 보낸다.
 		if (!sender.equals(userId)) {
 			return "redirect:/home";
 		}
@@ -251,15 +258,20 @@ public class EmailController {
 	}
 ////////////////////////////////////////////////휴 지 통///////////////////////////////////////////
 	
-//	// 셀렉트박스 체크하고 휴지통 버튼 눌렀을 때 오는 ajax를 받아 처리하는 메서드
-//	@ResponseBody
-//	public List<EmailVO> deleteEmail(@RequestBody List<EmailVO> list) {
-//		list
-//
-//		
-//		return emailService.deleteEmail(list);
-//	}
-//	
+	// 셀렉트박스 체크하고 휴지통 버튼 눌렀을 때 오는 ajax를 받아 처리
+	
+	
+	@PostMapping("cust/emailList/goWaste")
+	public int deleteEmail(@RequestBody List<String> senEmailNoList) {
+		
+		return emailService.deleteEmail(senEmailNoList);
+	}
+	
+	@ResponseBody
+	public int deleteInbox(@RequestBody List<String> senEmailNoList) {
+	
+		return emailService.deleteInbox(senEmailNoList);
+	}	
 	
 	// 휴지통 전체조회
 	@GetMapping("cust/wastedList")

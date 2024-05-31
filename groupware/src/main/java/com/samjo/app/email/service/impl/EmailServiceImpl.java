@@ -3,7 +3,6 @@ package com.samjo.app.email.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.common.service.SearchVO;
@@ -70,12 +69,19 @@ public class EmailServiceImpl implements EmailService {
 		return emailVO;
 	}
 
-	//메일 휴지통 이동(상태 칼럼값 변경)
+	// 보낸 메일 휴지통 이동(상태 칼럼값 변경)
 	@Override
-	public EmailVO deleteEmail(EmailVO emailVO) {
-		return emailMapper.deleteEmail(emailVO);
+	public int deleteEmail(List<String> senEmailNoList) {
+		return emailMapper.deleteEmail(senEmailNoList);
+	}
+	
+	// 받은 메일 휴지통 이동
+	@Override
+	public int deleteInbox(List<String> senEmailNoList) {
+		return emailMapper.deleteInbox(senEmailNoList);
 	}
 
+	
 	// 답신할 대상의 메일정보(수신메일)를 가져오기(체인메일넘버 유념)
 	@Override
 	public EmailVO getInboxNo(EmailVO emailVO) {
@@ -137,6 +143,7 @@ public class EmailServiceImpl implements EmailService {
 	public int countMyEmail(SearchVO searchVO) {
 		return emailMapper.countMyEmail(searchVO);
 	}
+
 
 
 

@@ -33,8 +33,11 @@ public interface EmailMapper {
 	// 휴지통 전체조회
 	public List<EmailVO> wastedList(SearchVO searchVO);
 	
-	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
-	public EmailVO deleteEmail(EmailVO emailVO);
+	// 보낸 메일 휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
+	public int deleteEmail(List<String> senEmailNoList);
+	
+	// 받은 메일 휴지통
+	public int deleteInbox(List<String> senEmailNoList);
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념
 	public EmailVO getInboxNo(EmailVO emailVO);

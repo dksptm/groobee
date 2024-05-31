@@ -52,44 +52,42 @@
 						</div>
 					</nav>
 				</div>
-					<div id="emailTable">
-						<!-- 메일 목록 출력 -->
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>수신자명</th>
-										<th>제목</th>
-										<th>발신날짜</th>
-										<th>발신유형</th>
-										<th>선택</th>
-									</tr>
-								</thead>
-								<tbody>
-									<th:block th:each="emailVO : ${list}">
-										<tr th:onclick="|location.href='@{/cust/emailInfo/}@{${emailVO.senEmailNo}}'|">									
-											<td>[[ ${emailVO.recp} ]]</td>
-											<td>[[ ${emailVO.title} ]]</td>
-											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<td>
-												<th:block th:if="${emailVO.sender == searchVO.recp}">
+				<div id="emailTable">
+					<!-- 메일 목록 출력 -->
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>수신자명</th>
+									<th>제목</th>
+									<th>발신날짜</th>
+									<th>발신유형</th>
+									<th>선택</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="emailVO : ${list}">
+									<tr
+										th:onclick="|location.href='@{/cust/emailInfo/}@{${emailVO.senEmailNo}}'|">
+										<td>[[ ${emailVO.recp} ]]</td>
+										<td>[[ ${emailVO.title} ]]</td>
+										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
+										<td><th:block th:if="${emailVO.sender == searchVO.recp}">
 											    	셀프
-												</th:block>
-												<th:block th:if="${emailVO.refer == null}">
+												</th:block> <th:block th:if="${emailVO.refer == null}">
 											    	발신
-												</th:block>
-												<th:block th:if="${emailVO.refer != null}">
+												</th:block> <th:block th:if="${emailVO.refer != null}">
 											    	참조
-												</th:block>
-											</td>	
-											<td><input type="checkbox" name="check" th:value="${emailVO.senEmailNo}"></td>
-										</tr>
-									</th:block>
-								</tbody>
-							</table>
-						</div>
-						<!-- 페이징 -->
-						<div>
+												</th:block></td>
+										<td><input type="checkbox" name="check" class="checks"
+											th:value="${emailVO.senEmailNo}"></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<!-- 페이징 -->
+					<div>
 						<div class="paging mt-2">
 							<th:block th:if="${EmailDTO.totalCnt} != 0">
 								<nav aria-label="Page navigation">
@@ -97,7 +95,7 @@
 
 										<th:block th:if="${EmailDTO.prev}">
 											<li class="page-item prev"><a href="#"
-												th:id="${EmailDTO.startPage - 1 }" class="page-link pagebtn"><i 
+												th:id="${EmailDTO.startPage - 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
@@ -109,12 +107,13 @@
 										</th:block>
 										<th:block th:if="${EmailDTO.next}">
 											<li class="page-item next"><a href="#"
-												th:id="${EmailDTO.endPage + 1 }" class="page-link pagebtn"><i 
+												th:id="${EmailDTO.endPage + 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
 								</nav>
 							</th:block>
+							<button class="btn btn-info" type="button" id="wasteBtn">휴지통으로</button>
 							<th:block th:unless="${EmailDTO.totalCnt} != 0">
 								<p class="text-center mt-4">보낸 메일이 없습니다.</p>
 							</th:block>
@@ -124,20 +123,20 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 
 			//기간 검색 범위처리
-			$('.fromDt').on('change', function(e){
+			$('.fromDt').on('change', function(e) {
 				$('.toDt').attr('min', this.value);
 			});
-			$('.toDt').on('change', function(e){
+			$('.toDt').on('change', function(e) {
 				$('.fromDt').attr('max', this.value);
 			});
-			
+
 			// 검색 조건 변수 -> 개선 : 객체 타입으로...
 			let keyword;
 			let searchCondition;
@@ -150,60 +149,85 @@
 			let sdStart;
 			let sdEnd;
 			let emSort;
-			
+
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
 				updateParams();
 				let page = 1;
 				showTable(page);
 			});
-			
+
 			//페이징 링크 처리
-			$(document).on("click", ".pagebtn", function(e){
+			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
 				let page = e.target.id;
 				showTable(page);
 			});
-			
+
 			// 검색 조건 갱신 함수
-		    function updateParams() {
-		        // 키워드 검색 처리
-		        keyword = $('.searchKey').val();
-		        searchCondition = $('.searchKeySelect').val();
-		        
-		        //기간 검색 처리
-		        sdStart = $('.fromDt').val();
-		        sdEnd = $('.toDt').val();
-		        
-		        //정렬 조건
-		        emSort = $('.searchSelect').val();
+			function updateParams() {
+				// 키워드 검색 처리
+				keyword = $('.searchKey').val();
+				searchCondition = $('.searchKeySelect').val();
+
+				//기간 검색 처리
+				sdStart = $('.fromDt').val();
+				sdEnd = $('.toDt').val();
+
+				//정렬 조건
+				emSort = $('.searchSelect').val();
+			}
+
+			function showTable(page) {
+				$.ajax({
+					url : '/cust/viewEmailList',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json',
+					dataType : 'text',
+					data : JSON.stringify({
+						page : page,
+						senEmailNo : senEmailNo,
+						sdStart : sdStart,
+						recpType : recpType,
+						sdEnd : sdEnd,
+						emSort : emSort,
+						keyword : keyword,
+						searchCondition : searchCondition
+					}),
+					success : function(result) {
+						$('#emailTable').replaceWith(result);
+					}
+				});
 			}
 			
-			
-			function showTable(page) { 
-    $.ajax({
-        url: '/cust/viewEmailList',
-        type: 'POST',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        contentType: 'application/json',
-        dataType: 'text',
-        data: JSON.stringify({
-            page: page,
-            senEmailNo: senEmailNo,
-            sdStart: sdStart,
-            recpType: recpType,
-            sdEnd: sdEnd,
-            emSort: emSort,
-            keyword: keyword,
-            searchCondition: searchCondition
-        }),
-        success: function(result) {
-            $('#emailTable').replaceWith(result);
-        }
-    });
-}
+			var lists = [];
+			//$("#wasteBtn").on("click", function(e){
+			//	$(".check").val($('input:checkbox:checked').val());
+			//})
+			// 삭제버튼 ajax
+			//$(".wasteBtn").on("click", function(e) {
+				//let selectedBox = $('.checks')
+				//$.ajax({
+					//url : '/cust/emailList/goWaste',
+					//type : 'POST',
+					//beforeSend : function(xhr) {
+					//	xhr.setRequestHeader(header, token);
+					//},
+					//contentType : 'application/json',
+					//dataType : 'text',
+					//data : JSON.stringify({
+					//	senEmailNo : senEmailNo
+					//})
+					
+				//})
+				
+				//updateParams();
+				//let page = 1;
+				//showTable(page);
+			//});
 		</script>
 	</th:block>
 </body>

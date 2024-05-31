@@ -28,8 +28,11 @@ public interface EmailService {
 	// 보낸메일 상세조회
 	public EmailVO emailInfo(String senEmailNo);
 	
-	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
-	public EmailVO deleteEmail(EmailVO emailVO);
+	// 보낸메일 휴지통 보내기 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
+	public int deleteEmail(List<String> senEmailNoList);
+	
+	// 받은메일 휴지통 보내기
+	public int deleteInbox(List<String> senEmailNoList);
 	
 	// 휴지통 전체조회
 	//휴지통의 메일종류(발신,수신) 구분하기.
