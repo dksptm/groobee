@@ -123,6 +123,7 @@
 								<tr>
 									<th>모듈번호</th>
 									<th>모듈명</th>
+									<th>모듈상태</th>
 									<th>선택</th>
 								</tr>
 							</thead>
@@ -131,6 +132,7 @@
 									<tr id="modTr">
 										<td>[[ ${ModuleVO.modId} ]]</td>
 										<td>[[ ${ModuleVO.modName} ]]</td>
+										<td>[[ ${ModuleVO.modStat} ]]</td>
 										<td><input onclick="CountChecked(this)" type="checkbox"
 											name="check" class="modcheck" th:value="${ModuleVO.modId}"
 											th:id="${ModuleVO.modName}"></td>

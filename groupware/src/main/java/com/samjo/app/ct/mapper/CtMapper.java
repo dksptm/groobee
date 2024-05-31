@@ -30,9 +30,11 @@ public interface CtMapper {
 	public int ctUpdate(CtVO ctVO);
 	//계약 이력등록
 	public int ctHist(int ctNo);
-	//신규사용 모듈 등록;
+	//신규사용 모듈 등록
 	public int useModInsert(ModuleVO modVO);
-	//사용종료 모듈 갱신;
+	//사용종료 모듈 갱신
 	public int useModUpdate(int ctNo);
+	//계약 신규등록
+	public int ctInsert(CtVO ctVO);
 	
 }

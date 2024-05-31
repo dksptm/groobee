@@ -15,7 +15,7 @@
 	<ul class="menu-inner py-1 overflow-auto">
 
 		<!-- 고객사 메뉴 -->
-		<th:block th:if="${session.loginType == 'cust'}">
+		<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c','1C4c')">
 			<!-- 메인화면 메뉴 -->
 			<li class="menu-item"><a href="/home" class="menu-link"> <i
 					class="menu-icon tf-icons bx bx-home-circle"></i>
@@ -23,6 +23,7 @@
 			</a></li>
 
 			<!-- 메일 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD001')">
 			<li class="menu-item"><a href="/" class="menu-link menu-toggle">
 					<i class="menu-icon tf-icons bx bx-envelope"></i>
 					<div>메일</div>
@@ -44,8 +45,10 @@
 							<div>휴지통</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 전자결재 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD002') and hasAuthority('MD003')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-file"></i>
@@ -69,8 +72,10 @@
 							<div>완료된 결재 조회</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 근태관리 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD004')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-calendar"></i>
@@ -84,8 +89,10 @@
 							<div>사원목록</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 업무관리 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD005')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-dock-top"></i>
@@ -117,8 +124,10 @@
 							<div>협력업체목록</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 게시판 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD006')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-chat"></i>
@@ -135,8 +144,10 @@
 							<div>부서게시판</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 자료실 메뉴 -->
+			<th:block sec:authorize="hasAuthority('MD007')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-detail"></i>
@@ -153,8 +164,10 @@
 							<div>부서 자료</div>
 					</a></li>
 				</ul></li>
+			</th:block>
 
 			<!-- 관리자 기능 -->
+			<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
 			<li class="menu-item"><a href="javascript:void(0);"
 				class="menu-link menu-toggle"> <i
 					class="menu-icon tf-icons bx bx-lock-open-alt"></i>
@@ -178,9 +191,10 @@
 					</a></li>
 				</ul></li>
 		</th:block>
+		</th:block>
 
 		<!-- 솔루션 기능 -->
-		<th:block th:if="${session.loginType == 'sol'}">
+		<th:block sec:authorize="hasAuthority('1C1c')">
 			<!-- 메인화면 메뉴 -->
 			<li class="menu-item"><a href="/solHome" class="menu-link">
 					<i class="menu-icon tf-icons bx bx-home-circle"></i>
