@@ -23,17 +23,17 @@ public interface EmailService {
 	public int EmailFileInsert(EmailFileVO emailFileVO); 
 		
 	// 보낸메일 전체조회
-	public List<EmailVO> emailList();
+	public List<EmailVO> emailList(SearchVO searchVO);
 	
 	// 보낸메일 상세조회
-	public EmailVO emailInfo(EmailVO emailVO);
+	public EmailVO emailInfo(String senEmailNo);
 	
 	// 메일삭제/휴지통 (단, DB에 데이터를 없애는 것이 아님. 메일 상태 칼럼값을 변경한다.)
 	public EmailVO deleteEmail(EmailVO emailVO);
 	
 	// 휴지통 전체조회
 	//휴지통의 메일종류(발신,수신) 구분하기.
-	public List<EmailVO> wastedList();
+	public List<EmailVO> wastedList(SearchVO searchVO);
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념
 	public EmailVO getInboxNo(EmailVO emailVO);
@@ -53,11 +53,14 @@ public interface EmailService {
 	//받은메일 페이징
 	public int countMyInbox(SearchVO searchVO);
 	
+	//받은메일 페이징
+	public int countMyEmail(SearchVO searchVO);
+	
 	//전체 페이징(보낸메일)
 	public int countSend();
 	
 	//전체 페이징(휴지통)
-	public int countWasted();
+	public int countWasted(SearchVO searchVO);
 	
 	//휴지통 복원
 	public List<EmailVO> restoreMail();

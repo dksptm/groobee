@@ -35,7 +35,6 @@ public class EmailServiceImpl implements EmailService {
 	public EmailVO inboxInfo(String senEmailNo) {
 		EmailVO emailVO = new EmailVO();
 		emailVO = emailMapper.selectInbox(senEmailNo);
-		// 스승님과 달리, 나는 이메일 정보에 list를 담을 일이 없다.
 		return emailVO;
 	}
 	
@@ -58,14 +57,17 @@ public class EmailServiceImpl implements EmailService {
 	
 	//보낸메일함 전체조회
 	@Override
-	public List<EmailVO> emailList() {
-		return emailMapper.selectEmailAll();
+	public List<EmailVO> emailList(SearchVO searchVO) {
+		return emailMapper.selectEmailAll(searchVO);
 	}
 
-	//보낸메일함 단건조회
+	//보낸메일함 상세조회
 	@Override
-	public EmailVO emailInfo(EmailVO emailVO) {
-		return emailMapper.selectEmail(emailVO);
+	public EmailVO emailInfo(String senEmailNo) {
+		EmailVO emailVO = new EmailVO();
+		emailVO = emailMapper.selectInbox(senEmailNo);
+		emailMapper.selectEmail(senEmailNo);
+		return emailVO;
 	}
 
 	//메일 휴지통 이동(상태 칼럼값 변경)
@@ -111,15 +113,13 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public List<EmailVO> wastedList() {
-		
-		
-		return emailMapper.wastedList();
+	public List<EmailVO> wastedList(SearchVO searchVO) {
+		return emailMapper.wastedList(searchVO);
 	}
 
 	@Override
-	public int countWasted() {
-		return emailMapper.countWasted();
+	public int countWasted(SearchVO searchVO) {
+		return emailMapper.countWasted(searchVO);
 	}
 
 	@Override
@@ -131,6 +131,11 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public int countMyInbox(SearchVO searchVO) {
 		return emailMapper.countMyInbox(searchVO);
+	}
+
+	@Override
+	public int countMyEmail(SearchVO searchVO) {
+		return emailMapper.countMyEmail(searchVO);
 	}
 
 

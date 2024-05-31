@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 import lombok.Data;
 
 @Data
@@ -21,6 +20,7 @@ public class EmailVO {
 	private String emailStat;
 	private String chainMailNo;
 	private String custNo;
+	private String sstat;
 	
 	// inbox TABLE
 	private String recEmailNo;
@@ -28,6 +28,7 @@ public class EmailVO {
 	private String refer;
 	private String recpType;
 	private Date readDt; //안 쓰는 값, 추후 삭제
+	private String rstat;
 	
 	// email_file TABLE
 	private Integer fileNo;

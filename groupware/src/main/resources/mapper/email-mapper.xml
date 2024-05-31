@@ -14,14 +14,15 @@
 			               r.refer,
 			               r.cust_no,
 			               r.recp_type,
-			               r.email_stat,
+			               r.email_stat AS rstat,
+			               s.email_stat AS sstat,
 			               s.sen_email_no, 
 			               s.title,
 						   s.sender,
 						   s.sent_dt
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
-				    WHERE  r.email_stat = '3B1b'
+				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b') 
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  (r.recp = #{recp} OR r.refer = #{recp})
 				    <if test="keyword != null and keyword != ''">
@@ -53,6 +54,7 @@
                      ON (s.sen_email_no = r.sen_email_no)
 		WHERE	recp = #{recp}	
 		OR      refer = #{refer, jdbcType=VARCHAR}
+		AND     r.cust_no = #{custNo}
 		<if test="keyword != null and keyword != ''">
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
@@ -67,22 +69,21 @@
 		</if>
 	</select>
 
-  <select id="selectInbox" resultType="EmailVO">
-	  SELECT s.sen_email_no,
-	         r.rec_email_no,
-	         s.sender,
-	         r.recp,
-	         r.refer,
-	         s.title,
-	         s.cntn,
-	         s.email_stat,
-	         r.email_stat,
-	         r.cust_no
-	  FROM   email s JOIN inbox r
-	                 ON s.sen_email_no = r.sen_email_no
-	  WHERE  s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
-	  AND    r.cust_no = #{custNo, jdbcType=VARCHAR}
-  </select>
+	<!-- inbox 상세조회 -->
+<select id="selectInbox" resultType="EmailVO">
+        SELECT s.sen_email_no AS senEmailNo,
+           r.rec_email_no AS recEmailNo,
+           s.sender AS sender,
+           r.recp AS recp,
+           r.refer AS refer,
+           s.title AS title,
+           s.cntn AS cntn,
+           r.email_stat,
+           r.cust_no AS custNo
+    FROM   email s JOIN inbox r 
+                   ON s.sen_email_no = r.sen_email_no
+    WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
+</select>
   
   
   <!-- email,inbox 단건조회시 첨부파일 조회 -->
@@ -146,24 +147,38 @@
 		        )	
 	</insert>  	
   	
-  <!-- 보낸메일함 전체조회 / 페이징처리 아직 안함 -->	
-  	<select id="selectEmailAll" parameterType="SearchVO" resultType="EmailVO">
-  		SELECT SEN_EMAIL_NO
-              ,SENDER
-              ,TITLE
-              ,CNTN
-              ,SENT_DT
-              ,EMAIL_STAT
-              ,CHAIN_MAIL_NO
-              ,CUST_NO
-        FROM   (SELECT /*+ INDEX(INBOX email_sen_email_no_pk) */
-        		       ROWNUM RN,
-        		       EMAIL.*
-        		FROM   EMAIL
-        		WHERE  ROWNUM <![CDATA[<=]]> (#{page} * 5)
-        		AND    SENDER = #{empId})
-         ) a
-        WHERE a.rn > (#{page} - 1) * 5
+  <!-- 보낸메일함 전체조회 -->	
+ 	<select id="selectEmailAll" parameterType="searchVO" resultType="EmailVO">
+  		SELECT g.*
+		FROM (SELECT rownum rn,
+			         t.*
+			  FROM (SELECT s.sen_email_no,
+			               r.recp,
+			               r.refer,
+			               r.cust_no,
+			               r.recp_type,
+			               r.email_stat AS rstat,
+			               s.email_stat AS sstat,
+			               s.title,
+						   s.sender,
+						   s.sent_dt
+				    FROM email s JOIN inbox r
+							     ON (s.sen_email_no = r.sen_email_no)
+				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b')
+				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
+				    AND  s.sender = #{sender}
+				    <if test="keyword != null and keyword != ''">
+						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="sdStart != null">
+						AND s.sent_Dt >= #{sdStart}
+					</if>
+					<if test="sdEnd != null">						
+						AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+					</if>
+				    ORDER BY ${emSort} ) t
+				WHERE rownum <![CDATA[<=]]> (#{page} * 10)) g
+		WHERE g.rn > (#{page} -1) * 10
   	</select>
   	
     <!--  보낸메일 페이징 카운트 -->
@@ -172,6 +187,40 @@
   		FROM EMAIL
   	</select>
   	
+  	  <!-- 보낸메일 페이징 -->
+  	<select id="countMyEmail" parameterType="SearchVO">
+        SELECT COUNT(*)
+        FROM inbox r JOIN email s
+                     ON (s.sen_email_no = r.sen_email_no)
+		WHERE	sender = #{sender}
+		AND     s.cust_no = #{custNo}	
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="sdStart != null">
+			AND s.sent_Dt >= #{sdStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+		</if>
+	</select>
+  	
+  	<!-- 보낸메일 상세조회 -->
+  	<select id="selectEmail" resultType="EmailVO">
+    SELECT s.sen_email_no AS senEmailNo,
+           s.sender AS sender,
+           r.recp AS recp,
+           r.refer AS refer,
+           s.title AS title,
+           s.cntn AS cntn,
+           s.email_stat,
+           r.cust_no AS custNo
+    FROM   email s JOIN inbox r 
+                   ON s.sen_email_no = r.sen_email_no
+    WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
+</select>
+  	
+  	
   	<!-- 휴지통 보내기 -->
   	<update id="goWaste">
 	  	UPDATE email
@@ -179,24 +228,61 @@
 		WHERE sen_email_no = #{senEmailNo}<!-- 선택한 메일의 번호..파라미터로 넘어오는. -->
   	</update>
   	
-  	 <select id="countWasted">
-  		SELECT count(*)
-  		FROM   EMAIL
-  		WHERE  email_stat = '3B2b'
-  	</select>
-
-	<!-- 휴지통 전체조회, 서치VO 활용해야하고, 아마 수정할 부분이 있을 것.0523 -->
-	<select id="wastedList" parameterType="EmpVO" resultType="EmailVO">
-  	SELECT s.sender
-      	  ,s.title
-          ,s.sent_dt
-    FROM  email s JOIN inbox i
-          ON s.sen_email_no = i.sen_email_no
-    WHERE s.email_stat = '3B2b'
-          AND i.email_stat = '3B2b'
-          AND s.cust_no = #{custNo}
-          AND i.cust_no = #{custNo}
-          <!-- 고객사별 분류를 해서 가져와야하므로. 로그인 세션에서 받아온 고객사번과 대조 -->
+	<!-- 휴지통 전체조회 -->
+	<select id="wastedList" parameterType="searchVO" resultType="EmailVO">
+  	SELECT g.*
+		FROM (SELECT rownum rn,
+			         t.*
+			  FROM (SELECT s.sen_email_no,
+			               r.recp,
+			               r.refer,
+			               r.cust_no,
+			               r.recp_type,
+			               r.email_stat AS rstat, 
+			               s.email_stat AS sstat, 
+			               s.title,
+						   s.sender,
+						   s.sent_dt
+				    FROM   email s JOIN inbox r
+							     ON (s.sen_email_no = r.sen_email_no)
+                    WHERE  r.cust_no = #{custNo, jdbcType=VARCHAR} 
+                    AND    (r.email_stat = '3B2b' OR s.email_stat = '3B2b')
+                    AND  (s.sender = #{sender, jdbcType=VARCHAR}
+                    OR    r.recp = #{recp, jdbcType=VARCHAR} 
+                    OR    r.refer = #{refer, jdbcType=VARCHAR})
+                   <if test="keyword != null and keyword != ''">
+                      AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+                   </if>
+                   <if test="sdStart != null">
+                      AND s.sent_Dt >= #{sdStart}
+                   </if>
+                   <if test="sdEnd != null">						
+                      AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+                   </if>
+                         ORDER BY ${emSort} ) t
+				WHERE rownum <![CDATA[<=]]> (#{page} * 10)) g
+		WHERE g.rn > (#{page} -1) * 10
+	</select>
+	
+	  	  <!-- 휴지통 페이징 -->
+  	<select id="countWasted" parameterType="SearchVO">
+        SELECT COUNT(*)
+        FROM inbox r JOIN email s
+                     ON (s.sen_email_no = r.sen_email_no)
+        WHERE  (r.email_stat = '3B2b' OR s.email_stat = '3B2b')
+        AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
+        AND  (s.sender = #{sender}
+        OR    r.recp = #{recp} 
+        OR    r.refer = #{refer})	
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="sdStart != null">
+			AND s.sent_Dt >= #{sdStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND s.sent_Dt <![CDATA[<=]]> #{sdEnd}
+		</if>
 	</select>
 	
 	<!-- 휴지통 이메일 복원 -->

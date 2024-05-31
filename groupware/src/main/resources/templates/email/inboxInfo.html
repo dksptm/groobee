@@ -14,39 +14,48 @@
 	<th:block layout:fragment="Content">
 		<div class="container mt-4">
 			<h3 class="mb-4">받은 메일 상세</h3>
-			<form name="inboxInfoForm" 
-				th:object="${EmailVO}" id="inboxInfoForm" enctype = "multipart/form-data">
-				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<form name="inboxInfoForm" th:object="${EmailVO}" id="inboxInfoForm"
+				enctype="multipart/form-data">
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
 				<div class="mb-3 row">
 					<div>
 						<input type="hidden" name="custNo"
 							th:value="${#authentication.principal.custNo}">
+						<input type="hidden" name="empId"
+							th:value="${#authentication.principal.empId}">							
 					</div>
 					<label for="sender" class="col-sm-2 col-form-label">발신자</label>
 					<div class="col-sm-10">
-						<input type="text" id="sender"
-							th:value="${s.sender}" readonly>
+						<input type="text" id="sender" th:value="${emailVO.sender}"
+							readonly>
 					</div>
 				</div>
 				<div class="mb-3 row">
 					<label for="recp" class="col-sm-2 col-form-label">수신자</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control" id="recp"
-							th:value="${r.recp}" readonly>
+							th:value="${emailVO.recp}" readonly>
 					</div>
 				</div>
 				<div class="mb-3 row">
 					<label for="refer" class="col-sm-2 col-form-label">참조자</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="refer"
-							th:value="${r.refer}" readonly>
+						<th:block th:if="${emailVO.refer != null}">
+							<input type="text" class="form-control" id="refer"
+								th:value="${emailVO.refer}" readonly>
+						</th:block>
+						<th:block th:if="${emailVO.refer == null}">
+							<input type="text" class="form-control" id="refer" value="없음"
+								readonly>
+						</th:block>
 					</div>
 				</div>
 				<div class="mb-3 row">
 					<label for="title" class="col-sm-2 col-form-label">제목</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id="title"
-							th:value="${s.title}" readonly>
+							th:value="${emailVO.title}" readonly>
 					</div>
 				</div>
 
@@ -57,139 +66,20 @@
 				<div class="mb-3 row">
 					<label for="cntn" class="col-sm-2 col-form-label">내용</label>
 					<div class="col-sm-10">
-						<textarea class="form-control" id="cntn" 
-							th:value="${s.cntn}" rows="10"></textarea>
+						<textarea class="form-control" id="cntn" th:text="${emailVO.cntn}"
+							rows="10" readonly></textarea>
 					</div>
 				</div>
 				<div class="text-center">
 					<button type="button" id="reBtn" class="btn btn-primary">답장하기</button>
-					<button type="button" id="cancel" class="btn btn-secondary">취소</button>
+					<button type="button" id="back" class="btn btn-secondary">돌아가기</button>
 				</div>
 			</form>
 		</div>
-
-		<!-- 모달들 -->
-		<!-- 수신자 선택 모달화면 -->
-		<div class="modal fade" id="GetEmpListModal" tabindex="-1">
-			<div class="modal-dialog modal-xl modal-dialog-scrollable"
-				role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalScrollableTitle">주소록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>사원명</th>
-									<th>부서명</th>
-									<th>직급명</th>
-									<th>선택</th>
-								</tr>
-							</thead>
-							<tbody>
-								<th:block th:each="EmpVO : ${getEmpList}">
-									<tr>
-										<td class="bringEmpId">[[ ${EmpVO.empName} ]]</td>
-										<td>[[ ${EmpVO.deptName} ]]</td>
-										<td>[[ ${EmpVO.jobTitle} ]]</td>
-										<td><input type="radio" name="check"
-											th:value="${EmpVO.empId}"></td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id= "selectRecp" 
-							data-bs-dismiss="modal">선택완료</button>
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">닫기</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<!-- 참조자 선택 모달화면 -->
-		<div class="modal fade" id="GetReferListModal" tabindex="-1">
-			<div class="modal-dialog modal-xl modal-dialog-scrollable"
-				role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="modalScrollableTitle">주소록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>사원명</th>
-									<th>부서명</th>
-									<th>직급명</th>
-									<th>선택</th>
-								</tr>
-							</thead>
-							<tbody>
-								<th:block th:each="EmpVO : ${getEmpList}">
-									<tr>
-										<td>[[ ${EmpVO.empName} ]]</td>
-										<td>[[ ${EmpVO.deptName} ]]</td>
-										<td>[[ ${EmpVO.jobTitle} ]]</td>
-										<td><input type="radio" name="check"
-											th:value="${EmpVO.empId}"></td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id= "selectRefer" 
-							data-bs-dismiss="modal">선택완료</button>
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">닫기</button>
-					</div>
-				</div>
-			</div>
-		</div>
 		<script src="/js/html2canvas.js"></script>
 		<script>
-// 발송 버튼 기능
-document.querySelector('form[name="insertForm"]').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    let formData = new FormData(document.getElementById('emailInsertForm'));
-    let recp = document.getElementById('recp');
-    let title = document.getElementById('title');
-	try{
-	    if (recp.value === '') {
-	        alert('수신자가 없습니다.');
-	        recp.focus();
-	        return;
-	    } else if (title.value === '') {
-	        alert('제목은 필수입니다.');
-	        title.focus();
-	        return;
-	    }
-	    alert('발송 완료!');
-	    this.submit();
-	} catch {
-		alert('발송 실패.');
-	}
-})
-
-// 모달창 - 수신자 선택 -> 추후에 id값만 붙이는게 아닌, 이름도 같이 표시하게 해야 함.
-$("#selectRecp").on("click", function(e){
-						$("#recp").val($('input:radio:checked').val());
-					})
-// 모달창 - 참조자 선택 -> 추후에 id값만 붙이는게 아닌, 이름도 같이 표시하게 해야 함.
-$("#selectRefer").on("click", function(e){
-						$("#refer").val($('input:radio:checked').val());
-					})
-
-</script>
+			
+		</script>
 	</th:block>
 </body>
 </html>
