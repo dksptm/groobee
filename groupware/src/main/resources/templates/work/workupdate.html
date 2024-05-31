@@ -11,9 +11,9 @@
 					<br>
 						<br>
 						<h2 style="text-align: center">수정 화면</h2>
-						<p>
+						<br>
 						<hr>
-						<form action="/workupdate" method="post" th:object="${workVO}">
+						<form action="/workupdate" method="post" th:object="${workVO}" id="forms">
 						<table id="up" class="table table-striped-columns">
 								<tr>
 									<th>사원번호</th>
@@ -24,8 +24,7 @@
 								<tr>
 									<td>[[*{empNo}]]</td>
 									<td>[[*{#authentication.principal.deptId}]]</td>
-									<td>[[*{empName}]]
-									</td>
+									<td>[[*{empName}]]</td>
 									<td>
 									<select th:filed="*{wkSite}" class="form-select">
 									<option value="2A1a">근무일</option>
@@ -53,14 +52,14 @@
 									<td><input type="time" th:filed="*{wkOut}"></td>
 									<td>
 									<select th:filed="*{wkInLoc}" class="form-select">
-									<option value="대구">대구본사</option>
-									<option value="부산">부산지점</option>
+									<option value="대구본사">대구본사</option>
+									<option value="부산지점">부산지점</option>
 									</select>
 									</td>
 									<td>
 									<select th:filed="*{wkOutLoc}" class="form-select">
-									<option value="대구">대구본사</option>
-									<option value="부산">부산지점</option>
+									<option value="대구본사">대구본사</option>
+									<option value="부산지점">부산지점</option>
 									</select>
 									</td>
 									<td>
@@ -83,7 +82,7 @@
 						<br>
 						<p>
 							<button type="submit" class="btn btn-primary" id="up">수정</button>
-							<a type="button" href="worklist" class="btn btn-primary" id="re">취소</a>
+							<a type="button" href="worklist" class="btn btn-primary">취소</a>
 						</p>
 					</div>
 					</form>
@@ -91,7 +90,20 @@
 			</div>
 		</div>
 	<script>
+		/* $('#id').on('click', updateAjax);
 		
+		function updateAjax() {
+			
+		}
+		console.log(formObj)
+		function data() {
+			let forms = $('#forms').serializeArray();
+			let formObj = {}
+			forms.forEach(inputTag => {
+				formObj[inputTag.name] = inputTag.value;
+			})
+			return formObj;
+		} */
 	</script>
 	</th:block>
 </body>
