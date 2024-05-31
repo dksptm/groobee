@@ -22,7 +22,7 @@
 		</div>
 		<hr>
 		<div class="row m-3 p-3 bg-white shadow-lg rounded">
-		<form id="docInsertForm" th:action="@{/docInsert}" method="post" th:object="${doc}" enctype="multipart/form-data">
+		<form id="docInsertForm" th:action="@{/cust/doc/insert}" method="post" th:object="${doc}" enctype="multipart/form-data">
 		
 			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
@@ -251,7 +251,6 @@
 			if(!docCheck()) return;
 			
 			// 
-			
 		    Swal.fire({
 		      title: '문서를 저장하시겠습니까?',
 		      text: "",

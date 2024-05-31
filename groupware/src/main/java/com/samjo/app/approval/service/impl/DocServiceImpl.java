@@ -1,6 +1,7 @@
 package com.samjo.app.approval.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -255,6 +256,16 @@ public class DocServiceImpl implements DocService {
 		});
 		
 		return docFileList;
+	}
+
+	@Override
+	public Map<String, Object> deleteDoc(DocVO docVO) {
+		
+		Map<String, Object> map = new HashMap<>();
+		docMapper.deleteDoc(docVO);
+		map.put("OUT", docVO.getResult());
+		
+		return map;
 	}
 
 

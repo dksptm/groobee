@@ -6,9 +6,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.approval.service.DocService;
@@ -59,7 +63,7 @@ public class DocController {
 	}
 	
 	// 한 직원이 작성한 문서 전체 조회.
-	@GetMapping("myDocList")
+	@GetMapping("cust/doc/mydoc")
 	public String myDocList(SearchVO searchVO, Model model) {
 		
 		searchVO = checkSearch(searchVO);
@@ -73,7 +77,7 @@ public class DocController {
 	        model.addAttribute("list", list);
 	        model.addAttribute("pageDTO", pageDTO);
 	        model.addAttribute("search", searchVO);
-	        model.addAttribute("path", "myDocList");
+	        model.addAttribute("path", "cust/doc/mydoc");
 	        
             return "approval/list/empDocs";
             
@@ -181,7 +185,7 @@ public class DocController {
 	}
 	
 	// 문서작성 -양식.
-	@GetMapping("docInsert")
+	@GetMapping("cust/doc/insert")
 	public String dobInsertForm(Model model) {
 		
 		List<TempVO> temps = docService.getCustTemps();
@@ -194,7 +198,7 @@ public class DocController {
 	}
 	
 	// 문서작성 -저장.
-	@PostMapping("docInsert")
+	@PostMapping("cust/doc/insert")
 	public String docInsertProcess(DocVO docVO, MultipartFile[] filelist) {
 		
 		// 첨부파일 디렉토리 저장부터.
@@ -276,6 +280,21 @@ public class DocController {
 			return "redirect:docInfo?docNo=" + result;
 		}
 		
+	}
+	
+	// 문서삭제
+	@ResponseBody
+	@DeleteMapping("cust/doc/delet/{docNo}")
+	public Map<String, Object> deleteDoc(@PathVariable Integer docNo, 
+												@RequestBody DocVO docVO) {
+		
+		// 실제 첨부파일 삭제.
+		List<String> savaFileNames = docService.getDocFileSavaNames(docVO);
+		if (savaFileNames.size() > 0) {
+			fileUploadService.deleteFileInfo(savaFileNames);
+		}
+		
+		return docService.deleteDoc(docVO);
 	}
 	
 	public SearchVO checkSearch(SearchVO searchVO) {

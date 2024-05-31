@@ -656,5 +656,15 @@
 		WHERE doc_no = #{dno}
 	</delete>
 	
+	<!-- 문서삭제 프로시저. -->
+	<delete id="deleteDoc" parameterType="DocVO" statementType="CALLABLE">
+		{CALL
+			doc_del(
+				#{docNo, mode=IN, jdbcType=INTEGER},
+				#{result, mode=OUT, jdbcType=VARCHAR}	
+			)
+		}	
+	</delete>
+	
 </mapper>
   

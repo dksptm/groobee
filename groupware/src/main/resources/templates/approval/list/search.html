@@ -14,13 +14,13 @@
 							<td><select class="form-select" th:field="*{keywordCondition}">
 									<option value="d.title" selected>제목</option>
 									<!-- '문서함'에서는 기안자검색 비활성화 -->
-									<option value="d.draft_name" th:disabled="${path} == 'myDocList'">기안자</option>
+									<option value="d.draft_name" th:disabled="${path} == 'cust/doc/mydoc'">기안자</option>
 							</select></td>
 							<td colspan='3'><input class="form-control" th:field="*{keyword}"
 								type="text" placeholder="검색어입력"></td>
 							<td class="form-control bg-transparent">작성상태</td>
 							<!-- '문서함' 에서만 작성상태 검색가능 -->
-							<th:block th:if="${path} == 'myDocList'">
+							<th:block th:if="${path} == 'cust/doc/mydoc'">
 								<td><select class="form-select" th:field="*{draftStatCondition}">
 										<option th:value="draftStatAll">전체</option>
 										<option value="4A1a">작성중</option>
@@ -28,7 +28,7 @@
 								</select></td>
 							</th:block>
 							<!-- '문서함' 이외는 작성상태 상신완료로 고정 -->
-							<th:block th:unless="${path} == 'myDocList'">
+							<th:block th:unless="${path} == 'cust/doc/mydoc'">
 								<td><select class="form-select" disabled>
 										<option value="4A2a" selected>상신완료</option>
 								</select></td>
