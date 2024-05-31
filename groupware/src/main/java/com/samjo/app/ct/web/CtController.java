@@ -73,6 +73,13 @@ public class CtController {
 		return "solution/ct/ctInsert";
 	}
 	
+	//계약 등록 처리
+	@PostMapping()
+	public String ctInsertProcces(CtVO ctVO, String[] modIds) {
+		ctservice.ctInsert(ctVO, modIds);
+		return "";
+	}
+	
 	// 계약 수정 화면
 	@GetMapping("sol/ctUpdate/{ctNo}")
 	public String ctUpdatePage(@PathVariable int ctNo, Model model) {

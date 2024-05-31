@@ -24,6 +24,7 @@
 						ct.ct_file
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
+				WHERE ct.cust_no NOT IN '0000'
 				<include refid="testsql" />
 				ORDER BY ${ctSort},cust_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
@@ -39,20 +40,18 @@
 	</select>
 	
 	<sql id="testsql">
-		<where>
-			<if test="keyword != null and keyword != ''">
-				AND ${searchCondition} LIKE '%' || #{keyword} || '%'
-			</if>
-			<if test="ctStat != null and ctStat != ''">
-				AND ct.ct_stat LIKE #{ctStat}
-			</if>
-			<if test="ctStart != null">
-				AND ${ctDt} >= #{ctStart}
-			</if>
-			<if test="ctEnd != null">						
-				AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
-			</if> 
-		</where>
+		<if test="keyword != null and keyword != ''">
+			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="ctStat != null and ctStat != ''">
+			AND ct.ct_stat LIKE #{ctStat}
+		</if>
+		<if test="ctStart != null">
+			AND ${ctDt} >= #{ctStart}
+		</if>
+		<if test="ctEnd != null">						
+			AND ${ctDt} <![CDATA[<=]]> #{ctEnd}
+		</if> 
 	</sql>
 	
 	<!-- 계약 상세조회 -->
@@ -105,7 +104,7 @@
 	<select id="selecetModAll">
 		SELECT mod_id, 
 			   mod_name,
-			   mod_stat,
+			   get_codename(mod_stat) as mod_stat,
 			   mod_info
 		FROM mod
 		ORDER BY mod_id 
@@ -205,4 +204,28 @@
 		WHERE use_end_dt = #{chgDt}
 		ORDER BY u.mod_id
 	</select>
+	
+	<!-- 계약신규등록 -->
+	<insert id="ctInsert" parameterType="CtVO">
+		INSERT INTO ct(ct_no,
+					   ct_stat,
+				       cust_no,
+				       ct_file,
+				       ct_start_dt,
+				       ct_end_dt,
+				       ct_amt,
+				       use_mod_cnt,
+				       max_emps,
+				       cur_emps)
+		VALUES(#{ct_no},
+			   #{ct_stat},
+			   #{cust_no},
+			   #{ct_file},
+			   #{ct_start_dt},
+			   #{ct_end_dt},
+			   #{ct_amt},
+			   #{use_mod_cnt},
+			   #{max_emps},
+			   1)
+	</insert>
 </mapper>

@@ -62,6 +62,7 @@ public class CtServiceImpl implements CtService{
 	//계약 수정처리
 	@Override
 	public Map<String, Object> ctUpdate(CtVO ctVO, String[] modIds) {
+		//계약서 파일등록 처리
 		if(ctVO.getUploadfile() != null) {
 			List<String> filePath = uploadservice.uploadFile(ctVO.getUploadfile());
 			for(String file : filePath) {
@@ -70,10 +71,40 @@ public class CtServiceImpl implements CtService{
 				ctVO.setCtFile(filepath);
 			}
 		}
+		//계약이력 등록
 		int result1 = ctMapper.ctHist(ctVO.getCtNo());
+		//현재계약 수정
 		int result2 = ctMapper.ctUpdate(ctVO);
-		
+		//모듈이력 등록
 		ctMapper.useModUpdate(ctVO.getCtNo());
+		for(String modId : modIds) {
+			ModuleVO modVO = new ModuleVO();
+			modVO.setModId(modId);
+			modVO.setCtNo(ctVO.getCtNo());
+			modVO.setCustNo(ctVO.getCustNo());
+			modVO.setCustName(ctVO.getCustName());
+			modVO.setUseStartDt(ctVO.getCtStartDt());
+			modVO.setUseEndDt(ctVO.getCtEndDt());
+			ctMapper.useModInsert(modVO);
+		}
+		return null;
+	}
+
+	//계약 등록처리
+	@Override
+	public Map<String, Object> ctInsert(CtVO ctVO, String[] modIds) {
+		//계약서 파일등록 처리
+		if(ctVO.getUploadfile() != null) {
+			List<String> filePath = uploadservice.uploadFile(ctVO.getUploadfile());
+			for(String file : filePath) {
+		        String[] resultAry = file.split(":::");
+		        String filepath = resultAry[resultAry.length - 1];
+				ctVO.setCtFile(filepath);
+			}
+		}
+		
+		
+		//사용모듈 등록
 		for(String modId : modIds) {
 			ModuleVO modVO = new ModuleVO();
 			modVO.setModId(modId);

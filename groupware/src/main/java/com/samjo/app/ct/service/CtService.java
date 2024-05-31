@@ -16,6 +16,8 @@ public interface CtService {
 	public CtVO ctInfo(int ctNO);
 	//모듈목록 조회
 	public List<ModuleVO> modList();
+	//계약 등록처리
+	public Map<String, Object> ctInsert(CtVO ctVO, String[] modIds);
 	//계약 수정처리
 	public Map<String, Object> ctUpdate(CtVO ctVO, String[] modIds);
 }
