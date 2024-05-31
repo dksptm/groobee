@@ -19,6 +19,8 @@ public interface WorkMapper {
 	public int workin(WorkVO workVO);
 	// 퇴근 업데이트
 	public int workout(WorkVO workVO);
+	// 조퇴 업데이트
+	public int workstop(WorkVO workVO);
 	// 출근등록
 	public int insertWork(WorkVO workVo);
 	

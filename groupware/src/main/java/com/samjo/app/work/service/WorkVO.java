@@ -11,6 +11,7 @@ public class WorkVO {
 	private int empNo;
 	private String empName;
 	private String empId;
+	private String deptId;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sysdate;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

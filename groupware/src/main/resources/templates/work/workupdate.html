@@ -23,8 +23,8 @@
 									<th>근무여부</th>
 								</tr>
 								<tr>
-									<td><input th:field="*{empId}"></td>
-									<td>[[*{#authentication.principal.deptId}]]</td>
+									<td><input th:field="*{empId}" readOnly></td>
+									<td>[[*{deptId}]]</td>
 									<td>[[*{empName}]]</td>
 									<td>
 									<select th:field="*{wkYn}" class="form-select">
@@ -48,7 +48,7 @@
 									<th>근무지</th>
 								</tr>
 								<tr>
-									<td><input th:value="${#dates.format(info.dt, 'yyyy-MM-dd')}" name="dt"></td>
+									<td><input th:value="${#dates.format(info.dt, 'yyyy-MM-dd')}" name="dt" readOnly></td>
 									<td><input type="time" id="wkIn" name="wkIn" th:value="${#dates.format(info.wkIn, 'HH:mm')}"></td>
 									<td><input type="time" id="wkOut" name="wkOut" th:value="${#dates.format(info.wkOut, 'HH:mm')}"></td>									<td>
 									<select th:field="*{wkInLoc}" class="form-select" >
@@ -72,8 +72,8 @@
 									</td>
 									<td>
 									<select th:field="*{wkSite}" class="form-select">
-									<option value="3C1c">내근</option>
-									<option value="3C2c">외근</option>
+									<option value="2C1c">내근</option>
+									<option value="2C2c">외근</option>
 									</select>
 									</td>
 								</tr>
@@ -89,22 +89,6 @@
 				</div>
 			</div>
 		</div>
-	<script>
-		/* $('#id').on('click', updateAjax);
-		
-		function updateAjax() {
-			
-		}
-		console.log(formObj)
-		function data() {
-			let forms = $('#forms').serializeArray();
-			let formObj = {}
-			forms.forEach(inputTag => {
-				formObj[inputTag.name] = inputTag.value;
-			})
-			return formObj;
-		} */
-	</script>
 	</th:block>
 </body>
 </html>

@@ -22,7 +22,7 @@
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
                                WHERE j.emp_id = #{empId} 
-                         ORDER BY dt) e
+                         ORDER BY dt DESC) e
                    <include refid="select"></include>
                              ) w
             WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
@@ -46,7 +46,7 @@ FROM (SELECT rownum rn,
                                get_codename(wk_site) wk_site
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
-                         ORDER BY dt) e
+                         ORDER BY dt DESC) e
                    <include refid="select"></include>
                              ) w
             WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
@@ -106,7 +106,7 @@ WHERE t.rn > (#{page} -1) * 5
                        hire_dt,
                        emp_tel
                  FROM emp
-                 ORDER BY #{filter}) e
+                 ORDER BY #{filter} DESC) e
             WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
 WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 	</select>
@@ -119,7 +119,8 @@ WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 	<!-- 출근을 입력하기위해... 중복이되면 안됨. (조건 = empID, Dt)-->
 	<update id="workin">
 	UPDATE wk
-	SET wk_in = sysdate
+	SET wk_in = sysdate,
+	    wk_stat = '2B1b'
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
 	<!-- 출근을 했는지 안했는지 체크하기위해 -->
@@ -130,9 +131,16 @@ WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
 	</select>
 	
 	<!-- 퇴근을 입력하기위해... 중복이됨.-->
-	 <update id="workout">
+	<update id="workout">
 	UPDATE wk
 	SET wk_out = sysdate
+	where emp_id = #{empId} AND dt = #{dt}
+	</update>
+	<!-- 조퇴 -->
+	<update id="workstop">
+	UPDATE wk
+	SET wk_out = sysdate,
+	    wk_stat = '2B4b'
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
   <!-- 모든사원 insert (오라클 스케쥴러를 통해서 해결...지워도됨.) -->
@@ -158,6 +166,9 @@ values (
 select j.emp_id,
        j.emp_no,
        j.emp_name,
+       (SELECT dept_name
+        FROM dept
+        WHERE dept_id = j.dept_id) dept_id ,
        i.dt,
        i.wk_in,
        i.wk_out,

@@ -115,6 +115,13 @@ public class WorkControll {
 		  public Map<String, Object> workout(WorkVO workVO) {
 			  return workService.workout(workVO);
 		  }
+		  
+ 		  // 조퇴 업데이트(최초 이후 계속 업데이트)
+		  @PostMapping("workstop")
+		  @ResponseBody
+		  public Map<String, Object> workstop(WorkVO workVO) {
+			  return workService.workstop(workVO);
+		  }
 		 
 
 }

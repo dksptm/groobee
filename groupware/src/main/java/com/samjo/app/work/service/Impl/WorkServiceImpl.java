@@ -71,8 +71,8 @@ public class WorkServiceImpl implements WorkService{
 	}
 	// 등록
 	@Override
-	public int insertWork(WorkVO workVo) {
-		return workMapper.insertWork(workVo);
+	public int insertWork(WorkVO workVO) {
+		return workMapper.insertWork(workVO);
 	}
 	
 	
@@ -109,6 +109,25 @@ public class WorkServiceImpl implements WorkService{
 		boolean isSuccessed = false;
 		
 		int result = workMapper.update(workVO);
+		
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		// map.target = { employeeId : '', lastName : '', ...}
+		map.put("target", workVO);
+		
+		return map;
+	}
+
+
+	@Override
+	public Map<String, Object> workstop(WorkVO workVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result = workMapper.workstop(workVO);
 		
 		if(result == 1) {
 			isSuccessed = true;

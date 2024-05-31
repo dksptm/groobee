@@ -19,6 +19,8 @@ public interface WorkService {
 	// 퇴근버튼
 	public Map<String, Object> workout(WorkVO workVo);
 	
+	// 조퇴버튼
+	public Map<String, Object> workstop(WorkVO workVo);
 	// 출근등록
 	public int insertWork(WorkVO workVo);
 	
