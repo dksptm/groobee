@@ -433,20 +433,24 @@
 		let year = now.getFullYear();
 		let month = now.getMonth();
 		let day = now.getDate();
-		let sun = now.getDate() - now.getDay();
 		
-/* 		month = month < 10 ? '0' + month : month;
-	    day = day < 10 ? '0' + day : day; */
+		
+		
+ 		month = month < 10 ? '0' + month : month;
+	    day = day < 10 ? '0' + day : day; 
 		
 	    
 	    
 	    if(type == '5C1c') {
+	    	
 	    	let si = Number(perd);
-	    	return new Date(year, month, day, si, 0, 0, 0);
+	    	return year + "-" + month + "-" + day + "T" + si;
 	    	
 	    } else if(type == '5C2c') {
 	    	
-	    	return new Date(year, month, sun + Number(perd));
+	    	let sun = now.getDate() - now.getDay();
+	    	let yoil = sun + Number(perd);
+	    	return year + "-" + month + "-" + yoil + "T" + "00:00";
 	    	
 	    } else if(type == '5C3c') {
 	    	
