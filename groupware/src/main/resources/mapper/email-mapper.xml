@@ -14,14 +14,15 @@
 			               r.refer,
 			               r.cust_no,
 			               r.recp_type,
-			               r.email_stat,
+			               r.email_stat AS rstat,
+			               s.email_stat AS sstat,
 			               s.sen_email_no, 
 			               s.title,
 						   s.sender,
 						   s.sent_dt
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
-				    WHERE  r.email_stat = '3B1b'
+				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b') 
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  (r.recp = #{recp} OR r.refer = #{recp})
 				    <if test="keyword != null and keyword != ''">
@@ -156,13 +157,14 @@
 			               r.refer,
 			               r.cust_no,
 			               r.recp_type,
-			               r.email_stat,
+			               r.email_stat AS rstat,
+			               s.email_stat AS sstat,
 			               s.title,
 						   s.sender,
 						   s.sent_dt
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
-				    WHERE  r.email_stat = '3B1b'
+				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b')
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  s.sender = #{sender}
 				    <if test="keyword != null and keyword != ''">

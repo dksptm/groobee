@@ -74,7 +74,7 @@
 								</thead>
 								<tbody>
 									<th:block th:each="emailVO : ${list}">
-										<tr th:onclick="|location.href='@{/inboxInfo/}@{${emailVO.senEmailNo}}'|">
+										<tr th:onclick="|location.href='@{/cust/inboxInfo/}@{${emailVO.senEmailNo}}'|">
 											<td>[[ ${emailVO.sender} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
@@ -202,7 +202,7 @@
 			
 	function showTable(page) { 
     $.ajax({
-        url: '/viewInboxList',
+        url: '/cust/viewInboxList',
         type: 'POST',
         beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token);

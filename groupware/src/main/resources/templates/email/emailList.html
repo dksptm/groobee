@@ -67,7 +67,7 @@
 								</thead>
 								<tbody>
 									<th:block th:each="emailVO : ${list}">
-										<tr th:onclick="|location.href='@{/emailInfo/}@{${emailVO.senEmailNo}}'|">									
+										<tr th:onclick="|location.href='@{/cust/emailInfo/}@{${emailVO.senEmailNo}}'|">									
 											<td>[[ ${emailVO.recp} ]]</td>
 											<td>[[ ${emailVO.title} ]]</td>
 											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
@@ -75,10 +75,10 @@
 												<th:block th:if="${emailVO.sender == searchVO.recp}">
 											    	셀프
 												</th:block>
-												<th:block th:if="${emailVO.refer != searchVO.recp}">
+												<th:block th:if="${emailVO.refer == null}">
 											    	발신
 												</th:block>
-												<th:block th:if="${emailVO.refer == searchVO.recp}">
+												<th:block th:if="${emailVO.refer != null}">
 											    	참조
 												</th:block>
 											</td>	
@@ -182,7 +182,7 @@
 			
 			function showTable(page) { 
     $.ajax({
-        url: '/viewEmailList',
+        url: '/cust/viewEmailList',
         type: 'POST',
         beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token);
