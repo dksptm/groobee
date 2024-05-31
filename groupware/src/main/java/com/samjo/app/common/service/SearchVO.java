@@ -72,4 +72,13 @@ public class SearchVO {
 	private String prjtMat;
 	private int participantsCnt;
 	
+	private String prjtId;
+	private String prjtSort;
+	private String prjtStat;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date prjtStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date prjtDue;
+	private String prjtDt;
+
 }

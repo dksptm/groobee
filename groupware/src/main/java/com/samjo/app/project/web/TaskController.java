@@ -75,11 +75,11 @@ public class TaskController {
 		 
 		// 프로젝트(하위) 업무 등록
 		@GetMapping("taskInsert")
-		public String taskInsertForm(Model model) {
+		public String taskInsertForm(SearchVO searchVO, Model model) {
 			List<DeptVO> list = deptService.deptAllList();
 			model.addAttribute("dept", list);
 			
-			List<ProjectVO> plist = projectService.PrjtAllList();
+			List<ProjectVO> plist = projectService.PrjtAllList(searchVO);
 			model.addAttribute("plist", plist);
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();

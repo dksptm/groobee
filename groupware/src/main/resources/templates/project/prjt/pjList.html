@@ -1,52 +1,226 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/"
+<html xmlns:th="https://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="container">
-			<br>
-			<h4>프로젝트 조회</h4>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>프로젝트ID</th>
-						<th>프로젝트명</th>
-						<th>프로젝트상태</th>
-						<th>시작일</th>
-						<th>마감일</th>
-						<th>목적</th>
-						<th>개요</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="prjt : ${projects}">
-						<td>[[ ${prjt.prjtId}]]</td>
-						<td>[[ ${prjt.prjtName}]]</td>
-						<td>[[ ${prjt.prjtStat}]]</td>
-						<td>[[ ${#dates.format(prjt.prjtStartDt, "yyyy-MM-dd")}]]</td>
-						<td>[[ ${#dates.format(prjt.prjtDueDt, "yyyy-MM-dd")}]]</td>
-						<td>[[ ${prjt.purpose}]]</td>
-						<td>[[ ${prjt.smry}]]</td>
-					</tr>
-				</tbody>
-				</th:block>
-			</table>
-			<div>
-				<button type="button" class="btn btn-primary">수정</button>
-				<button type="button" class="btn btn-primary" id="prjtDelBtn">삭제</button>
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">프로젝트 조회</h5>
+				<div class="card-body ">
+					
+					<!-- 검색 -->
+					<p class="navbar-brand">검색조건</p>
+					<nav class="navbar navbar-expand-lg navbar-light">
+						<div class="container-fluid">
+							<button class="navbar-toggler" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#navbarSupportedContent"
+								aria-controls="navbarSupportedContent" aria-expanded="false"
+								aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							</button>
+							<div class="collapse navbar-collapse" id="navbarSupportedContent">
+								<table>
+									<tr>
+										<td><select class="form-select searchKeySelect">
+												<option value="prjt_name">프로젝트명</option>
+												<option value="prjt_id">프로젝트번호</option>
+										</select></td>
+										<td colspan='3'><input class="form-control searchKey" type="text"></td>
+										<td class="text-white">_</td>
+										<td class="text-white">_</td>
+										<td class="form-control">진행상태</td>
+										<td><select class="form-select prjtStat">
+												<option value="statAll">전체</option>
+												<option value="5B1b">프로젝트진행중</option>
+												<option value="5B2b">프로젝트완료</option>
+										</select></td>
+									</tr>
+									<tr>
+									<td class="form-control" >기간</td>
+										<td><input class="form-select fromDt" type="date"></td>
+										<td>~</td>
+										<td><input class="form-select toDt" type="date"></td>
+										<td class="text-white">_</td>
+										<td class="text-white">_</td>
+										<td class="form-control">정렬조건</td>
+										<td><select class="form-select searchSelect">
+												<option value="prjt_id">프로젝트번호순</option>
+												<option value="prjt_id DESC">프로젝트번호역순</option>
+												<option value="prjt_start_dt">프로젝트시작일순</option>
+												<option value="prjt_start_dt DESC">프로젝트시작일역순</option>
+												<option value="prjt_due_dt">프로젝트마감일순</option>
+												<option value="prjt_due_dt DESC">프로젝트마감일역순</option>
+										</select></td>
+									</tr>
+								</table>
+								<span class="position-absolute top-50 end-0 translate-middle-y">
+									<button class="btn btn-outline-success searchbtn bg-light"
+										type="submit">검색</button>
+								</span>
+							</div>
+						</div>
+					</nav>
+					<div id="prjtTable">
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>프로젝트ID</th>
+										<th>프로젝트명</th>
+										<th>프로젝트진행상황</th>
+										<th>시작일</th>
+										<th>마감일</th>
+										<th>개요</th>
+										<th>내용</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="pjlist : ${pjlist}">
+										<tr>
+											<td>[[ ${pjlist.prjtId} ]]</td>
+											<td>[[ ${pjlist.prjtName} ]]</td>
+											<td
+												th:class="${pjlist.prjtStat == '5E2e' ? 'table-secondary' : ''}">
+											<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
+											<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")} ]]</td>
+											<td>[[ ${pjlist.purpose} ]]</td>
+											<td>[[ ${pjlist.smry} ]]</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						
+						<!-- 페이징 -->
+						<div class="paging mt-2">
+							<th:block th:if="${PrjtDTO.totalCnt} != 0">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center">
+
+										<th:block th:if="${PrjtDTO.prev}">
+											<li class="page-item prev"><a href="#"
+												th:id="${PrjtDTO.startPage - 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-left"></i></a></li>
+										</th:block>
+										<th:block
+											th:each="num : ${#numbers.sequence(1, PrjtDTO.endPage)}">
+											<li class="page-item "
+												th:attrappend="class=${num ==  PrjtDTO.page ? 'active' : ' '}">
+												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+											</li>
+										</th:block>
+										<th:block th:if="${PrjtDTO.next}">
+											<li class="page-item next"><a href="#"
+												th:id="${PrjtDTO.endPage + 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-right"></i></a></li>
+										</th:block>
+									</ul>
+								</nav>
+							</th:block>
+							<th:block th:unless="${PrjtDTO.totalCnt} != 0">
+								<p class="text-center mt-4">현재 프로젝트가 없습니다.</p>
+							</th:block>
+						</div>
+						<!-- /페이징 -->
+					</div>
+				</div>
 			</div>
 		</div>
+
 		
 		<script>
+		//CSRF
+		let header = $("meta[name='_csrf_header']").attr('content');
+		let token = $("meta[name='_csrf']").attr('content');
+
+		//기간 검색 범위처리
+		$('.fromDt').on('change', function(e) {
+			$('.toDt').attr('min', this.value);
+		});
+		$('.toDt').on('change', function(e) {
+			$('.fromDt').attr('max', this.value);
+		});
+		
+		// 검색 조건 변수 
+		let keyword;
+		let searchCondition;
+		let prjtStat;
+		let prjtDt;
+		let prjtStart;
+		let prjtDue;
+		let taskSort;
+		
+		//검색버튼 이벤트 처리
+		$(".searchbtn").on("click", function(e) {
+			updateParams();
+			let page = 1;
+			showTable(page);
+		});
+
+		//페이징 링크 처리
+		$(document).on("click", ".pagebtn", function(e) {
+			e.preventDefault();
+			let page = e.target.id;
+			showTable(page);
+		});
+		
+		// 검색 조건 갱신 함수
+		 function updateParams() {
+			//키워드 검색 처리
+	        keyword = $('.searchKey').val();
+	        searchCondition = $('.searchKeySelect').val();
+	        
+	    	// 기간 검색 처리
+	        prjtDt = $('.prjtDt').val();
+	        prjtStart = $('.fromDt').val();
+	        prjtDue = $('.toDt').val();
+	
+			// 프로젝트 상황 검색 처리
+			if ($('.prjtStat').val() != 'statAll') {
+				prjtStat = $('.prjtStat').val();
+	        } else {
+	        	prjtMat = null;
+	        }
+			
+			// 정렬 처리
+			prjtSort = $('.searchSelect').val();
+		 }
+		 
+		// 검색 AJAX 함수
+		    function showTable(page) {
+			$.ajax({
+					url : '/viewPjList',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					data : {
+						page : page,
+						prjtSort : prjtSort,
+						prjtStart : prjtStart,
+						prjtDue : prjtDue,
+						prjtDt : prjtDt,
+						prjtStat : prjtStat,
+						keyword: keyword,
+		                searchCondition: searchCondition
+					},
+					dataType : 'Text',
+					success : function(result) {
+							$('#prjtTable').replaceWith(result);
+				}
+			});
+		}		
+			
 			// 삭제버튼 : 삭제 후 리스트로 이동 
-			$(function() {
+			/*$(function() {
 				$('#prjtDelBtn').on('click', function() {
 
 					let prjtId = $(this).data('');
 					console.log(prjtId); // 값을 제대로 가져왔는지 확인
 
-				/* 	$.ajax({
+				 	$.ajax({
 						type : 'GET',
 						url : '/prjtDelete?prjtId=' + prjtId,
 						dataType : 'json',
@@ -56,11 +230,10 @@
 						error : function(error) {
 							alert('삭제에 실패했습니다.');
 						}
-					}); */
+					}); 
 				});
-			});
+			});*/
 		</script>
-		
-		</body>
 	</th:block>
+</body>
 </html>
