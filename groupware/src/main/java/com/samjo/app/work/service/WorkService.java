@@ -9,9 +9,9 @@ public interface WorkService {
 	// 전체 페이지 수
 	public int workcount(WorkSearchVO worksearchVO);
 	public int managercount();
-	
-	// 근태 전체 조회
-	public List<WorkVO> workList(WorkSearchVO worksearchVO);
+
+	// 근태 전체기록
+	public List<WorkVO> selectlist(WorkSearchVO worksearchVO);
 	
 	// 출근버튼
 	public Map<String, Object> workin(WorkVO workVo);
@@ -24,6 +24,9 @@ public interface WorkService {
 	
 	// 관리자 페이지 전체조회
 	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO);
+	
+	// 관리자의 선택 조회
+	public List<WorkVO> workList(WorkSearchVO worksearchVO);
 	
 	// 전체페이지의 상세 조회
 	public WorkVO selectWork(WorkVO workVO);

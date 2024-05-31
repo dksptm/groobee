@@ -15,9 +15,9 @@ public class WorkVO {
 	private Date sysdate;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dt;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:MI:SS")
+	@DateTimeFormat(pattern = "HH:mm")
 	private Date wkIn;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:MI:SS")
+	@DateTimeFormat(pattern = "HH:mm")
 	private Date wkOut;
 	private String wkInLoc;
 	private String wkOutLoc;

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,33 +25,24 @@ public class WorkControll {
 
 	@Autowired
 	WorkService workService;
+	
+	@GetMapping("worklists")
+	public String selectlist(@PathVariable String empId, WorkSearchVO worksearchVO, Model model) {
+		
+		if (worksearchVO.getPage() == 0) {
+			worksearchVO.setPage(1);
+		}
+		List<WorkVO> list = workService.selectlist(worksearchVO);
+		model.addAttribute("list", list);
+		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
+		model.addAttribute("filter", workpageDTO);
+		return "work/worklists";
+		
+	}
 
 	// 일반 페이지 전체 조회
 	@GetMapping("worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
-		 //Date date = new Date();
-		 //SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-         
-
-//		 System.out.println("TEST : "+worksearchVO.getEmpId());
-//		  if (worksearchVO.getEmpId() == null) {
-//			  worksearchVO.setEmpId();
-//			  }
-			 
-		 
-			/*
-			 * if (worksearchVO.getOneDate() == null) { worksearchVO.setOneDate(date); }
-			 */
-		 
-		/*
-		 * if (worksearchVO.getWkYn() == null) { worksearchVO.setWkYn("근무일"); }
-		 */
-		/*
-		 * if (worksearchVO.getWkSite() == null) { worksearchVO.setWkSite("내근"); }
-		 */
-		/*
-		 * if(worksearchVO.getWkStat() == null) { worksearchVO.setWkStat("정상근무"); }
-		 */
 		 
 		if (worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);

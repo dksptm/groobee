@@ -3,6 +3,31 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
+  <select id="selectlist" resultType="WorkVO" parameterType="workSearchVO">
+  SELECT t.*
+	FROM (SELECT rownum rn, 
+                     f.*
+      FROM (SELECT w.*
+            FROM (SELECT e.*
+                  FROM (SELECT
+                               i.dt,
+                               j.emp_id,
+                               j.emp_name,
+                               j.emp_no,
+                               i.wk_in,
+                               i.wk_out,
+                               get_codename(wk_yn) wk_yn,
+                               get_codename(wk_stat) wk_stat,
+                               get_codename(wk_site) wk_site
+                               FROM emp j join wk i
+                                            on j.emp_id = i.emp_id
+                               WHERE j.emp_id = #{empId} 
+                         ORDER BY dt) e
+                   <include refid="select"></include>
+                             ) w
+            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
+WHERE t.rn > (#{page} -1) * 5
+  </select>
   <!-- worklist 전체 조회 (부서장권한으로 접속 시 처음에는 자신꺼만 매니저를통해서 접근시 자신의 부서를 조회)-->
   <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
 SELECT t.*
@@ -130,7 +155,7 @@ values (
    
    <!-- 상세페이지 확인 -->
   <select id="selectWork" resultType="WorkVO">
-select 
+select j.emp_id,
        j.emp_no,
        j.emp_name,
        i.dt,
@@ -147,7 +172,7 @@ where dt = #{dt} and emp_No = #{empNo}
    </select>
    
    <!-- 상세페이지에서 작동하는 업데이트 -->
-   <update id="updateWork" parameterType="WorkVO">
+   <update id="update" parameterType="WorkVO">
    UPDATE wk 
    SET
           wk_in = #{wkIn},
@@ -156,8 +181,8 @@ where dt = #{dt} and emp_No = #{empNo}
           wk_out_loc = #{wkOutLoc},
           wk_yn = #{wkYn},
           wk_stat = #{wkStat},
-          wt_site = #{wkSite}
-   WHERE dt = #{dt} AND emp_No = #{empNo}
+          wk_site = #{wkSite}
+   WHERE dt = #{dt} AND emp_id = #{empId}
    </update>
    
    

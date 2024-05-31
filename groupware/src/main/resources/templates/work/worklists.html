@@ -13,12 +13,11 @@
 						<input type="hidden" th:value="${#authentication.name}" id="name">
 					</div>
 					<div>
-						<button type="button" class="btn btn-primary" id="wkIn" value="0">출근</button>
+						<button type="button" class="btn btn-primary" id="wkIn">출근</button>
 						<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
 					</div>
 					<form name="Listform" th:action="@{/worklist}" method="Get"
 						th:object="${filter}">
-						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<div>
 							<br> <input id="oneDate" th:field="*{oneDate}" type="Date">
 							<!-- <input th:field="*{twoDate}" type="Date"> -->
@@ -41,18 +40,11 @@
 						</div>
 					</form>
 					<br>
-					<!-- 
-					list = 필터 수정, Ajax수정(ip조건 넣기)
-					lists = 자신의 출퇴근 기록만 보이기.
-					update = 업데이트 부분 제대로 보기 
-					info = 부서ID수정
-					managerinfo = 페이지만들어서 리스트보여주기
-					
-					사원계정 접속시 사원번호 사원명 가리기
+					<!-- 사원계정 접속시 사원번호 사원명 가리기
 					<th:block sec:authorize="hasAuthority('1D3d')">
+					
 					출근, 퇴근 값안들어가면 행에 색상 적용,
 					지각, 조퇴, 오전반차, 오후반차 셀색상변경
-					얼럿창 -> 스윗얼럿
 					 -->
 					<div id="table">
 							<table class="table table-striped-columns">
@@ -120,7 +112,7 @@
 		<script>
 		let header = $("meta[name='_csrf_header']").attr('content');
 	    let token = $("meta[name='_csrf']").attr('content');
-		let {date,time} = today();
+		let {date,time} = today();  
 		
 		
 			$('#filter').on('click', filters);
@@ -159,68 +151,32 @@
 			
 			 $('#wkIn').on('click', wkins);
 			
-			$('#wkOut').on('click', wkouts);
+			//$('#wkout').on('click', wkout);
 			
 			function wkins() {
 				let empId = $('#id').val();
 				let times = time;
-				let days = date;
 				console.log(empId,times);
+			
+			
+
 			
 				$.ajax({
 					url : 'workin',
 					method :'POST',
 					data :{
-				           dt: days,
+				           dt: times,
 				           empId: empId
 					},
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
 		            },
 				    success : function(result){
-				    	Swal.fire({
-				    		title: '출근하셨습니다!!', 
-				    		text: '화이팅!!',
-				    		icon: 'success'});
-				    	$('#wkIn').val(1);
-				    	
+				    console.log(result);
 				    }
 				})
 			};
 			
-			function wkouts() {
-				let empId = $('#id').val();
-				let times = time;
-				let days = date;
-			
-				$.ajax({
-					url : 'workout',
-					method :'POST',
-					data :{
-				           dt: days,
-				           empId: empId
-					},
-					beforeSend: function(xhr) {
-		                xhr.setRequestHeader(header, token);
-		            },
-				    success : function(result){
-				    	Swal.fire({
-				    		title: '퇴근하셨습니다!!', 
-				    		text: '수고많으셨습니다.',
-				    		icon: 'success'});
-				    }
-				})
-			};
-			function wkInOut() {
-				if($('#wkIn').val() == 0){
-					$('#wkIn').val(1);
-				}
-				else{
-					$('#wkIn').val(0);
-				}
-				var isHide=$('#wkIn').val();
-				
-			}
 		
 		</script>
 	</th:block>
