@@ -12,15 +12,16 @@ import lombok.Data;
 @Data
 public class SearchVO {
 	private int page;
-	private String searchCondition;
+	private String searchCondition; // regu : creType도 사용
 	private String keyword;
 	
 	// 전자결재 관련.
 	private String keywordCondition;
-	private String aprStatCondition;
+	private String aprStatCondition; // regu : active도 사용. 
 	private String docStatCondition;
 	private String draftStatCondition;
 	private List<ProjectVO> schTasks;
+	private String dept;
 	
 	private String sortCondition;
 	private String dateCondition;

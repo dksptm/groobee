@@ -51,13 +51,13 @@ public interface DocMapper {
 	// 문서수정
 	public int updateDoc(DocVO docVO);
 	
-	// 업무-문서 삭제.
+	// 문서관련업무 삭제.
 	public int deleteTaskDoc(@Param("dno")Integer docNo);
 	
-	// 문서의 파일 삭제.
+	// 문서첨부파일 삭제.
 	public int deleteDocFile(@Param("dno")Integer docNo);
 	
-	// 문서 삭제.
+	// 문서삭제.
 	public int deleteDoc(DocVO docVO);
 	
 }	

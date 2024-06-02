@@ -77,7 +77,7 @@ public class DocController {
 	        model.addAttribute("list", list);
 	        model.addAttribute("pageDTO", pageDTO);
 	        model.addAttribute("search", searchVO);
-	        model.addAttribute("path", "cust/doc/mydoc");
+	        model.addAttribute("path", "mydoc");
 	        
             return "approval/list/empDocs";
             
@@ -88,7 +88,7 @@ public class DocController {
 	}
 	
 	// 한 직원이 현재 결재해야할 문서리스트.
-	@GetMapping("myAprList")
+	@GetMapping("cust/doc/myapr")
 	public String myAprList(SearchVO searchVO, Model model) {
 
 		searchVO = checkSearch(searchVO);
@@ -102,7 +102,7 @@ public class DocController {
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
             model.addAttribute("search", searchVO);
-            model.addAttribute("path", "myAprList");
+            model.addAttribute("path", "myapr");
             
             return "approval/list/empAprs";
             
@@ -114,7 +114,7 @@ public class DocController {
 	}
 	
 	// 전체문서 중 결재진행 중 문서.
-	@GetMapping("docIng")
+	@GetMapping("cust/doc/ing")
 	public String docIng(SearchVO searchVO, Model model) {
 		
 		searchVO = checkSearch(searchVO);
@@ -129,7 +129,7 @@ public class DocController {
             model.addAttribute("list", list);
             model.addAttribute("pageDTO", pageDTO);
             model.addAttribute("search", searchVO);
-            model.addAttribute("path", "docIng"); 
+            model.addAttribute("path", "ing"); 
             
             return "approval/list/ing";
             
@@ -141,7 +141,7 @@ public class DocController {
 	}
 	
 	// 전체문서 중 결재완료/반려 문서.
-	@GetMapping("docCmplt")
+	@GetMapping("cust/doc/cmplt")
 	public String docCmplt(SearchVO searchVO, Model model) {
 		
 		searchVO = checkSearch(searchVO);
@@ -155,7 +155,7 @@ public class DocController {
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
-			model.addAttribute("path", "docCmplt"); 
+			model.addAttribute("path", "cmplt"); 
 			
 			return "approval/list/cmplt";
 			
@@ -167,7 +167,7 @@ public class DocController {
 	}
 	
 	// 문서 상세정보.
-	@GetMapping("docInfo")
+	@GetMapping("cust/doc/info")
 	public String docInfo(DocVO docVO, SearchVO searchVO, Model model) {
 		
 		searchVO = checkSearch(searchVO);
@@ -211,22 +211,20 @@ public class DocController {
 		int result = docService.docInfoInsert(docVO, fileInfoList);
 		
 		if(result == -1) {
-			System.out.println("fail - doc table insert");
 			return "test/test";
 			
 		} else if (result == 0) {
-			System.out.println("fail - doc related table insert");
 			return "test/test";
 			
 		} else {
 			
-			return "redirect:docInfo?docNo=" + result;
+			return "redirect:/cust/doc/info?docNo=" + result;
 		}
 		
 	}
 	
 	// 문서수정 -양식
-	@GetMapping("docUpdate")
+	@GetMapping("cust/doc/update")
 	public String docUpdateForm(@RequestParam Integer no, Model model) {
 		
 		DocVO docVO = new DocVO();
@@ -245,7 +243,7 @@ public class DocController {
 	}
 	
 	// 문서수정 -반영.
-	@PostMapping("docUpdate")
+	@PostMapping("cust/doc/update")
 	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, String flag) {
 		
 		System.out.println("docVO 수정반영 => " + docVO);
@@ -278,7 +276,7 @@ public class DocController {
 			
 		} else {
 			
-			return "redirect:docInfo?docNo=" + result;
+			return "redirect:/cust/doc/info?docNo=" + result;
 		}
 		
 	}

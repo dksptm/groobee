@@ -25,17 +25,15 @@ public class TempController {
 	
 	// 휴가원 저장.
 	@ResponseBody
-	@PostMapping("pto")
+	@PostMapping("cust/pto")
 	public Map<String, Object> ptoInsertProcess(@RequestBody TempVO pto) {
-		System.out.println("pto====>" + pto);
 		return tempService.insertPto(pto);
 	}
 	
 	// 휴가원 단건조회.
 	@ResponseBody
-	@GetMapping("pto/{docNo}")
+	@GetMapping("cust/pto/{docNo}")
 	public TempVO ptoInsertProcess(@PathVariable Integer docNo) {
-		System.out.println(tempService.selectPto(docNo));
 		return tempService.selectPto(docNo);
 	}
 	

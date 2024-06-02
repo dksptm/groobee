@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+
+<th:block layout:fragment="Content">
+
+<div sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
+<div class="container container-p-y mt-3">
+	<h2>상시업무 관리</h2>
+	
+	<!-- 검색공간 -->				
+	<div id="searchArea">
+		<th:block th:replace="project/regu/search :: Search"></th:block>
+	</div>
+	
+	<div class="bg-light p-3">
+	<div id="stadListArea">
+	<div class="row">
+		<th:block th:each="regu,stat : ${list}">
+			<div class="w-20 p-3">
+			<div class="card text-center">
+				<div class="card-header p-2">[[ ${regu.reguId} ]]</div>
+				<div class="card-body pt-2 pb-1" style="background-color:#FFEFEF;">
+					<h5 class="card-title">[[ ${regu.taskName} ]]</h5>
+				  	<p class="card-text">현재까지 [[ ${regu.taskCnt} ]]건 생성</p>
+				</div>
+				<div> 
+					<ul class="list-group list-group-flush text-start">
+						<li class="list-group-item">담당부서 : [[ ${regu.deptName} ]]</li>
+				  		<li class="list-group-item" th:attr="data-cret=${regu.creType}">
+				  			생성유형 : [[ ${regu.codeName} ]]</li>
+				  		<li class="list-group-item">생성주기 : <span>[[ ${regu.crePerd} ]]</span>[[ ${regu.perdType} ]]</li>
+					</ul>
+				</div>
+				<div class="card-body text-end p-1">
+					<a th:href="@{stadInfo?reguId={rid}(rid=${regu.reguId})}" class="btn btn-warning p-2">상세보기</a>
+				</div>
+				<div class="card-footer p-2" th:classappend="${regu.active} == '5D1d' ? 'text-info' : 'text-secondary'">
+					[[ ${regu.matName} ]]</div>
+			</div>
+			</div>
+		</th:block>
+	</div>
+	
+	<!-- 페이징공간 -->
+	<div id="pageArea">
+		<th:block th:replace="project/regu/page :: Page"></th:block>
+	</div>
+	</div>
+	</div>
+</div>
+</div>
+
+<script>
+const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+const contextPath = $('#contextPathHolder').attr('href');
+
+$(function(){
+	
+	// 요일.
+	let week = ["일","월","화","수","목","금","토"];
+    let lis = $('ul.list-group').find('li[data-cret="5C2c"]');
+    lis.each((i,e) => {
+    	let data = $(e).next('li').find('span').text();
+    	$(e).next('li').find('span').text(week[data]);
+    })
+  
+	// 검색조건들 변수선언.
+	let dept;
+	let searchCondition;
+	let aprStatCondition;
+	let keywordCondition;
+	let keyword;
+	let sortCondition;
+	let page;
+	
+	// search param
+	let param = {}
+	
+	// 검색공간 토글
+	$('.sch-toggle-btn').click(function() {
+		$('.sch-toggle-area').slideToggle();
+	});
+	
+	// 검색버튼
+	$('#schBtn').on('click', function(e) {
+		searchUpdate();
+		showTable(param);
+	});
+	$('input[name="keyword"]').on('change', function(e){
+		searchUpdate();
+		showTable(param);
+	});
+	
+	// 검색조건 업데이트.
+	function searchUpdate() {
+		
+		if($('select[name=dept]') != null) {
+			dept = $('select[name=dept]').val();		
+		} else {
+			dept = null;
+		}
+		
+		searchCondition = $('select[name="searchCondition"]').val();
+		aprStatCondition = $('select[name="aprStatCondition"]').val();
+		keywordCondition = $('select[name="keywordCondition"]').val();
+		keyword = $('input[name="keyword"]').val();
+		sortCondition = $('select[name="sortCondition"]').val();
+		page = 1;
+		
+		param = {
+				dept,
+				searchCondition,
+				aprStatCondition,
+				keywordCondition,
+				keyword,
+				sortCondition,
+				page
+		}
+		
+	}
+	
+	// 페이징 a태그
+	$('li.page-item a').on('click', function(e){
+		e.preventDefault();
+		param.page = $(this).attr('href');
+		showTable(param);
+	});
+	
+	// 검색/페이지 ajax.
+	function showTable(page) {
+		$.ajax({
+			type: 'POST',
+			url : 'stadList/sch',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+		    data : param,
+		    dataType : 'Text',
+		    success : function(result) {
+		    	$('#stadListArea').replaceWith(result);
+		    } 
+		})
+	}
+	
+	// card클릭해서 문서상세로 이동
+	$('.go-stad-info').on('click', function(e) {
+
+		
+		
+	});
+	
+})// end.
+</script>
+
+</th:block>
+		
+</html>

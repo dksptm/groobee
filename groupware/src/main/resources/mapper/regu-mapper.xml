@@ -47,6 +47,7 @@
 		       ,g.dept_id
 		       ,get_deptname(g.dept_id)		as dept_name
 		       ,g.rn
+		       ,g.active
 		FROM  
 			  (
 		        SELECT  ROW_NUMBER() OVER (PARTITION BY regu_id ORDER BY task_no) rn
@@ -80,7 +81,7 @@
 		             #{reguId}
 		            ,#{creType}
 		            ,#{crePerd}
-		            ,'5D1d'
+		            ,#{active}
 		            ,SYSDATE
 		            ,#{respEmpId}
 		            ,#{custNo})
@@ -306,6 +307,133 @@
               		</otherwise>
              	</choose>
 			</if>
+	</select>
+	
+	<select id="selectReguStadAll" parameterType="map" resultType="ProjectVO">
+		SELECT  g.rn 
+		       ,g.regu_id
+		       ,g.task_name
+		       ,g.cre_type
+		       ,get_codename(g.cre_type)	as code_name
+		       ,g.cre_perd 
+		       ,g.dept_id
+		       ,get_deptname(g.dept_id)		as dept_name
+		       ,g.active
+		       ,get_codename(g.active)      as mat_name
+		       ,(CASE cre_type WHEN '5C1c' THEN '시' 
+		                       WHEN '5C2c' THEN '요일'
+		                       ELSE '일'
+		         END)                       as perd_type
+		       ,g.task_cnt
+		FROM  
+		      (
+		        SELECT ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
+		               ,rs.*
+		               ,tc.*
+		        FROM   regu_stad rs JOIN (SELECT  COUNT(*) as  task_cnt
+		                                         ,standard_no
+		                                         ,task_name
+		                                         ,dept_id
+		                                  FROM   task_common
+		                                  WHERE  task_type = '5A2a' 
+		                                  GROUP BY standard_no, task_name, dept_id) tc
+		                              ON (rs.regu_id = tc.standard_no)
+		        WHERE  rs.cust_no = #{emp.custNo}
+		        	<if test="!emp.permId.equals('1C2c')">
+				    	AND  tc.dept_id = #{emp.deptId}		        	   
+		        	</if>
+		        	<if test="sch.dept != null and !sch.dept.equals('all')">
+						AND  tc.dept_id = #{sch.dept}
+					</if>
+					<if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+						AND  rs.cre_type = #{sch.searchCondition}
+					</if>
+					<if test="sch.aprStatCondition != null and !sch.aprStatCondition.equals('all')">
+						AND  rs.active = #{sch.aprStatCondition}
+					</if>
+					<if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+						AND	 ${sch.keywordCondition} LIKE '%${sch.keyword}%'
+				   	</if>
+		      ) g
+		WHERE g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND   g.rn > (#{sch.page} - 1) * 10	
+	</select>
+	
+	<select id="countRegus" parameterType="map" resultType="int">
+		SELECT  COUNT(*)
+		FROM  
+		      (
+		        SELECT  rs.*
+		               ,tc.*
+		        FROM   regu_stad rs JOIN (SELECT COUNT(*) as task_cnt
+		                                         ,standard_no
+		                                         ,task_name
+		                                         ,dept_id
+		                                  FROM   task_common
+		                                  WHERE  task_type = '5A2a'
+		                                  AND    prjt_mat = '5B1b' 
+		                                  GROUP BY standard_no, task_name, dept_id) tc
+		                              ON (rs.regu_id = tc.standard_no)
+		        WHERE  rs.cust_no = #{emp.custNo}
+			        <if test="!emp.permId.equals('1C2c')">
+					    AND  tc.dept_id = #{emp.deptId}		        	   
+		        	</if>
+		        	<if test="sch.dept != null and !sch.dept.equals('all')">
+						AND  tc.dept_id = #{sch.dept}
+					</if>
+					<if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+						AND  rs.cre_type = #{sch.searchCondition}
+					</if>
+					<if test="sch.aprStatCondition != null and !sch.aprStatCondition.equals('all')">
+						AND  rs.active = #{sch.aprStatCondition}
+					</if>
+					<if test="sch.keywordCondition != null">
+						AND	 ${sch.keywordCondition} LIKE '%${sch.keyword}%'
+				   	</if>
+		      ) g	
+	</select>
+	
+	<select id="selectReguStad" parameterType="map" resultType="ProjectVO">
+		SELECT  
+		        rs.regu_id
+		       ,tc.task_name
+		       ,tc.task_purpose
+		       ,tc.task_cntn
+		       ,rs.cre_type
+		       ,get_codename(rs.cre_type)	as code_name
+		       ,rs.cre_perd 
+		       ,(CASE rs.cre_type WHEN '5C1c' THEN '시' 
+		                          WHEN '5C2c' THEN '요일'
+		                          ELSE '일'
+		         END)                       as perd_type 
+		       ,tc.dept_id
+		       ,get_deptname(tc.dept_id)	as dept_name
+		       ,rs.active
+		       ,get_codename(rs.active)     as mat_name
+		       ,tc.task_cnt
+		       ,rs.resp_emp_id
+		       ,get_emptitle(resp_emp_id)   as resp_emp_name
+		       ,rs.regu_dt
+		FROM
+		        regu_stad rs JOIN (
+		                              SELECT  COUNT(*) as  task_cnt
+		                                     ,standard_no
+		                                     ,dept_id
+		                                     ,task_name
+		                                     ,task_purpose
+		                                     ,task_cntn
+		                              FROM   task_common
+		                              WHERE  task_type = '5A2a'
+		                              GROUP BY 
+		                                     standard_no, dept_id
+		                                     ,task_name, task_purpose, task_cntn
+		                          ) tc
+		                       ON (rs.regu_id = tc.standard_no)
+		WHERE  rs.cust_no = #{emp.custNo}
+			<if test="!emp.permId.equals('1C2c')">
+				AND  tc.dept_id = #{emp.deptId}		        	   
+		    </if>
+		AND    rs.regu_id = #{rid}	
 	</select>
 
 </mapper>

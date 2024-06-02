@@ -28,26 +28,24 @@ public class AprController {
 	@Autowired
 	PdfRender pdf;
 	
-	@PutMapping("aprGo/{docNo}")
+	@PutMapping("cust/aprGo/{docNo}")
 	public Map<String, Object> goToApr(@PathVariable Integer docNo, @RequestBody AprVO aprVO) { 
 		return aprService.goToApr(aprVO);
 	}
 	
-	@PutMapping("aprOk/{docNo}")
+	@PutMapping("cust/aprOk/{docNo}")
 	public Map<String, Object> aprOk(@PathVariable Integer docNo, @RequestBody AprVO aprVO) {
 		return aprService.aprOk(aprVO);
 	}
 	
-	@PutMapping("aprNg/{docNo}")
+	@PutMapping("cust/aprNg/{docNo}")
 	public Map<String, Object> aprNg(@PathVariable Integer docNo, @RequestBody AprVO aprVO) {
 		return aprService.aprNg(aprVO);
 	}
 	
-	@PostMapping("docPDF/{docNo}")
+	@PostMapping("cust/docPDF/{docNo}")
 	public ResponseEntity<byte[]> pdfTest(@PathVariable Integer docNo, String html) {
-		
-		System.out.println("여기입니다...");
-		
+
 		byte[] result = null;
 		HttpHeaders headers = new HttpHeaders();
 		try {

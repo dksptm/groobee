@@ -232,7 +232,7 @@ public class TaskController {
 		
 	
 		//효주 -----
-		@GetMapping("getMyTasks")
+		@GetMapping("cust/custTasks")
 		public String getMyTasks(@RequestParam String custNo, Model model) {
 			List<ProjectVO> list = projectService.myCustTasks(custNo);
 			model.addAttribute("tasks", list);

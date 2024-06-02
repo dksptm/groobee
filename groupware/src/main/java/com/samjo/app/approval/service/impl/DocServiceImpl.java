@@ -138,7 +138,6 @@ public class DocServiceImpl implements DocService {
 			aprMapper.insertApr(docVO);
 		}
 		
-		System.out.println(docVO.getPto());
 		// 2.휴가원 등록.--최종결재완료이후 처리필요.
 		if(docVO.getTempId().equals("public01")) {
 			docVO.getPto().setDocNo(docVO.getDocNo());

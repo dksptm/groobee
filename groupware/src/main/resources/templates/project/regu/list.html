@@ -12,7 +12,7 @@
 			
 			<div class="d-flex justify-content-center table-responsive sch-area">
 				<!-- 검색공간 -->
-				<form action="/reguList" method="get" th:object="${search}" id="searchForm">
+				<form action="/cust/regu/list" method="get" th:object="${search}" id="searchForm">
 				<input th:field="*{page}" type="hidden"  />
 				<table class="table table-borderless table-sm table-primary">
 					<tr>
@@ -60,7 +60,7 @@
 								<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
 								<button class="btn btn-secondary ms-2"
 								type="reset"
-								th:onclick="|location.href='@{reguList}'|">초기화</button>
+								th:onclick="|location.href='@{cust/regu/list}'|">초기화</button>
 							</div>						
 						</td>
 					</tr>
@@ -190,7 +190,7 @@
 
 			let createInput = $('<input type="text" name="taskNo" />').val($(this).data('tno'));
 			searchForm.prepend(createInput);
-			searchForm.attr('action', '/reguInfo');
+			searchForm.attr('action', '/cust/regu/info');
 			
 			searchForm.submit();
 			

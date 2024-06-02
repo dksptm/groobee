@@ -4,22 +4,21 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-	<div class="container-xxl flex-grow-1 container-p-y">
-	<div class="row flex-xl-nowrap">
-	<div class="DocSearch-content col-12 container-p-y">
-		<div class="row m-3 p-3">
-			<h2 class="m-0 p-0 doc-page-title">문서조회</h2>
+	<div class="container-xxl flex-grow-1">
+	<div class="flex-xl-nowrap row">
+	<div class="row">
+		<div class="row mt-3 pt-3">
+			<h2 class="ms-3">문서조회</h2>
 		</div>
-		<hr>
-		<div class="m-3 p-3 shadow-lg rounded">
+		<div class="row m-3 p-3 d-flex justify-content-center" style="background-color:#DEEDF0;">
 			
-			<p><input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
+			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			<input type="hidden" th:value="${#authentication.name}" name="draptName" readonly /></p>
+			<input type="hidden" th:value="${#authentication.name}" name="draptName" readonly />
 			<input type="hidden" name="docNo" th:value="${doc.docNo}" class="form-control" readonly />
 			
-			<div class="card-body d-flex justify-content-between py-3 px-0">
+			<div class="d-flex justify-content-between pb-3">
 			<!-- ------------------------- 목록버튼( + 검색 ) ------------------------- -->
 			<div class="text-start">
 				<form th:action="@{{urlVar}(urlVar=${search.path})}" method="get" th:object="${search}">
@@ -41,17 +40,17 @@
 			<div class="text-end">
 				<!-- 상신전 상태 & 작성자=로그인한사람 -->
 				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
-					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상신</button>
-					<button type="button" th:onclick="|location.href='@{/docUpdate(no=${doc.docNo})}'|" 
-							class="btn rounded-pill btn-success">수정</button>
-					<button type="button" class="btn rounded-pill btn-danger doc-delete">삭제</button>
+					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상&emsp;신</button>
+					<button type="button" th:onclick="|location.href='@{/cust/doc/update(no=${doc.docNo})}'|" 
+							class="btn rounded-pill btn-success">수&emsp;정</button>
+					<button type="button" class="btn rounded-pill btn-danger doc-delete">삭&emsp;제</button>
 				</th:block>
 				<!-- 위 조건 아니면서, 현재 결재자인 사람. -->
 				<th:block th:if="${doc.docStat == '4B2b' and doc.draft != #authentication.principal.empId}">
 					<th:block th:each="apr,aprStat : ${doc.aprs}">
 						<th:block th:if="${apr.aprSq == doc.nowLine and apr.aprEmp == #authentication.principal.empId}">
-							<button type="button" class="btn btn-warning" id="aprok">결재</button>
-							<button type="button" class="btn btn-danger" id="aprng">반려</button>
+							<button type="button" class="btn btn-warning" id="aprok">결&emsp;재</button>
+							<button type="button" class="btn btn-danger" id="aprng">반&emsp;려</button>
 						</th:block>
 					</th:block>
 				</th:block>
@@ -80,56 +79,92 @@
 				        </li>
 					</ul>
 					<div class="tab-content text-center">
+						<!-- 문서 -->
 						<div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
 			                <table class="table table-bordered">
 			                	<tr>
-			                		<th>문서번호</th>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">문서번호</th>
 			                			<td th:attr="data-dno=${doc.docNo}">[[ ${doc.docNo} ]]</td>
-			                		<th>부서</th>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">부서</th>
 			                			<td th:attr="data-dept=${doc.deptId}">[[ ${doc.deptName} ]]</td>
-			                		<th th:text="${doc.draftStat == '4A1a' ? '작성일자' : '상신일자'}"></th>
-			                			<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
-			                		<th>결재상태</th>
-			                			<td><span class="badge bg-label-primary me-1">[[ ${doc.docStatName} ]]</span></td>
+			                		<th th:text="${doc.draftStat == '4A1a' ? '작성일자' : '상신일자'}"
+			                		    class="col-1 text-white" style="background-color:#3F72AF;"></th>
+			                			<td class="col-2">[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">결재상태</th>
+			                			<td><span class="badge me-1 stat-label-css" th:attr="data-dstat=${doc.docStat}">
+			                				[[ ${doc.docStatName} ]]</span></td>
 			                	</tr>
 			                	<tr>
-			                		<th>문서종류</th>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">문서종류</th>
 			                			<td th:attr="data-temp=${doc.tempId}">[[ ${doc.tempName} ]]</td>
-			                		<th>작성자</th>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">작성자</th>
 			                			<td th:attr="data-draft=${doc.draft}">[[ ${doc.draftName} ]]</td>
-			                		<th>완료일자</th>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">완료일자</th>
 			                			<td th:if="${doc.cmpltDt == null}">-</td>
 			                			<td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
-			                		<th>작성상태</th>
-			                			<td><span class="badge bg-label-primary me-1">[[ ${doc.draftStatName} ]]</span></td>
+			                		<th class="col-1 text-white" style="background-color:#3F72AF;">작성상태</th>
+			                			<td><span class="badge me-1 stat-label-css" th:attr="data-rstat=${doc.draftStat}">
+			                				[[ ${doc.draftStatName} ]]</span></td>
 			                	</tr>
 			                </table>
 						</div>
-
-						<div class="tab-pane fade col-6" id="navs-top-profile" role="tabpanel">
-							<table class="table table-bordered">
-								<th:block th:each="emp : ${emps}">
-								<tr>
-									<th>부서</th>
-									<td>[[ ${emp.deptName} ]]</td>
-									<th>이름</th>
-									<td th:attr="data-ref=${emp.empId}">[[ ${emp.empName} ]]</td>
-								</tr>
-								</th:block>
-							</table>
+						<!-- 참조자 -->
+						<div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
+							<div class="row">
+								<div class="col-md-6">
+									<table class="table table-bordered">
+										<th:block th:each="emp,stat : ${emps}">
+										<tr th:if="${stat.odd}">
+											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+												<td>[[ ${emp.deptName} ]]</td>
+											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+												<td th:attr="data-ref=${emp.empId}">[[ ${emp.empName} ]]</td>
+										</tr>
+										</th:block>
+									</table>	
+								</div>
+								<div class="col-md-6">
+									<table class="table table-bordered">
+										<th:block th:each="emp,stat : ${emps}">
+										<tr th:if="${stat.even}">
+											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+												<td>[[ ${emp.deptName} ]]</td>
+											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+												<td c>[[ ${emp.empName} ]]</td>
+										</tr>
+										</th:block>
+									</table>
+								</div>
+							</div>
 						</div>
-						
-						<div class="tab-pane fade col-6" id="navs-top-messages" role="tabpanel">
-							<table class="table table-bordered">
-								<th:block th:each="task : ${tasks}">
-								<tr>
-									<th>부서</th>
-										<td>[[ ${task.deptName} ]]</td>
-									<th>업무</th>
-										<td>[[ ${task.taskName} ]]</td>
-								</tr>
-								</th:block>
-							</table>
+						<!-- 관련업무 -->
+						<div class="tab-pane fade" id="navs-top-messages" role="tabpanel">
+							<div class="row">
+								<div class="col-md-6">
+									<table class="table table-bordered">
+										<th:block th:each="task,stat : ${tasks}">
+										<tr th:if="${stat.odd}">
+											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+												<td class="col-3">[[ ${task.deptName} ]]</td>
+											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+												<td>[[ ${task.taskName} ]]</td>
+										</tr>
+										<th:block th:each="emp,stat : ${emps}">
+									</table>	
+								</div>
+								<div class="col-md-6">
+									<table class="table table-bordered">
+										<th:block th:each="task,stat : ${tasks}">
+										<tr th:if="${stat.even}">
+											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+												<td>[[ ${task.deptName} ]]</td>
+											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+												<td>[[ ${task.taskName} ]]</td>
+										</tr>
+										<th:block th:each="emp,stat : ${emps}">
+									</table>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -137,7 +172,7 @@
 				
 				<!-- ------------------------- 결재라인 START --------------------------->
 				<div class="mt-3">
-	                <div class="d-flex justify-content-end m-3 row" th:attr="data-fl=${doc.finalLine}">
+	                <div class="d-flex justify-content-end mt-3 row" th:attr="data-fl=${doc.finalLine}">
 						<th:block th:each="apr,aprStat : ${doc.aprs}">
 							<th:block th:if="${apr.aprSq == doc.nowLine}">
 							<div class="card col-1" 
@@ -185,47 +220,49 @@
 				</div> -->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
-				<div class="d-flex justify-content-end">
-					<div class="col-5 text-end">
-  						<label for="formFileLg" class="form-label">첨부파일</label>
-  						<div class="form-control form-control" id="formFileLg">
-  							<th:block th:each="file,fstat : ${doc.files}">
-								<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
-						 			<span>[[ ${file.uplName} ]]</span>
-								</a><br>
-							</th:block>
-  						</div>
-					</div>
-				</div>
-				
-				<div class="col-12 mt-3">
-	    			<input type="text" class="form-control border border-3 border-secondary text-center" th:value="${doc.title}" 
-	    				   aria-describedby="basic-addon14" readonly />
-				</div>
-				<!-- ------------------------- 제목-템플릿-첨부파일 영역 END ------------------------- -->
-				
-				<!-- ---------------------------- 내용영역 START ---------------------------- -->
-				<div class="mt-3">
-					<div class="col-md-12">
-						 
-						<div id="textArea">
-						<!-- cntn textarea -->
-						<textarea id="cntn" th:text="${doc.cntn}"></textarea>
-						</div>
-						
-						<!-- PTO fragment -->
-						<div id="tempPTO" style="display:none;">
-							<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
-						</div>
-						
-						<!-- PTO fragment -->
-						<div id="tempEXT" style="display:none;">
-							<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
-						</div>
-						
-					</div>
-				</div>
-				<!-- ---------------------------- 내용영역 END ---------------------------- -->
+				<table class="table table-bordered border-secondary border-3 bg-white mt-3">
+					<thead>
+						<tr>
+							<td class="col-1 text-center align-middle"><b>제&emsp;&emsp;목</b></td>
+							<td>[[ ${doc.title} ]]</td>
+							<td class="col-4">[[ ${doc.tempName} ]]</td>
+						</tr>
+						<tr>	
+							<td class="col-1 text-center align-middle"><b>첨부파일</b></td>
+							<td colspan="2">
+		  						<div class="form-control-plaintext" id="formFileLg">
+		  							<th:block th:each="file,fstat : ${doc.files}">
+										<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
+								 			<span>[[ ${file.uplName} ]]</span>
+										</a><br>
+									</th:block>	
+		  						</div>
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="col-1 text-center align-top"><b>내&emsp;&emsp;용</b></td>
+							<td colspan="2">
+								<!-- cntn textarea -->
+								<div id="textArea">
+									<textarea id="cntn" th:text="${doc.cntn}"></textarea>
+								</div>
+								
+								<!-- PTO fragment -->
+								<div id="tempPTO" style="display:none;">
+									<th:block th:replace="approval/temp/doc_temp :: TempPTO"></th:block>
+								</div>
+								
+								<!-- PTO fragment -->
+								<div id="tempEXT" style="display:none;">
+									<th:block th:replace="approval/temp/doc_temp :: TempEXT"></th:block>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<!-- ------------------------- 제목-템플릿-첨부파일-내용 영역 END ------------------------- -->
 			</div>
 		</div> 
 	</div>
@@ -252,6 +289,24 @@
 			
 			// 테이블 꾸미기
 			$('.tab-content th').addClass('table-secondary');
+			
+			let dstat = $('span[data-dstat].stat-label-css');
+			if(dstat.data('dstat') == '4B1b'){
+				dstat.addClass('bg-label-secondary');
+			} else if (dstat.data('dstat') == '4B2b') {
+				dstat.addClass('bg-label-info');
+			} else if (dstat.data('dstat') == '4B3b') {
+				dstat.addClass('bg-label-success');
+			} else if (dstat.data('dstat') == '4B4b') {
+				dstat.addClass('bg-label-danger');
+			}
+			
+			let rstat = $('span[data-rstat].stat-label-css');
+			if(rstat.data('rstat') == '4A1a'){
+				rstat.addClass('bg-label-secondary');
+			} else if (rstat.data('rstat') == '4A2a') {
+				rstat.addClass('bg-label-primary');
+			} 
 			
 			// 내용 표시.
 			let temp = document.querySelector('td[data-temp]').dataset.temp;
@@ -310,7 +365,7 @@
 						return;
 					}
 					
-					let url = `/aprGo/${obj.docNo}`;
+					let url = `/cust/aprGo/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
@@ -331,7 +386,7 @@
 							  	text: '문서가 상신되었습니다.', 
 							});
 							
-							location.href = "/docInfo?docNo=" + obj.docNo;
+							location.href = "/cust/doc/info?docNo=" + obj.docNo;
 						} else {
 							Swal.fire({
 								icon: 'error',               
@@ -363,7 +418,7 @@
 						return;
 					}
 					
-					let url = `/aprOk/${obj.docNo}`;
+					let url = `/cust/aprOk/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
@@ -383,14 +438,14 @@
 							  	title: '결재완료!',    
 							  	text: '다음결재자에게 전달됩니다.', 
 							});
-							location.href = "/docInfo?docNo=" + obj.docNo;
+							location.href = "/cust/doc/info?docNo=" + obj.docNo;
 						} else if(ret.OUT == 'APR_CMPLT') {
 							Swal.fire({
 								icon: 'success',               
 							  	title: '결재완료!',    
 							  	text: '해당 문서가 최종결재되었습니다.', 
 							});
-							location.href = "/docInfo?docNo=" + obj.docNo;
+							location.href = "/cust/doc/info?docNo=" + obj.docNo;
 						} else {
 							Swal.fire({
 								icon: 'error',               
@@ -419,7 +474,7 @@
 						return;
 					}
 					
-					let url = `/aprNg/${obj.docNo}`;
+					let url = `/cust/aprNg/${obj.docNo}`;
 					console.log(url);
 					
 					fetch(url, {
@@ -440,7 +495,7 @@
 							  	text: '기안자에게 알립니다.', 
 							});
 							console.log(ret);
-							location.href = "docInfo?docNo=" + obj.docNo;
+							location.href = "/cust/doc/info?docNo=" + obj.docNo;
 						} else if(ret.OUT == 'NG') {
 							Swal.fire({
 								icon: 'error',               
@@ -482,7 +537,7 @@
 				    	let param = {}
 				    	let dno = document.querySelector('td[data-dno]').dataset.dno;
 				    	param['docNo'] = dno;
-				    	let url = "cust/doc/delet/" + dno;
+				    	let url = "/cust/doc/delet/" + dno;
 				    	
 				    	fetch(url, {
 				    		method : 'DELETE',
@@ -557,7 +612,7 @@
 			$('td[data-td="dno"]').text($('td[data-dno]').text());
 			
 			$.ajax({
-	            url: '/pto/' + dno, // 엔드포인트 URL
+	            url: '/cust/pto/' + dno, // 엔드포인트 URL
 	            type: 'GET',
 	            success: function(response) {
 	                console.log(response);

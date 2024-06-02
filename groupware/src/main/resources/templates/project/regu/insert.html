@@ -9,63 +9,74 @@
 .offcanvas.offcanvas-end.regu{
 	width: 600px; 
 }
+.regu-table th{
+	font-size: 0.9rem;
+	font-weight: bold;
+	text-align: right;
+	background-color:#DAF5FFV;
+}
+.regu-table td{
+	background-color:white;
+}
 </style>
 
-<div class="container-xxl flex-grow-1">
+	<div class="container-xxl flex-grow-1">
 	<div class="flex-xl-nowrap row">
 	<div class="row">
-		<div class="row m-3 p-3">
-			<h2 class="m-0 p-0">상시업무 등록</h2>
+		<div class="row mt-3 pt-3">
+			<h2 class="ms-3">상시업무 등록</h2>
 		</div>
-		<hr>
-		<div class="m-3 p-3 col-8 table-responsive bg-white shadow-lg rounded">
-		<form id="reguInsertForm" th:action="@{/reguInsert}" method="post" th:object="${taskRegu}">
+
+		<div class="row m-2 p-2 d-flex justify-content-center col-8 table-responsive" style="border: 10px solid #7BD3EA;">
+		<form id="reguInsertForm" th:action="@{/cust/regu/insert}" method="post" th:object="${taskRegu}">
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			<div class="text-end mx-3">	
+			<div class="text-end m-3">	
 				<input type="text" value="NO" name="flag" readonly />
-				<button type="button" class="btn rounded-pill btn-outline-info ms-5" 
+				<button type="button" class="btn rounded-pill btn-outline-info" 
 						data-bs-toggle="offcanvas" data-bs-target="#chk-regus" 
 						aria-controls="offcanvasScroll">
 						업무 불러오기</button>
 				<button type="reset" class="btn rounded-pill btn-outline-secondary ms-2 chk-regus-reset-btn">
 						입력 초기화</button>
 			</div>
-			<table class="table bg-white">
+			<table class="table table-bordered border-2 regu-table col-12">
 				<tr>
-					<th>업무명</th>
+					<th class="col-3">업무명</th>
 					<td colspan="3">
-						<input type="text" class="form-control" th:field="*{taskName}" />
+						<input type="text" class="form-control bg-transparent" th:field="*{taskName}" />
 					</td>
 				</tr>
 				<tr>
 					<th>업무목적</th>
 					<td colspan="3">
-						<input type="text" class="form-control" th:field="*{taskPurpose}" />
+						<input type="text" class="form-control bg-transparent" th:field="*{taskPurpose}" />
 					</td>
 				</tr>
 				<tr>
 					<th>업무내용</th>
 					<td colspan="3">
-						<textarea class="form-control" th:field="*{taskCntn}"></textarea>
+						<textarea class="form-control bg-transparent" th:field="*{taskCntn}"></textarea>
 					</td>
 				</tr>
 				<tr>
-					<th>책임자
+					<th>
 						<button type="button" class="btn btn-icon btn-info me-1" 
 								data-bs-toggle="offcanvas" data-bs-target="#chk-reps" aria-controls="offcanvasScroll">
 							<span class="tf-icons bx bx-user-circle"></span>
 						</button>
+						책임자
 					</th>
 					<td><input type="hidden" class="form-control" th:field="*{respEmpId}" readonly /></td>
-					<th>부서</th>
+					<th class="col-3">부서</th>
 					<td><input type="hidden" class="form-control" th:field="*{deptId}" readonly /></td>
 				</tr>
 				<tr>
-					<th>담당자
+					<th>
 						<button type="button" class="btn btn-icon me-1 btn-secondary" 
 								data-bs-toggle="offcanvas" data-bs-target="#chk-emps" aria-controls="offcanvasScroll">
 							<span class="tf-icons bx bx-user-circle"></span>
 						</button>
+						담당자
 					</th>
 					<td colspan="3" id="add-emp">
 					</td>
@@ -80,8 +91,9 @@
 						    <option value="5C3c">매월</option>
 					  	</select>
 					</td>
-					<th>생성주기
+					<th>
 						<button type="button" id="crepBtn" class="btn btn-icon me-1 btn-primary ms-1">+</button>
+						생성주기
 					</th>
 					<td id="creOpt">
 						<select class="form-select" th:field="*{crePerd}">
@@ -95,20 +107,14 @@
 					<td><input type="datetime-local" class="form-control" th:field="*{taskDueDt}"  readonly />
 				</tr>
 				<tr>
-					<td>
-						활성화
-					</td>
-					<td>
-						<div class="form-check form-check-primary mt-3">
-						  <input class="form-check-input" type="radio" id="active" name="aa">
-						  <label class="form-check-label" for="active">활성화</label>
-						</div>
-					</td>
-					<td colspan="2">
-						<div class="form-check form-check-primary mt-3">
-						  <input class="form-check-input" type="radio" id="active2" name="aa">
-						  <label class="form-check-label" for="active2">비활성화</label>
-						</div>
+					<th>
+						자동스케줄
+					</th>
+					<td colspan="3">
+						<div class="form-check form-switch">
+					      <input class="form-check-input" type="checkbox" id="active" name="active" value="5D1d" checked>
+					      <label class="form-check-label" for="active">자동스케줄 활성화</label>
+					    </div>
 					</td>
 				</tr>
 			</table>
@@ -215,7 +221,7 @@
 						<th th:attr="data-crep=${rg.crePerd}">주기</th>
 							<td>[[ ${rg.crePerd} ]]</td>
 					</tr>
-					<tr><td colspan="4">
+					<tr><td colspan="4" style="display:none;">
 					<input type="hidden" name="tp" th:value="${rg.taskPurpose}" />
 					<input type="hidden" name="tc" th:value="${rg.taskCntn}" />
 					</td></tr>
@@ -401,6 +407,9 @@
 			
 		})
 		
+		// 활성화
+		$('#active').on('click', activeChk)
+		
 		// 등록
 		$('#reguInsertForm').submit(function(e) {
 			
@@ -452,13 +461,13 @@
 	// 매일날짜 구하기
 	function getDayTime(perd) {
 		
-		let date = new Date(2024,4,16);
+		let date = new Date();
 		let start = getDate(date);
 		
 		perd = perd < 10 ? "0" + perd : perd;
 		
-		$('#taskStartDt').val(start + "T" + perd + ":00");
-		$('#taskDueDt').val(start + "T18:00");
+		$('#taskStartDt').val(start + "T09:00");
+		$('#taskDueDt').val(start + "T" + perd + ":00");
 	}
 	
 	// 매주날짜 구하기 
@@ -493,7 +502,7 @@
 	// 매월날짜 구하기 
 	function getDayMonth(perd) {
 		
-		let date = new Date(2024,1,15); // 현재.
+		let date = new Date(); // 현재.
 		
 		let last = new Date(date.getFullYear(), date.getMonth()+1, 0);
 		last = last.getDate();//이번달 마지막날짜.
@@ -533,7 +542,8 @@
     	$('#taskDueDt').val(end + "T18:00");
     	
 	}
-
+	
+	// 리셋
 	function reguReset() {
 		
 		$('#reguId').closest('tr').remove();
@@ -558,6 +568,21 @@
 		
 	}
 	
+	// 활성화(자동스케줄) 체크
+	function activeChk() {
+		let isChk = $('#active').is(':checked');
+		if(isChk) {
+			$('#active').val('5D1d');
+			$('#active').next('label').text('자동스케줄 활성화');
+		}
+		if(!isChk) {
+			$('#active').val('5D2d');
+			$('#active').next('label').text('자동스케줄 비활성화');			
+		}
+		
+	}
+	
+	// 등록 전 체크
 	function reguCheck(e) {
 		if($('input[name="taskName"]').val() == '') {
 		

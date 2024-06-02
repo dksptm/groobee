@@ -483,11 +483,11 @@
 		                      ON (td.task_no = t.task_no)
 		WHERE	td.doc_no = #{doc_no}
 	</select>
-	
 		
 	<!-- 한 문서 상세정보. -->
 	<select id="selectDoc" resultType="DocVO">
-		SELECT   d.doc_no
+		SELECT   
+				 d.doc_no
 				,d.draft
 		        ,e.emp_name as draft_name
 		        ,d.dept_id
@@ -505,11 +505,13 @@
 		        ,get_codename(d.doc_stat) 	AS doc_stat_name
 				,d.cmplt_dt
 				,d.cust_no
-		FROM    doc d JOIN emp e 
+		FROM    
+				doc d JOIN emp e 
 		                ON (d.draft = e.emp_id)
 		              JOIN dept dt 
 		             	ON (d.dept_id = dt.dept_id)
-		WHERE doc_no = #{docNo}
+		WHERE 
+				doc_no = #{docNo}
 	</select>
 	
 	<!-- 한 문서의 업무 가져오기 -->
@@ -574,13 +576,7 @@
 			        ,#{finalLine}
 			     )
 	</insert>
-	
-	<!-- 문서등록 위한 PK. -->
-	<select id="getDocNo" resultType="docVO">
-		SELECT NVL(MAX(doc_no), 0) + 1 as docNo
-		FROM doc	
-	</select>
-	
+
 	<!-- 문서의 첨부파일 등록. -->
 	<insert id="insertDocFile" parameterType="DocFileVO">
 		<selectKey keyProperty="fno" resultType="int" order="BEFORE">
@@ -646,6 +642,7 @@
 		WHERE doc_no = #{docNo}
 	</update>
 	
+	<!-- 문서관련업무 삭제 -->
 	<delete id="deleteTaskDoc" parameterType="int">
 		DELETE task_doc
 		WHERE doc_no = #{dno}

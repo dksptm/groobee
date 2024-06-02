@@ -14,4 +14,7 @@ public interface DeptService {
 	// 총책임자 목록
 	
 	public List<EmpVO> respMngrList(String custNo);
+	
+	// 한 회사의 부서전체 목록
+	public List<DeptVO> myCustDepts(EmpVO empVO);
 }

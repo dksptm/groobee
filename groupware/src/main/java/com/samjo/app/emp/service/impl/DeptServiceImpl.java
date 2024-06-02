@@ -42,4 +42,9 @@ public class DeptServiceImpl implements DeptService {
 		return deptMappr.respMngrList(custNo);
 	}
 
+	@Override // 한 회사의 부서전체 목록
+	public List<DeptVO> myCustDepts(EmpVO empVO) {
+		return deptMappr.selectCustDeptAll(empVO);
+	}
+
 }

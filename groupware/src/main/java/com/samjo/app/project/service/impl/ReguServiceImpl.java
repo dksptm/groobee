@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.mapper.ReguMapper;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.ReguService;
@@ -86,8 +87,6 @@ public class ReguServiceImpl implements ReguService {
 		findVO.setProgress(result);
 		findVO.setParticipantsCnt((int) total);
 		
-		System.out.println("ReguServiceImpl--reguInfo--result => " + result);
-		
 		return findVO;
 	}
 	
@@ -116,6 +115,22 @@ public class ReguServiceImpl implements ReguService {
 	@Override
 	public int countReguTasks(String custNo, SearchVO search) {
 		return reguMapper.countReguTasks(custNo, search);
+	}
+	
+	// 전체조회(상위)
+	@Override
+	public List<ProjectVO> reguList(EmpVO empVO, SearchVO search) {
+		return reguMapper.selectReguStadAll(empVO, search);
+	}
+	@Override
+	public int countRegus(EmpVO empVO, SearchVO search) {
+		return reguMapper.countRegus(empVO, search);
+	}
+
+	// 단건조회(상위)
+	@Override
+	public ProjectVO reguStadInfo(EmpVO empVO, String reguId) {
+		return reguMapper.selectReguStad(empVO, reguId);
 	}
 
 }

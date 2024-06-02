@@ -94,7 +94,7 @@ const searchSVC = {
 
 	schTest(param, success, error) {
 		$.ajax({
-			url : 'docCmplt/search',
+			url : 'cust/doc/cmplt/search',
 			type : 'post',
 			contentType : 'application/json',
 			data : JSON.stringify(param),

@@ -2,9 +2,7 @@
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <th:block th:fragment="Search">
-<button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button>
-<div class="collapse bg-light pt-2 sch-toggle-area">
-<div class="d-flex justify-content-center table-responsive">
+<div class="container container-p-y">
 	<form id="searchForm" th:action="@{{urlVar}(urlVar=${path})}"  method="get" th:object="${search}">
 		<input name="path" th:value="${path}" type="hidden" readonly />
 		<div>
@@ -91,6 +89,14 @@
 									</th:block>
 							</select></td>
 						</tr>
+						<tr>
+							<td><button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+										data-bs-toggle="modal" data-bs-target="#docModalTasks">업무 선택</button></td>
+							<td colspan="3" id="getTasks"></td>
+							<td><button type="button" class="btn btn-outline-secondary doc-modal-btn-tasks" 
+										data-bs-toggle="modal" data-bs-target="#docModalTasks">부서 선택</button></td>
+							<td colspan="3"></td>
+						</tr>
 						<tr class="text-end">
 							<td colspan="6">
 							</td>
@@ -114,16 +120,25 @@
 		<p><input type="hidden" th:field="*{page}" readonly /></p>
 	</form>
 </div>
-</div>
+	<!-- 모달영역 : 업무선택 -->
+	<div class="modal fade" id="docModalTasks" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">관련업무 선택</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary getTasks-btn" data-bs-dismiss="modal">닫기</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <script th:src="@{/js/doclist.js}"></script>
 <script>
 	$(function(){
-		
-		// 검색공간 토글
-		$('.sch-toggle-btn').click(function() {
-			$('.sch-toggle-area').slideToggle();
-		});
 		
 		//기간 검색 범위처리
 		$('.sdt').on('change', function(e){
@@ -132,6 +147,21 @@
 		$('.edt').on('change', function(e){
 			$('input[name="dtStart"]').attr('max', this.value);
 		});
+		
+		//모달열기 - 업무.
+		$('.doc-modal-btn-tasks').on('click', function(e) {
+			let cust = $('input[name="custNo"]').val();
+			$('#docModalTasks .modal-body').load("cust/custTasks?custNo="+ cust);
+			$('#docModalTasks').modal();				
+		})
+		
+		// 모달에서 - name부여.
+		$('.getTasks-btn').on('click', schTaskName);
+		
+		// 나머지업무명 보이기.
+		$('.taskTitle').hover(function(){
+			$(this).find('.taskList').toggle();
+		})
 		
 	})
 </script>
