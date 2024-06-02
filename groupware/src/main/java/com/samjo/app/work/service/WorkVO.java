@@ -25,7 +25,11 @@ public class WorkVO {
 	private String wkYn;
 	private String wkStat;
 	private String wkSite;
-	
-	
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date hireDt;
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date fireDt;
+	private String empTel;
+	private String jobNo;
 
 }

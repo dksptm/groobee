@@ -10,10 +10,13 @@ import lombok.Data;
 public class WorkManagerVO {
 
 	private String deptId;
+	private String empId;
 	private int empNo;
 	private String empName;
 	private String jobNo;
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date hireDt;
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private Date fireDt;
 	private String empTel;
 }

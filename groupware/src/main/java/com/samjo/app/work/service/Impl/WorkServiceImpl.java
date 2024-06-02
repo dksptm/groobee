@@ -69,12 +69,6 @@ public class WorkServiceImpl implements WorkService{
 		
 		return map;
 	}
-	// 등록
-	@Override
-	public int insertWork(WorkVO workVO) {
-		return workMapper.insertWork(workVO);
-	}
-	
 	
 	// 관리자 페이지 전체조회
 	@Override
@@ -86,11 +80,6 @@ public class WorkServiceImpl implements WorkService{
 	public WorkVO selectWork(WorkVO workVO) {
 		return workMapper.selectWork(workVO);
 	}
-	// 페이지 수정
-	//@Override
-	//public WorkVO updateWork(WorkVO workVO) {
-	//	return workMapper.updateWork(workVO);
-	//}
 
 	@Override
 	public int managercount() {
@@ -141,17 +130,11 @@ public class WorkServiceImpl implements WorkService{
 	}
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public WorkVO selectemp(WorkVO workVO) {
+		return workMapper.selectemp(workVO);
+	}
+
 	
 	
 }

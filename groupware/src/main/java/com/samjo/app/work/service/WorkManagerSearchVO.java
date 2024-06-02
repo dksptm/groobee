@@ -7,7 +7,9 @@ import lombok.Data;
 public class WorkManagerSearchVO {
 
 	private int page;
+	private int startPage, endPage;
 	private String filter;
 	private String empId;
+	private boolean prev, next;
 	private int totalCnt;
 }

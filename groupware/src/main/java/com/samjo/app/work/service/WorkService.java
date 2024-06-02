@@ -21,8 +21,6 @@ public interface WorkService {
 	
 	// 조퇴버튼
 	public Map<String, Object> workstop(WorkVO workVo);
-	// 출근등록
-	public int insertWork(WorkVO workVo);
 	
 	// 관리자 페이지 전체조회
 	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO);
@@ -33,8 +31,9 @@ public interface WorkService {
 	// 전체페이지의 상세 조회
 	public WorkVO selectWork(WorkVO workVO);
 	
-	// 전체페이지의 수정페이지
-	//public WorkVO updateWork(WorkVO workVO);
 	// 수정 처리
 	public Map<String, Object> update(WorkVO workVO);
+	
+	// 계정 정보 조회
+	public WorkVO selectemp(WorkVO workVO);
 }
