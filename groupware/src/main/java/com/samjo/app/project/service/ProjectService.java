@@ -24,11 +24,13 @@ public interface ProjectService {
 	// 프로젝트 수정
 	public Map<String, Object> prjtUpdate(ProjectVO projectVO);
 	// 프로젝트 삭제
-	public Map<String, Object> prjtDelete(ProjectVO projectVO);
+	public void prjtDelete(String prjtId);
 	
 	// 효주 - 업무공통 간략조회.
 	public List<ProjectVO> myCustTasks(String custNo);
 	// 효주 끝.
+	
+	
 
 	
 	

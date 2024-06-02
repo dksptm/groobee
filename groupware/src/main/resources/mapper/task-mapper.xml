@@ -235,7 +235,7 @@
 		FROM coop_co 
 		<where>
 			<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 			</if>
 		</where>
 	</select>

@@ -86,7 +86,7 @@
 								<tbody>
 									<th:block th:each="task : ${list}">
 										<tr
-											th:onclick="|location.href='/tsInfo/${task.taskNo}'|">
+											th:onclick="|location.href='/cust/tsInfo/${task.taskNo}'|">
 											<td>[[ ${task.taskNo} ]]</td>
 											<td>[[ ${task.prjtName} ]]</td>
 											<td>[[ ${task.taskName} ]]</td>
@@ -210,7 +210,7 @@
 			// 검색 AJAX 함수
 			    function showTable(page) {
 				$.ajax({
-						url : '/viewTsList',
+						url : '/cust/viewTsList',
 						type : 'POST',
 						beforeSend : function(xhr) {
 							xhr.setRequestHeader(header, token);

@@ -87,5 +87,6 @@ public class SearchVO {
 	private String coopCoNo;
 	private String coSort;
 	private String coName;
-	
+	private String pic;
+	private String cntn;
 }

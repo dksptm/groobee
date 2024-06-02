@@ -8,8 +8,8 @@
             <form name="insertForm" th:action="@{/task/insert}" method="post" th:object="${task}">
                 <br><br><br>
                 <div style="text-align: center;">
-                    <button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
-                    <button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
+                    <button type="button" th:onclick="|location.href='@{/cust/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
+                    <button type="button" th:onclick="|location.href='@{/cust/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
                 </div>
 				<br>	
                 <h3>프로젝트 업무 등록</h3>
@@ -124,46 +124,6 @@
 		</div> 
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
-		<!-- 협력부서 부서원 선택창   -->
-		<div  class="modal fade" id="coDeptEmpModal" tabindex="-1" aria-labelledby="coDeptEmpModal" aria-hidden="true">
-			<div class="modal-dialog" style=" text-align: center;">
-				<div class=" modal-content">
-					<div class="modal-header" style=" text-align: center">
-						<h5 class="modal-title" id="coDeptEmpModal"> 협력부서 참여자 선택</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<table class="table table-light table-sm">
-						<thead>
-							<tr>
-								<th>부서번호</th>
-								<th>부서명</th>
-								<th>직급명</th>
-								<th>성명</th>
-								<th>사원번호</th>
-								<th>선택</th>
-							</tr>
-						</thead>
-						<tbody id="empList">
-							<th:block th:each="emp : ${emp}">
-								<tr>
-									<td>[[ ${emp.deptId} ]]</td>
-									<td>[[ ${emp.deptName} ]]</td>
-									<td>[[ ${emp.jobTitle} ]]</td>
-									<td>[[ ${emp.empName} ]]</td>
-									<td>[[ ${emp.empId} ]]</td>
-									<td> <input class="form-radio-input" type="checkbox" name="coEmpCheck"></td>
-								</tr>
-							</th:block>	
-						</tbody>
-					</table>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="coDeptEmpBtnM" data-bs-dismiss="modal">등록</button>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-					</div>
-				</div>
-			</div>
-		</div> 
-		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 		
 		<script  th:inline="javascript" >
 		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');

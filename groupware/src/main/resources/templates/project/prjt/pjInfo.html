@@ -46,14 +46,56 @@
 						<br>
 
 						<div style="text-align: center">
-							<button type="button" class="btn btn-secondary  mt-2" >목록으로</button>
+							<button type="button" class="btn btn-light  mt-2" onclick="goToList()" >프로젝트 목록으로</button>
+							<button type="button" class="btn btn-light  mt-2" onclick="goToTaskList()" >업무 목록으로</button>
+							<button type="button" class="btn btn-danger  mt-2" id="prjtDelBtn" data-prjtId="${pjlist.prjtId}" >삭제</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<script>
+		
+		
+		const token = document.querySelector('meta[name="_csrf"]')
+		.getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]')
+		.getAttribute('content');
+		
+		
+		// 프로젝트 목록으로
+        function goToList() {
+            window.location.href = '/cust/prjtAllList'; 
+        }
+		// 업무 목록으로 
+        function goToTaskList() {
+            window.location.href = '/cust/taskAllList'; 
+        }
+	    
+		// 삭제버튼 : 삭제 후 리스트로 이동 
+		$(function() {
+			$('#prjtDelBtn').on('click', function() {
 
+				let prjtId = $(this).data('prjtId');
+				console.log(prjtId); 
+
+			 	$.ajax({
+					type : 'POST',
+					url : '/cust/prjtDelete' ,
+					data : { prjtId: prjtId },	
+					dataType : 'json',
+					beforeSend: function(xhr) {
+				        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+				    },
+					success : function(result) {
+						alert('삭제에 성공했습니다.');
+					},
+					error : function(error) {
+						alert('삭제에 실패했습니다.');
+					}
+				}); 
+			});
+		}); 
 		</script>
 	</th:block>
 </body>

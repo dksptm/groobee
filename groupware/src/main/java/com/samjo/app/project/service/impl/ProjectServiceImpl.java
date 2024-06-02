@@ -66,18 +66,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
-	@Override // 프로젝트 삭제
-	public Map<String, Object> prjtDelete(ProjectVO projectVO) {
-		Map<String, Object> map = new HashMap<>();
-		int prjtId = Integer.parseInt(projectVO.getPrjtId());
-		int result = projectMapper.deletePrjt(prjtId);
 
-		if (result == 1) {
-			map.put("prjtId", projectVO.getPrjtId());
-		}
-		return map;
+	public void prjtDelete(String prjtId) {
+		 projectMapper.deletePrjt(prjtId);
 	}
-	
 	
 	// 효주 - 업무간단조회
 	@Override
