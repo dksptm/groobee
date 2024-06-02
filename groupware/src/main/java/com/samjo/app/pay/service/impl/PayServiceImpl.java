@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,6 +33,10 @@ public class PayServiceImpl implements PayService{
 
 	@Autowired
 	PayMapper payMapper;
+	@Value("{app.data.impkey}")
+	private String impKey;
+	@Value("{app.data.imps}")
+	private String impS;
 
 	//결제 전체조회
 	@Override
@@ -57,8 +62,8 @@ public class PayServiceImpl implements PayService{
 		
 	    
 	    Map<String, Object> map = new HashMap<>();
-	    map.put("imp_key", "6512613888230017");
-	    map.put("imp_secret", "DOSk0YxWmmuak1WEwZBaduB0nrExkAujYf6NwTKBrJDB5w3ktJQHCiAyiyMfLe9lVz3tZki5Rk99yOuX");
+	    map.put("imp_key", impKey);
+	    map.put("imp_secret", impS);
 	    
 	   
 	    Gson var = new Gson();

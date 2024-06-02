@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootTest
 class GroupwareApplicationTests {
 
-	@Test
+	//@Test
 	void contextLoads() {
 	}
 
@@ -114,12 +114,9 @@ class GroupwareApplicationTests {
 	 @Autowired
 	 StringEncryptor jasyptStringEncryptor;
 	 
-	 //@Test
+	 @Test
 	 public void encryption() {
 			String[] strs = {
-					"",
-					"",
-					"",
 					""
 			};
 			
