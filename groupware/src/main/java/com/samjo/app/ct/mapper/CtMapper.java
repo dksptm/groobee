@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.service.CtVO;
+import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.solmodule.service.ModuleVO;
 
@@ -36,5 +37,7 @@ public interface CtMapper {
 	public int useModUpdate(int ctNo);
 	//계약 신규등록
 	public int ctInsert(CtVO ctVO);
+	//계약가능 고객사조회
+	public List<CustVO> selectCustAble();
 	
 }

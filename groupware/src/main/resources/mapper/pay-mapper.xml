@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.samjo.app.pay.mapper.PayMapper">
+
+	<!-- 결제 전체목록 -->
+	<select id="selectPayAll" resultType="PayVO" parameterType="SearchVO">
+		SELECT r.*
+		FROM (SELECT rownum rn,
+			t.*
+			FROM (SELECT p.pay_no,
+				        p.cust_no, 
+				        c.cust_name,
+				        p.ct_no,
+				        p.pay_type,
+				        p.pay_cre_dt,
+				        p.pay_expc_dt,
+				        p.pay_due_dt,
+				        p.serv_amt,
+				        p.pay_how,
+				        get_codename(p.pay_stat) as pay_stat_name,
+				        p.pay_stat,   
+				        p.pay_cmplt_dt,
+				        p.payer,
+				        p.pay_amt,
+				        p.overdue,
+				        p.remk
+				FROM pay p JOIN cust c
+				            ON(p.cust_no = c.cust_no)
+				<include refid="listSql" />
+				ORDER BY ${paySort},p.pay_no ) t 
+			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
+		WHERE r.rn > (#{page} -1) * 10
+	</select>
+	<!-- 결제 페이징 -->
+	<select id="payCount" parameterType="SearchVO">
+		SELECT COUNT(*)
+		FROM pay
+		<include refid="listSql" />
+	</select>
+	
+	<sql id="listSql">
+	
+	</sql>
+
+</mapper>

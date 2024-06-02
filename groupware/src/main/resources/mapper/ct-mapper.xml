@@ -24,7 +24,6 @@
 						ct.ct_file
 				FROM ct ct JOIN cust c
 							ON (ct.cust_no = c.cust_no)
-				WHERE ct.cust_no NOT IN '0000'
 				<include refid="testsql" />
 				ORDER BY ${ctSort},cust_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
@@ -40,6 +39,7 @@
 	</select>
 	
 	<sql id="testsql">
+		WHERE ct.cust_no NOT IN '0000'
 		<if test="keyword != null and keyword != ''">
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
@@ -207,6 +207,12 @@
 	
 	<!-- 계약신규등록 -->
 	<insert id="ctInsert" parameterType="CtVO">
+	<selectKey  keyProperty="ctNo"
+				resultType="int"
+				order="BEFORE">
+		SELECT NVL(MAX(ct_no), 0) + 1 as ct_no
+		FROM ct
+	</selectKey>
 		INSERT INTO ct(ct_no,
 					   ct_stat,
 				       cust_no,
@@ -217,15 +223,33 @@
 				       use_mod_cnt,
 				       max_emps,
 				       cur_emps)
-		VALUES(#{ct_no},
-			   #{ct_stat},
-			   #{cust_no},
-			   #{ct_file},
-			   #{ct_start_dt},
-			   #{ct_end_dt},
-			   #{ct_amt},
-			   #{use_mod_cnt},
-			   #{max_emps},
+		VALUES(#{ctNo},
+			   '0A1a',
+			   #{custNo},
+			   #{ctFile},
+			   #{ctStartDt},
+			   #{ctEndDt},
+			   #{ctAmt},
+			   #{useModCnt},
+			   #{maxEmps},
 			   1)
 	</insert>
+	
+	<!-- 고객 전체목록 -->
+	<select id="selectCustAble" resultType="CustVO">
+		SELECT	c.cust_no, 
+		        c.brn, 
+		        c.cust_name, 
+		        c.rep, 
+		        c.cust_addr, 
+		        c.cust_tel, 
+		        c.pay_pic, 
+		        c.pay_pic_tel
+		FROM cust c
+		WHERE c.cust_no NOT IN '0000'
+		AND NOT EXISTS(SELECT 1
+		                FROM ct ct
+		                WHERE c.cust_no = ct.cust_no)
+		ORDER BY c.cust_no
+	</select>
 </mapper>

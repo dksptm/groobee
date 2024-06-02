@@ -84,4 +84,7 @@ public class SearchVO {
 	private Date prjtDue;
 	private String prjtDt;
 
+	//결제(pay) 관련
+	private String paySort;
+	
 }
