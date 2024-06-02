@@ -30,6 +30,7 @@
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey"
 											type="text"></td>
+											<td class="text-white">_</td>
 									</tr>
 									<tr>
 										<td class="form-select sentDt">날짜</td>
@@ -58,10 +59,10 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th>메일 종류</th>
+									<th>메일종류</th>
 									<th>제목</th>
 									<th>발신날짜</th>
-									<th>발신유형</th>
+									<th>메일유형</th>
 									<th>선택</th>
 								</tr>
 							</thead>
@@ -70,9 +71,11 @@
 									<tr>
 										<td>
 											<th:block th:if="${emailVO.sender == searchVO.recp}">
-							                    보낸메일 </th:block> 
+							                    셀프메일 </th:block> 
 							                <th:block th:if="${emailVO.recp == searchVO.recp}">
-							                    받은메일 </th:block>		              
+							                    받은메일 </th:block>
+							                <th:block th:if="${emailVO.sender != searchVO.recp}">
+							                    받은메일 </th:block>	    		              
 						                </td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
@@ -82,9 +85,13 @@
 											    	발신
 												</th:block> <th:block th:if="${emailVO.refer == searchVO.recp}">
 											    	참조
-												</th:block></td>
-										<td><input type="checkbox" name="check"
-											th:value="${emailVO.senEmailNo}"></td>
+												</th:block>
+												</td>
+										<td>
+											<input type="checkbox" name="check" class="checks"
+												th:value="${emailVO.senEmailNo}"
+												onclick="event.stopPropagation()">
+										</td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -117,6 +124,8 @@
 									</ul>
 								</nav>
 							</th:block>
+							<button class="btn btn-info" type="button" id="restoreBtn">복원하기</button>
+							<button class="btn btn-info" type="button" id="removeBtn">완전삭제</button>							
 							<th:block th:unless="${EmailDTO.totalCnt} != 0">
 								<p class="text-center mt-4">휴지통이 비었습니다.</p>
 							</th:block>
@@ -140,6 +149,9 @@
 				$('.fromDt').attr('max', this.value);
 			});
 
+			//정렬 조건
+			emSort = $('.searchSelect').val();
+			
 			// 검색 조건 변수 -> 개선 : 객체 타입으로...
 			let keyword;
 			let searchCondition;
@@ -203,6 +215,72 @@
 					}
 				});
 			}
+			
+			$("#restoreBtn").on("click", function(e) {
+				let selectedEmails = [];
+				$('.checks:checked').each(function() {
+					selectedEmails.push($(this).val());
+				});
+
+				if (selectedEmails.length === 0) {
+					alert("선택된 메일이 없습니다.");
+					return;
+				}
+
+				console.log(JSON.stringify(selectedEmails));
+
+				$.ajax({
+					url : '/cust/wastedList/goRestore',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json',
+					dataType : 'text',
+					data : JSON.stringify(selectedEmails),
+					success : function(result) {
+						alert("선택된 메일이 복원되었습니다.");
+						location.reload();
+					},
+					error : function(xhr, status, error) {
+						console.error(error);
+						alert("복원 중 오류가 발생했습니다.");
+					}
+				});
+			});
+			
+			$("#removeBtn").on("click", function(e) {
+				let selectedEmails = [];
+				$('.checks:checked').each(function() {
+					selectedEmails.push($(this).val());
+				});
+
+				if (selectedEmails.length === 0) {
+					alert("선택된 메일이 없습니다.");
+					return;
+				}
+
+				console.log(JSON.stringify(selectedEmails));
+
+				$.ajax({
+					url : '/cust/wastedList/goRemove',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json',
+					dataType : 'text',
+					data : JSON.stringify(selectedEmails),
+					success : function(result) {
+						alert("선택된 메일이 완전히 삭제되었습니다.");
+						location.reload();
+					},
+					error : function(xhr, status, error) {
+						console.error(error);
+						alert("완전삭제 중 오류가 발생했습니다.");
+					}
+				});
+			});
 		</script>
 	</th:block>
 </body>

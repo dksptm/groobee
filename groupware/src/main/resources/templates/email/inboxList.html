@@ -32,7 +32,7 @@
 											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">수신유형</td>
-										<td><select class="form-select" id = "recpType">
+										<td><select class="form-select" id="recpType">
 												<option value="reall">전체</option>
 												<option value="3A1a">수신자</option>
 												<option value="3A1b">참조자</option>
@@ -59,64 +59,64 @@
 						</div>
 					</nav>
 				</div>
-					<div id="inboxTable">
-						<!-- 메일 목록 출력 -->
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>발신자명</th>
-										<th>제목</th>
-										<th>수신날짜</th>
-										<th>수신유형</th>
-										<th>선택</th>
+				<div id="inboxTable">
+					<!-- 메일 목록 출력 -->
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>발신자명</th>
+									<th>제목</th>
+									<th>수신날짜</th>
+									<th>수신유형</th>
+									<th>선택</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="emailVO : ${list}">
+									<tr
+										th:onclick="|location.href='@{/cust/inboxInfo/}@{${emailVO.senEmailNo}}'|">
+										<td>[[ ${emailVO.sender} ]]</td>
+										<td>[[ ${emailVO.title} ]]</td>
+										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
+										<td>	
+											<th:block th:if="${emailVO.sender == searchVO.recp}">
+											   	셀프
+											</th:block> <th:block th:if="${emailVO.recp == searchVO.recp}">
+											   	수신
+											</th:block> <th:block th:if="${emailVO.refer == searchVO.refer}">
+											   	참조
+											</th:block>
+										</td>
+										<td><input type="checkbox" name="check" class="checks"
+											th:value="${emailVO.recEmailNo}"
+											onclick="event.stopPropagation()"></td>
 									</tr>
-								</thead>
-								<tbody>
-									<th:block th:each="emailVO : ${list}">
-										<tr th:onclick="|location.href='@{/cust/inboxInfo/}@{${emailVO.senEmailNo}}'|">
-											<td>[[ ${emailVO.sender} ]]</td>
-											<td>[[ ${emailVO.title} ]]</td>
-											<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-											<td>
-												<th:block th:if="${emailVO.recp == searchVO.recp}">
-											    	셀프
-												</th:block>
-												<th:block th:if="${emailVO.refer != searchVO.recp}">
-											    	수신
-												</th:block>
-												<th:block th:if="${emailVO.refer == searchVO.recp}">
-											    	참조
-												</th:block>
-											</td>	
-											<td><input type="checkbox" name="check" th:value="${emailVO.recEmailNo}"></td>
-										</tr>
-									</th:block>
-								</tbody>
-							</table>
-						</div>
-						<!-- 페이징 -->
-						<div>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<!-- 페이징 -->
+					<div>
 						<div class="paging mt-2">
 							<th:block th:if="${EmailDTO.totalCnt} != 0">
 								<nav aria-label="Page navigation">
 									<ul class="pagination justify-content-center">
-
 										<th:block th:if="${EmailDTO.prev}">
 											<li class="page-item prev"><a href="#"
-												th:id="${EmailDTO.startPage - 1 }" class="page-link pagebtn"><i 
+												th:id="${EmailDTO.startPage - 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
-											th:each="num : ${#numbers.sequence(1, EmailDTO.endPage)}">
-											<li class="page-item "
+											th:each="num : ${#numbers.sequence(EmailDTO.startPage, EmailDTO.endPage)}">
+											<li class="page-item"
 												th:attrappend="class=${num ==  EmailDTO.page ? 'active' : ' '}">
 												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
 										<th:block th:if="${EmailDTO.next}">
 											<li class="page-item next"><a href="#"
-												th:id="${EmailDTO.endPage + 1 }" class="page-link pagebtn"><i 
+												th:id="${EmailDTO.endPage + 1 }" class="page-link pagebtn"><i
 													class="bx bx-chevron-right"></i></a></li>
 										</th:block>
 									</ul>
@@ -132,20 +132,20 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 
 			//기간 검색 범위처리
-			$('.fromDt').on('change', function(e){
+			$('.fromDt').on('change', function(e) {
 				$('.toDt').attr('min', this.value);
 			});
-			$('.toDt').on('change', function(e){
+			$('.toDt').on('change', function(e) {
 				$('.fromDt').attr('max', this.value);
 			});
-			
+
 			// 검색 조건 변수 -> 개선 : 객체 타입으로...
 			let keyword;
 			let searchCondition;
@@ -158,75 +158,108 @@
 			let sdStart;
 			let sdEnd;
 			let emSort;
-			
+
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
 				updateParams();
 				let page = 1;
 				showTable(page);
 			});
-			
-		    // 검색입력창 엔터시 이벤트 처리
-		    $(".searchKey").on("change", function(e) {
-		        updateParams();
-		        let page = 1;
-		        showTable(page);
-		    });
-			
+
+			// 검색입력창 엔터시 이벤트 처리
+			$(".searchKey").on("change", function(e) {
+				updateParams();
+				let page = 1;
+				showTable(page);
+			});
+
 			//페이징 링크 처리
-			$(document).on("click", ".pagebtn", function(e){
+			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
 				let page = e.target.id;
 				showTable(page);
 			});
-			
+
 			// 검색 조건 갱신 함수
-		    function updateParams() {
-		        // 키워드 검색 처리
-		        keyword = $('.searchKey').val();
-		        searchCondition = $('.searchKeySelect').val();
-		        
-		        //기간 검색 처리
-		        sdStart = $('.fromDt').val();
-		        sdEnd = $('.toDt').val();
-		        
-		        // 수신자/참조자 검색처리
-		        if ($('#recpType').val() != 'reall') {
-		            recpType = $('#recpType').val();
-		        } else {
-		        	recpType = null;
-		        }
-		        
-		        //정렬 조건
-		        emSort = $('.searchSelect').val();
+			function updateParams() {
+				// 키워드 검색 처리
+				keyword = $('.searchKey').val();
+				searchCondition = $('.searchKeySelect').val();
+
+				//기간 검색 처리
+				sdStart = $('.fromDt').val();
+				sdEnd = $('.toDt').val();
+
+				// 수신자/참조자 검색처리
+				if ($('#recpType').val() != 'reall') {
+					recpType = $('#recpType').val();
+				} else {
+					recpType = null;
+				}
+
+				//정렬 조건
+				emSort = $('.searchSelect').val();
+			}
+
+			function showTable(page) {
+				$.ajax({
+					url : '/cust/viewInboxList',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json', // 데이터 타입을 JSON으로 설정
+					// 응답을 JSON으로 받도록 설정 / 한게 실패의 이유였다. 컨트롤러가 String으로 반환하므로 text로 받아야 했다.-스승님-
+					// 만일 받는것도 json으로 받고싶다면 컨트롤러 메서드 리턴타입을 Map으로 해야 했으며, 좀 더 복잡한 처리과정이 추가됨
+					dataType : 'text',
+					data : JSON.stringify({
+						page : page,
+						recEmailNo : recEmailNo,
+						sdStart : sdStart,
+						recpType : recpType,
+						sdEnd : sdEnd,
+						emSort : emSort,
+						keyword : keyword,
+						searchCondition : searchCondition
+					}),
+					success : function(result) {
+						$('#inboxTable').replaceWith(result);
+					}
+				});
 			}
 			
-	function showTable(page) { 
-    $.ajax({
-        url: '/cust/viewInboxList',
-        type: 'POST',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token);
-        },
-        contentType: 'application/json', // 데이터 타입을 JSON으로 설정
-        // 응답을 JSON으로 받도록 설정 / 한게 실패의 이유였다. 컨트롤러가 String으로 반환하므로 text로 받아야 했다.-스승님-
-        // 만일 받는것도 json으로 받고싶다면 컨트롤러 메서드 리턴타입을 Map으로 해야 했으며, 좀 더 복잡한 처리과정이 추가됨
-        dataType: 'text', 
-        data: JSON.stringify({
-            page: page,
-            recEmailNo: recEmailNo,
-            sdStart: sdStart,
-            recpType: recpType,
-            sdEnd: sdEnd,
-            emSort: emSort,
-            keyword: keyword,
-            searchCondition: searchCondition
-        }),
-        success: function(result) {
-            $('#inboxTable').replaceWith(result);
-        }
-    });
-}
+			$("#wasteBtn").on("click", function(e) {
+				let selectedEmails = [];
+				$('.checks:checked').each(function() {
+					selectedEmails.push($(this).val());
+				});
+
+				if (selectedEmails.length === 0) {
+					alert("선택된 메일이 없습니다.");
+					return;
+				}
+
+				console.log(JSON.stringify(selectedEmails));
+
+				$.ajax({
+					url : '/cust/inboxList/goWaste',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json',
+					dataType : 'text',
+					data : JSON.stringify(selectedEmails),
+					success : function(result) {
+						alert("선택된 메일이 휴지통으로 이동되었습니다.");
+						location.reload();
+					},
+					error : function(xhr, status, error) {
+						console.error(error);
+						alert("휴지통으로 이동 중 오류가 발생했습니다.");
+					}
+				});
+			});
 		</script>
 	</th:block>
 </body>

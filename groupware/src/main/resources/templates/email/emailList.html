@@ -61,7 +61,6 @@
 									<th>수신자명</th>
 									<th>제목</th>
 									<th>발신날짜</th>
-									<th>발신유형</th>
 									<th>선택</th>
 								</tr>
 							</thead>
@@ -72,18 +71,15 @@
 										<td>[[ ${emailVO.recp} ]]</td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-										<td><th:block th:if="${emailVO.sender == searchVO.recp}">
-											    	셀프
-												</th:block> <th:block th:if="${emailVO.refer == null}">
-											    	발신
-												</th:block> <th:block th:if="${emailVO.refer != null}">
-											    	참조
-												</th:block></td>
-										<td><input type="checkbox" name="check" class="checks"
-											th:value="${emailVO.senEmailNo}"></td>
+										<td>
+										<input type="checkbox" name="check" class="checks"
+											th:value="${emailVO.senEmailNo}"
+											onclick="event.stopPropagation()">
+										</td>
 									</tr>
 								</th:block>
 							</tbody>
+
 						</table>
 					</div>
 					<!-- 페이징 -->
@@ -202,32 +198,39 @@
 					}
 				});
 			}
-			
-			var lists = [];
-			//$("#wasteBtn").on("click", function(e){
-			//	$(".check").val($('input:checkbox:checked').val());
-			//})
-			// 삭제버튼 ajax
-			//$(".wasteBtn").on("click", function(e) {
-				//let selectedBox = $('.checks')
-				//$.ajax({
-					//url : '/cust/emailList/goWaste',
-					//type : 'POST',
-					//beforeSend : function(xhr) {
-					//	xhr.setRequestHeader(header, token);
-					//},
-					//contentType : 'application/json',
-					//dataType : 'text',
-					//data : JSON.stringify({
-					//	senEmailNo : senEmailNo
-					//})
-					
-				//})
-				
-				//updateParams();
-				//let page = 1;
-				//showTable(page);
-			//});
+
+			$("#wasteBtn").on("click", function(e) {
+				let selectedEmails = [];
+				$('.checks:checked').each(function() {
+					selectedEmails.push($(this).val());
+				});
+
+				if (selectedEmails.length === 0) {
+					alert("선택된 메일이 없습니다.");
+					return;
+				}
+
+				console.log(JSON.stringify(selectedEmails));
+
+				$.ajax({
+					url : '/cust/emailList/goWaste',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					contentType : 'application/json',
+					dataType : 'text',
+					data : JSON.stringify(selectedEmails),
+					success : function(result) {
+						alert("선택된 메일이 휴지통으로 이동되었습니다.");
+						location.reload();
+					},
+					error : function(xhr, status, error) {
+						console.error(error);
+						alert("휴지통으로 이동 중 오류가 발생했습니다.");
+					}
+				});
+			});
 		</script>
 	</th:block>
 </body>

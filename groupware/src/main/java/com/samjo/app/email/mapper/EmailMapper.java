@@ -1,6 +1,7 @@
 package com.samjo.app.email.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -12,6 +13,9 @@ import com.samjo.app.emp.service.EmpVO;
 // Service 인터페이스와 1:1 매치가 되는 구조가 되어버렸는데, 다른 조원은 어떤지 확인해보기
 // 네이밍도 어떻게 했는지 살펴보기
 public interface EmailMapper {
+	//empId를 가지고 가서, emp이름을 얻어오기
+	public EmailVO getEmpName(EmailVO emailVO);
+	
 	// 받은메일 전체조회
 	public List<EmailVO> selectInboxAll(SearchVO searchVO);
 	
@@ -37,7 +41,13 @@ public interface EmailMapper {
 	public int deleteEmail(List<String> senEmailNoList);
 	
 	// 받은 메일 휴지통
-	public int deleteInbox(List<String> senEmailNoList);
+	public int deleteInbox(List<String> recEmailNoList);
+	
+	// 휴지통 복원
+	public void restoreMail(Map<String, Object> params);
+	
+	// 휴지통 완전삭제
+	public int removeMail(Map<String, Object> params);
 	
 	// 답신할 경우, 해당하는 수신메일의 정보를 가져오기 => 체인메일넘버 유념
 	public EmailVO getInboxNo(EmailVO emailVO);
@@ -64,10 +74,7 @@ public interface EmailMapper {
 	
 	//전체 페이지(휴지통)
 	public int countWasted(SearchVO searchVO);
-	
-	//휴지통 복원
-	public List<EmailVO> restoreMail();
-	
+		
 	// 주소록 조회
 	public List<EmpVO> getEmpList(EmpVO empVO);
 }

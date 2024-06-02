@@ -6,6 +6,9 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
 
 public interface EmailService {
+	// 발신자, 수신자, 참조자의 id를 받아, 그 이름을 리턴하는.
+	public EmailVO getEmpName(EmailVO emailVO);
+	
 	// 받은메일 전체조회
 	public List<EmailVO> inboxList(SearchVO searchVO);
 	
@@ -32,7 +35,13 @@ public interface EmailService {
 	public int deleteEmail(List<String> senEmailNoList);
 	
 	// 받은메일 휴지통 보내기
-	public int deleteInbox(List<String> senEmailNoList);
+	public int deleteInbox(List<String> recEmailNoList);
+	
+	//휴지통 복원
+	public void restoreMail(List<String> senEmailNoList);
+	
+	//휴지통 완전삭제
+	public void removeMail(List<String> senEmailNoList);
 	
 	// 휴지통 전체조회
 	//휴지통의 메일종류(발신,수신) 구분하기.
@@ -65,7 +74,6 @@ public interface EmailService {
 	//전체 페이징(휴지통)
 	public int countWasted(SearchVO searchVO);
 	
-	//휴지통 복원
-	public List<EmailVO> restoreMail();
+
 	
 }

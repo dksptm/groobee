@@ -33,7 +33,9 @@ public class EmailController {
 
 	@Autowired
 	EmailFileUploadService emailFileUploadService;
-
+	
+	
+	
 	////////////////////////////////////받 은 메 일 ///////////////////////////////////////
 	// 받은메일 전체조회
 	@GetMapping("cust/inboxList")
@@ -65,7 +67,8 @@ public class EmailController {
 		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countMyInbox(searchVO));
 		model.addAttribute("EmailDTO", emailDTO);
 		model.addAttribute("searchVO", searchVO);
-
+		model.addAttribute("empVO", empVO);
+		//EmailVO nameVO = new EmailVO(emailService.getEmpName(nameVO));
 		return "email/inboxList";
 	}
 
@@ -259,19 +262,27 @@ public class EmailController {
 ////////////////////////////////////////////////휴 지 통///////////////////////////////////////////
 	
 	// 셀렉트박스 체크하고 휴지통 버튼 눌렀을 때 오는 ajax를 받아 처리
-	
-	
 	@PostMapping("cust/emailList/goWaste")
-	public int deleteEmail(@RequestBody List<String> senEmailNoList) {
-		
-		return emailService.deleteEmail(senEmailNoList);
+	public String deleteEmail(@RequestBody List<String> senEmailNoList) {
+	    try {
+	        int deletedCount = emailService.deleteEmail(senEmailNoList);
+	        return "redirect:/cust/emailList";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "redirect:/cust/emailList";
+	    }
 	}
 	
-	@ResponseBody
-	public int deleteInbox(@RequestBody List<String> senEmailNoList) {
-	
-		return emailService.deleteInbox(senEmailNoList);
-	}	
+	@PostMapping("cust/inboxList/goWaste")
+	public String deleteInbox(@RequestBody List<String> recEmailNoList) {
+	    try {
+	        int deletedCount = emailService.deleteInbox(recEmailNoList);
+	        return "redirect:/cust/inboxList";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "redirect:/cust/inboxList";
+	    }
+	}
 	
 	// 휴지통 전체조회
 	@GetMapping("cust/wastedList")
@@ -322,6 +333,30 @@ public class EmailController {
 		model.addAttribute("searchVO", searchVO);
 
 		return "email/wastedList :: #wastedTable";
+	}
+	
+	// 휴지통 복원하기
+	@PostMapping("cust/wastedList/goRestore")
+	public String restoreMail(@RequestBody List<String> senEmailNoList) {
+	    try {
+	        emailService.restoreMail(senEmailNoList);
+	        return "redirect:/cust/wastedList";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "redirect:/cust/wastedList";
+	    }
+	}
+	
+	// 휴지통 완전삭제
+	@PostMapping("cust/wastedList/goRemove")
+	public String removeMail(@RequestBody List<String> senEmailNoList) {
+	    try {
+	        emailService.removeMail(senEmailNoList);
+	        return "redirect:/cust/wastedList";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "redirect:/cust/wastedList";
+	    }
 	}
 	
 }

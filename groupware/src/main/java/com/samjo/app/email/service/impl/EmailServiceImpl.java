@@ -1,6 +1,8 @@
 package com.samjo.app.email.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,13 @@ public class EmailServiceImpl implements EmailService {
 	@Autowired
 	public EmailServiceImpl(EmailMapper emailMapper) {
 		this.emailMapper = emailMapper;
+	}
+	
+	//empId -> 이름 얻어오기
+	@Override
+	public EmailVO getEmpName(EmailVO emailVO) {
+		EmailVO nameVO = emailMapper.getEmpName(emailVO);
+		return nameVO;
 	}
 	
 	//받은메일함 전체조회
@@ -77,10 +86,30 @@ public class EmailServiceImpl implements EmailService {
 	
 	// 받은 메일 휴지통 이동
 	@Override
-	public int deleteInbox(List<String> senEmailNoList) {
-		return emailMapper.deleteInbox(senEmailNoList);
+	public int deleteInbox(List<String> recEmailNoList) {
+		return emailMapper.deleteInbox(recEmailNoList);
 	}
-
+	
+    @Override
+    public void restoreMail(List<String> senEmailNoList) {
+        for (String senEmailNo : senEmailNoList) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("senEmailNo", senEmailNo);
+            emailMapper.restoreMail(params);            
+        }
+        
+    }
+	
+	//메일 완전삭제
+	@Override
+	public void removeMail(List<String> senEmailNoList) {
+        for (String senEmailNo : senEmailNoList) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("senEmailNo", senEmailNo);
+            emailMapper.removeMail(params);            
+        }
+        
+    }
 	
 	// 답신할 대상의 메일정보(수신메일)를 가져오기(체인메일넘버 유념)
 	@Override
@@ -128,10 +157,6 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.countWasted(searchVO);
 	}
 
-	@Override
-	public List<EmailVO> restoreMail() {
-		return emailMapper.restoreMail();
-	}
 	
 	//받은메일 페이징
 	@Override
@@ -143,6 +168,8 @@ public class EmailServiceImpl implements EmailService {
 	public int countMyEmail(SearchVO searchVO) {
 		return emailMapper.countMyEmail(searchVO);
 	}
+
+
 
 
 
