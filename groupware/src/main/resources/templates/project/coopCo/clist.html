@@ -177,7 +177,6 @@
 		</div>
 
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
-
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -207,7 +206,6 @@
 				//키워드 검색 처리
 				keyword = $('.searchKey').val();
 				searchCondition = $('.searchKeySelect').val();
-
 				// 정렬 처리
 				coSort = $('.searchSelect').val();
 			}
@@ -249,7 +247,6 @@
 						result[element.name] = element.value
 					}
 				}
-
 				$.each(this.serializeArray(), extend)
 				return result
 			}
@@ -257,9 +254,7 @@
 			// 등록모달
 			$('#modalInsertBtn').on('click', function() {
 				let formData = $('#coopForm').serializeObject();
-
-				console.log(formData);
-
+				//console.log(formData);
 				$.ajax({
 					type : 'POST',
 					url : '/cust/coopInsert',

@@ -76,32 +76,24 @@ public class ProjectController {
 	}
 	
 	// 프로젝트 단건조회 ...
-	/*@GetMapping("/cust/pj/info")
+	@GetMapping("/cust/pj/info")
 	public String prjtInfo(@RequestParam String prjtId, Model model) {
+		
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		//SearchVO search = new SearchVO();
 		
 		if(empVO != null) {
 			
 			ProjectVO pj = projectService.prjtInfo(prjtId);
-			model.addAttribute("prjt", prjtId);
+			model.addAttribute("prjt", pj);
 			
-			search.setKeywordCondition("prjt_id");
-			search.setKeyword(prjtId);
-			search.setSortCondition("tc.task_no DESC");
-			List<ProjectVO> list = projectService.PrjtAllList(search);
-			model.addAttribute("tasks", list); 
-			
-			int count = projectService.countPrjt(empVO, search);
-			PageDTO pageDTO = new PageDTO(search.getPage(), count);
-			model.addAttribute("pageDTO", pageDTO); 
-			
-			model.addAttribute("path", "prjtInfo"); 
+			List<ProjectVO> list = projectService.taskList(prjtId, empVO.getCustNo());
+			model.addAttribute("list", list);
 			
 		return "project/prjt/pjInfo";
 	}
 		return "test/test";
-	}*/
+	}
 
 	// 프로젝트 등록
 	@GetMapping("cust/prjtInsert")

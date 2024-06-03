@@ -89,6 +89,7 @@ public class TaskController {
 			return "project/task/insert";
 		}
 		
+		@ResponseBody
 		@PostMapping("cust/taskInsert")
 		public String taskInsertProcess(@RequestBody ProjectVO projectVO,Model model) {
 			
@@ -101,10 +102,10 @@ public class TaskController {
 			model.addAttribute("task", new ProjectVO());
 			
 			int taskNo = taskService.taskInsert(projectVO);
-			
+			System.out.println("taskNo---->" + taskNo);
 
 			if (taskNo > -1) {
-				return"redirect:/cust/taskAllList";
+				return "" + taskNo;
 			} else {
 				return"test/test";
 			}

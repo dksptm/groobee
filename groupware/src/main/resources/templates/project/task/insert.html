@@ -116,6 +116,7 @@
 	
 			let emps = [[${emp}]]
 			
+			
 			$("#deptEmpBtn").attr("disabled", true);
 			$("#codeptEmpBtn").attr("disabled", true);
 			
@@ -180,19 +181,21 @@
 					
 					$.ajax({
 						type: 'POST',
-						url : 'cust/taskInsert',
+						url : '/cust/taskInsert',
 						contentType : 'application/json' ,
 						data :  JSON.stringify(formData),
 						beforeSend: function(xhr) {
 					        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
 					    },
 						success : function(data){
+							console.log(data)
 							alert('프로젝트업무 등록에 성공했습니다.');
-							window.location.href="/cust/tsInfo/"+ [[${task.taskNo}]];
+							window.location.href = "/cust/tsInfo/" + data;
+							
 						},
 						error : function(err){
 							alert('프로젝트업무 등록에 실패했습니다.');
-						}
+						} 
 					});
 				});
 			
@@ -214,13 +217,8 @@
 						console.log('---------------->',deptEmp);
 					}
 				})
-				
 			});
 		</script>
-		
 	</body>
 </th:block>
 </html>
-
-
-		

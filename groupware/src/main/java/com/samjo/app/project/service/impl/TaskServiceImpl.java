@@ -47,7 +47,11 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override // 프로젝트(하위) 등록
 	public int taskInsert(ProjectVO projectVO) {
-		return taskMapper.insertTask(projectVO);
+		int result = taskMapper.insertTask(projectVO);
+		if(result > 0) {
+			return projectVO.getTaskNo();			
+		}
+		return -1;
 	}
 	
 	@Override // 프로젝트 단순조회 taskInsert용

@@ -72,6 +72,7 @@
 	<select id="prjtList" resultType="ProjectVO" parameterType="SearchVO">
 	SELECT  prjt_id
 	        ,prjt_name
+	        ,get_codename(prjt_stat) as code_name
 	        ,prjt_stat
 	        ,smry
 	        ,purpose
@@ -93,6 +94,32 @@
 						 ,smry
 			FROM prjt 
 			WHERE prjt_id = #{prjtId}
+	</select>
+	
+	<!-- 공통업무 List -->
+	<select id="taskList" resultType="ProjectVO" parameterType="map">
+			SELECT t.task_no,
+			        p.prjt_id,
+			        get_codename(t.prjt_mat) as code_name,
+			        t.task_name,
+			        t.task_start_dt,
+			        t.task_due_dt,
+			        t.prjt_mat,
+			        (SELECT COUNT(*)
+			         FROM task_emps te
+			         WHERE te.task_no = t.task_no) AS participants_cnt,
+			        (SELECT
+			            CASE
+			            WHEN COUNT(*) = 0 THEN 0
+			            ELSE TRUNC(SUM(CASE WHEN te.cmplt= '5F1f' THEN 1 ELSE 0 END) * 100.0 /COUNT(*))
+			            END
+			        FROM task_emps te
+			        WHERE te.task_no = t.task_no) AS progress
+			FROM task_common t JOIN prjt p 
+			                    ON (p.prjt_id = t.standard_no)
+			WHERE p.prjt_id = #{pid}
+			AND p.cust_no = #{cno}
+			AND t.task_type = '5A1a'
 	</select>
 	
 	<!-- 프로젝트(상위) 등록 -->
