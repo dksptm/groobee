@@ -82,7 +82,7 @@ public class CtController {
 		ctservice.ctInsert(ctVO, modIds);
 		//System.out.println("ctVO : "+ ctVO);
 		//System.out.println("mod : "+ Arrays.toString(modIds));
-		return "Success";
+		return "redirect:/sol/ctList";
 	}
 	
 	// 계약 수정 화면

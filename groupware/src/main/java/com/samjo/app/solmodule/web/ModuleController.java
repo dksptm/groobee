@@ -54,15 +54,6 @@ public class ModuleController {
 		return "solution/module/moduleList";
 	}
 
-	/**
-	 * 모듈 등록 
-	 * @return
-	 */
-	@GetMapping("insertSolMod")
-	public String InsertMod() {
-		return "solution/module/insertModule";
-	}
-
 	// 템플릿 전체조회
 	/**
 	 * @param searchVO

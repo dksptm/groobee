@@ -39,13 +39,27 @@ public class PayController {
 			searchVO.setPaySort("pay_no");
 		}
 		List<PayVO> list = payservice.payList(searchVO);
+		System.out.println(list);
 		model.addAttribute("list",list);
 		CtDTO payDTO = new CtDTO(searchVO.getPage(), payservice.count(searchVO));
 		model.addAttribute("payDTO", payDTO);
 		return "solution/pay/payList";
 	}
 	
-	//결제 테스트
+	@PostMapping("sol/viewPayList")
+	public String viewPayListPage(SearchVO searchVO, Model model) {
+		if (searchVO.getPage() <= 0) {
+			searchVO.setPage(1);
+		}
+		List<PayVO> list = payservice.payList(searchVO);
+		System.out.println(list);
+		model.addAttribute("list",list);
+		CtDTO payDTO = new CtDTO(searchVO.getPage(), payservice.count(searchVO));
+		model.addAttribute("payDTO", payDTO);
+		return "solution/pay/payList :: #payTable";
+	}
+	
+	//결제 
 	@GetMapping("sol/payTest")
 	public String payTestPage(Model model) throws ParseException {
 		//String importVO= payservice.payLList();
@@ -53,7 +67,7 @@ public class PayController {
 		return "solution/pay/payTest";
 	}
 	
-	//결제 스케줄러 테스트
+	//결제 스케줄러
 	@PostMapping("/payment")
 	public @ResponseBody void getImportToken(@RequestParam Map<String, Object> map)
 			throws JsonMappingException, JsonProcessingException {
