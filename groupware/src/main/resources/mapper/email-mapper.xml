@@ -80,7 +80,7 @@
 
 	<!-- inbox 상세조회 -->
 <select id="selectInbox" resultType="EmailVO">
-        SELECT s.sen_email_no AS senEmailNo,
+    SELECT s.sen_email_no AS senEmailNo,
            r.rec_email_no AS recEmailNo,
            s.sender AS sender,
            r.recp AS recp,
@@ -88,9 +88,14 @@
            s.title AS title,
            s.cntn AS cntn,
            r.email_stat,
-           r.cust_no AS custNo
+           r.cust_no AS custNo,
+           id_to_the_name(sender) AS senderName,
+           id_to_the_name(recp) AS recpName,
+           id_to_the_name(refer) AS referName
     FROM   email s JOIN inbox r 
                    ON s.sen_email_no = r.sen_email_no
+                   JOIN emp e
+                   ON e.emp_id = r.sen_email_no
     WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
 </select>
   
