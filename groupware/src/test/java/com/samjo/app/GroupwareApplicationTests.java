@@ -117,7 +117,8 @@ class GroupwareApplicationTests {
 	 @Test
 	 public void encryption() {
 			String[] strs = {
-					""
+					"6512613888230017",
+					"DOSk0YxWmmuak1WEwZBaduB0nrExkAujYf6NwTKBrJDB5w3ktJQHCiAyiyMfLe9lVz3tZki5Rk99yOuX"
 			};
 			
 			for(String str : strs) {

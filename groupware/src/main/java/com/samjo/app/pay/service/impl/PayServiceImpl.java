@@ -216,6 +216,4 @@ public class PayServiceImpl implements PayService{
 		System.out.println(resVO);
 		return list;
 	}
-
-
 }

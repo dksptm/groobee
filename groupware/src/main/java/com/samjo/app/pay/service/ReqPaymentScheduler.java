@@ -30,7 +30,7 @@ public class ReqPaymentScheduler {
     public void startScheduler(String customer_uid, int price, long packageId) {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
-        // 스케쥴러가 시작되는 부분 
+        // 스케쥴러 시작
         scheduler.schedule(getRunnable(customer_uid, price, packageId), getTrigger());
     }
     
@@ -58,7 +58,7 @@ public class ReqPaymentScheduler {
  
     private Trigger getTrigger() {
         // 작업 주기 설정 
-        //return new PeriodicTrigger(1, TimeUnit.MINUTES);
-    	return new PeriodicTrigger(10, TimeUnit.SECONDS);
+        //return new PeriodicTrigger(1, TimeUnit.MINUTES); //1분마다
+    	return new PeriodicTrigger(10, TimeUnit.SECONDS); //10초마다
     }
 }

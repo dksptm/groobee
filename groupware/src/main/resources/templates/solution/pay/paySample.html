@@ -8,8 +8,10 @@
 			<div style="min-width: 880px" class="card my-4 col-10">
 				<h5 class="card-header">결제 테스트</h5>
 				<div class="card-body ">
+					<button type="button" class="btn btn-primary"
+						onclick="makeBillingKey()">결제 테스트</button>
 					<button type="button" class="btn btn-primary" onclick="kakaopay()">결제
-						테스트</button>
+						테스트2</button>
 					<h2>결제 목록</h2>
 					<table id="paymentTable">
 						<thead>
@@ -32,12 +34,43 @@
 
 		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-		<script th:inline="javascript">
+		<script>
 			// CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			var IMP = window.IMP;
 			IMP.init('imp82376133');
+
+			function makeBillingKey() {
+				// 고객 정보를 입력받은 후 빌링키 발급 요청
+				IMP.request_pay({
+					pg : "kakaopay",
+					pay_method : "card",
+					merchant_uid : "issue_billingkey_monthly_00001",
+					customer_uid : "gildong_0001_1234",
+					name : "최초인증결제",
+					amount : 1,
+					buyer_email : "gildong@gmail.com",
+					buyer_name : "홍길동",
+					buyer_tel : "010-4242-4242",
+					buyer_addr : "서울특별시 강남구 신사동",
+					buyer_postcode : "01181"
+				},
+						function(rsp) {
+							if (rsp.success) {
+								// 빌링키 발급 성공
+								console.log('빌링키 발급 성공:', rsp);
+								// 서버로 빌링키 정보를 전송하여 저장
+								console.log('고객사정보:', rsp.customer_uid);
+								console.log('카드정보:', rsp.card_info);
+								saveBillingKeyToServer(rsp.customer_uid,
+										rsp.card_info);
+							} else {
+								// 빌링키 발급 실패
+								console.error('빌링키 발급 실패:', rsp.error_msg);
+							}
+						});
+			}
 
 			//테스트2
 			function kakaopay() {
@@ -57,7 +90,7 @@
 					if (rsp.success) {
 						//DB에 구독정보 등록하는 부분
 						/* $.ajax({
-							url : '/insertPay', 
+							url : '/insertSubscribe', 
 							data : {
 								package_id : $('#package_id').val(),
 								customer_id : $('#customer_id').val()
@@ -69,7 +102,7 @@
 
 						//alert($('#customer_id').val());
 						$.ajax({
-							url : '/payment', //결제 상태를 확인하고 스케줄러를 호출하는 부분
+							url : '/payment1', //결제 상태를 확인하고 스케줄러를 호출하는 부분
 							beforeSend : function(xhr) {
 								xhr.setRequestHeader(header, token);
 							},
@@ -90,9 +123,8 @@
 			}
 
 			//내역 테이블로 그리기
-			console.log([[${portVO}]]);
-			 /*$(document).ready(function() {
-				let payments = JSON.parse([[${portVO}]]);
+			/* $(document).ready(function() {
+				let payments = JSON.parse("${portVO}");
 	
 				$('#paymentTable tbody').empty();
 	

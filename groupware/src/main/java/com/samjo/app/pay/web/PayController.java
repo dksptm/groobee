@@ -53,8 +53,8 @@ public class PayController {
 		return "solution/pay/payTest";
 	}
 	
-	//결제 테스트2
-	@PostMapping("/payment1")
+	//결제 스케줄러 테스트
+	@PostMapping("/payment")
 	public @ResponseBody void getImportToken(@RequestParam Map<String, Object> map)
 			throws JsonMappingException, JsonProcessingException {
 		//long customer_uid = Integer.parseInt((String) map.get("customer_uid"));
