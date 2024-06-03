@@ -11,5 +11,8 @@ public interface PayMapper {
 	public List<PayVO> selectPayAll(SearchVO searchVO);
 	//결제 페이징카운트
 	public int payCount(SearchVO searchVO);
-	
+	//결제 등록
+	public int payInsert(PayVO payVO);
+	//결제 수정(갱신시)
+	public int payReset(PayVO payVO);
 }

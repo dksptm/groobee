@@ -13,6 +13,8 @@ import com.samjo.app.ct.service.CtService;
 import com.samjo.app.ct.service.CtVO;
 import com.samjo.app.cust.mapper.CustMapper;
 import com.samjo.app.cust.service.CustVO;
+import com.samjo.app.pay.mapper.PayMapper;
+import com.samjo.app.pay.service.PayVO;
 import com.samjo.app.solmodule.service.ModuleVO;
 import com.samjo.app.upload.service.UploadService;
 
@@ -28,6 +30,8 @@ public class CtServiceImpl implements CtService{
 	UploadService uploadservice;
 	@Autowired
 	CustMapper custMapper;
+	@Autowired
+	PayMapper payMapper;
 	
 	//계약 전체조회
 	@Override
@@ -90,6 +94,14 @@ public class CtServiceImpl implements CtService{
 			modVO.setUseEndDt(ctVO.getCtEndDt());
 			ctMapper.useModInsert(modVO);
 		}
+		PayVO payVO = new PayVO();
+		payVO.setCustNo(ctVO.getCustNo());
+		payVO.setCtNo(ctVO.getCtNo());
+		payVO.setServAmt(ctVO.getCtAmt());
+		//기존 결제 수정
+		payMapper.payReset(payVO);
+		//계약 결제 등록
+		payMapper.payInsert(payVO);
 		return null;
 	}
 
@@ -118,6 +130,13 @@ public class CtServiceImpl implements CtService{
 			modVO.setUseEndDt(ctVO.getCtEndDt());
 			ctMapper.useModInsert(modVO);
 		}
+		//계약 결제 등록
+		PayVO payVO = new PayVO();
+		payVO.setCustNo(ctVO.getCustNo());
+		payVO.setCtNo(ctVO.getCtNo());
+		payVO.setServAmt(ctVO.getCtAmt());
+		payMapper.payInsert(payVO);
+		
 		return null;
 	}
 

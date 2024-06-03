@@ -14,36 +14,37 @@
 
 						<table class="table table-hover table-bordered">
 							<tr>
-								<th>계약번호</th>
+								<th class="table-secondary">계약번호</th>
 								<td><input class="form-control" type="text"
 									placeholder="자동등록" disabled /></td>
-								<th>고객정보 불러오기</th>
+								<th class="table-secondary">고객정보 불러오기</th>
 								<td><button type="button"
 										class="btn btn-secondary ms-3 custBtn" data-bs-toggle="modal"
 										data-bs-target="#CustModal">고객선택</button></td>
 							</tr>
 							<tr>
-								<th>고객번호</th>
+								<th class="table-secondary">고객번호</th>
 								<td><input class="form-control" type="text"
-									th:field="${ctVO.custNo}" readOnly /></td>
-								<th>사업자번호</th>
+									th:field="${ctVO.custNo}" placeholder="자동등록" readOnly /></td>
+								<th class="table-secondary">사업자번호</th>
 								<td><input class="form-control" type="text"
-									th:field="${ctVO.brn}" readOnly /></td>
+									th:field="${ctVO.brn}" placeholder="자동등록" readOnly /></td>
 							</tr>
 							<tr>
-								<th>상호명</th>
+								<th class="table-secondary">상호명</th>
 								<td><input class="form-control" type="text"
-									th:field="${ctVO.custName}" readOnly /></td>
-								<th>대표자</th>
+									th:field="${ctVO.custName}" placeholder="자동등록" readOnly /></td>
+								<th class="table-secondary">대표자</th>
 								<td><input class="form-control" type="text"
-									th:field="${ctVO.rep}" readOnly /></td>
+									th:field="${ctVO.rep}" placeholder="자동등록" readOnly /></td>
 							</tr>
 							<tr>
-								<th>계약서</th>
+								<th class="table-secondary">계약서</th>
 								<td colspan="3">
 									<div class="row">
 										<input class="form-control col-sm-5" type="file"
-											th:field="${ctVO.uploadfile}" style="width: 70%" accept=".pdf" />
+											th:field="${ctVO.uploadfile}" style="width: 70%"
+											accept=".pdf" />
 									</div>
 								</td>
 							</tr>
@@ -51,34 +52,35 @@
 
 						<table class="table table-hover table-bordered mt-5">
 							<tr>
-								<th>계약시작일</th>
+								<th class="table-secondary">계약시작일</th>
 								<td><input class="form-control" type="date" id="ctStartDt"
 									name="ctStartDt"
 									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}" /></td>
-								<th>계약종료일</th>
+								<th class="table-secondary">계약종료일</th>
 								<td><input class="form-control" type="date" id="ctEndDt"
 									name="ctEndDt"
 									th:value="${#dates.format(ctVO.ctEndDt, 'yyyy-MM-dd')}" /></td>
 							</tr>
 							<tr>
-								<th>계약모듈 갯수</th>
+								<th class="table-secondary">계약모듈 갯수</th>
 								<td><input class="form-control" type="number"
 									th:field="${ctVO.useModCnt}" /></td>
-								<th>최대사용인원</th>
+								<th class="table-secondary">최대사용인원</th>
 								<td><input class="form-control" type="number"
 									th:field="${ctVO.maxEmps}" th:min="${ctVO.curEmps}" /></td>
 							</tr>
 							<tr>
-								<th>사용 모듈</th>
-								<td colspan="3"><span class="modFText" th:text="'선택한 모듈이 없습니다.'"></span> <span
-									class="modlistSpan"></span> <span>
+								<th class="table-secondary">사용 모듈</th>
+								<td colspan="3"><span class="modFText"
+									th:text="'선택한 모듈이 없습니다.'"></span> <span class="modlistSpan"></span>
+									<span>
 										<button type="button" class="btn btn-secondary ms-3 modBtn"
 											data-bs-toggle="modal" data-bs-target="#ModModal">모듈
 											선택</button>
 								</span></td>
 							</tr>
 							<tr>
-								<th>계약금액</th>
+								<th class="table-secondary">계약금액</th>
 								<td colspan="3"><input class="form-control" type="number"
 									th:field="${ctVO.ctAmt}" /></td>
 							</tr>
@@ -141,32 +143,37 @@
 				role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="modalScrollableTitle">사용가능 모듈 목록</h5>
+						<h5 class="modal-title" id="modalScrollableTitle">등록가능 고객 목록</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
 							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>고객번호</th>
-									<th>상호명</th>
-									<th>선택</th>
-								</tr>
-							</thead>
-							<tbody>
-								<th:block th:each="CustVO : ${custlist}">
-									<tr id="custTr">
-										<td>[[ ${CustVO.custNo} ]]</td>
-										<td>[[ ${CustVO.custName} ]]</td>
-										<td><input
-											th:onclick="CustInfo([[${CustVO.custNo}]], [[${CustVO.custName}]], [[${CustVO.brn}]], [[${CustVO.rep}]])"
-											type="radio" name="check" class="custcheck"
-											th:value="${CustVO.rep}" th:id="${CustVO.brn}"></td>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>고객번호</th>
+										<th>상호명</th>
+										<th>선택</th>
 									</tr>
-								</th:block>
-							</tbody>
-						</table>
+								</thead>
+								<tbody>
+						<th:block th:if="${not #strings.isEmpty(custlist)}">
+									<th:block th:each="CustVO : ${custlist}">
+										<tr id="custTr">
+											<td>[[ ${CustVO.custNo} ]]</td>
+											<td>[[ ${CustVO.custName} ]]</td>
+											<td><input
+												th:onclick="CustInfo([[${CustVO.custNo}]], [[${CustVO.custName}]], [[${CustVO.brn}]], [[${CustVO.rep}]])"
+												type="radio" name="check" class="custcheck"
+												th:value="${CustVO.rep}" th:id="${CustVO.brn}"></td>
+										</tr>
+									</th:block>
+									</th:block>
+									<th:block th:unless="${not #strings.isEmpty(custlist)}">
+										<p class="text-center mt-4">현재 계약 대기중인 고객사가 없습니다.</p>
+									</th:block>
+								</tbody>
+							</table>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary selectCust"
@@ -285,11 +292,7 @@
 			        dataType: 'Text',
 			        success: function(result){
 			            console.log(result);
-			            if (result === "Success") {
-                        	window.location.href = "/sol/ctInfo/" + [[${ctVO.ctNo}]];
-	                    } else {
-	                        alert('등록 오류');
-	                    }
+                       	window.location.href = "/sol/ctInfo/" + [[${ctVO.ctNo}]];
 			        },
 			        error: function(reject){ 
 			            console.log(reject);

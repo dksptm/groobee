@@ -24,33 +24,32 @@
 											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="form-control">결제상태</td>
-										<td><select class="form-select ctStat">
+										<td><select class="form-select payStat">
 												<option value="statAll">전체</option>
-												<option value="0A1a">미결제</option>
-												<option value="0A2a">결제대기</option>
-												<option value="0A3a">결제완료</option>
+												<option value="0D3d">미결제</option>
+												<option value="0D1d">결제대기</option>
+												<option value="0D2d">결제완료</option>
 										</select></td>
 										<td>
-										<button class="btn btn-outline-success searchbtn bg-light"
+										<button class="btn btn-outline-success searchbtn"
 										type="submit">검색</button>
 										</td>
 									</tr>
 									<tr>
-										<td><select class="form-select ctDt">
-												<option value="ct.ct_start_dt">결제마감일</option>
-												<option value="ct.ct_end_dt">결제예정일</option>
-												<option value="ct.ct_end_dt">결제완료일</option>
+										<td><select class="form-select payDt">
+												<option value="p.pay_expc_dt">예정일</option>
+												<option value="p.pay_cmplt_dt">결제일</option>
 										</select></td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
 										<td class="text-white">_</td>
-										<td class="form-control">결제분류</td>
+										<!-- <td class="form-control">결제분류</td>
 										<td><select class="form-select searchSelect">
 												<option value="typeAll">전체</option>
 												<option value="0A1a">정기결제</option>
 												<option value="0A2a">단기결제</option>
-										</select></td>
+										</select></td> -->
 									</tr>
 								</table>
 								<!-- <span class="position-absolute top-50 end-0 translate-middle-y">
@@ -69,12 +68,11 @@
 										<th>결제번호</th>
 										<th>계약번호</th>
 										<th>상호명</th>
-										<th>분류</th>
 										<th>금액</th>
+										<th>분류</th>
 										<th>상태</th>
-										<th>예정일자</th>
-										<th>마감일자</th>
-										<th>연체일</th>
+										<th>예정일</th>
+										<th>결제일</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -83,12 +81,16 @@
 											<td>[[ ${PayVO.payNo} ]]</td>
 											<td>[[ ${PayVO.ctNo} ]]</td>
 											<td>[[ ${PayVO.custName} ]]</td>
-											<td>[[ ${PayVO.payType} ]]</td>
 											<td>[[ ${PayVO.servAmt} ]]</td>
+											<td>[[ ${PayVO.payTypeName} ]]</td>
 											<td>[[ ${PayVO.payStatName} ]]</td>
 											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${#dates.format(PayVO.payDueDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${PayVO.overdue} ]]</td>
+											<th:block th:if="${PayVO.payCmpltDt == null}" >
+												<td>미입금</td>											
+											</th:block>
+											<th:block th:unless="${PayVO.payCmpltDt == null}" >
+												<td>[[ ${PayVO.payCmpltDt} ]]</td>
+											</th:block>
 										</tr>
 									</th:block>
 								</tbody>
@@ -121,7 +123,7 @@
 								</nav>
 							</th:block>
 							<th:block th:unless="${payDTO.totalCnt} != 0">
-								<p class="text-center mt-4">현재 조회가능한 결제내역이 없습니다.</p>
+								<p class="text-center mt-4">조회가능한 결제내역이 없습니다.</p>
 							</th:block>
 						</div>
 						<!-- /페이징 -->
@@ -146,11 +148,10 @@
 		    // 검색 조건 변수 생성
 		    let keyword;
 		    let searchCondition;
-		    let ctStat;
-		    let ctDt;
-		    let ctStart;
-		    let ctEnd;
-		    let ctSort;
+		    let payStat;
+		    let payDt;
+		    let payStart;
+	        let payEnd;
 		    
 		    // 검색버튼 이벤트 처리
 		    $(".searchbtn").on("click", function(e) {
@@ -180,15 +181,15 @@
 		        searchCondition = $('.searchKeySelect').val();
 		        
 		    	// 기간 검색 처리
-		        ctDt = $('.ctDt').val();
-		        ctStart = $('.fromDt').val();
-		        ctEnd = $('.toDt').val();
+		        payDt = $('.payDt').val();
+		        payStart = $('.fromDt').val();
+		        payEnd = $('.toDt').val();
 		
 		        // 계약상태 검색 처리
-		        if ($('.ctStat').val() != 'statAll') {
-		            ctStat = $('.ctStat').val();
+		        if ($('.payStat').val() != 'statAll') {
+		            payStat = $('.payStat').val();
 		        } else {
-		            ctStat = null;
+		            payStat = null;
 		        }
 		
 		        // 정렬 조건 처리
@@ -197,25 +198,25 @@
 		
 		    // 검색 AJAX 함수
 		    function showTable(page) {
+		    	console.log(payStat);
 		        $.ajax({
-		            url: '/sol/viewCtList',
+		            url: '/sol/viewPayList',
 		            type: 'POST',
 		            beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
 		            },
 		            data: {
 		                page: page,
-		                ctSort: ctSort,
-		                ctStart: ctStart,
-		                ctEnd: ctEnd,
-		                ctStat: ctStat,
-		                ctDt: ctDt,
+		                payStat: payStat,
+		                payDt: payDt,
 		                keyword: keyword,
-		                searchCondition: searchCondition
+		                searchCondition: searchCondition,
+		                payStart: payStart,
+		                payEnd: payEnd
 		            },
 		            dataType: 'Text',
 		            success: function(result) {
-		                $('#ctTable').replaceWith(result);
+		                $('#payTable').replaceWith(result);
 		            }
 		        });
 		    }

@@ -59,12 +59,14 @@ public class PayServiceImpl implements PayService{
 		//서버로 요청할 Header
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.APPLICATION_JSON);
-		
 	    
 	    Map<String, Object> map = new HashMap<>();
-	    map.put("imp_key", impKey);
-	    map.put("imp_secret", impS);
-	    
+	    String test1 = impKey;
+	    String test2 = impS;
+	    System.out.println("@@@@@"+ test1);
+	    System.out.println("@@@@@"+ test2);
+	    map.put("imp_key", "6512613888230017");
+	    map.put("imp_secret", "DOSk0YxWmmuak1WEwZBaduB0nrExkAujYf6NwTKBrJDB5w3ktJQHCiAyiyMfLe9lVz3tZki5Rk99yOuX");
 	   
 	    Gson var = new Gson();
 	    String json=var.toJson(map);
@@ -74,6 +76,7 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
+	//정기결제처리 테스트-삭제예정
 	@Override
 	public String requestSubPay() {
 		String token = getToken();
@@ -106,6 +109,7 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/again", entity, String.class);
 	}
 
+	//정기결제 처리
 	@Override
 	public String schedulePay(String customer_uid, int price) {
 		String token = getToken();
@@ -161,6 +165,7 @@ public class PayServiceImpl implements PayService{
 		 return response;
 	}
 
+	//dateStamp처리
 	@Override
 	public long dateStamp(String dateString) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -169,6 +174,7 @@ public class PayServiceImpl implements PayService{
 		return unixTimestamp;
 	}
 	
+	//정기결제 내역조회
 	@Override
 	public String payLList() throws ParseException {
 		String token = getToken();
@@ -209,11 +215,11 @@ public class PayServiceImpl implements PayService{
 	    startIdx = list.indexOf("{", startIdx); 
 	    int endIdx = list.lastIndexOf("}") + 1;
 	    String responseJson = list.substring(startIdx, endIdx);
-	    System.out.println(responseJson);
+	    System.out.println("test : " + responseJson);
 		
 		Gson gson = new Gson();
 		ImportResVO resVO = gson.fromJson(responseJson, ImportResVO.class);
 		System.out.println(resVO);
-		return list;
+		return list; 
 	}
 }

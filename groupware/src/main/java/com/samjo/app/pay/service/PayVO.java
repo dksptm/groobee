@@ -13,6 +13,7 @@ public class PayVO {
 	private String custName;
 	private int ctNo;
 	private String payType;
+	private String payTypeName;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date payCreDt;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

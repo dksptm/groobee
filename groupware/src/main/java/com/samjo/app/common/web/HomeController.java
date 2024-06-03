@@ -25,13 +25,18 @@ public class HomeController {
 		return "common/introduce";
 	}
 
+	// 로그인 페이지
+		@GetMapping("/loginPage")
+		public String loginPage(Model model) {
+			return "common/login";
+		}
+	
 	// 고객사 메인페이지
 	@GetMapping("/home")
 	public String HomePage(Model model) {
 		if (session != null) {
 			session.invalidate();
 		}
-		session.setAttribute("loginType", "cust");
 		return "test/test";
 	}
 
@@ -42,8 +47,6 @@ public class HomeController {
 		if (session != null) {
 			session.invalidate();
 		}
-		session.setAttribute("loginType", "sol");
-
 		return "test/test";
 	}
 }

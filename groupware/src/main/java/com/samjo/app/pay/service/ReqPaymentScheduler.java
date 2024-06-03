@@ -52,7 +52,7 @@ public class ReqPaymentScheduler {
     	Date s = convertFromJAVADateToSQLDate(cal.getTime());
         return () -> {
         	setSchedulePay.schedulePay(customer_uid, price);
-        	//deliService.deliveryInsert(packageId,customer_uid,s);
+        	//Service.nsert(packageId,customer_uid,s);
         };
     }
  

@@ -36,9 +36,11 @@ public class SpringSecurityConfig {
 				 */
 				.and()
 					.formLogin()
-					.defaultSuccessUrl("/")
+					.loginPage("/loginPage").permitAll()
+					.loginProcessingUrl("/home")
+					.defaultSuccessUrl("/home", true)
 				.and()
-					.logout()
+					.logout().permitAll()
 					.logoutSuccessUrl("/");
 
 		http.csrf();

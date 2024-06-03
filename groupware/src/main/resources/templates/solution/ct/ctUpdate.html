@@ -14,31 +14,31 @@
 
 						<table class="table table-hover table-bordered">
 							<tr>
-								<th>계약번호</th>
+								<th class="table-secondary">계약번호</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.ctNo}" readOnly /></td>
-								<th>계약상태</th>
+								<th class="table-secondary">계약상태</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.ctStat}" readOnly /></td>
 							</tr>
 							<tr>
-								<th>고객번호</th>
+								<th class="table-secondary">고객번호</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.custNo}" readOnly /></td>
-								<th>사업자번호</th>
+								<th class="table-secondary">사업자번호</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.brn}" readOnly /></td>
 							</tr>
 							<tr>
-								<th>상호명</th>
+								<th class="table-secondary">상호명</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.custName}" readOnly /></td>
-								<th>대표자</th>
+								<th class="table-secondary">대표자</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.rep}" readOnly /></td>
 							</tr>
 							<tr>
-								<th>계약서</th>
+								<th class="table-secondary">계약서</th>
 								<td colspan="3">
 									<div class="row">
 										<input class="form-control col-sm-5" type="text"
@@ -52,36 +52,36 @@
 
 						<table class="table table-hover table-bordered mt-5">
 							<tr>
-								<th>계약시작일</th>
+								<th class="table-secondary">계약시작일</th>
 								<td><input class="form-control" type="date" id="ctStartDt"
 									name="ctStartDt"
 									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
 									readOnly /></td>
-								<th>계약종료일</th>
+								<th class="table-secondary">계약종료일</th>
 								<td><input class="form-control" type="date" id="ctEndDt"
 									name="ctEndDt"
 									th:min="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"
 									th:value="${#dates.format(ctVO.ctEndDt, 'yyyy-MM-dd')}" /></td>
 							</tr>
 							<tr>
-								<th>계약금액</th>
+								<th class="table-secondary">계약금액</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.ctAmt}" /></td>
-								<th>계약모듈 갯수</th>
+								<th class="table-secondary">계약모듈 갯수</th>
 								<td><input class="form-control" type="number"
 									th:field="${ctVO.useModCnt}"
 									th:min="${#lists.size(ctVO.modList)}" /></td>
 							</tr>
 							<tr>
-								<th>최대사용인원</th>
+								<th class="table-secondary">최대사용인원</th>
 								<td><input class="form-control" type="number"
 									th:field="${ctVO.maxEmps}" th:min="${ctVO.curEmps}" /></td>
-								<th>현재사용인원</th>
+								<th class="table-secondary">현재사용인원</th>
 								<td><input class="form-control" type="text"
 									th:field="${ctVO.curEmps}" readOnly /></td>
 							</tr>
 							<tr>
-								<th>현재 사용중인 모듈</th>
+								<th class="table-secondary">현재 사용중인 모듈</th>
 								<td colspan="3"><span
 									th:text="${#lists.isEmpty(ctVO.modList)} ? '사용중인 모듈 없음.':'|'"></span>
 									<span class="modlistSpan"> <th:block

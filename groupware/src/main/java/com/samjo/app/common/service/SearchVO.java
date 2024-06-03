@@ -93,5 +93,11 @@ public class SearchVO {
 
 	//결제(pay) 관련
 	private String paySort;
+	private String payStat;
+	private String payDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date payStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date payEnd;
 	
 }
