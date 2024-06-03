@@ -24,7 +24,9 @@ public interface TaskService {
 	
 	
 	// 협력업체 조회
-	public List<ProjectVO> CoopCoAllList();
+	public List<ProjectVO> CoopCoAllList(SearchVO searchVO);
+	// 협력업체 페이징
+	public int coCount(SearchVO searchVO);
 	// 협력업체 등록
 	public int coopInsert(ProjectVO projectVO);
 	// 협력업체 단건조회

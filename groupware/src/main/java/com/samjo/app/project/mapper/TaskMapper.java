@@ -35,11 +35,13 @@ public interface TaskMapper {
 		
 		
 		// 협력업체 조회
-		public List<ProjectVO> selectCoopCoAllList();
-		// 협력업체 단건
-		public ProjectVO selectCoop(ProjectVO projectVO);
+		public List<ProjectVO> selectCoopCoAllList(SearchVO searchVO);
+		// 협력업체 페이징
+		public int coCount(SearchVO searchVO);
 		// 협력업체 등록
 		public int insertCoop(ProjectVO projectVO);
+		// 협력업체 단건
+		public ProjectVO selectCoop(ProjectVO projectVO);
 		// 협력업체 수정
 		public int updateCoop(ProjectVO projectVO);
 		// 협력업체 삭제

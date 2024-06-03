@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">프로젝트 상세조회</h5>
+				
+				<div class="card-body">
+				<input type="hidden" th:value="${pjlist.prjtId}" name="prjtId" />
+					<div class="table-responsive">
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>프로젝트ID</th>
+								<td id="pid">[[ ${pjlist.prjtId}]]</td>
+								<th>프로젝트명</th>
+								<td>[[ ${pjlist.prjtName}]]</td>
+								<th>책임자</th>
+								<td>[[ ${pjlist.empName}]] </td>
+								<th>진행상황</th>
+								<td>[[ ${pjlist.prjtStat}]]</td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>시작일</th>
+								<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
+								<th>마감일</th>
+								<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")}]]</td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>목적</th>
+									<td>[[ ${pjlist.purpose}]]</td>
+									<th>개요</th>
+									<td>[[ ${pjlist.smry}]]</td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+
+						<div style="text-align: center">
+							<button type="button" class="btn btn-light  mt-2" onclick="goToList()" >프로젝트 목록으로</button>
+							<button type="button" class="btn btn-light  mt-2" onclick="goToTaskList()" >업무 목록으로</button>
+							<button type="button" class="btn btn-danger  mt-2" id="prjtDelBtn" data-prjtId="${pjlist.prjtId}" >삭제</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		
+		
+		const token = document.querySelector('meta[name="_csrf"]')
+		.getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]')
+		.getAttribute('content');
+		
+		
+		// 프로젝트 목록으로
+        function goToList() {
+            window.location.href = '/cust/prjtAllList'; 
+        }
+		// 업무 목록으로 
+        function goToTaskList() {
+            window.location.href = '/cust/taskAllList'; 
+        }
+	    
+		// 삭제버튼 : 삭제 후 리스트로 이동 
+		$(function() {
+			$('#prjtDelBtn').on('click', function() {
+
+				let prjtId = $(this).data('prjtId');
+				console.log(prjtId); 
+
+			 	$.ajax({
+					type : 'POST',
+					url : '/cust/prjtDelete' ,
+					data : { prjtId: prjtId },	
+					dataType : 'json',
+					beforeSend: function(xhr) {
+				        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+				    },
+					success : function(result) {
+						alert('삭제에 성공했습니다.');
+					},
+					error : function(error) {
+						alert('삭제에 실패했습니다.');
+					}
+				}); 
+			});
+		}); 
+		</script>
+	</th:block>
+</body>
+</html>

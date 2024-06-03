@@ -198,25 +198,48 @@
 
 	
 	<!-- 프로젝트(하위) 업무 삭제 -->
-	<delete id="deleteTask" parameterType="int">
+<!-- 	<delete id="deleteTask" parameterType="int">
 		DELETE FROM task_common
 		WHERE task_no = #{taskNo}
-	</delete>
-
+	</delete> -->
 
 	<!-- 협력업체 전체 조회 -->
-	<select id="selectCoopCoAllList" resultType="ProjectVO">
-		SELECT   coop_co_no
-				,task_no
-				,co_name
-				,co_tel
-				,pic
-				,cust_addr
-				,cntn
-		FROM    coop_co
-		ORDER BY coop_co_no
+	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="SearchVO">
+		SELECT r.*
+			FROM (SELECT rownum rn,
+						t.*
+						FROM (SELECT  c.coop_co_no
+						                    , t.task_no
+						                    , t.task_name
+						                    , c.co_name
+						                    , c.co_tel
+						                    , c.pic
+						                    , c.cust_addr
+						                    , c.cntn
+								FROM coop_co c JOIN task_common t
+						               			 ON c.task_no = t.task_no
+				<where>
+					<if test="keyword != null and keyword != ''">
+						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					</if>
+				</where>
+				ORDER BY  ${coSort}, c.coop_co_no ) t 
+			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
+		WHERE r.rn > (#{page} -1) * 10 
+	
 	</select>
-
+	
+	<!-- 협력업체 페이징 -->
+	<select id="coCount" parameterType="SearchVO">
+		SELECT COUNT(*)
+		FROM coop_co 
+		<where>
+			<if test="keyword != null and keyword != ''">
+					AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+			</if>
+		</where>
+	</select>
+	
 	<!-- 협력업체 등록 -->
 	<insert id="insertCoop" parameterType="ProjectVO">
 		<selectKey keyProperty="coopCoNo" order="BEFORE"
@@ -224,13 +247,15 @@
 			SELECT NVL(MAX(coop_co_no),0) +1
 			FROM coop_co
 		</selectKey>
-		INSERT INTO coop_co (coop_co_no
+		INSERT INTO coop_co ( task_no
+							,coop_co_no
 							,co_name
 							,co_tel
 							,pic
 							,cust_addr
 							,cntn)
-		VALUES ( #{coopCoNo}
+		VALUES ( #{taskNo}
+				,#{coopCoNo}
 				,#{coName}
 				,#{coTel}
 				,#{pic}

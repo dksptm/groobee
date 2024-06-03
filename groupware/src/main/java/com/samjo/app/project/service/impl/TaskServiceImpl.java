@@ -1,6 +1,5 @@
 package com.samjo.app.project.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ public class TaskServiceImpl implements TaskService{
 
 	@Override // 프로젝트(하위)업무 전체조회
 	public List<ProjectVO> taskAllList(SearchVO searchVO) {
-		System.out.println("serchVO--->:" + searchVO);
 		return taskMapper.selectTaskAllList(searchVO);
 	}
 	
@@ -102,8 +100,12 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override // 협력업체 조회
-	public List<ProjectVO> CoopCoAllList() {
-		return taskMapper.selectCoopCoAllList();
+	public List<ProjectVO> CoopCoAllList(SearchVO searchVO) {
+		return taskMapper.selectCoopCoAllList(searchVO);
+	}
+	@Override // 협력업체 페이징
+	public int coCount(SearchVO searchVO) {
+		return taskMapper.coCount(searchVO);
 	}
 	@Override // 협력업체 등록
 	public int coopInsert(ProjectVO projectVO) {
@@ -123,7 +125,6 @@ public class TaskServiceImpl implements TaskService{
 			isSuccessed = true;
 		}
 		map.put("result", isSuccessed);
-		// js -> map.target = { coopCoNo : '', coName : '', ...};
 		map.put("target", projectVO);
 		return map;
 	}
@@ -141,6 +142,5 @@ public class TaskServiceImpl implements TaskService{
 		return map;
 	}
 
-	
 	
 }

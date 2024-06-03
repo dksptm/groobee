@@ -9,9 +9,8 @@
 			th:object="${projects}" id="prjtForm">   
 				 <br><br><br>    
                     <div style=" text-align: center;">
-                    	<button type="button" th:onclick="|location.href='@{/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
-                    	<button type="button" th:onclick="|location.href='@{/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
-                    	<!-- <button type="button" th:onclick="|location.href='@{/reguInsert}'|" class="btn btn-primary">상시업무 등록</button> -->
+                    	<button type="button" th:onclick="|location.href='@{/cust/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
+                    	<button type="button" th:onclick="|location.href='@{/cust/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
                     </div> 
                     <br>                     
 					<h3>프로젝트 등록</h3>
@@ -121,6 +120,7 @@
 					data : formData,
 					success : function(data){
 						alert('프로젝트 등록에 성공했습니다.');
+						window.location.href='/cust/prjtAllList';
 					},
 					error : function(err){
 						alert('프로젝트 등록에 실패했습니다.');

@@ -9,7 +9,7 @@
 				<h5 class="card-header">업무 상세조회</h5>
 				
 				<div class="card-body">
-				<input type="text" th:value="${task.taskNo}" name="taskNo" />
+				<input type="hidden" th:value="${task.taskNo}" name="taskNo" />
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
@@ -69,7 +69,7 @@
 						<br>
 						<div style="text-align: center">
 							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
-							<button type="button" class="btn btn-secondary  mt-2" id="delBtn">삭제</button>
+							<!-- <button type="button" class="btn btn-secondary  mt-2" id="delBtn">삭제</button> -->
 						</div>
 					</div>
 				</div>
@@ -106,7 +106,7 @@
 				
 				$.ajax({
 					type: 'PUT',
-					url : '/taskOk/' + taskNo,
+					url : '/cust/taskOk/' + taskNo,
 					contentType : 'application/json',
 					data :  JSON.stringify(param),
 					beforeSend: function(xhr) {
@@ -125,7 +125,7 @@
 			}
 			
 			// 삭제 버튼
-			$('#delBtn').on('click', function() {
+		/* 	$('#delBtn').on('click', function() {
 
 			    $.ajax({
 			        type: 'GET',
@@ -141,7 +141,7 @@
 			            location.reload();
 			        }
 			    });
-			});
+			}); */
 			
 		</script>
 

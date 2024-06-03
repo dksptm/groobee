@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">협력업체목</h5>
+				<div class="card-body ">
+
+					<!-- 검색 -->
+					<p class="navbar-brand">검색조건</p>
+					<nav class="navbar navbar-expand-lg navbar-light">
+						<div class="container-fluid">
+							<button class="navbar-toggler" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#navbarSupportedContent"
+								aria-controls="navbarSupportedContent" aria-expanded="false"
+								aria-label="Toggle navigation">
+								<span class="navbar-toggler-icon"></span>
+							</button>
+							<div class="collapse navbar-collapse" id="navbarSupportedContent">
+								<table>
+									<tr>
+										<td><select class="form-select searchKeySelect">
+												<option value="c.co_name">업체명</option>
+												<option value="c.pic">담당자</option>
+												<option value="c.cntn">내용</option>
+										</select></td>
+										<td colspan='3'><input class="form-control searchKey"
+											type="text"></td>
+										<td class="text-white">_</td>
+									</tr>
+									<tr>
+										<td class="form-control">정렬조건</td>
+						<td><select class="form-select searchSelect">
+												<option value="t.task_name">업체명순</option>
+												<option value="c.pic">담당자순</option>
+												<option value="c.cntn">내용순</option>
+										</select></td>
+									</tr> 
+								</table>
+								<span class="position-absolute top-50 end-0 translate-middle-y">
+									<button class="btn btn-outline-success searchbtn bg-light"
+										type="submit">검색</button>
+								</span>
+							</div>
+						</div>
+					</nav>
+					<div id="coTable">
+						<div class="table-responsive">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>업체번호</th>
+										<th>업체명</th>
+										<th>업무명</th>
+										<th>담당자</th>
+										<th>연락처</th>
+										<th>내용</th>
+										<th>주소</th>
+									</tr>
+								</thead>
+								<tbody>
+										<th:block th:each="coop : ${clist}">
+											<tr>
+											
+											<td>[[ ${coop.coopCoNo}]]</td>
+											<td>[[ ${coop.coName}]]</td>
+											<td>[[ ${coop.taskName}]]</td>
+											<td>[[ ${coop.pic}]]</td>
+											<td>[[ ${coop.coTel}]]</td>
+											<td>[[ ${coop.cntn}]]</td>
+											<td>[[ ${coop.custAddr}]]</td>
+									</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						<!-- <div style="text-align: end;">
+							<button type="button" class="btn btn-primary"
+								data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
+						</div>
+						<!-- 페이징 -->
+						<div class="paging mt-2">
+							<th:block th:if="${TaskDTO.totalCnt} != 0">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center">
+
+										<th:block th:if="${TaskDTO.prev}">
+											<li class="page-item prev"><a href="#"
+												th:id="${TaskDTO.startPage - 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-left"></i></a></li>
+										</th:block>
+										<th:block
+											th:each="num : ${#numbers.sequence(1, TaskDTO.endPage)}">
+											<li class="page-item "
+												th:attrappend="class=${num ==  TaskDTO.page ? 'active' : ' '}">
+												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+											</li>
+										</th:block>
+										<th:block th:if="${TaskDTO.next}">
+											<li class="page-item next"><a href="#"
+												th:id="${TaskDTO.endPage + 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-right"></i></a></li>
+										</th:block>
+									</ul>
+								</nav>
+							</th:block>
+							<th:block th:unless="${TaskDTO.totalCnt} != 0">
+								<p class="text-center mt-4">현재 등록된 협력업체가 없습니다.</p>
+							</th:block>
+						</div>
+						<!-- /페이징 -->
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			//CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
+
+			// 검색 조건 변수 
+			let keyword;
+			let searchCondition;
+			let coSort;
+		
+			//검색버튼 이벤트 처리
+			$(".searchbtn").on("click", function(e) {
+				updateParams();
+				let page = 1;
+				showTable(page);
+			});
+
+			//페이징 링크 처리
+			$(document).on("click", ".pagebtn", function(e) {
+				e.preventDefault();
+				let page = e.target.id;
+				showTable(page);
+			});
+
+			// 검색 조건 갱신 함수
+			function updateParams() {
+				//키워드 검색 처리
+				keyword = $('.searchKey').val();
+				searchCondition = $('.searchKeySelect').val();
+
+				// 정렬 처리
+				coSort = $('.searchSelect').val();
+			}
+
+			// 검색 AJAX 함수
+			function showTable(page) {
+				$.ajax({
+					url : '/cust/viewCoList',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					data : {
+						page : page,
+						coSort : coSort,
+						keyword : keyword,
+						searchCondition : searchCondition
+					},
+					dataType : 'Text',
+					success : function(result) {
+						$('#coTable').replaceWith(result);
+					}
+				});
+			}
+			
+		</script>
+	</th:block>
+</body>
+</html>

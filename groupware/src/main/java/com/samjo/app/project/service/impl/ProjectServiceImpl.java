@@ -36,11 +36,15 @@ public class ProjectServiceImpl implements ProjectService {
 	public int count(SearchVO searchVO) {
 		return projectMapper.prjtCount(searchVO);
 	}
-
+	
+	@Override // 프로젝트 단순조회 taskInsert용
+	public List<ProjectVO> prjtList(SearchVO searchVO) {
+		return projectMapper.prjtList(searchVO);
+	}
 	
 	@Override // 프로젝트 단건조회
-	public ProjectVO prjtInfo(ProjectVO projectVO) {
-		return projectMapper.selectPrjt(projectVO);
+	public ProjectVO prjtInfo(String prjtId) {
+		return projectMapper.selectPrjt(prjtId);
 	}
 	
 	@Override // 프로젝트 등록
@@ -62,18 +66,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
-	@Override // 프로젝트 삭제
-	public Map<String, Object> prjtDelete(ProjectVO projectVO) {
-		Map<String, Object> map = new HashMap<>();
-		int prjtId = Integer.parseInt(projectVO.getPrjtId());
-		int result = projectMapper.deletePrjt(prjtId);
 
-		if (result == 1) {
-			map.put("prjtId", projectVO.getPrjtId());
-		}
-		return map;
+	public void prjtDelete(String prjtId) {
+		 projectMapper.deletePrjt(prjtId);
 	}
-	
 	
 	// 효주 - 업무간단조회
 	@Override
