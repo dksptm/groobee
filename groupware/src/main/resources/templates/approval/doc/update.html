@@ -414,7 +414,7 @@
 			// 모달열기 - 결재자.
 			$('.doc-modal-btn-apr').on('click', function(e) {
 				let dept = $('input[name="deptId"]').val();
-				$('#docModalAprs .modal-body').load(contextPath + "/cust/deptEmps?deptId="+ dept);
+				$('#docModalAprs .modal-body').load(contextPath + "cust/deptEmps?deptId="+ dept);
 				$('#docModalAprs').modal();
 			})
 			// 모달에서 - 선택한 결재자 가져오기.

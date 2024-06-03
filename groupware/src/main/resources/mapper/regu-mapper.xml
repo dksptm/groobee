@@ -33,7 +33,7 @@
 	</resultMap>
 
 	<!-- 등록 시 기존 상시(틀) 가져오기 -->
-	<select id="selectReguAll" resultType="ProjectVO">
+	<select id="selectReguAll" parameterType="EmpVO" resultType="ProjectVO">
 		SELECT  
 				g.regu_id
 		       ,g.task_name
@@ -55,10 +55,15 @@
 		        	   ,tc.*
 		        FROM   task_common tc JOIN regu_stad rs 
 		        				      ON (rs.regu_id = tc.standard_no)
-		        WHERE  rs.cust_no = #{cno}
+		        WHERE  rs.cust_no = #{emp.custNo}
+		        
+		        
 		      ) g
 		WHERE 
 			  g.rn = 1
+			<if test="!emp.permId.equals('1C2c')">
+			   	AND  g.dept_id = #{emp.deptId}		        	   
+			</if>
 		ORDER BY 
 			  g.regu_id
 	</select>
@@ -151,6 +156,7 @@
 			    tc.standard_no 
 		       ,tc.task_no
 		       ,get_deptname(tc.dept_id)     as dept_name
+		       ,tc.dept_id
 		       ,tc.task_name 
 		       ,tc.task_purpose
 		       ,tc.task_cntn 
@@ -159,7 +165,8 @@
 		       ,rs.cre_perd 
 		       ,tc.task_start_dt 
 		       ,tc.task_due_dt 
-		       ,get_codename(tc.prjt_mat) 	 as prjt_mat
+		       ,get_codename(tc.prjt_mat) 	 as mat_name
+		       ,tc.prjt_mat		
 		FROM   
 			   task_common tc JOIN regu_stad rs
 		                        ON (tc.standard_no = rs.regu_id)
@@ -198,6 +205,26 @@
 			)
 		}	
 	</update>
+	
+	<!-- 업무연결문서 -->
+	<select id="selectTaskDocs" parameterType="int" resultType="DocVO">
+		SELECT  doc_no
+		       ,draft
+		       ,draft_name
+		       ,dept_id
+		       ,get_deptname(dept_id) as dept_name
+		       ,title
+		       ,doc_stat
+		       ,get_codename(doc_stat) as doc_stat_name
+		       ,temp_id
+		       ,get_tempname(temp_id) as temp_name
+		       ,draft_dt
+		       ,cmplt_dt
+		FROM   doc 
+		WHERE  doc_no IN (SELECT doc_no
+		                  FROM task_doc
+		                  WHERE task_no = #{tno})		
+	</select>
 	
 	<!-- 업무번호 기준 전체조회 -->
 	<select id="selectReguTaskAll" parameterType="map" resultType="ProjectVO">
@@ -239,17 +266,28 @@
 		                                    ON (tc.standard_no = rs.regu_id)
 		                                  JOIN (SELECT    COUNT(task_no) as participants_cnt
 		                                                 ,SUM(CASE WHEN cmplt = '5F1f' THEN 1 
-		                                                      ELSE 0 END) as pt_cnt
+		                                                      	   ELSE 0 
+		                                                      END) as pt_cnt
 		                                                 ,(SUM(CASE cmplt WHEN '5F1f' THEN 1 ELSE 0 END) / COUNT(task_no)) * 100 as progress 
 		                                                 ,task_no 
 		                                        FROM     task_emps
 		                                        GROUP BY task_no) te
 		                                    ON (tc.task_no = te.task_no)
-		            WHERE
-		                   rs.cust_no = #{cno}
+		            WHERE  <choose>
+							<when test="emp.permId.equals('1C2c')">
+								rs.cust_no = #{emp.custNo}
+							</when>
+							<when test="emp.permId.equals('1C3c')">
+								rs.cust_no = #{emp.custNo}
+								AND (rs.resp_emp_id = #{emp.empId} or tc.dept_id = #{emp.deptId})
+							</when>
+							<otherwise>
+								rs.cust_no = #{emp.custNo}
+								AND tc.task_no IN (SELECT task_no FROM task_emps WHERE task_emp_id = #{emp.empId})
+							</otherwise>
+						  </choose>
 		            AND 
 		                   tc.task_type = '5A2a'
-		                   
 						   <if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
 								AND	tc.prjt_mat = #{sch.prjtMat}
 						   </if>
@@ -283,8 +321,25 @@
 		SELECT count(*)
 		FROM   task_common tc JOIN regu_stad rs
 		                        ON (tc.standard_no = rs.regu_id)
-		WHERE  rs.cust_no LIKE #{cno}
-		AND    tc.task_type LIKE '5A2a'	
+							  JOIN (SELECT  COUNT(task_no)
+							  				,task_no
+					                FROM     task_emps
+					                GROUP BY task_no) te
+					            ON (tc.task_no = te.task_no)
+		WHERE  <choose>
+				<when test="emp.permId.equals('1C2c')">
+					rs.cust_no = #{emp.custNo}
+				</when>
+				<when test="emp.permId.equals('1C3c')">
+					rs.cust_no = #{emp.custNo}
+					AND (rs.resp_emp_id = #{emp.empId} or tc.dept_id = #{emp.deptId})
+				</when>
+				<otherwise>
+					rs.cust_no = #{emp.custNo}
+					AND tc.task_no IN (SELECT task_no FROM task_emps WHERE task_emp_id = #{emp.empId})
+				</otherwise>
+			  </choose>
+		AND    tc.task_type = '5A2a'	
 			<if test="sch.prjtMat != null and !sch.prjtMat.equals('all')">
 				AND	tc.prjt_mat = #{sch.prjtMat}
 			</if>
@@ -303,7 +358,7 @@
 						AND rs.resp_emp_id IN (SELECT emp_id FROM emp WHERE emp_name LIKE '%${sch.keyword}%')                  			
 			        </when>
 			        <otherwise>
-						AND	${sch.keywordCondition} LIKE '%' ||#{sch.keyword}||'%'
+						AND	${sch.keywordCondition} LIKE '%'||#{sch.keyword}||'%'
               		</otherwise>
              	</choose>
 			</if>

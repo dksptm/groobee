@@ -9,7 +9,10 @@
 	<div class="flex-xl-nowrap row">
 	<div class="row">
 		<div class="row mt-3 pt-3">
-			<h2 class="ms-3">문서함</h2><p> 우리회사/부리부서에서 결재진행중인 문서를 조회합니다.</p>
+			<h2 class="ms-3">문서함 <span style="font-size:1.2rem;"> 결재진행중인 문서</span></h2>
+			<p> 관리자: 회사의 모든문서</p>
+			<p> 부서장: 부서의 모든문서 또는 본인이 참조/결재자인 문서</p>
+			<p> 사원 : 본인이 참조/결재자인 문서</p>
 		</div>
 		<hr>
 		
@@ -31,7 +34,7 @@
 				<table class="table table-bordered table-hover text-center bg-white">
 					<thead >
 						<tr class="table-dark">
-							<th class="text-white col-1">문서번호</th>
+							<th class="text-white">문서번호</th>
 							<th class="text-white">부서명</th>
 							<th class="text-white">문서종류</th>
 							<th class="text-white">업무명</th>
@@ -47,10 +50,12 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${doc.deptName} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
-							<td>[[ ${doc.taskCount} ]]
-								<th:block th:each="task : ${doc.taskList}"> 
-									<span>[[ ${task.taskName} ]]</span>
-								</th:block>
+							<td>
+							<span th:if="${#arrays.length(doc.taskList)} != 0">
+									[[ ${doc.taskList[0].taskName} ]]</span>
+							<span th:unless="${#arrays.length(doc.taskList)} != 0">
+									-</span>
+							<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
 							</td>
 							<td>[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>

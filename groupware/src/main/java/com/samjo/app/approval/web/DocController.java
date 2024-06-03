@@ -304,13 +304,13 @@ public class DocController {
 			searchVO.setSortCondition("d.doc_no DESC");
 		}
 		if(searchVO.getAprStatCondition() == null || searchVO.getAprStatCondition().equals("aprStatAll")) {
-			searchVO.setAprStatCondition("_");
+			searchVO.setAprStatCondition("");
 		}
 		if(searchVO.getDocStatCondition() == null || searchVO.getDocStatCondition().equals("docStatAll")) {
-			searchVO.setDocStatCondition("_");
+			searchVO.setDocStatCondition("");
 		}
 		if(searchVO.getDraftStatCondition() == null || searchVO.getDraftStatCondition().equals("draftStatAll")) {
-			searchVO.setDraftStatCondition("_");
+			searchVO.setDraftStatCondition("");
 		}
 		return searchVO;
 	}

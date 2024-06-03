@@ -384,9 +384,13 @@
 								icon: 'success',               
 							  	title: '상신완료!',    
 							  	text: '문서가 상신되었습니다.', 
-							});
+							})
+							.then((result) => {
+								if(result.value){
+									location.href = "/cust/doc/info?docNo=" + obj.docNo;
+								}
+							})
 							
-							location.href = "/cust/doc/info?docNo=" + obj.docNo;
 						} else {
 							Swal.fire({
 								icon: 'error',               
@@ -437,15 +441,24 @@
 								icon: 'success',               
 							  	title: '결재완료!',    
 							  	text: '다음결재자에게 전달됩니다.', 
-							});
-							location.href = "/cust/doc/info?docNo=" + obj.docNo;
+							})
+							.then((result) => {
+								if(result.value){
+									location.href = "/cust/doc/info?docNo=" + obj.docNo;
+								}
+							})
 						} else if(ret.OUT == 'APR_CMPLT') {
 							Swal.fire({
 								icon: 'success',               
 							  	title: '결재완료!',    
 							  	text: '해당 문서가 최종결재되었습니다.', 
-							});
-							location.href = "/cust/doc/info?docNo=" + obj.docNo;
+							})
+							.then((result) => {
+								if(result.value){
+									location.href = "/cust/doc/info?docNo=" + obj.docNo;
+								}
+							})
+							
 						} else {
 							Swal.fire({
 								icon: 'error',               
@@ -487,15 +500,19 @@
 					})
 					.then(res => res.json())
 					.then(ret => {
-						console.log(ret);
+						
 						if(ret.OUT == 'OK') {
 							Swal.fire({
 								icon: 'warning',               
 							  	title: '반려완료!',    
 							  	text: '기안자에게 알립니다.', 
-							});
-							console.log(ret);
-							location.href = "/cust/doc/info?docNo=" + obj.docNo;
+							})
+							.then((result) => {
+								if(result.value){
+									location.href = "/cust/doc/info?docNo=" + obj.docNo;
+								}
+							})
+							
 						} else if(ret.OUT == 'NG') {
 							Swal.fire({
 								icon: 'error',               
@@ -555,9 +572,12 @@
 									icon: 'success',               
 								  	title: '삭제 완료!',    
 								  	text: '문서가 삭제되었습니다.', 
-								});
-								
-								location.href = contextPath + "cust/doc/mydoc";
+								})
+								.then((result) => {
+									if(result.value){
+										location.href = contextPath + "cust/doc/mydoc";
+									}
+								})
 								
 							} else {
 								

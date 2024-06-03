@@ -3,6 +3,7 @@ package com.samjo.app.project.service;
 import java.util.List;
 import java.util.Map;
 
+import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
 
@@ -15,7 +16,7 @@ public interface ReguService {
 	public int reguCommonInsert(ProjectVO regu);
 	
 	// 기존 상시업무 목록
-	public List<ProjectVO> reguStadList(String custNo);
+	public List<ProjectVO> reguStadList(EmpVO empVO);
 	
 	// 단건조회
 	public ProjectVO reguInfo(String custNo, Integer taskNo);
@@ -30,7 +31,8 @@ public interface ReguService {
 	public ProjectVO reguStadInfo(EmpVO empVO, String reguId);
 	
 	// 전체조회(하위)
-	public List<ProjectVO> reguTaskList(String custNo, SearchVO search);
-	public int countReguTasks(String custNo, SearchVO search);
+	public List<ProjectVO> reguTaskList(EmpVO empVO, SearchVO search);
+	public int countReguTasks(EmpVO empVO, SearchVO search);
+	public List<DocVO> taskDocList(Integer taskNo);
 	
 }

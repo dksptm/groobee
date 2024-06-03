@@ -12,12 +12,25 @@
 	
 	<table class="table table-bordered text-center">
 		<tr>
-			<td class="fw-bold col-2">업무명</td>
-				<td>[[ ${regu.taskName} ]]</td>
 			<td class="fw-bold col-2">업무번호</td>
 				<td>[[ ${regu.taskNo} ]]</td>
+			<td class="fw-bold col-2">업무명</td>
+				<td>[[ ${regu.taskName} ]]</td>
 			<td class="fw-bold col-2">진행도</td>
 				<td>[[ ${regu.progress} ]] %</td>
+		</tr>
+		<tr>
+			<td class="fw-bold">부서명</td>
+				<td>[[ ${regu.deptName} ]]</td>
+			<td class="fw-bold">책임자</td>
+				<td>[[ ${regu.respEmpName} ]]</td>
+			<td class="fw-bold" th:attr="data-pmat=${regu.prjtMat}">업무상태</td>
+				<th:block th:switch="${regu.prjtMat}">
+					<td th:case="5B1b" class="table-primary">[[ ${regu.matName} ]]</td>
+					<td th:case="5B2b" class="table-success">[[ ${regu.matName} ]]</td>
+					<td th:case="5B3b" class="table-warning">[[ ${regu.matName} ]]</td>
+					<td th:case="5B4b" class="table-danger">[[ ${regu.matName} ]]</td>
+				</th:block>
 		</tr>
 		<tr>
 			<td class="fw-bold">개요</td>
@@ -28,22 +41,16 @@
 				<td colspan="5">[[ ${regu.taskCntn} ]]</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">부서명</td>
-				<td>[[ ${regu.deptName} ]]</td>
-			<td class="fw-bold">책임자</td>
-				<td>[[ ${regu.respEmpName} ]]</td>
-			<td class="fw-bold">업무상태</td>
-				<td>[[ ${regu.prjtMat} ]]</td>
-		</tr>
-		<tr>
 			<td class="fw-bold">시작</td>
-				<td colspan="2">[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd hh:mm a')} ]]</td>
+				<td colspan="2">[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd  a hh:mm')} ]]</td>
 			<td class="fw-bold">마감</td>
-				<td colspan="2">[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd hh:mm a')} ]]</td>
+				<td colspan="2">[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd  a hh:mm')} ]]</td>
 		</tr>
-		<tr>
+		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
+		<tr th:if="${#authentication.principal.permId} != '1C2c' or 
+					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 			<td class="fw-bold">담당자</td>
-			<td colspan="4">
+			<td colspan="4" class="regu-task-emps">
 				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
 					<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
 						<input type="checkbox" class="form-check-input mt-0 regu-emp-ok" aria-label="Checkbox for following text input"
@@ -53,14 +60,84 @@
 						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
 					<input th:value="${te.codeName}" type="text" class="form-control" aria-label="Text input with checkbox"
 						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
-					<input th:value="${te.taskEmpId}" type="hidden" readonly />
 				</div>
 			</td>
 			<td>
 				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
 			</td>
 		</tr>
-	</table>		
+		<tr th:unless="${#authentication.principal.permId} != '1C2c' or 
+					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
+			<td class="fw-bold">담당자</td>
+			<td colspan="4" class="regu-task-emps">
+				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
+					<th:block th:if="${te.taskEmpId} == ${#authentication.principal.empId}">
+						<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
+							<input type="checkbox" class="form-check-input mt-0 regu-emp-ok" aria-label="Checkbox for following text input"
+								   th:checked="${te.cmplt == '5F1f'}">
+						</div>
+						<input th:value="${te.taskEmpName}" type="text" class="form-control" aria-label="Text input with checkbox"
+							   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" />
+						<input th:value="${te.codeName}" type="text" class="form-control" aria-label="Text input with checkbox"
+							   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" />
+					</th:block>
+					<th:block th:unless="${te.taskEmpId} == ${#authentication.principal.empId}">
+						<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
+							<input type="checkbox" class="form-check-input mt-0 regu-emp-ok" aria-label="Checkbox for following text input"
+								   th:checked="${te.cmplt == '5F1f'}" disabled>
+						</div>
+						<input th:value="${te.taskEmpName}" type="text" class="form-control" aria-label="Text input with checkbox"
+							   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" disabled />
+						<input th:value="${te.codeName}" type="text" class="form-control" aria-label="Text input with checkbox"
+							   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" disabled />
+					</th:block>
+				</div>
+			</td>
+			<td>
+				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
+			</td>
+		</tr>
+		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
+	</table>
+	
+	<div th:if="${#authentication.principal.permId} == '1C2c' or 
+				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
+	<!-- 연결된 문서들 -->
+	<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서목록</button>
+	<div class="collapse bg-light pt-2 doc-toggle-area">
+		<table class="table table-hover text-center">
+			<thead class="table-dark">
+				<tr>
+					<td>문서번호</td>
+					<td>문서종류</td>
+					<td>제목</td>
+					<td>기안자</td>
+					<td>문서상태</td>
+					<td>작성일자</td>
+					<td>완료일자</td>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="doc : ${docs}">
+				<tr th:onclick="|location.href='@{/cust/doc/info?docNo={dno}(dno=${doc.docNo})}'|">
+					<td>[[ ${doc.docNo} ]]</td>
+					<td>[[ ${doc.tempName} ]]</td>
+					<td>[[ ${doc.title} ]]</td>
+					<td>[[ ${doc.draft} ]]</td>
+					<th:block th:switch="${doc.docStat}">
+						<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
+						<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
+						<td th:case="4B4b" class="table-warning">[[ ${doc.docStatName} ]]</td>
+					</th:block>
+					<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+					<td th:if="${doc.cmpltDt == null}"> - </td>
+					<td th:usless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+				</tr>
+				</th:block>
+			</tbody>
+		</table>	
+	</div>
+	</div>	
 		
 </div>
 </div>
@@ -75,14 +152,29 @@
 	
 	$(function(){
 		
+		// 검색공간 토글
+		if($('.doc-toggle-btn') != null) {
+			$('.doc-toggle-btn').click(function() {
+				$('.doc-toggle-area').slideToggle();
+			});
+		}
+		
+		// 마감기간 지나면(업무미완성) -> 업무완료 못하게.
+		if($('td[data-pmat]').data('pmat') == '5B4b') {
+			$('.regu-task-emps').find('input').prop('disabled', true);
+			$('button.regu-emp-ok-btn').prop('disabled', true);
+		}
+		
 		// 담당업무 완료버튼.
 		$('button.regu-emp-ok-btn').on('click', reguEmpOk);
+		
+		
 		
 	})//end.
 
 	function reguEmpOk() {
-		let checkList = $('input[type="checkbox"].regu-emp-ok:checked').parent();
-		let uncheckList = $('input[type="checkbox"].regu-emp-ok').not(':checked').parent();
+		let checkList = $('input[type="checkbox"].regu-emp-ok:checked').not(':disabled').parent();
+		let uncheckList = $('input[type="checkbox"].regu-emp-ok').not(':checked').not(':disabled').parent();
 
 		let param = [];
 		
@@ -118,8 +210,8 @@
 				    title: '업무처리건 반영완료!',
 				    text: '진행도를 확인하세요',
 				})
-				.then((result) => {
-					if(result.value){
+				.then((ret) => {
+					if(ret.value){
 						location.reload();
 					}
 				})

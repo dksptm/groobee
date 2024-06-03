@@ -17,4 +17,5 @@ public interface DeptService {
 	
 	// 한 회사의 부서전체 목록
 	public List<DeptVO> myCustDepts(EmpVO empVO);
+	public List<EmpVO> myDeptMngrs(EmpVO empVO);
 }

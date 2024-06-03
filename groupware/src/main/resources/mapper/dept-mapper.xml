@@ -72,6 +72,21 @@
 		AND   e.cust_no = #{cno}  
 	</select>
 	
+	<!-- 상시업무 등록시 가져올 책임자 목록 -->	
+	<select id="selectDeptMngr" parameterType="EmpVO" resultType="EmpVO">
+		SELECT get_deptname(e.dept_id) as dept_name
+		      ,e.dept_id
+		      ,e.emp_name
+		      ,j.job_title
+		      ,e.emp_id
+		FROM  emp e JOIN jobs j ON (e.job_no = j.job_no)
+		WHERE j.perm_id IN ('1C2c', '1C3c')
+		AND   e.cust_no = #{emp.custNo}
+			<if test="!emp.permId.equals('1C2c')">
+			   	AND  e.dept_id = #{emp.deptId}		        	   
+			</if>  
+	</select>
+	
 	<!-- 한 회사의 부서전체 목록 -->
 	<select id="selectCustDeptAll" parameterType="EmpVO" resultType="DeptVO">
 		SELECT  dept_id

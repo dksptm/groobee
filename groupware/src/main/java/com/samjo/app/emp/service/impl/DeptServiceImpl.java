@@ -47,4 +47,9 @@ public class DeptServiceImpl implements DeptService {
 		return deptMappr.selectCustDeptAll(empVO);
 	}
 
+	@Override
+	public List<EmpVO> myDeptMngrs(EmpVO empVO) {
+		return deptMappr.selectDeptMngr(empVO);
+	}
+
 }

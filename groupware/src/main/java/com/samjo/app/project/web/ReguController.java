@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
@@ -44,9 +45,9 @@ public class ReguController {
 		
 		if(empVO != null) {
 			
-			List<EmpVO> resp = deptService.respMngrList(empVO.getCustNo()); // 책임자.
+			List<EmpVO> resp = deptService.myDeptMngrs(empVO); // 책임자.
 			DeptVO dept = deptService.myDeptEmps(empVO.getDeptId()); // 우리부서 모든사원.
-			List<ProjectVO> regus = reguService.reguStadList(empVO.getCustNo()); // 기존상시업무목록.
+			List<ProjectVO> regus = reguService.reguStadList(empVO); // 기존상시업무목록.
 			
 			model.addAttribute("resp", resp);					
 			model.addAttribute("dept", dept);					
@@ -97,6 +98,9 @@ public class ReguController {
 			ProjectVO findVO = reguService.reguInfo(empVO.getCustNo(), taskNo);
 			model.addAttribute("regu", findVO);
 			
+			List<DocVO> docs = reguService.taskDocList(taskNo);
+			model.addAttribute("docs", docs);
+			
 			return "project/regu/info";
 			
 		} else {
@@ -120,11 +124,14 @@ public class ReguController {
 		
 		checkSearch(searchVO);
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		if(searchVO.getSortCondition().equals("tc.standard_no")) {
+			searchVO.setSortCondition("tc.task_no DESC");
+		}
 		
 		if(empVO != null) {
 			
-			List<ProjectVO> list = reguService.reguTaskList(empVO.getCustNo(), searchVO);
-			int count = reguService.countReguTasks(empVO.getCustNo(), searchVO);
+			List<ProjectVO> list = reguService.reguTaskList(empVO, searchVO);
+			int count = reguService.countReguTasks(empVO, searchVO);
 			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
 			
 			model.addAttribute("list", list);
@@ -218,7 +225,7 @@ public class ReguController {
 			search.setKeywordCondition("regu_id");
 			search.setKeyword(reguId);
 			search.setSortCondition("tc.task_no DESC");
-			List<ProjectVO> list = reguService.reguTaskList(empVO.getCustNo(), search);
+			List<ProjectVO> list = reguService.reguTaskList(empVO, search);
 			model.addAttribute("tasks", list); 
 			
 			int count = reguService.countRegus(empVO, search);
