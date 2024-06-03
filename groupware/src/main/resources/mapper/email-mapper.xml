@@ -89,9 +89,9 @@
            s.cntn AS cntn,
            r.email_stat,
            r.cust_no AS custNo,
-           id_to_the_name(sender) AS senderName,
-           id_to_the_name(recp) AS recpName,
-           id_to_the_name(refer) AS referName
+           id_to_the_name(s.sender) AS senderName,
+           id_to_the_name(r.recp) AS recpName,
+           id_to_the_name(r.refer) AS referName
     FROM   email s JOIN inbox r 
                    ON s.sen_email_no = r.sen_email_no
                    JOIN emp e
