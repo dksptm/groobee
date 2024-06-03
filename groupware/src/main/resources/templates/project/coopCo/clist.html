@@ -34,12 +34,12 @@
 									</tr>
 									<tr>
 										<td class="form-control">정렬조건</td>
-										<td><select class="form-select searchSelect">
-												<option value="t.task_no">업체명순</option>
+						<td><select class="form-select searchSelect">
+												<option value="t.task_name">업체명순</option>
 												<option value="c.pic">담당자순</option>
 												<option value="c.cntn">내용순</option>
 										</select></td>
-									</tr>
+									</tr> 
 								</table>
 								<span class="position-absolute top-50 end-0 translate-middle-y">
 									<button class="btn btn-outline-success searchbtn bg-light"
@@ -53,22 +53,26 @@
 							<table class="table table-hover">
 								<thead>
 									<tr>
+										<th>업체번호</th>
 										<th>업체명</th>
+										<th>업무명</th>
 										<th>담당자</th>
 										<th>연락처</th>
 										<th>내용</th>
-										<th class="tdHide">주소</th>
+										<th>주소</th>
 									</tr>
 								</thead>
 								<tbody>
-										<th:block th:each="coop :  ${coopCo}">
+										<th:block th:each="coop : ${clist}">
 											<tr>
-											<td class="tdHide">[[ ${coop.coopCoNo}]]</td>
+											
+											<td>[[ ${coop.coopCoNo}]]</td>
 											<td>[[ ${coop.coName}]]</td>
+											<td>[[ ${coop.taskName}]]</td>
 											<td>[[ ${coop.pic}]]</td>
 											<td>[[ ${coop.coTel}]]</td>
 											<td>[[ ${coop.cntn}]]</td>
-											<td class="tdHide">[[ ${coop.custAddr}]]</td>
+											<td>[[ ${coop.custAddr}]]</td>
 									</tr>
 									</th:block>
 								</tbody>
@@ -77,7 +81,7 @@
 						<!-- <div style="text-align: end;">
 							<button type="button" class="btn btn-primary"
 								data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
-						</div> -->
+						</div>
 						<!-- 페이징 -->
 						<div class="paging mt-2">
 							<th:block th:if="${TaskDTO.totalCnt} != 0">
@@ -151,7 +155,7 @@
 			// 검색 AJAX 함수
 			function showTable(page) {
 				$.ajax({
-					url : '/cust/viewCoTable',
+					url : '/cust/viewCoList',
 					type : 'POST',
 					beforeSend : function(xhr) {
 						xhr.setRequestHeader(header, token);
