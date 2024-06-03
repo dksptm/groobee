@@ -193,16 +193,21 @@
 		}	
 	</update>
 		
-	<!-- 프로젝트(하위) 업무 수정 -->
-	
-
-	
 	<!-- 프로젝트(하위) 업무 삭제 -->
 <!-- 	<delete id="deleteTask" parameterType="int">
 		DELETE FROM task_common
 		WHERE task_no = #{taskNo}
 	</delete> -->
-
+	
+	<!-- 프로젝트(하위) 업무 단순조회 협력업체등록시 사용 -->
+	<select id="taskList" resultType="ProjectVO" parameterType="EmpVO">
+	SELECT task_no,
+       		task_name
+	FROM task_common
+	WHERE prjt_mat = '5B1b'
+	AND cust_no = #{custNo}
+	
+	</select>
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="SearchVO">
 		SELECT r.*
@@ -232,7 +237,8 @@
 	<!-- 협력업체 페이징 -->
 	<select id="coCount" parameterType="SearchVO">
 		SELECT COUNT(*)
-		FROM coop_co 
+		FROM  coop_co c JOIN task_common t
+						   ON c.task_no = t.task_no
 		<where>
 			<if test="keyword != null and keyword != ''">
 					AND ${searchCondition} LIKE '%' || #{keyword} || '%'

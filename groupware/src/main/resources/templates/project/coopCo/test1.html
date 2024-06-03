@@ -111,7 +111,11 @@
 							aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="coopForm" th:action="@{/taskInsert}" method="post">
+						<form id="coopForm" th:action="@{/cust/taskInsert}" method="post">
+							<div class="mb-3">
+								<label for="coName" class="form-label">업체명</label> <input
+									type="text" class="form-control" id="coName" name="coName"required>
+							</div>
 							<div class="mb-3">
 								<label for="coName" class="form-label">업체명</label> <input
 									type="text" class="form-control" id="coName" name="coName"required>

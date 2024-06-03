@@ -5,12 +5,12 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskEmpsVO;
 
 public interface TaskMapper {
 	
-	// 프로젝트 하위 - 업무 //
 		// 프로젝트 업무 조회
 		public List<ProjectVO> selectTaskAllList(SearchVO searchVO);
 		//프로젝트 업무 페이징
@@ -28,11 +28,6 @@ public interface TaskMapper {
 		// 업무모두완료시 -> 프로젝트완료상태 (프로시저)
 		public void updatePrjt(ProjectVO projectVO);
 		
-		// 프로젝트 업무 수정
-		public int updateTask(ProjectVO projectVO);
-		// 프로젝트 업무 삭제
-		public int deleteTask(@Param("taskNo")int taskNo);
-		
 		
 		// 협력업체 조회
 		public List<ProjectVO> selectCoopCoAllList(SearchVO searchVO);
@@ -42,9 +37,21 @@ public interface TaskMapper {
 		public int insertCoop(ProjectVO projectVO);
 		// 협력업체 단건
 		public ProjectVO selectCoop(ProjectVO projectVO);
-		// 협력업체 수정
-		public int updateCoop(ProjectVO projectVO);
-		// 협력업체 삭제
-		 public int deleteCoop(@Param("coopCoNo")int coopCoNo);
+	
+		// 프로젝트업무 단순조회
+		public List<ProjectVO> taskList(EmpVO empVO);
 		
+		
+		/*
+		 * // 프로젝트 업무 수정 
+		 * public int updateTask(ProjectVO projectVO); 
+		 * // 프로젝트 업무 삭제
+		 * public int deleteTask(@Param("taskNo")int taskNo);
+		 */	
+			/*
+		 * // 협력업체 수정 
+		 * public int updateCoop(ProjectVO projectVO); 
+		 * // 협력업체 삭제 public int
+		 * deleteCoop(@Param("coopCoNo")int coopCoNo);
+		 */
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
@@ -65,14 +66,42 @@ public class ProjectController {
 			model.addAttribute("TaskDTO", taskDTO);
 			return "project/prjt/pjList :: #prjtTable";
 	}
-	
+	 
 	// 프로젝트 단건조회
 	@GetMapping("/cust/pjInfo/{prjtId}")
-	public String prjtInfo(@PathVariable String prjtId, Model model) {
-		ProjectVO projectVO = projectService.prjtInfo(prjtId);
-		model.addAttribute("pjlist", projectVO);
+		public String prjtInfo1(@PathVariable String prjtId, Model model) {
+			ProjectVO projectVO = projectService.prjtInfo(prjtId);
+			model.addAttribute("pjlist", projectVO);
+			return "project/prjt/pjInfo";
+	}
+	
+	// 프로젝트 단건조회 ...
+	/*@GetMapping("/cust/pj/info")
+	public String prjtInfo(@RequestParam String prjtId, Model model) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		//SearchVO search = new SearchVO();
+		
+		if(empVO != null) {
+			
+			ProjectVO pj = projectService.prjtInfo(prjtId);
+			model.addAttribute("prjt", prjtId);
+			
+			search.setKeywordCondition("prjt_id");
+			search.setKeyword(prjtId);
+			search.setSortCondition("tc.task_no DESC");
+			List<ProjectVO> list = projectService.PrjtAllList(search);
+			model.addAttribute("tasks", list); 
+			
+			int count = projectService.countPrjt(empVO, search);
+			PageDTO pageDTO = new PageDTO(search.getPage(), count);
+			model.addAttribute("pageDTO", pageDTO); 
+			
+			model.addAttribute("path", "prjtInfo"); 
+			
 		return "project/prjt/pjInfo";
 	}
+		return "test/test";
+	}*/
 
 	// 프로젝트 등록
 	@GetMapping("cust/prjtInsert")
@@ -90,7 +119,7 @@ public class ProjectController {
 	}
 	
 	@ResponseBody
-	@PostMapping("prjtInsert")
+	@PostMapping("cust/prjtInsert")
 	public String prjtInsertProcess(ProjectVO projectVO) {
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		String custNo = empVO.getCustNo();
@@ -116,12 +145,19 @@ public class ProjectController {
 	    	}
 
 
-
-
 }
 		
 		
 	/*
+	 * 
+	// 프로젝트 단건조회
+	@GetMapping("/cust/pjInfo/{prjtId}")
+		public String prjtInfo(@PathVariable String prjtId, Model model) {
+			ProjectVO projectVO = projectService.prjtInfo(prjtId);
+			model.addAttribute("pjlist", projectVO);
+			return "project/prjt/pjInfo";
+	}
+	
 	// 프로젝트 수정 - 페이지
 	@GetMapping("prjtUpdate")
 	public String prjtUpdateForm(ProjectVO projectVO, Model model) {

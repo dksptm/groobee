@@ -22,7 +22,6 @@ import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskDTO;
-import com.samjo.app.project.service.TaskEmpsVO;
 import com.samjo.app.project.service.TaskService;
 @Controller
 public class TaskController {
@@ -90,7 +89,7 @@ public class TaskController {
 			return "project/task/insert";
 		}
 		
-		@PostMapping("/task/insert")
+		@PostMapping("cust/taskInsert")
 		public String taskInsertProcess(@RequestBody ProjectVO projectVO,Model model) {
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();
@@ -117,39 +116,27 @@ public class TaskController {
 			ProjectVO projectVO = taskService.taskInfo(taskNo);	
 			model.addAttribute("task", projectVO);
 			return "project/task/tsInfo";
-		
 		}
 		
 		// 업무참여자 수정
 		@ResponseBody
 		@PutMapping("cust/taskOk/{taskNo}")
 		public Map<String, Object> taskOk(@PathVariable Integer taskNo, @RequestBody ProjectVO projectVO) {
-			System.out.println("프로젝트VO=====>" + projectVO);
-			
+			//System.out.println("프로젝트VO=====>" + projectVO);
 			return taskService.taskOk(projectVO);
 		}
 		
-		// 프로젝트(하위) 업무 수정
-		@PostMapping("cust/taskUpdate/{taskNo}")
-		public String taskUpdate(@PathVariable int taskNo, Model model) {
-			ProjectVO projectVO = new ProjectVO();
-			projectVO.setTaskNo(taskNo);
-
-			ProjectVO findVO = taskService.taskInfo(taskNo);
-			model.addAttribute("taskInfo", findVO);
-			return "project/task/list";
-		}
 		/*
-		 * @ResponseBody public Map<String, Object> taskUpdateProcessAjax(@RequestBody
-		 * ProjectVO projectVO) { return projectService.taskUpdate(projectVO); }
+		 * // 프로젝트(하위) 업무 수정
+		 * 
+		 * @PostMapping("cust/taskUpdate/{taskNo}") public String
+		 * taskUpdate(@PathVariable int taskNo, Model model) { ProjectVO projectVO = new
+		 * ProjectVO(); projectVO.setTaskNo(taskNo);
+		 * 
+		 * ProjectVO findVO = taskService.taskInfo(taskNo);
+		 * model.addAttribute("taskInfo", findVO); return "project/task/list"; }
 		 */
-
-		// 프로젝트(하위) 업무 삭제
-		@GetMapping("cust/taskDelete")
-		public String taskDelete(ProjectVO projectVO) {
-			taskService.taskDelete(projectVO);
-			return "redirect:/cust/taskAllList";
-		}
+		
 		
 		// 협력업체 전체 조회
 		@GetMapping("cust/coopAllList")
@@ -163,6 +150,11 @@ public class TaskController {
 			
 			List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
 			model.addAttribute("clist", list);
+
+			EmpVO empVO = SecuUtil.getLoginEmp();
+	        List<ProjectVO> tlist = taskService.taskList(empVO);
+			model.addAttribute("tlist", tlist);
+			
 			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.coCount(searchVO));
 			model.addAttribute("TaskDTO", taskDTO);
 			return "project/coopCo/clist";
@@ -194,25 +186,26 @@ public class TaskController {
 			return "project/coopCo/clist";
 		}
 		
-		// 협력업체 등록 (모달)
+		// 협력업체 등록 (모달 데이터 등록 처리)
 		@GetMapping("cust/coopInsert")
 		   public String coopInsertForm(@PathVariable("taskNo") int taskNo, Model model) {
 	        
+			
 			ProjectVO projectVO = new ProjectVO();
 	        projectVO.setTaskNo(taskNo); 
 	        
+		
 	        model.addAttribute("coopCo", projectVO);
 	        return "project/coopCo/clist";
 	    }
 		
 		// 협력업체 등록 처리
 		@ResponseBody
-		@PostMapping("coopInsert")
-		public String coopInsertProcess(@RequestBody Model model, int taskNo) {
-			ProjectVO projectVO = new ProjectVO();
-			projectVO.setTaskNo(taskNo); 
+		@PostMapping("cust/coopInsert")
+		public String coopInsertProcess(@RequestBody ProjectVO projectVO, Model model) {
+			System.out.print(projectVO);
+			//projectVO.setTaskNo(taskNo); 
 			
-
 			int cNo =  taskService.coopInsert(projectVO);
 			String uri = null;
 			
@@ -235,19 +228,16 @@ public class TaskController {
 			return "project/coopCo/clist";
 		}
 		
-		@ResponseBody
-		public Map<String, Object> coopUpdateProcessAjax(@RequestBody ProjectVO projectVO) {
-			return taskService.coopUpdate(projectVO);
-		}
-		
-		// 협력업체 삭제
-		@GetMapping("cust/coopDelete")
-		public String coopDelete(ProjectVO projectVO) {
-			taskService.coopDelete(projectVO);
-		return "redirect:cust/coopAllList";
-		}
-		
-		/*public String coopDelete(ProjectVO projectVO, Model model) {
+		/*
+		  @ResponseBody public Map<String, Object> coopUpdateProcessAjax(@RequestBody
+		  ProjectVO projectVO) { return taskService.coopUpdate(projectVO); }
+		 
+		  // 협력업체 삭제
+		 
+		  @GetMapping("cust/coopDelete") public String coopDelete(ProjectVO projectVO)
+		  { taskService.coopDelete(projectVO); return "redirect:cust/coopAllList"; }
+		 
+		 public String coopDelete(ProjectVO projectVO, Model model) {
 		    Map<String, Object> deletionResult = projectService.coopDelete(projectVO);
 		    if (deletionResult.containsKey("coopCoNo")) {
 		        Long deletedCoopCoNo = (Long) deletionResult.get("coopCoNo");
