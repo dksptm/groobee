@@ -199,7 +199,7 @@
 				});
 			}
 
-			$("#wasteBtn").on("click", function(e) {
+			$(document).on("click", "#wasteBtn", function(e) {
 				let selectedEmails = [];
 				$('.checks:checked').each(function() {
 					selectedEmails.push($(this).val());
