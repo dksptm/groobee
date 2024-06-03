@@ -240,6 +240,24 @@ public class ReguController {
 	
 		return "test/test";
 	}
+
+	@GetMapping("cust/regu/update")
+	public String reguUpdate(Model model, @RequestParam String reguId) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			ProjectVO regu = reguService.reguStadInfo(empVO, reguId);
+			model.addAttribute("regu", regu);
+			
+			return "project/regu/stadUpdate";
+			
+		} else {
+			
+			return "test/test";
+		}
+	}
+	
 	
 	// SearchVO check
 	public SearchVO checkSearch(SearchVO searchVO) {

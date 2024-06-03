@@ -46,7 +46,11 @@
 	</table>
 	
 	<!-- 하위 tasks -->
-	<button type="button" class="btn btn-secondary mb-3 task-toggle-btn">생성된 업무목록</button>
+	<div class="d-flex justify-content-between">
+		<button type="button" class="btn btn-secondary mb-3 task-toggle-btn">생성된 업무목록</button>
+		<button type="button" class="btn btn-warning mb-3" 
+				th:onclick="|location.href='@{/cust/regu/update?reguId={rid}(rid=${regu.reguId})}'|">업무수정</button>
+	</div>
 	<div class="collapse bg-light pt-2 task-toggle-area">
 		<table class="table table-hover text-center">
 			<thead class="table-dark">
