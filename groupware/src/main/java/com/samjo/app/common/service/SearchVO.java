@@ -90,4 +90,8 @@ public class SearchVO {
 	private String coName;
 	private String pic;
 	private String cntn;
+
+	//결제(pay) 관련
+	private String paySort;
+	
 }

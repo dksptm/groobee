@@ -6,12 +6,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.mapper.CtMapper;
 import com.samjo.app.ct.service.CtService;
 import com.samjo.app.ct.service.CtVO;
+import com.samjo.app.cust.mapper.CustMapper;
+import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.solmodule.service.ModuleVO;
 import com.samjo.app.upload.service.UploadService;
 
@@ -25,6 +26,8 @@ public class CtServiceImpl implements CtService{
 	CtMapper ctMapper;
 	@Autowired
 	UploadService uploadservice;
+	@Autowired
+	CustMapper custMapper;
 	
 	//계약 전체조회
 	@Override
@@ -102,8 +105,8 @@ public class CtServiceImpl implements CtService{
 				ctVO.setCtFile(filepath);
 			}
 		}
-		
-		
+		//신규 계약등록
+		int result = ctMapper.ctInsert(ctVO);
 		//사용모듈 등록
 		for(String modId : modIds) {
 			ModuleVO modVO = new ModuleVO();
@@ -116,6 +119,12 @@ public class CtServiceImpl implements CtService{
 			ctMapper.useModInsert(modVO);
 		}
 		return null;
+	}
+
+	//고객전체조회 모달
+	@Override
+	public List<CustVO> custList() {
+		return ctMapper.selectCustAble();
 	}
 
 }

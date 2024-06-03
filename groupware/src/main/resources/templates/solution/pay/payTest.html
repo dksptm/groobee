@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div style="min-width: 880px" class="card my-4 col-10">
+				<h5 class="card-header">결제 테스트</h5>
+				<div class="card-body ">
+					<button type="button" class="btn btn-primary" onclick="kakaopay()">결제
+						테스트</button>
+					<h2>결제 목록</h2>
+					<table id="paymentTable">
+						<thead>
+							<tr>
+								<th>상점 UID</th>
+								<th>IMP UID</th>
+								<th>예약 시간</th>
+								<th>실행 시간</th>
+								<th>금액</th>
+								<th>예약 상태</th>
+								<th>결제 상태</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<script th:inline="javascript">
+			// CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
+			var IMP = window.IMP;
+			IMP.init('imp82376133');
+
+			//테스트2
+			function kakaopay() {
+				let merchantUid = new Date().getTime();
+
+				IMP.request_pay({
+					pg : 'kakaopay',
+					pay_method : 'card',
+					merchant_uid : merchantUid,
+					name : 'test05',
+					amount : 2000,
+					customer_uid : "gildong_0001_1234",
+					buyer_email : 'iamport@siot.do',
+					buyer_name : '아임포트',
+					buyer_tel : '02-1234-1234'
+				}, function(rsp) {
+					if (rsp.success) {
+						//DB에 구독정보 등록하는 부분
+						/* $.ajax({
+							url : '/insertPay', 
+							data : {
+								package_id : $('#package_id').val(),
+								customer_id : $('#customer_id').val()
+							},
+							success : function(result) {
+								alert('정기결제 등록' + result);
+							}
+						}); */
+
+						//alert($('#customer_id').val());
+						$.ajax({
+							url : '/payment', //결제 상태를 확인하고 스케줄러를 호출하는 부분
+							beforeSend : function(xhr) {
+								xhr.setRequestHeader(header, token);
+							},
+							type : 'POST',
+							data : {
+								"customer_uid" : "gildong_0001_1234",
+								"price" : 2000,
+								"merchant_uid" : merchantUid
+							},
+							success : function(result) {
+								alert('다음 결제 예약');
+							}
+						});
+					} else {
+						alert('빌링키 발급 실패');
+					}
+				});
+			}
+
+			//내역 테이블로 그리기
+			console.log([[${portVO}]]);
+			 /*$(document).ready(function() {
+				let payments = JSON.parse([[${portVO}]]);
+	
+				$('#paymentTable tbody').empty();
+	
+				payments.forEach(function(payment) {
+				    $('#paymentTable tbody').append(`
+				        <tr>
+				            <td>${payment.merchant_uid}</td>
+				            <td>${payment.imp_uid}</td>
+				            <td>${payment.schedule_at}</td>
+				            <td>${payment.executed_at}</td>
+				            <td>${payment.amount}</td>
+				            <td>${payment.schedule_status}</td>
+				            <td>${payment.payment_status}</td>
+				        </tr>
+				    `);
+				});
+	        }); */
+		</script>
+	</th:block>
+</body>
+</html>
