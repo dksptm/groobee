@@ -39,6 +39,8 @@ public class ProjectVO {
 	private String respEmpName;
 	private String codeName; //...
 	private String matName;
+	private String perdType; // crePerd 생성주기 타입.
+	private String taskCnt; //.
 	
 	//프로젝트
 	private String prjtId;

@@ -24,7 +24,7 @@
 							</thead>
 							<tbody>
 								<th:block th:each="doc : ${list}">
-								<tr th:onclick="|location.href='@{/docInfo(docNo=${doc.docNo})}'|">
+								<tr th:onclick="|location.href='@{/cust/doc/info(docNo=${doc.docNo})}'|">
 									<td>[[ ${doc.docNo} ]]</td>
 									<td>[[ ${doc.deptId} ]]</td>
 									<td>아직구현못함</td>

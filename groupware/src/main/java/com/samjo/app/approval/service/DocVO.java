@@ -50,7 +50,9 @@ public class DocVO {
     // 휴가원
     private TempVO pto;
     
+    
     // 조회시 필요한 필드 추가.
     private String curApr;
     private String task;
+    private String result;
 }

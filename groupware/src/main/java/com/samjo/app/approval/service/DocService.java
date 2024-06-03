@@ -48,5 +48,8 @@ public interface DocService {
 	// (실제파일 삭제를 위한) get saveNames
 	public List<String> getDocFileSavaNames(DocVO docVO);
 	
+	// 문서삭제
+	public Map<String, Object> deleteDoc(DocVO docVO);
+	
 	
 }

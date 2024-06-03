@@ -71,5 +71,14 @@
 		WHERE j.perm_id IN ('1C2c', '1C3c')
 		AND   e.cust_no = #{cno}  
 	</select>
+	
+	<!-- 한 회사의 부서전체 목록 -->
+	<select id="selectCustDeptAll" parameterType="EmpVO" resultType="DeptVO">
+		SELECT  dept_id
+		       ,dept_name
+		FROM   dept
+		WHERE  cust_no = #{emp.custNo}
+	</select>
+	
 </mapper>
   

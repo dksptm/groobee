@@ -68,7 +68,7 @@ $(function(){
 			// 모달열기 - 결재자.
 			$('.doc-modal-btn-apr').on('click', function(e) {
 				let dept = $('input[name="deptId"]').val();
-				$('#selectapr .modal-body').load("getDeptEmps?deptId="+ dept);
+				$('#selectapr .modal-body').load("/cust/deptEmps?deptId="+ dept);
 				$('#selectapr').modal();
 			})
 			
@@ -102,7 +102,7 @@ $(function(){
 			// 모달열기 - 참조자.
 			$('.doc-modal-btn-refs').on('click', function(e) {
 				let cust = $('input[name="custNo"]').val();
-				$('#docModalRefs .modal-body').load("getCustEmps?custNo="+ cust);
+				$('#docModalRefs .modal-body').load("/cust/custEmps?custNo="+ cust);
 				$('#docModalRefs').modal();				
 			})
 			
@@ -112,7 +112,7 @@ $(function(){
 			// 모달열기 - 업무.
 			$('.doc-modal-btn-tasks').on('click', function(e) {
 				let cust = $('input[name="custNo"]').val();
-				$('#docModalTasks .modal-body').load("getMyTasks?custNo="+ cust);
+				$('#docModalTasks .modal-body').load("cust/custTasks?custNo="+ cust);
 				$('#docModalTasks').modal();				
 			})
 			

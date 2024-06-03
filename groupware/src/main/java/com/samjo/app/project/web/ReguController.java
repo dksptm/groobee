@@ -37,7 +37,7 @@ public class ReguController {
 	}
 	
 	// 상시업무등록 - 양식.
-	@GetMapping("reguInsert")
+	@GetMapping("cust/regu/insert")
 	public String reguInsertForm(Model model) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
@@ -62,7 +62,7 @@ public class ReguController {
 	}
 	
 	// 상시업무등록 - 등록.
-	@PostMapping("reguInsert")
+	@PostMapping("cust/regu/insert")
 	public String reguInsertProcess(ProjectVO projectVO, String flag) {
 		int result = 0;
 		
@@ -71,14 +71,14 @@ public class ReguController {
 			
 			result = reguService.reguCommonInsert(projectVO);
 			if(result > 0) {
-				return "redirect:reguInfo?taskNo=" + result;
+				return "redirect:/cust/regu/info?taskNo=" + result;
 			}
 			
 		} else if(flag.equals("NO")) {
 			
 			result = reguService.reguStadInsert(projectVO);
 			if(result > 0) {
-				return "redirect:reguInfo?taskNo=" + result;
+				return "redirect:/cust/regu/info?taskNo=" + result;
 			}
 			
 		} 
@@ -87,7 +87,7 @@ public class ReguController {
 	}
 	
 	// 단건조회
-	@GetMapping("reguInfo")
+	@GetMapping("cust/regu/info")
 	public String reguInfo(Model model, @RequestParam Integer taskNo) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
@@ -107,7 +107,7 @@ public class ReguController {
 	
 	// 담당업무 완료
 	@ResponseBody
-	@PutMapping("reguInfo/ok/{taskNo}")
+	@PutMapping("cust/regu/info/ok/{taskNo}")
 	public Map<String, Object> reguCmpltModify(@PathVariable Integer taskNo, 
 												@RequestBody List<TaskEmpsVO> emps) {
 		
@@ -115,7 +115,7 @@ public class ReguController {
 	}
 	
 	// 전체조회
-	@GetMapping("reguList")
+	@GetMapping("cust/regu/list")
 	public String reguTaskList(SearchVO searchVO, Model model) {
 		
 		checkSearch(searchVO);
@@ -130,7 +130,7 @@ public class ReguController {
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
-			model.addAttribute("path", "reguList"); 
+			model.addAttribute("path", "cust/regu/list"); 
 			
 			return "project/regu/list.html";
 			
@@ -141,13 +141,106 @@ public class ReguController {
 		
 	}
 	
+	// 전체조회(상위)
+	@GetMapping("cust/regu/stadList")
+	public String reguStadList(SearchVO searchVO, Model model) {
+		
+		checkSearch(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			List<ProjectVO> list = reguService.reguList(empVO, searchVO);
+			int count = reguService.countRegus(empVO, searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
+			
+			if(empVO.getPermId().equals("1C2c")) {
+				List<DeptVO> depts = deptService.myCustDepts(empVO);				
+				model.addAttribute("depts", depts);
+			} 
+			
+			model.addAttribute("list", list);
+			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("search", searchVO);
+			model.addAttribute("path", "stadList"); 
+			
+			return "project/regu/stadList";				
+			
+		}
+	
+		return "test/test";
+	}
+	
+	// 검색어/페이지 조회.
+	@PostMapping("cust/regu/stadList/sch")
+	public String reguStadSearchList(SearchVO searchVO, Model model) {
+		
+		checkSearch(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			System.out.println(searchVO);
+			List<ProjectVO> list = reguService.reguList(empVO, searchVO);
+			int count = reguService.countRegus(empVO, searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
+			
+			if(empVO.getPermId().equals("1C2c")) {
+				List<DeptVO> depts = deptService.myCustDepts(empVO);				
+				model.addAttribute("depts", depts);
+			} 
+			
+			model.addAttribute("list", list);
+			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("search", searchVO);
+			model.addAttribute("path", "stadList"); 
+			
+			return "project/regu/stadList :: #stadListArea";				
+			
+		}
+	
+		return "test/test";
+	}
+	
+	// 단건조회(상위)
+	@GetMapping("cust/regu/stadInfo")
+	public String reguStadInfo(Model model, @RequestParam String reguId) {
+		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		SearchVO search = new SearchVO();
+		checkSearch(search);
+		
+		if(empVO != null) {
+			
+			ProjectVO regu = reguService.reguStadInfo(empVO, reguId);
+			model.addAttribute("regu", regu);
+			
+			search.setKeywordCondition("regu_id");
+			search.setKeyword(reguId);
+			search.setSortCondition("tc.task_no DESC");
+			List<ProjectVO> list = reguService.reguTaskList(empVO.getCustNo(), search);
+			model.addAttribute("tasks", list); 
+			
+			int count = reguService.countRegus(empVO, search);
+			PageDTO pageDTO = new PageDTO(search.getPage(), count);
+			model.addAttribute("pageDTO", pageDTO); 
+			
+			model.addAttribute("path", "stadInfo"); 
+			
+			return "project/regu/stadInfo";				
+			
+		}
+	
+		return "test/test";
+	}
+	
 	// SearchVO check
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
 		}
 		if(searchVO.getSortCondition() == null) {
-			searchVO.setSortCondition("tc.task_no DESC");
+			searchVO.setSortCondition("tc.standard_no");
 		}
 		return searchVO;
 	}

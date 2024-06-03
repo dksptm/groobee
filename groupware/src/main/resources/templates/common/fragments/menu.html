@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/">
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 
 <th:block th:fragment="MenuFragment">
 	<div>
@@ -55,20 +56,20 @@
 					<div>전자결재</div>
 			</a>
 				<ul class="menu-sub">
-					<li class="menu-item"><a th:href="@{/docInsert}"
+					<li class="menu-item"><a th:href="@{/cust/doc/insert}"
 						class="menu-link">
 							<div>문서작성</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/myDocList}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/doc/mydoc}" class="menu-link">
 							<div>문서함</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/myAprList}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/doc/myapr}" class="menu-link">
 							<div>결재함</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/docIng}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/doc/ing}" class="menu-link">
 							<div>결재진행중 문서조회</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/docCmplt}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/doc/cmplt}" class="menu-link">
 							<div>완료된 결재 조회</div>
 					</a></li>
 				</ul></li>
@@ -107,11 +108,16 @@
 						class="menu-link">
 							<div>프로젝트 업무조회</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/reguList}"
+					<li class="menu-item"><a th:href="@{/cust/regu/list}"
 						class="menu-link">
 							<div>상시(주기적)업무조회</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/reguInsert}"
+					<li class="menu-item"
+						sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
+						<a th:href="@{/cust/regu/stadList}" class="menu-link">
+							<div>상시(주기적)업무관리</div>
+					</a></li>
+					<li class="menu-item"><a th:href="@{/cust/regu/insert}"
 						class="menu-link">
 							<div>상시(주기적)업무등록</div>
 					</a></li>
