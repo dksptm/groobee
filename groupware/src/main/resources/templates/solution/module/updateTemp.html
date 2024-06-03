@@ -10,7 +10,7 @@
 				<h5 class="card-header">템플릿 수정</h5>
 				<div class="card-body">
 					<!-- 템플릿 등록/수정 -->
-					<form id="tempInsertForm" th:action="@{/tempUpdate/{tempNo}(tempNo=${tempVO.tempNo})}" method="post"
+					<form id="tempInsertForm" th:action="@{/sol/tempUpdate/{tempNo}(tempNo=${tempVO.tempNo})}" method="post"
 						th:object="${tempVO}" >
 						<!-- <input type="hidden" name="_method" value="put"/> -->
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
