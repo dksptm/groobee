@@ -1,6 +1,7 @@
 package com.samjo.app.approval.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -137,7 +138,6 @@ public class DocServiceImpl implements DocService {
 			aprMapper.insertApr(docVO);
 		}
 		
-		System.out.println(docVO.getPto());
 		// 2.휴가원 등록.--최종결재완료이후 처리필요.
 		if(docVO.getTempId().equals("public01")) {
 			docVO.getPto().setDocNo(docVO.getDocNo());
@@ -198,12 +198,14 @@ public class DocServiceImpl implements DocService {
 			tempMapper.deletePto(docVO.getDocNo());
 		}
 		
+		System.out.println("문서수정서비스 docVO.getRefs() => " + docVO.getRefs());
 		// 3.기존 참조자 삭제 후 재등록
 		aprMapper.deleteRef(docVO.getDocNo());
 		if(docVO.getRefs() != null) {
 			aprMapper.insertRef(docVO);
 		}
 		
+		System.out.println("문서수정서비스 docVO.getTasks() => " + docVO.getTasks());
 		// 4.기존 연결업무 삭제 후 재등록
 		docMapper.deleteTaskDoc(docVO.getDocNo());
 		if(docVO.getTasks() != null) {
@@ -255,6 +257,16 @@ public class DocServiceImpl implements DocService {
 		});
 		
 		return docFileList;
+	}
+
+	@Override
+	public Map<String, Object> deleteDoc(DocVO docVO) {
+		
+		Map<String, Object> map = new HashMap<>();
+		docMapper.deleteDoc(docVO);
+		map.put("OUT", docVO.getResult());
+		
+		return map;
 	}
 
 

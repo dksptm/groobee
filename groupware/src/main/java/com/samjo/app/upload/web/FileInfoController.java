@@ -15,7 +15,7 @@ public class FileInfoController {
 	@Autowired
 	FileUploadService fileUploadService;
 	
-	@PostMapping("/FileUpload")
+	@PostMapping("cust/FileUpload")
 	@ResponseBody
 	public void uploadFile(@RequestPart MultipartFile[] uploadFiles, String empId, Integer docNo) {
 	    fileUploadService.uploadFileInfo(uploadFiles);

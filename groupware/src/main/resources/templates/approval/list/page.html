@@ -81,7 +81,7 @@ $(function(){
 		
 		let createInput = $('<input type="hidden" name="docNo" />').val($(this).data('dno'));
 		searchForm.append(createInput);
-		searchForm.attr('action', '/docInfo');
+		searchForm.attr('action', '/cust/doc/info');
 		
 		searchForm.submit();
 		

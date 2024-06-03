@@ -3,8 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
-  <!-- worklist 전체 조회 (부서장권한으로 접속 시 처음에는 자신꺼만 매니저를통해서 접근시 자신의 부서를 조회)-->
-  <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
+  <select id="selectlist" resultType="WorkVO" parameterType="workSearchVO">
 SELECT t.*
 FROM (SELECT rownum rn, 
                      f.*
@@ -12,6 +11,7 @@ FROM (SELECT rownum rn,
             FROM (SELECT e.*
                   FROM (SELECT
                                i.dt,
+                               j.emp_id,
                                j.emp_name,
                                j.emp_no,
                                i.wk_in,
@@ -21,7 +21,44 @@ FROM (SELECT rownum rn,
                                get_codename(wk_site) wk_site
                                FROM emp j join wk i
                                             on j.emp_id = i.emp_id
-                         ORDER BY dt) e
+                               WHERE j.emp_id = #{empId}
+                         ORDER BY dt DESC) e
+                   <include refid="select"></include>
+                             ) w
+            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
+WHERE t.rn > (#{page} -1) * 5
+  </select>
+  <!-- 계정 정보 조회 테이블 -->
+  <select id="selectemp" resultType="WorkVO">
+  SELECT emp_id,
+       emp_no,
+       emp_name,
+       hire_dt,
+       fire_dt
+	FROM emp
+	WHERE emp_id = ${empId}
+  </select>
+  <!-- worklist 전체 조회 (부서장권한으로 접속 시 처음에는 자신꺼만 매니저를통해서 접근시 자신의 부서를 조회)-->
+  <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
+SELECT t.*
+FROM (SELECT rownum rn, 
+                     f.*
+      FROM (SELECT w.*
+            FROM (SELECT e.*
+                  FROM (SELECT
+                               i.dt,
+                               j.emp_id,
+                               j.emp_name,
+                               j.emp_no,
+                               i.wk_in,
+                               i.wk_out,
+                               get_codename(wk_yn) wk_yn,
+                               get_codename(wk_stat) wk_stat,
+                               get_codename(wk_site) wk_site
+                               FROM emp j join wk i
+                                            on j.emp_id = i.emp_id
+                               WHERE j.emp_id = #{empId}
+                         ORDER BY dt DESC) e
                    <include refid="select"></include>
                              ) w
             WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
@@ -32,6 +69,7 @@ WHERE t.rn > (#{page} -1) * 5
 		SELECT count(*)
 		FROM (SELECT
                     i.dt,
+                    j.emp_id,
                     j.emp_name,
                     j.emp_no,
                     i.wk_in,
@@ -40,27 +78,28 @@ WHERE t.rn > (#{page} -1) * 5
                     get_codename(wk_stat) wk_stat,
                     get_codename(wk_site) wk_site
                     FROM emp j join wk i
-                                 on j.emp_id = i.emp_id)
+                                 on j.emp_id = i.emp_id
+                    WHERE j.emp_id = #{empId})
 		<include refid="select"></include>
 	</select>
 	
 	<!-- 조건문 -->
 	<sql id="select">
 	<where>
-					<if test="empNo != null and empNo != ''"> 
-                   		and emp_no = #{empNo}
-                    </if>
 					<if test="oneDate != null">
-					AND dt <![CDATA[<=]]>  #{oneDate}
+							AND dt >=  #{oneDate}
+					</if>
+					<if test="twoDate != null">
+							AND dt <![CDATA[<=]]>  #{twoDate}
 					</if>
                     <if test="wkYn != null and wkYn != ''"> 
-                              and wk_yn   = #{wkYn}
+                              AND wk_yn   = #{wkYn}
                     </if>
                     <if test="wkStat != null and wkStat != ''">
-                             and wk_stat = #{wkStat}
+                             AND wk_stat = #{wkStat}
                     </if>
                     <if test="wkSite != null and wkSite != ''">  
-                             and wk_site = #{wkSite} 
+                             AND wk_site = #{wkSite} 
                     </if>
     </where>
 	</sql>
@@ -73,6 +112,7 @@ WHERE t.rn > (#{page} -1) * 5
                       (SELECT dept_name
                        FROM dept
                        WHERE dept_id = emp.dept_id) dept_id ,
+                       emp_id,
                        emp_no,
                        emp_name,
                       (SELECT job_title
@@ -81,58 +121,62 @@ WHERE t.rn > (#{page} -1) * 5
                        hire_dt,
                        emp_tel
                  FROM emp
-                 ORDER BY #{filter}) e
+                 <if test="filter != null and filter != ''">  
+                 ORDER BY #{filter} DESC
+                 </if>
+                 ) e
             WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
-WHERE l.rn <![CDATA[<=]]> (#{page}* 5)
+WHERE l.rn > (#{page} -1) * 5
 	</select>
 	
 	<select id="managercount">
 		SELECT count(*)
-		FROM emp
+		FROM (SELECT
+                      (SELECT dept_name
+                       FROM dept
+                       WHERE dept_id = emp.dept_id) dept_id ,
+                       emp_id,
+                       emp_no,
+                       emp_name,
+                      (SELECT job_title
+                       FROM jobs
+                       WHERE job_no = emp.job_no) job_no ,
+                       hire_dt,
+                       emp_tel
+                 FROM emp)
 	</select>
 	
 	<!-- 출근을 입력하기위해... 중복이되면 안됨. (조건 = empID, Dt)-->
 	<update id="workin">
 	UPDATE wk
-	SET wk_in = sysdate
+	SET wk_in = sysdate,
+	    wk_stat = '2B1b'
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
-	<!-- 출근을 했는지 안했는지 체크하기위해 -->
-	<select id="in_check">
-	SELECT wk_in
-	FROM wk
-	where emp_id = #{empId}
-	</select>
 	
 	<!-- 퇴근을 입력하기위해... 중복이됨.-->
-	 <update id="workout">
+	<update id="workout">
 	UPDATE wk
 	SET wk_out = sysdate
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
-  <!-- 모든사원 insert (오라클 스케쥴러를 통해서 해결...지워도됨.) -->
-    <insert id="workinsert">
-insert into wk(
-               emp_id,
-               dt,
-               wk_in,
-               wk_yn,
-               wk_stat,
-               wk_site)
-values (
-               'AAA1001',
-               sysdate,
-			   sysdate
-               '2A1a',
-               '2B1b',
-               '2C1c')
-   </insert>
+	
+	<!-- 조퇴 -->
+	<update id="workstop">
+	UPDATE wk
+	SET wk_out = sysdate,
+	    wk_stat = '2B4b'
+	where emp_id = #{empId} AND dt = #{dt}
+	</update>
    
    <!-- 상세페이지 확인 -->
   <select id="selectWork" resultType="WorkVO">
-select 
+select j.emp_id,
        j.emp_no,
        j.emp_name,
+       (SELECT dept_name
+        FROM dept
+        WHERE dept_id = j.dept_id) dept_id ,
        i.dt,
        i.wk_in,
        i.wk_out,
@@ -143,11 +187,11 @@ select
        get_codename(wk_site) wk_site
 from emp j join wk i
              on j.emp_id = i.emp_id
-where dt = #{dt} and emp_No = #{empNo}
+where dt = #{dt} and j.emp_id = #{empId}
    </select>
    
    <!-- 상세페이지에서 작동하는 업데이트 -->
-   <update id="updateWork" parameterType="WorkVO">
+   <update id="update" parameterType="WorkVO">
    UPDATE wk 
    SET
           wk_in = #{wkIn},
@@ -156,8 +200,8 @@ where dt = #{dt} and emp_No = #{empNo}
           wk_out_loc = #{wkOutLoc},
           wk_yn = #{wkYn},
           wk_stat = #{wkStat},
-          wt_site = #{wkSite}
-   WHERE dt = #{dt} AND emp_No = #{empNo}
+          wk_site = #{wkSite}
+   WHERE dt = #{dt} AND emp_id = #{empId}
    </update>
    
    

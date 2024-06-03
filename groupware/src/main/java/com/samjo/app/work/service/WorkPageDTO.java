@@ -13,16 +13,11 @@ public class WorkPageDTO {
 	private int startPage, endPage;
 	private int totalCnt;
 	private boolean prev, next;
-	private String filter;
-	private String wkYn;
-	private String wkStat;
-	private String wkSite;
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
-	private Date oneDate;
 	
 	
 	public WorkPageDTO (int page, int totalCnt) {
 		this.page = page;
+		this.totalCnt = totalCnt;
 		int realEnd = (int) Math.ceil(totalCnt/5.0);
 		
 		this.endPage = (int) Math.ceil(page/5.0) * 5;

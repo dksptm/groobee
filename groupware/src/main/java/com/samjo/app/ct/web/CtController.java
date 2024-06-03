@@ -15,6 +15,7 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.service.CtDTO;
 import com.samjo.app.ct.service.CtService;
 import com.samjo.app.ct.service.CtVO;
+import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.solmodule.service.ModuleVO;
 
 @Controller
@@ -66,6 +67,8 @@ public class CtController {
 	//계약 등록 화면
 	@GetMapping("sol/ctInsert")
 	public String ctInsert(Model model) {
+		List<CustVO> custlist = ctservice.custList();
+		model.addAttribute("custlist", custlist);
 		List<ModuleVO> modlist = ctservice.modList();
 		model.addAttribute("modlist", modlist);
 		CtVO ctVO = new CtVO();
@@ -74,10 +77,12 @@ public class CtController {
 	}
 	
 	//계약 등록 처리
-	@PostMapping()
+	@PostMapping("sol/ctInsertProcess")
 	public String ctInsertProcces(CtVO ctVO, String[] modIds) {
 		ctservice.ctInsert(ctVO, modIds);
-		return "";
+		//System.out.println("ctVO : "+ ctVO);
+		//System.out.println("mod : "+ Arrays.toString(modIds));
+		return "Success";
 	}
 	
 	// 계약 수정 화면

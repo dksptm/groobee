@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-11">
+				<div class="container-fluid">
+				
+				<table>
+					<tr>
+						<td>사원ID</td>
+						<td>사원번호</td>
+						<td>사원명</td>
+						<td>근무일수</td>
+						<td>연차사용</td>
+						<td>지각</td>
+						<td>조퇴</td>
+						<td>외근</td>
+					</tr>
+					<tr>
+						<td>사원ID</td>
+						<td>사원번호</td>
+						<td>사원명</td>
+						<td>근무일수</td>
+						<td>연차사용</td>
+						<td>지각</td>
+						<td>조퇴</td>
+						<td>외근</td>
+					</tr>
+					
+				</table>
+				
+				
+					<table>
+						<tr>
+							<td><input id="oneDate" type="Date">~<input
+								id="twoDate" type="Date"></td>
+						</tr>
+						<tr>
+							<td><select class="form-select" id="wkYn">
+									<option value="" selected>전체</option>
+									<option value="근무일">근무일</option>
+									<option value="연차">연차</option>
+									<option value="오전반차">오전반차</option>
+									<option value="오후반차">오후반차</option>
+							</select></td>
+							<td><select class="form-select" id="wkStat">
+									<option value="" selected>전체</option>
+									<option value="정상근무">정상근무</option>
+									<option value="결근">결근</option>
+									<option value="지각">지각</option>
+									<option value="조퇴">조퇴</option>
+							</select></td>
+							<td><select class="form-select" id="wkSite">
+									<option value="" selected>전체</option>
+									<option value="내근">내근</option>
+									<option value="외근">외근</option>
+							</select>
+							<td>
+								<button type="submit" class="btn btn-primary" id="filter">검색</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<br>
+
+				<div id="workTable">
+					<table class="table table-striped-columns">
+						<thead>
+							<tr>
+								<th>날짜</th>
+								<th>사원ID</th>
+								<th>사원번호</th>
+								<th>사원명</th>
+								<th>출근시간</th>
+								<th>퇴근시간</th>
+								<th>근무지</th>
+								<th>근무상태</th>
+								<th>근무여부</th>
+							</tr>
+						</thead>
+						<tbody th:each="info : ${list}" id="infos">
+							<tr
+								th:onclick="|location.href='@{/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
+								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
+								<td id="empId">[[${info.empId}]]</td>
+								<td id="empNo">[[${info.empNo}]]</td>
+								<td>[[${info.empName}]]</td>
+								<td>[[${#dates.format(info.wkIn, "HH:mm")}]]</td>
+								<td>[[${#dates.format(info.wkOut, "HH:mm")}]]</td>
+								<td th:if="${info.wkYn == '근무일'}">[[${info.wkYn}]]</td>
+								<td th:if="${info.wkYn == '연차'}" class="table-warning">[[${info.wkYn}]]</td>
+								<td th:if="${info.wkYn == '오전반차'}" class="table-success">[[${info.wkYn}]]</td>
+								<td th:if="${info.wkYn == '오후반차'}" class="table-success">[[${info.wkYn}]]</td>
+								<td th:if="${info.wkStat == '정상근무'}">[[${info.wkStat}]]</td>
+								<td th:if="${info.wkStat == '결근'}" class="table-danger">[[${info.wkStat}]]</td>
+								<td th:if="${info.wkStat == '지각'}" class="table-info">[[${info.wkStat}]]</td>
+								<td th:if="${info.wkStat == '조퇴'}" class="table-secondary">[[${info.wkStat}]]</td>
+								<td th:if="${info.wkSite == '내근'}">[[${info.wkSite}]]</td>
+								<td th:if="${info.wkSite == '외근'}" class="table-light">[[${info.wkSite}]]</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br>
+
+					<div class="paging mt-2">
+						<th:block th:if="${filter.totalCnt} != 0">
+							<nav aria-label="Page navigation">
+								<ul class="pagination">
+
+									<th:block th:if="${filter.prev}">
+										<li class="page-item prev disabled"><a
+											class="page-link pagebtn"
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.startPage - 1 }|">
+												<i class="bx bx-chevron-left"></i>
+										</a></li>
+									</th:block>
+									<th:block
+										th:each="num : ${#numbers.sequence(1, filter.endPage)}">
+										<li class="page-item"
+											th:attrappend="class=${num == filter.page?'active':' '}">
+											<a
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
+											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+										</li>
+									</th:block>
+									<th:block th:if="${filter.next}">
+										<li class="page-item next"><a class="page-link pagebtn"
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.endPage + 1 }|">
+												<i class="bx bx-chevron-right"></i>
+										</a></li>
+									</th:block>
+									<th:block th:unless="${filter.totalCnt} != 0">
+										<p class="text-center mt-4">현재 등록된 기록이 없습니다.</p>
+									</th:block>
+								</ul>
+							</nav>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		// CSRF
+		let header = $("meta[name='_csrf_header']").attr('content');
+	    let token = $("meta[name='_csrf']").attr('content');
+	    
+	    // 현재(컴퓨터) 날짜, 시간
+		let {date,time} = today();
+		
+		// 기간 검색 범위처리
+	    $('#oneDate').on('change', function(e) {
+	        $('#twoDate').attr('min', this.value);
+	    });
+	    $('#twoDate').on('change', function(e) {
+	        $('#oneDate').attr('max', this.value);
+	    });
+	    
+	    
+		// 검색 조건 변수 생성
+			let oneDate;
+			let twoDate;
+			let wkYn;
+			let wkStat;
+			let wkSite;
+			let empId;
+			let page;
+		// 필터 클릭 이벤트.
+		    $("#filter").on("click", function(e) {
+		        filters();
+		        let page = 1;
+		        filterTable(page);
+		    });
+		 // 페이징 링크 처리
+	    $(document).on("click", ".pagebtn", function(e) {
+	        e.preventDefault();
+	        let page = e.target.id;
+	        filterTable(page);
+	    });
+		
+		// 검색 조건 갱신
+			function filters() {
+			// 날짜 검색
+				oneDate = $('#oneDate').val();
+				twoDate = $('#twoDate').val();
+			// 상태 조건 
+				wkYn = $('#wkYn').val();
+				wkStat = $('#wkStat').val();
+				wkSite = $('#wkSite').val();
+				empId = $('')
+		}	
+				
+		function filterTable(page) {
+				$.ajax({
+					url : '/work/worklistfilter',
+					method : 'POST',
+					beforeSend: function(xhr) {
+		                xhr.setRequestHeader(header, token);
+		            },
+					data : {
+						empId : empId,
+						page : page,
+						oneDate : oneDate,
+						twoDate : twoDate,
+						wkYn : wkYn,
+						wkStat : wkStat,
+						wkSite : wkSite
+					},
+					dataType: 'Text',
+					success :function(result){
+						$('#workTable').replaceWith(result);
+					}
+					});
+		        }
+		</script>
+	</th:block>
+</body>
+</html>

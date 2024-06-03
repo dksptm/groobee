@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,34 +25,37 @@ public class WorkControll {
 
 	@Autowired
 	WorkService workService;
+	// 관리자 페이지에서 진입 list
+	@GetMapping("work/worklists")
+	public String selectlist(WorkSearchVO worksearchVO, Model model) {
+		
+		if (worksearchVO.getPage() == 0) {
+			worksearchVO.setPage(1);
+		}
+		List<WorkVO> list = workService.selectlist(worksearchVO);
+		model.addAttribute("list", list);
+		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
+		model.addAttribute("filter", workpageDTO);
+		return "work/worklists";
+		
+	}
+	
+	  // 관리자 페이지에서 ajax
+		@PostMapping("work/worklistfilters")
+		public String workfilters(WorkSearchVO worksearchVO, Model model) {
+			if (worksearchVO.getPage() == 0) {
+				worksearchVO.setPage(1);
+			}
+			List<WorkVO> list = workService.workList(worksearchVO);
+			model.addAttribute("list", list);
+			WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
+			model.addAttribute("filter", workpageDTO);
+			return "work/worklists :: #workTable";
+		}
 
 	// 일반 페이지 전체 조회
-	@GetMapping("worklist")
+	@GetMapping("work/worklist")
 	public String workList(WorkSearchVO worksearchVO, Model model) {
-		 //Date date = new Date();
-		 //SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-         
-
-//		 System.out.println("TEST : "+worksearchVO.getEmpId());
-//		  if (worksearchVO.getEmpId() == null) {
-//			  worksearchVO.setEmpId();
-//			  }
-			 
-		 
-			/*
-			 * if (worksearchVO.getOneDate() == null) { worksearchVO.setOneDate(date); }
-			 */
-		 
-		/*
-		 * if (worksearchVO.getWkYn() == null) { worksearchVO.setWkYn("근무일"); }
-		 */
-		/*
-		 * if (worksearchVO.getWkSite() == null) { worksearchVO.setWkSite("내근"); }
-		 */
-		/*
-		 * if(worksearchVO.getWkStat() == null) { worksearchVO.setWkStat("정상근무"); }
-		 */
-		 
 		if (worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);
 		}
@@ -61,13 +65,23 @@ public class WorkControll {
 		model.addAttribute("filter", workpageDTO);
 		return "work/worklist";
 	}
+	
+	// 일반 페이지 ajax
+	@PostMapping("work/worklistfilter")
+	public String workfilter(WorkSearchVO worksearchVO, Model model) {
+		if (worksearchVO.getPage() == 0) {
+			worksearchVO.setPage(1);
+		}
+		List<WorkVO> list = workService.workList(worksearchVO);
+		model.addAttribute("list", list);
+		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
+		model.addAttribute("filter", workpageDTO);
+		return "work/worklist :: #workTable";
+	}
 
 	// 관리자 페이지 전체 조회
-	@GetMapping("workmanager")
+	@GetMapping("work/workmanager")
 	public String managerWorkList(WorkManagerSearchVO workmanagersearchVO, Model model) {
-		if (workmanagersearchVO.getFilter() == null) {
-			workmanagersearchVO.setFilter("dept_id");
-		}
 		if (workmanagersearchVO.getPage() == 0) {
 			workmanagersearchVO.setPage(1);
 		}
@@ -77,24 +91,38 @@ public class WorkControll {
 		model.addAttribute("filter", workpageDTO);
 		return "work/workmanager";
 	}
+	
+	// 관리자 페이지 Ajax
+		@PostMapping("work/workmanagersorting")
+		public String managerWork(WorkManagerSearchVO workmanagersearchVO, Model model) {
+			if (workmanagersearchVO.getPage() == 0) {
+				workmanagersearchVO.setPage(1);
+			}
+			List<WorkManagerVO> list = workService.managerWorkList(workmanagersearchVO);
+			model.addAttribute("list", list);
+			WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount());
+			model.addAttribute("filter", workpageDTO);
+			return "work/workmanager :: #sortingTable";
+		}
 
 	// 상세페이지
-	@GetMapping("workinfo")
+	@GetMapping("work/workinfo")
 	public String selectwork(WorkVO workVO, Model model) {
 		WorkVO work = workService.selectWork(workVO);
 		model.addAttribute("info", work);
 		return "work/workinfo";
 	}
-
-	/*
-	 * // 등록 처리(오라클에서 스케쥴러로 작동)
-	 * 
-	 * @RequestMapping(value = "worklist", method = RequestMethod.POST) public
-	 * String insertwork(WorkVO workVO) { return "work/workinsert"; }
-	 */	
+	
+	// worklists의 회원정보
+	@GetMapping("work/workemp")
+	public String workemp(WorkVO workVO, Model model) {
+		WorkVO work = workService.selectemp(workVO);
+		model.addAttribute("info", work);
+		return "work/worklists";
+	}
 
 	// 수정처리화면
-	@GetMapping("workupdate")
+	@GetMapping("work/workupdate")
 	public String updatework(WorkVO workVO, Model model) {
 		WorkVO work = workService.selectWork(workVO);
 		model.addAttribute("info", work);
@@ -102,26 +130,33 @@ public class WorkControll {
 	}
 	
 	// 수정 처리
-	@PostMapping("workupdate")
+	@PostMapping("work/workupdate")
 	public String update(WorkVO workVO) {
 		workService.update(workVO);
-		return "redirect:/worklist";
+		return "redirect:/work/worklist";
 	}
 
 	
 	  // 출근 업데이트 처리(최초 한번만 업데이트)
 	  // request.getRemoteAddr();(ipcheck)
-		  @PostMapping("workin")
+		  @PostMapping("work/workin")
 		  @ResponseBody
 		  public Map<String, Object> workin(WorkVO workVO) {
 			  return workService.workin(workVO);
 		  }
 		  
 		  // 퇴근 업데이트(최초 이후 계속 업데이트)
-		  @PostMapping("workout")
+		  @PostMapping("work/workout")
 		  @ResponseBody
 		  public Map<String, Object> workout(WorkVO workVO) {
 			  return workService.workout(workVO);
+		  }
+		  
+ 		  // 조퇴 업데이트(최초 이후 계속 업데이트)
+		  @PostMapping("work/workstop")
+		  @ResponseBody
+		  public Map<String, Object> workstop(WorkVO workVO) {
+			  return workService.workstop(workVO);
 		  }
 		 
 

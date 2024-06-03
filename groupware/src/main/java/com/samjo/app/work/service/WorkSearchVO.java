@@ -17,10 +17,10 @@ public class WorkSearchVO {
 	private String wkSite;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date oneDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date twoDate;
 	private int totalCnt;
-	/*
-	 * @DateTimeFormat(pattern = "yyyy/MM/dd") private Date twoDate;
-	 */
+	
 	
 	
 }

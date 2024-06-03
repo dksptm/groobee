@@ -15,9 +15,12 @@
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>계약번호</th>
-								<td><input class="form-control" type="text" placeholder="자동등록" disabled /></td>
+								<td><input class="form-control" type="text"
+									placeholder="자동등록" disabled /></td>
 								<th>고객정보 불러오기</th>
-								<td><button type="button" class="btn btn-primary">고객선택</button></td>
+								<td><button type="button"
+										class="btn btn-secondary ms-3 custBtn" data-bs-toggle="modal"
+										data-bs-target="#CustModal">고객선택</button></td>
 							</tr>
 							<tr>
 								<th>고객번호</th>
@@ -40,7 +43,7 @@
 								<td colspan="3">
 									<div class="row">
 										<input class="form-control col-sm-5" type="file"
-											th:field="${ctVO.ctFile}" style="width: 70%" accept=".pdf" />
+											th:field="${ctVO.uploadfile}" style="width: 70%" accept=".pdf" />
 									</div>
 								</td>
 							</tr>
@@ -51,7 +54,7 @@
 								<th>계약시작일</th>
 								<td><input class="form-control" type="date" id="ctStartDt"
 									name="ctStartDt"
-									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}"/></td>
+									th:value="${#dates.format(ctVO.ctStartDt, 'yyyy-MM-dd')}" /></td>
 								<th>계약종료일</th>
 								<td><input class="form-control" type="date" id="ctEndDt"
 									name="ctEndDt"
@@ -67,16 +70,12 @@
 							</tr>
 							<tr>
 								<th>사용 모듈</th>
-								<td colspan="3">
-								<span
-									th:text="'|'"></span>
-									<span class="modlistSpan"></span>
-									<span>
+								<td colspan="3"><span class="modFText" th:text="'선택한 모듈이 없습니다.'"></span> <span
+									class="modlistSpan"></span> <span>
 										<button type="button" class="btn btn-secondary ms-3 modBtn"
 											data-bs-toggle="modal" data-bs-target="#ModModal">모듈
 											선택</button>
-									</span>
-								</td>
+								</span></td>
 							</tr>
 							<tr>
 								<th>계약금액</th>
@@ -136,10 +135,61 @@
 			</div>
 		</div>
 
+		<!-- 고객정보 모달화면 -->
+		<div class="modal fade" id="CustModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">사용가능 모듈 목록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>고객번호</th>
+									<th>상호명</th>
+									<th>선택</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="CustVO : ${custlist}">
+									<tr id="custTr">
+										<td>[[ ${CustVO.custNo} ]]</td>
+										<td>[[ ${CustVO.custName} ]]</td>
+										<td><input
+											th:onclick="CustInfo([[${CustVO.custNo}]], [[${CustVO.custName}]], [[${CustVO.brn}]], [[${CustVO.rep}]])"
+											type="radio" name="check" class="custcheck"
+											th:value="${CustVO.rep}" th:id="${CustVO.brn}"></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary selectCust"
+							data-bs-dismiss="modal">선택완료</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script th:inline="javascript">
 			// CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
+			
+			 // 고객선택 모달 라디오 버튼 체크 항목 반영 함수
+		    function CustInfo(custNo, custName, brn, rep) {
+		        $('input[name="custNo"]').val(custNo);
+		        $('input[name="custName"]').val(custName);
+		        $('input[name="brn"]').val(brn);
+		        $('input[name="rep"]').val(rep);
+		    }
 			
 			//모듈변경 모달 체크박스 체크 항목 반영
 			let modAry = [];
@@ -156,24 +206,35 @@
 			    }
 			    addIdModSpan();
 			    $('#useModCnt').attr('min', totalChecked);
+			    updateFText();
 			});
 
+			// 선택한 모듈 유무에 따른 텍스트 처리 함수
+			function updateFText() {
+			    if (modAry.length > 0) {
+			        $('.modFText').text('|');
+			    } else {
+			        $('.modFText').text('선택한 모듈이 없습니다.');
+			    }
+			}
+			
 			//계약모듈 갯수와 사용 모듈갯수 동기화
-			let totalChecked = 0; // 설정 끝
+			let totalChecked = 0;
 			function CountChecked(field) {
-			let maxChecked = $('#useModCnt').val();   //선택가능한 체크박스 갯수
+			let maxChecked = $('#useModCnt').val();
 				
-			    if (field.checked) // input check 박스가 체크되면 
-			        totalChecked += 1; // totalChecked 증가
-			    else // 체크가 아니면
-			        totalChecked -= 1; // totalChecked 감소
-
-			    if (totalChecked > maxChecked) { // totalchecked 수가 maxchecked수보다 크다면
-			        alert ("최대 "+maxChecked+"개 까지만 가능합니다. 계약모듈 갯수를 확인해주세요"); // 팝업창 띄움
+			    if (field.checked){
+			        totalChecked += 1;
+			    }else{
+			        totalChecked -= 1;
+		        }
+			    if (totalChecked > maxChecked) {
+			        alert ("최대 "+maxChecked+"개 까지만 가능합니다. 계약모듈 갯수를 확인해주세요");
 			    field.checked = false;
 			    totalChecked -= 1;
 		    	}
 			}
+			
 			    
 			// 사용중 모듈 span에 모듈id를 id로 부여 함수
 			function addIdModSpan() {
@@ -189,7 +250,7 @@
 			    $('#ctFile').val(filename);
 			});
 			
-			//수정 버튼 기능
+			//등록 버튼 기능
 			$('.updateBtn').on('click', function(e){
 				e.preventDefault();
 
@@ -213,7 +274,7 @@
 			    
 			    // Ajax 요청
 			    $.ajax({
-			        url: '/sol/ctUpdateProcess/' + [[${ctVO.ctNo}]],
+			        url: '/sol/ctInsertProcess',
 			        beforeSend: function(xhr){
 			            xhr.setRequestHeader(header, token);
 			        },
@@ -227,7 +288,7 @@
 			            if (result === "Success") {
                         	window.location.href = "/sol/ctInfo/" + [[${ctVO.ctNo}]];
 	                    } else {
-	                        alert('수정 오류');
+	                        alert('등록 오류');
 	                    }
 			        },
 			        error: function(reject){ 

@@ -12,6 +12,7 @@ public class EmailVO {
 	// email TABLE
 	private String senEmailNo;
 	private String sender;
+	private String senderName;
 	private String title;
 	private String cntn;
 	
@@ -25,7 +26,9 @@ public class EmailVO {
 	// inbox TABLE
 	private String recEmailNo;
 	private String recp;
+	private String recpName;
 	private String refer;
+	private String referName;
 	private String recpType;
 	private Date readDt; //안 쓰는 값, 추후 삭제
 	private String rstat;

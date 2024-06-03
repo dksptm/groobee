@@ -13,21 +13,25 @@ public interface WorkMapper {
 	public int workcount(WorkSearchVO worksearchVO);
 	public int managercount();
 	
-	// 근태관리 전체출퇴근조회
+	// 로그인 계정 근태관리 전체출퇴근조회
 	public List<WorkVO> selectAllList(WorkSearchVO worksearchVO);
 	// 출근 업데이트
 	public int workin(WorkVO workVO);
 	// 퇴근 업데이트
 	public int workout(WorkVO workVO);
-	// 출근등록
-	public int insertWork(WorkVO workVo);
+	// 조퇴 업데이트
+	public int workstop(WorkVO workVO);
 	
+	// 계정 정보 조회
+	public WorkVO selectemp(WorkVO workVO);
+	
+	// 관리자 페이지 근태 기록
+	public List<WorkVO> selectlist(WorkSearchVO worksearchVO);
 	// 관리자 페이지 전체조회
 	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO);
 	// 페이지 상세 조회
 	public WorkVO selectWork(WorkVO workVO);
 	// 관리자 페이지 수정
-	//public WorkVO updateWork(WorkVO workVO);
 	public int update(WorkVO workVO);
 	
 	

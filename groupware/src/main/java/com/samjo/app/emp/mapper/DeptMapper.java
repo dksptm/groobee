@@ -19,4 +19,7 @@ public interface DeptMapper {
 	
 	public List<EmpVO> respMngrList(@Param("cno")String custNo);
 	
+	// 한 회사의 부서전체 목록
+	public List<DeptVO> selectCustDeptAll(@Param("emp") EmpVO empVO);
+	
 }

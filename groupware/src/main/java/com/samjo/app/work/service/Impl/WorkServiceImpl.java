@@ -19,11 +19,13 @@ public class WorkServiceImpl implements WorkService{
 	
 	@Autowired
 	WorkMapper workMapper;
-	// 전체 리스트
+	
+	// 로그인 전체 데이터 수
 	@Override
-	public List<WorkVO> workList(WorkSearchVO worksearchVO) {
-		return workMapper.selectAllList(worksearchVO);
+	public List<WorkVO> selectlist(WorkSearchVO worksearchVO) {
+		return workMapper.selectlist(worksearchVO);
 	}
+	
 	
 	// 전체 데이터 수
 	@Override
@@ -67,12 +69,6 @@ public class WorkServiceImpl implements WorkService{
 		
 		return map;
 	}
-	// 등록
-	@Override
-	public int insertWork(WorkVO workVo) {
-		return workMapper.insertWork(workVo);
-	}
-	
 	
 	// 관리자 페이지 전체조회
 	@Override
@@ -84,16 +80,17 @@ public class WorkServiceImpl implements WorkService{
 	public WorkVO selectWork(WorkVO workVO) {
 		return workMapper.selectWork(workVO);
 	}
-	// 페이지 수정
-	//@Override
-	//public WorkVO updateWork(WorkVO workVO) {
-	//	return workMapper.updateWork(workVO);
-	//}
 
 	@Override
 	public int managercount() {
 		return workMapper.managercount();
 	}
+	
+	// 관리자요청 전체 리스트
+		@Override
+		public List<WorkVO> workList(WorkSearchVO worksearchVO) {
+			return workMapper.selectAllList(worksearchVO);
+		}
 
 	@Override
 	public Map<String, Object> update(WorkVO workVO) {
@@ -112,17 +109,32 @@ public class WorkServiceImpl implements WorkService{
 		
 		return map;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+	@Override
+	public Map<String, Object> workstop(WorkVO workVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		
+		int result = workMapper.workstop(workVO);
+		
+		if(result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		// map.target = { employeeId : '', lastName : '', ...}
+		map.put("target", workVO);
+		
+		return map;
+	}
+
+
+	@Override
+	public WorkVO selectemp(WorkVO workVO) {
+		return workMapper.selectemp(workVO);
+	}
+
 	
 	
 }
