@@ -80,11 +80,14 @@
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
 										<td>	
-											<th:block th:if="${emailVO.sender == searchVO.recp}">
-											   	셀프
-											</th:block> <th:block th:if="${emailVO.recp == searchVO.recp}">
+											<th:block th:if="${emailVO.sender == emailVO.recp}">
+											   	(셀프)
+											</th:block> 
+											<th:block th:if="${(emailVO.recp == searchVO.recp)
+											AND (emailVO.recp != emailVO.refer)}">
 											   	수신
-											</th:block> <th:block th:if="${emailVO.refer == searchVO.refer}">
+											</th:block> 
+											<th:block th:if="${emailVO.refer == searchVO.refer}">
 											   	참조
 											</th:block>
 										</td>
@@ -108,9 +111,9 @@
 													class="bx bx-chevron-left"></i></a></li>
 										</th:block>
 										<th:block
-											th:each="num : ${#numbers.sequence(EmailDTO.startPage, EmailDTO.endPage)}">
+											th:each="num : ${#numbers.sequence(1, EmailDTO.endPage)}">
 											<li class="page-item"
-												th:attrappend="class=${num ==  EmailDTO.page ? 'active' : ' '}">
+												th:attrappend="class=${num ==  EmailDTO.page ? 'active' : ' '}"> <!--*/ 버튼 색 안들어오는 부분 관련/*-->
 												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 											</li>
 										</th:block>
@@ -228,7 +231,7 @@
 				});
 			}
 			
-			$("#wasteBtn").on("click", function(e) {
+			$(document).on("click", "#wasteBtn", function(e) {
 				let selectedEmails = [];
 				$('.checks:checked').each(function() {
 					selectedEmails.push($(this).val());

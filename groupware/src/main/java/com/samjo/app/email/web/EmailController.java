@@ -59,7 +59,7 @@ public class EmailController {
 
 		// 매퍼 쿼리에 searchVO를 실어 보내고, 결과를 받아 list에 담기.
 		List<EmailVO> list = emailService.inboxList(searchVO);
-
+		
 		// 이 list는 타임리프로 보낼 것이므로, model에 담기.
 		model.addAttribute("list", list);
 
@@ -326,7 +326,7 @@ public class EmailController {
 		searchVO.setRecp(eid);
 		searchVO.setRefer(eid);
 		searchVO.setCustNo(custNo);
-		List<EmailVO> list = emailService.emailList(searchVO);
+		List<EmailVO> list = emailService.wastedList(searchVO);
 		model.addAttribute("list", list);
 		EmailDTO emailDTO = new EmailDTO(searchVO.getPage(), emailService.countWasted(searchVO));
 		model.addAttribute("EmailDTO", emailDTO);

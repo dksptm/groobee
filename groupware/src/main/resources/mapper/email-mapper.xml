@@ -61,9 +61,9 @@
         SELECT COUNT(*)
         FROM inbox r JOIN email s
                      ON (s.sen_email_no = r.sen_email_no)
-		WHERE	recp = #{recp}	
-		OR      refer = #{refer, jdbcType=VARCHAR}
-		AND     r.cust_no = #{custNo}
+		WHERE  r.email_stat = '3B1b'  
+		AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
+		AND  (r.recp = #{recp} OR r.refer = #{recp})
 		<if test="keyword != null and keyword != ''">
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
@@ -202,7 +202,8 @@
         FROM inbox r JOIN email s
                      ON (s.sen_email_no = r.sen_email_no)
 		WHERE	sender = #{sender}
-		AND     s.cust_no = #{custNo}	
+		AND     s.cust_no = #{custNo}
+		AND     s.email_stat = '3B1b'	
 		<if test="keyword != null and keyword != ''">
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
@@ -295,11 +296,11 @@
         SELECT COUNT(*)
         FROM inbox r JOIN email s
                      ON (s.sen_email_no = r.sen_email_no)
-        WHERE  (r.email_stat = '3B2b' OR s.email_stat = '3B2b')
-        AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
-        AND  (s.sender = #{sender}
-        OR    r.recp = #{recp} 
-        OR    r.refer = #{refer})	
+                    WHERE  r.cust_no = #{custNo, jdbcType=VARCHAR} 
+                    AND    (r.email_stat = '3B2b' OR s.email_stat = '3B2b')
+                    AND  (s.sender = #{sender, jdbcType=VARCHAR}
+                    OR    r.recp = #{recp, jdbcType=VARCHAR} 
+                    OR    r.refer = #{refer, jdbcType=VARCHAR})	
 		<if test="keyword != null and keyword != ''">
 			AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 		</if>
