@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 
 public interface ProjectService {
 	
@@ -17,6 +18,9 @@ public interface ProjectService {
 	// 프로젝트 단순조회(taskInsert용)
 	public List<ProjectVO> prjtList(SearchVO searchVO);
 	
+	// 단건조회(상위)
+	//public ProjectVO prjtInfo(EmpVO empVO, String prjtId);
+		
 	// 프로젝트 단건조회
 	public ProjectVO prjtInfo(String prjtId);
 	// 프로젝트 등록
@@ -30,8 +34,10 @@ public interface ProjectService {
 	public List<ProjectVO> myCustTasks(String custNo);
 	// 효주 끝.
 	
+	public int countPrjt(EmpVO empVO, SearchVO search);
 	
-
+	
+	
 	
 	
 }

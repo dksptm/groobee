@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.mapper.ProjectMapper;
 import com.samjo.app.project.mapper.TaskMapper;
 import com.samjo.app.project.service.ProjectService;
@@ -66,10 +67,13 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
-	
-	public void prjtDelete(String prjtId) {
-		 projectMapper.deletePrjt(prjtId);
-	}
+	/*
+	 * @Override // 단건조회(상위) public ProjectVO prjtStadInfo(EmpVO empVO, String
+	 * prjtId) { return projectMapper.selectPrjt(empVO, prjtId); }
+	 * 
+	 * @Override public void prjtDelete(String prjtId) {
+	 * projectMapper.deletePrjt(prjtId); }
+	 */
 	
 	// 효주 - 업무간단조회
 	@Override
@@ -77,6 +81,20 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectTasks(custNo);
 	}
 	// 효주 끝.
+
+	@Override
+	public int countPrjt(EmpVO empVO, SearchVO search) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void prjtDelete(String prjtId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 
 }

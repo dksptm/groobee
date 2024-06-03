@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
@@ -18,6 +19,8 @@ public interface ProjectMapper {
 	
 	// 프로젝트 단건조회
 	public ProjectVO selectPrjt(String prjtId);
+	// 프로젝트(상위) 단건조회.
+	//public ProjectVO selectPrjt(@Param("emp") EmpVO empVO, @Param("pid") String prjtId);
 	
 	// 프로젝트 등록
 	public int insertPrjt(ProjectVO projectVO);
