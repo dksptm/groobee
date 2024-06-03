@@ -66,7 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
-
+	
 	public void prjtDelete(String prjtId) {
 		 projectMapper.deletePrjt(prjtId);
 	}
@@ -77,7 +77,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectMapper.selectTasks(custNo);
 	}
 	// 효주 끝.
-
 
 
 }

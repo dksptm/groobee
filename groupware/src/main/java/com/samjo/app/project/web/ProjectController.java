@@ -90,7 +90,7 @@ public class ProjectController {
 	}
 	
 	@ResponseBody
-	@PostMapping("prjtInsert")
+	@PostMapping("cust/prjtInsert")
 	public String prjtInsertProcess(ProjectVO projectVO) {
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		String custNo = empVO.getCustNo();
@@ -114,8 +114,6 @@ public class ProjectController {
 	        projectService.prjtDelete(prjtId);
 	        return  "project/prjt/pjList";
 	    	}
-
-
 
 
 }

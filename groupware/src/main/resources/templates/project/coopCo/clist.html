@@ -6,7 +6,7 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">협력업체목</h5>
+				<h5 class="card-header">협력업체목록</h5>
 				<div class="card-body ">
 
 					<!-- 검색 -->
@@ -24,9 +24,10 @@
 								<table>
 									<tr>
 										<td><select class="form-select searchKeySelect">
-												<option value="c.co_name">업체명</option>
-												<option value="c.pic">담당자</option>
-												<option value="c.cntn">내용</option>
+												<option value="co_name">업체명</option>
+												<option value="t.task_name">업무명</option>
+												<option value="pic">담당자</option>
+												<option value="cntn">내용</option>
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey"
 											type="text"></td>
@@ -34,12 +35,12 @@
 									</tr>
 									<tr>
 										<td class="form-control">정렬조건</td>
-						<td><select class="form-select searchSelect">
-												<option value="t.task_name">업체명순</option>
-												<option value="c.pic">담당자순</option>
-												<option value="c.cntn">내용순</option>
+										<td><select class="form-select searchSelect">
+												<option value="co_name">업체명순</option>
+												<option value="pic">담당자순</option>
+												<option value="cntn">내용순</option>
 										</select></td>
-									</tr> 
+									</tr>
 								</table>
 								<span class="position-absolute top-50 end-0 translate-middle-y">
 									<button class="btn btn-outline-success searchbtn bg-light"
@@ -63,9 +64,8 @@
 									</tr>
 								</thead>
 								<tbody>
-										<th:block th:each="coop : ${clist}">
-											<tr>
-											
+									<th:block th:each="coop : ${clist}">
+										<tr>
 											<td>[[ ${coop.coopCoNo}]]</td>
 											<td>[[ ${coop.coName}]]</td>
 											<td>[[ ${coop.taskName}]]</td>
@@ -73,7 +73,7 @@
 											<td>[[ ${coop.coTel}]]</td>
 											<td>[[ ${coop.cntn}]]</td>
 											<td>[[ ${coop.custAddr}]]</td>
-									</tr>
+										</tr>
 									</th:block>
 								</tbody>
 							</table>
@@ -114,10 +114,70 @@
 						</div>
 						<!-- /페이징 -->
 					</div>
+					<div style="text-align: end;">
+						<button type="button" class="btn btn-primary"
+							data-bs-toggle="modal" data-bs-target="#coopInModal">등록</button>
+					</div>
 				</div>
 			</div>
 		</div>
-		
+		<!------------------------------------------------ 등록모달------------------------------------------------->
+		<div class="modal fade" id="coopInModal" tabindex="-1"
+			aria-labelledby="coopInModal" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="coopInModalLabel">협력 업체 등록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="coopForm" th:action="@{/cust/coopInsert}" method="post">
+
+							<div class="mb-3">
+								<select class="form-select" name="taskNo">
+									<option th:each="tlist : ${tlist}" th:value="${tlist.taskNo}"
+										th:text="${tlist.taskName}"></option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="coName" class="form-label">업체명</label> <input
+									type="text" class="form-control" id="coName" name="coName"
+									required>
+							</div>
+							<div class="mb-3">
+								<label for="pic" class="form-label">담당자</label> <input
+									type="text" class="form-control" id="pic" name="pic" required>
+							</div>
+							<div class="mb-3">
+								<label for="coTel" class="form-label">연락처</label> <input
+									type="text" class="form-control" id="coTel" name="coTel"
+									required>
+							</div>
+							<div class="mb-3">
+								<label for="custAddr" class="form-label">주소</label>
+								<textarea class="form-control" id="custAddr" name="custAddr"
+									required></textarea>
+							</div>
+							<div class="mb-3">
+								<label for="cntn" class="form-label">내용</label>
+								<textarea class="form-control" id="cntn" name="cntn" required></textarea>
+							</div>
+						</form>
+
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="modalInsertBtn"
+								data-bs-dismiss="modal">등록</button>
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">취소</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!------------------------------------------------ 모달 끝-------------------------------------------------->
+
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -127,7 +187,7 @@
 			let keyword;
 			let searchCondition;
 			let coSort;
-		
+
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
 				updateParams();
@@ -172,7 +232,51 @@
 					}
 				});
 			}
-			
+
+			//	
+			$.fn.serializeObject = function() {
+				"use strict"
+				var result = {}
+				var extend = function(i, element) {
+					var node = result[element.name]
+					if ("undefined" !== typeof node && node !== null) {
+						if ($.isArray(node)) {
+							node.push(element.value)
+						} else {
+							result[element.name] = [ node, element.value ]
+						}
+					} else {
+						result[element.name] = element.value
+					}
+				}
+
+				$.each(this.serializeArray(), extend)
+				return result
+			}
+
+			// 등록모달
+			$('#modalInsertBtn').on('click', function() {
+				let formData = $('#coopForm').serializeObject();
+
+				console.log(formData);
+
+				$.ajax({
+					type : 'POST',
+					url : '/cust/coopInsert',
+					contentType : 'application/json',
+					data : JSON.stringify(formData),
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+					},
+					success : function(data) {
+						alert('협력업체 등록에 성공했습니다.');
+						location.reload();
+					},
+					error : function(err) {
+						alert('협력업체 등록에 실패했습니다.');
+					}
+				});
+			});
 		</script>
 	</th:block>
 </body>

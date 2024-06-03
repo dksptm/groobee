@@ -9,7 +9,7 @@
 				<h5 class="card-header">프로젝트 상세조회</h5>
 				
 				<div class="card-body">
-				<input type="hidden" th:value="${pjlist.prjtId}" name="prjtId" />
+				<input type="hidden" th:value="${pjlist.prjtId}" id="prjtId" />
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
@@ -48,14 +48,14 @@
 						<div style="text-align: center">
 							<button type="button" class="btn btn-light  mt-2" onclick="goToList()" >프로젝트 목록으로</button>
 							<button type="button" class="btn btn-light  mt-2" onclick="goToTaskList()" >업무 목록으로</button>
-							<button type="button" class="btn btn-danger  mt-2" id="prjtDelBtn" data-prjtId="${pjlist.prjtId}" >삭제</button>
+<!-- 							<button type="button" class="btn btn-danger  mt-2" id="prjtDelBtn" data-prjtId="${pjlist.prjtId}" >삭제</button> -->
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script>
 		
+		<script>
 		
 		const token = document.querySelector('meta[name="_csrf"]')
 		.getAttribute('content');
@@ -72,7 +72,7 @@
             window.location.href = '/cust/taskAllList'; 
         }
 	    
-		// 삭제버튼 : 삭제 후 리스트로 이동 
+	/* 	// 삭제버튼 : 삭제 후 리스트로 이동 
 		$(function() {
 			$('#prjtDelBtn').on('click', function() {
 
@@ -95,7 +95,7 @@
 					}
 				}); 
 			});
-		}); 
+		});  */
 		</script>
 	</th:block>
 </body>

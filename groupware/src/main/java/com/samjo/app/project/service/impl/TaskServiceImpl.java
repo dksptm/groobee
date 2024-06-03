@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.mapper.ProjectMapper;
 import com.samjo.app.project.mapper.TaskMapper;
 import com.samjo.app.project.service.ProjectVO;
@@ -49,12 +50,16 @@ public class TaskServiceImpl implements TaskService{
 		return taskMapper.insertTask(projectVO);
 	}
 	
+	@Override // 프로젝트 단순조회 taskInsert용
+	public List<ProjectVO> taskList(EmpVO empVO) {
+		return taskMapper.taskList(empVO);
+	}
+	
 	@Override // 업무참여자 수정 
 	public Map<String, Object> taskOk(ProjectVO projectVO) {
 		
 		List<TaskEmpsVO> emps = projectVO.getTaskEmps();
 		Map<String, Object> map = new HashMap<>();
-		
 		
 		for(TaskEmpsVO emp : emps) {
 			// task_emps u..
@@ -67,37 +72,12 @@ public class TaskServiceImpl implements TaskService{
 				taskMapper.updatePrjt(projectVO);
 			}
 		}
-		
 		// 매퍼.xml에 추가한 프로시져 호출. 
-		
 		
 		map.put("OUT", emps);
 		return map;
 	}
 	
-	@Override //프로젝트(하위)업무 수정
-	public Map<String, Object> taskUpdate(ProjectVO projectVO) {
-		Map<String, Object> map = new HashMap<>();
-		boolean isSuccessed = false;
-		int result = taskMapper.updateTask(projectVO);
-		if (result == 1) {
-			isSuccessed = true;
-		}
-		map.put("result", isSuccessed);
-		map.put("target", projectVO);
-		return map;
-	}
-
-	@Override // 프로젝트(하위) 업무 삭제
-	public Map<String, Object> taskDelete(ProjectVO projectVO) {
-		Map<String, Object> map = new HashMap<>();
-		int result = taskMapper.deleteTask(projectVO.getTaskNo());
-		//System.out.println("result:"+ result);
-		if (result == 1) {
-			map.put("taskNo", projectVO.getTaskNo());
-		}
-		return map;
-	}
 
 	@Override // 협력업체 조회
 	public List<ProjectVO> CoopCoAllList(SearchVO searchVO) {
@@ -116,23 +96,34 @@ public class TaskServiceImpl implements TaskService{
 	public ProjectVO coopInfo(ProjectVO projectVO) {
 		return taskMapper.selectCoop(projectVO);
 	}
-	@Override // 협력업체 수정
-	public Map<String, Object> coopUpdate(ProjectVO projectVO) {
-		Map<String, Object> map = new HashMap<>();
-		boolean isSuccessed = false;
-		int result = taskMapper.updateCoop(projectVO);
-		if (result == 1) {
-			isSuccessed = true;
-		}
-		map.put("result", isSuccessed);
-		map.put("target", projectVO);
-		return map;
+	
+	
+		/*
+		 * @Override //프로젝트(하위)업무 수정 public Map<String, Object> taskUpdate(ProjectVO
+		 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =
+		 * false; int result = taskMapper.updateTask(projectVO); if (result == 1) {
+		 * isSuccessed = true; } map.put("result", isSuccessed); map.put("target",
+		 * projectVO); return map; }
+		 * 
+		 * @Override // 프로젝트(하위) 업무 삭제 public Map<String, Object> taskDelete(ProjectVO
+		 * projectVO) { Map<String, Object> map = new HashMap<>(); int result =
+		 * taskMapper.deleteTask(projectVO.getTaskNo()); //System.out.println("result:"+
+		 * result); if (result == 1) { map.put("taskNo", projectVO.getTaskNo()); }
+		 * return map; }
+		 */
 	}
-	@Override // 협력업체 삭제
+	/*
+	 * @Override // 협력업체 수정 public Map<String, Object> coopUpdate(ProjectVO
+	 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =
+	 * false; int result = taskMapper.updateCoop(projectVO); if (result == 1) {
+	 * isSuccessed = true; } map.put("result", isSuccessed); map.put("target",
+	 * projectVO); return map; }
+	 */
+	//@Override // 협력업체 삭제
 	/*public int coopDelete(ProjectVO projectVO) {
 		return projectMapper.deleteCoop(projectVO);
 	}*/
-	public Map<String, Object> coopDelete(ProjectVO projectVO) {
+/*	public Map<String, Object> coopDelete(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
 		int result = taskMapper.deleteCoop(projectVO.getCoopCoNo());
 		//System.out.println("result:"+ result);
@@ -140,7 +131,8 @@ public class TaskServiceImpl implements TaskService{
 			map.put("coopCoNo", projectVO.getCoopCoNo());
 		}
 		return map;
-	}
+	}*/
+
 
 	
-}
+

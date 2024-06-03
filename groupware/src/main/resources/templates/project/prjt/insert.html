@@ -5,8 +5,9 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="container">
-			<form name="insertForm" th:action="@{/prjtInsert}" method="post" 
-			th:object="${projects}" id="prjtForm">   
+			<form name="insertForm" 
+				th:action="@{/cust/prjtInsert}" method="post" 
+				th:object="${projects}" id="prjtForm">   
 				 <br><br><br>    
                     <div style=" text-align: center;">
                     	<button type="button" th:onclick="|location.href='@{/cust/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
@@ -116,11 +117,15 @@
 				console.log(formData);
 				$.ajax({
 					type: 'POST',
-					url : '/prjtInsert',
+					url : '/cust/prjtInsert',
 					data : formData,
 					success : function(data){
 						alert('프로젝트 등록에 성공했습니다.');
-						window.location.href='/cust/prjtAllList';
+						if (data === "Success") {
+                        	window.location.href = "/cust/pjInfo/" + [[${projects.prjtId}]];
+	                    } else {
+	                        alert('오류');
+	                    }
 					},
 					error : function(err){
 						alert('프로젝트 등록에 실패했습니다.');

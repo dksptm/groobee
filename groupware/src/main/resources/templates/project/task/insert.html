@@ -5,7 +5,7 @@
 <body>
     <th:block layout:fragment="Content">
         <div class="container">
-            <form name="insertForm" th:action="@{/task/insert}" method="post" th:object="${task}">
+            <form name="insertForm" th:action="@{/cust/taskinsert}" method="post" th:object="${task}">
                 <br><br><br>
                 <div style="text-align: center;">
                     <button type="button" th:onclick="|location.href='@{/cust/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
@@ -41,21 +41,6 @@
                         <td><button type="button" class="btn btn-primary" id="deptEmpBtn" data-bs-toggle="modal" data-bs-target="#deptEmpModal">선택</button>
                             <table> <tbody id="deptEmpList"></tbody></table>
                     </tr>
-<!--                     <tr>
-                        <th>협력부서명</th>
-                        <td>
-                            <select class="form-select" style="width:100px" th:field="*{coDeptId}">
-                                <option value="">협력부서명</option>
-                                <option  th:each=" dept : ${dept}" th:value="${dept.deptId}" th:text="${dept.deptName}"></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>협력부서내참여인원</th>
-                        <td><button type="button" class="btn btn-primary" id="codeptEmpBtn" data-bs-toggle="modal" data-bs-target="#coDeptEmpModal">등록</button>
-                    	 <table> <tbody id="coDeptEmpList"></tbody></table>
-                    	 </td>
-                    </tr>-->
                     <tr> 
                         <th>시작일</th>
                         <td><input type="date" th:field="*{taskStartDt}"></td>
@@ -195,7 +180,7 @@
 					
 					$.ajax({
 						type: 'POST',
-						url : '/task/insert',
+						url : 'cust/taskInsert',
 						contentType : 'application/json' ,
 						data :  JSON.stringify(formData),
 						beforeSend: function(xhr) {
@@ -203,7 +188,7 @@
 					    },
 						success : function(data){
 							alert('프로젝트업무 등록에 성공했습니다.');
-							window.location.href='/cust/taskAllList';
+							window.location.href="/cust/tsInfo/"+ [[${task.taskNo}]];
 						},
 						error : function(err){
 							alert('프로젝트업무 등록에 실패했습니다.');
