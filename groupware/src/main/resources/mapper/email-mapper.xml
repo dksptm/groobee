@@ -4,6 +4,15 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
   
+  <!-- 발신자,수신자,참조자 id를 매개로 이름 가져오는 함수 정의했다. 호출문! -->
+   <select id="getEmpName" parameterType="emailVO" resultType="emailVO">
+    { call get_email_name(
+        #{sender, mode=IN, jdbcType=VARCHAR},
+        #{recp, mode=IN, jdbcType=VARCHAR},
+        #{refer, mode=IN, jdbcType=VARCHAR}
+    ) }
+  </select>
+  
   <!-- 받은메일함 전체조회 -->
  	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
   		SELECT g.*
@@ -22,7 +31,7 @@
 						   s.sent_dt
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
-				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b') 
+				    WHERE  r.email_stat = '3B1b' 
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  (r.recp = #{recp} OR r.refer = #{recp})
 				    <if test="keyword != null and keyword != ''">
@@ -99,7 +108,7 @@
 		ORDER BY file_no	
 	</select>
   	
-  <!-- 발송 시 3중셀렉키 조합 인서트 -->
+  <!-- 발송 시 3중셀렉키 조합 인서트 프로시저에 넘기는 파라미터를 배열로 넘기고 for문을 돌린다, 혹은 서비스임플에서 호출을 여러번 할 수도 있겠다.-->
   <insert id="insertEmail" parameterType="emailVO" statementType="CALLABLE">
     <![CDATA[
     CALL insert_email(
@@ -164,7 +173,7 @@
 						   s.sent_dt
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
-				    WHERE  (r.email_stat = '3B1b' AND s.email_stat = '3B1b')
+				    WHERE s.email_stat = '3B1b'
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  s.sender = #{sender}
 				    <if test="keyword != null and keyword != ''">
@@ -220,20 +229,37 @@
     WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
 </select>
   	
-  	
-  	<!-- 휴지통 보내기 -->
-  	<update id="goWaste">
+
+
+  	<update id="deleteEmail" parameterType="list">
 	  	UPDATE email
 		SET email_stat = '3B2b'
-		WHERE sen_email_no = #{senEmailNo}<!-- 선택한 메일의 번호..파라미터로 넘어오는. -->
+	  	<where>
+	  		<foreach collection="list" item="senEmailNo" 
+	  				 open="sen_email_no in (" close=")" separator=",">	  	
+				#{senEmailNo}
+	  		</foreach>
+	  	</where>
   	</update>
   	
+  	<update id="deleteInbox" parameterType="list">
+	  	UPDATE inbox
+		SET email_stat = '3B2b'
+		<where>
+			<foreach collection="list" item="recEmailNo"
+				     open="rec_email_no in (" close=")" separator=",">
+				#{recEmailNo}	
+			</foreach>		
+		</where>
+  	</update> 
+
 	<!-- 휴지통 전체조회 -->
 	<select id="wastedList" parameterType="searchVO" resultType="EmailVO">
   	SELECT g.*
 		FROM (SELECT rownum rn,
 			         t.*
 			  FROM (SELECT s.sen_email_no,
+			  	   		   r.rec_email_no,
 			               r.recp,
 			               r.refer,
 			               r.cust_no,
@@ -286,11 +312,15 @@
 	</select>
 	
 	<!-- 휴지통 이메일 복원 -->
-	<update id="restoreMail" parameterType="EmailVO">
-	  	UPDATE email
-		SET email_stat = '3B1b'
-		WHERE sen_email_no = #{senEmailNo}
-  	</update>
+    <select id="restoreMail" parameterType="java.util.Map">
+        CALL restore_mail(#{senEmailNo})
+    </select>
+  	
+  	
+	<!-- 휴지통 이메일 완전삭제 -->
+    <select id="removeMail" parameterType="java.util.Map">
+        CALL remove_mail(#{senEmailNo})
+    </select>
   	
   	<!-- 주소록 조회. 세션의 id와 같은 고객사에 속하는 사원들의 일부 정보를 가린 채 Select -->
   	<select id="getEmpList" resultType="EmpVO" parameterType="EmpVO">
