@@ -13,17 +13,19 @@
 						<h2 style="text-align: center">수정 화면</h2>
 						<br>
 						<hr>
-						<form action="/work/workupdate" method="post" th:object="${info}" id="forms">
+						<form th:action="@{/work/workupdate}" method="post" th:object="${info}" id="forms">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 						<table id="up" class="table table-striped-columns">
 								<tr>
 									<th>사원Id</th>
+									<th>사원번호</th>
 									<th>부서</th>
 									<th>사원명</th>
 									<th>근무여부</th>
 								</tr>
 								<tr>
 									<td><input th:field="*{empId}" readOnly></td>
+									<td>[[*{empNo}]]</td>
 									<td>[[*{deptId}]]</td>
 									<td>[[*{empName}]]</td>
 									<td>
@@ -89,6 +91,8 @@
 				</div>
 			</div>
 		</div>
+		<script>
+		</script>
 	</th:block>
 </body>
 </html>

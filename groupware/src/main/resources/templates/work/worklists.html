@@ -9,26 +9,28 @@
 			<div class="card my-4 col-11">
 				<div class="container-fluid">
 				
-				<table>
+				<table class="table table-striped-columns">
 					<tr>
 						<td>사원ID</td>
 						<td>사원번호</td>
 						<td>사원명</td>
+						<td>근속연수</td>
+						<td>근속월수</td>
 						<td>근무일수</td>
 						<td>연차사용</td>
 						<td>지각</td>
 						<td>조퇴</td>
-						<td>외근</td>
 					</tr>
 					<tr>
-						<td>사원ID</td>
-						<td>사원번호</td>
-						<td>사원명</td>
-						<td>근무일수</td>
-						<td>연차사용</td>
-						<td>지각</td>
-						<td>조퇴</td>
-						<td>외근</td>
+						<td>[[${emp.empId}]]</td>
+						<td>[[${emp.empNo}]]</td>
+						<td>[[${emp.empName}]]</td>
+						<td>[[${emp.year}]]</td>
+						<td>[[${emp.month}]]</td>
+						<td>[[${emp.day}]]</td>
+						<td>[[${emp.au}]]</td>
+						<td>[[${emp.tdy}]]</td>
+						<td>[[${emp.early}]]</td>
 					</tr>
 					
 				</table>
@@ -73,9 +75,6 @@
 						<thead>
 							<tr>
 								<th>날짜</th>
-								<th>사원ID</th>
-								<th>사원번호</th>
-								<th>사원명</th>
 								<th>출근시간</th>
 								<th>퇴근시간</th>
 								<th>근무지</th>
@@ -84,12 +83,8 @@
 							</tr>
 						</thead>
 						<tbody th:each="info : ${list}" id="infos">
-							<tr
-								th:onclick="|location.href='@{/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
+							<tr th:onclick="|location.href='@{/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
 								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-								<td id="empId">[[${info.empId}]]</td>
-								<td id="empNo">[[${info.empNo}]]</td>
-								<td>[[${info.empName}]]</td>
 								<td>[[${#dates.format(info.wkIn, "HH:mm")}]]</td>
 								<td>[[${#dates.format(info.wkOut, "HH:mm")}]]</td>
 								<td th:if="${info.wkYn == '근무일'}">[[${info.wkYn}]]</td>

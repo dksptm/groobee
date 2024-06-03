@@ -2,6 +2,8 @@ package com.samjo.app.work.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.samjo.app.work.service.WorkManagerSearchVO;
 import com.samjo.app.work.service.WorkManagerVO;
 import com.samjo.app.work.service.WorkSearchVO;

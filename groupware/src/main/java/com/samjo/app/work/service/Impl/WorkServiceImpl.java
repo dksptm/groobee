@@ -46,7 +46,6 @@ public class WorkServiceImpl implements WorkService{
 		}
 		
 		map.put("result", isSuccessed);
-		// map.target = { employeeId : '', lastName : '', ...}
 		map.put("target", workVO);
 		
 		return map;
@@ -64,7 +63,6 @@ public class WorkServiceImpl implements WorkService{
 		}
 		
 		map.put("result", isSuccessed);
-		// map.target = { employeeId : '', lastName : '', ...}
 		map.put("target", workVO);
 		
 		return map;
@@ -96,7 +94,7 @@ public class WorkServiceImpl implements WorkService{
 	public Map<String, Object> update(WorkVO workVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
-		
+		System.err.println(workVO.getEmpId());
 		int result = workMapper.update(workVO);
 		
 		if(result == 1) {
@@ -104,7 +102,6 @@ public class WorkServiceImpl implements WorkService{
 		}
 		
 		map.put("result", isSuccessed);
-		// map.target = { employeeId : '', lastName : '', ...}
 		map.put("target", workVO);
 		
 		return map;
@@ -123,7 +120,6 @@ public class WorkServiceImpl implements WorkService{
 		}
 		
 		map.put("result", isSuccessed);
-		// map.target = { employeeId : '', lastName : '', ...}
 		map.put("target", workVO);
 		
 		return map;
@@ -134,6 +130,8 @@ public class WorkServiceImpl implements WorkService{
 	public WorkVO selectemp(WorkVO workVO) {
 		return workMapper.selectemp(workVO);
 	}
+	
+	
 
 	
 	

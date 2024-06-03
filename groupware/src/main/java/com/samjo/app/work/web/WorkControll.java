@@ -27,7 +27,7 @@ public class WorkControll {
 	WorkService workService;
 	// 관리자 페이지에서 진입 list
 	@GetMapping("work/worklists")
-	public String selectlist(WorkSearchVO worksearchVO, Model model) {
+	public String selectlist(WorkSearchVO worksearchVO, Model model, WorkVO workVO) {
 		
 		if (worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);
@@ -36,6 +36,8 @@ public class WorkControll {
 		model.addAttribute("list", list);
 		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
 		model.addAttribute("filter", workpageDTO);
+		WorkVO emp = workService.selectemp(workVO);
+		model.addAttribute("emp", emp);
 		return "work/worklists";
 		
 	}
@@ -55,7 +57,7 @@ public class WorkControll {
 
 	// 일반 페이지 전체 조회
 	@GetMapping("work/worklist")
-	public String workList(WorkSearchVO worksearchVO, Model model) {
+	public String workList(WorkSearchVO worksearchVO, Model model, WorkVO workVO) {
 		if (worksearchVO.getPage() == 0) {
 			worksearchVO.setPage(1);
 		}
@@ -63,6 +65,8 @@ public class WorkControll {
 		model.addAttribute("list", list);
 		WorkPageDTO workpageDTO = new WorkPageDTO(worksearchVO.getPage(), workService.workcount(worksearchVO));
 		model.addAttribute("filter", workpageDTO);
+		WorkVO emp = workService.selectemp(workVO);
+		model.addAttribute("emp", emp);
 		return "work/worklist";
 	}
 	
@@ -113,13 +117,14 @@ public class WorkControll {
 		return "work/workinfo";
 	}
 	
-	// worklists의 회원정보
-	@GetMapping("work/workemp")
-	public String workemp(WorkVO workVO, Model model) {
-		WorkVO work = workService.selectemp(workVO);
-		model.addAttribute("info", work);
-		return "work/worklists";
-	}
+	/*
+	 * // worklists의 회원정보
+	 * 
+	 * @GetMapping("work/workemp") public String workemp(WorkVO workVO, Model model)
+	 * {
+	 * 
+	 * return "work/worklists"; }
+	 */
 
 	// 수정처리화면
 	@GetMapping("work/workupdate")
@@ -133,7 +138,7 @@ public class WorkControll {
 	@PostMapping("work/workupdate")
 	public String update(WorkVO workVO) {
 		workService.update(workVO);
-		return "redirect:/work/worklist";
+		return "redirect:/home";
 	}
 
 	

@@ -30,13 +30,25 @@ WHERE t.rn > (#{page} -1) * 5
   </select>
   <!-- 계정 정보 조회 테이블 -->
   <select id="selectemp" resultType="WorkVO">
-  SELECT emp_id,
-       emp_no,
-       emp_name,
-       hire_dt,
-       fire_dt
-	FROM emp
-	WHERE emp_id = ${empId}
+    select 
+           emp_id,
+           emp_no,
+           emp_name,
+           trunc(months_between(sysdate, hire_dt) / 12) year,
+           trunc(months_between(sysdate, hire_dt)) month,
+           trunc(sysdate - hire_dt) day,
+           hire_dt,
+           (select count(*)
+           from wk
+           where wk_yn = '2A1a'and emp_id = #{empId}) au,
+           (select count(*)
+           from wk
+           where wk_stat = '2B3b'and emp_id = #{empId}) tdy,
+           (select count(*)
+           from wk
+           where wk_stat = '2B4b'and emp_id = #{empId}) early
+	from emp
+	where emp_id = #{empId}
   </select>
   <!-- worklist 전체 조회 (부서장권한으로 접속 시 처음에는 자신꺼만 매니저를통해서 접근시 자신의 부서를 조회)-->
   <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
@@ -194,14 +206,19 @@ where dt = #{dt} and j.emp_id = #{empId}
    <update id="update" parameterType="WorkVO">
    UPDATE wk 
    SET
+   		<if test="wkIn != null">
           wk_in = #{wkIn},
+        </if>
+        <if test="wkOut != null">
           wk_out = #{wkOut},
+        </if>
           wk_in_loc = #{wkInLoc},
           wk_out_loc = #{wkOutLoc},
           wk_yn = #{wkYn},
           wk_stat = #{wkStat},
           wk_site = #{wkSite}
-   WHERE dt = #{dt} AND emp_id = #{empId}
+   WHERE emp_id = #{empId} 
+     AND  dt = #{dt}
    </update>
    
    

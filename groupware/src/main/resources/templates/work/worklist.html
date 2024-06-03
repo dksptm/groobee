@@ -8,22 +8,50 @@
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-11">
 
+					<!-- <div>이 컴퓨터의 IP 주소: <span id="client-ip"></span></div> -->
 
 				<div>
 					<input type="hidden" th:value="${#authentication.principal.empId}"
 						id="id"> <input type="hidden"
 						th:value="${#authentication.name}" id="name">
+					<input type="text" id="ipdata" >
 				</div>
+				<div>
+				
+				<table class="table table-striped-columns">
+					<tr>
+						<td>사원ID</td>
+						<td>사원번호</td>
+						<td>사원명</td>
+						<td>근속연수</td>
+						<td>근속월수</td>
+						<td>근무일수</td>
+						<td>연차사용</td>
+						<td>지각</td>
+						<td>조퇴</td>
+					</tr>
+					<tr>
+						<td>[[${emp.empId}]]</td>
+						<td>[[${emp.empNo}]]</td>
+						<td>[[${emp.empName}]]</td>
+						<td>[[${emp.year}]]</td>
+						<td>[[${emp.month}]]</td>
+						<td>[[${emp.day}]]</td>
+						<td>[[${emp.au}]]</td>
+						<td>[[${emp.tdy}]]</td>
+						<td>[[${emp.early}]]</td>
+					</tr>
+					
+				</table>
 				<div>
 					<button type="button" class="btn btn-primary" id="wkIn" value="1">출근</button>
 					<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
 					<button type="button" class="btn btn-primary" id="wkStop">조퇴</button>
 				</div>
+				
+				</div>
 
-
-				<!-- <form th:action="@{/work/worklist}" method="POST" th:object="${filter}"> -->
 				<div class="container-fluid">
-
 					<table>
 						<tr>
 							<td><input id="oneDate" type="Date">~<input
@@ -55,7 +83,6 @@
 						</tr>
 					</table>
 				</div>
-				<!-- </form> -->
 				<br>
 				<!-- 
 					list = 필터 수정, Ajax수정(ip조건 넣기)
@@ -145,6 +172,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<script>
 		// CSRF
 		let header = $("meta[name='_csrf_header']").attr('content');
@@ -152,6 +180,25 @@
 	    
 	    // 현재(컴퓨터) 날짜, 시간
 		let {date,time} = today();
+		
+		
+		// 클라이언트 ip 확인
+		// HTML의 <script> 요소를 생성한다
+		  const se = document.createElement('script');
+		  // <script> 요소의 src 속성을 설정한다
+		  se.src = 'https://ipinfo.io?callback=callback';
+		  // <body> 요소의 하위 끝에 붙인다
+		  // 그리고 콜백 함수를 호출한다
+		  document.body.appendChild(se);
+		  // 앞서 생성한 <script> 요소를 제거한다
+		  document.body.removeChild(se);
+
+		  // 콜백 함수가 호출된다
+		  function callback(data) {
+			  $('#ipdata').text(data.ip);
+		    /* document.getElementById('client-ip').textContent = data.ip; */
+		  }
+		
 		
 		// 기간 검색 범위처리
 	    $('#oneDate').on('change', function(e) {
@@ -170,12 +217,14 @@
 			let wkSite;
 			let empId = $('#id').val();
 			let page;
+			
 		// 필터 클릭 이벤트.
 		    $("#filter").on("click", function(e) {
 		        filters();
 		        let page = 1;
 		        filterTable(page);
 		    });
+		
 		 // 페이징 링크 처리
 	    $(document).on("click", ".pagebtn", function(e) {
 	        e.preventDefault();
@@ -192,7 +241,6 @@
 				wkYn = $('#wkYn').val();
 				wkStat = $('#wkStat').val();
 				wkSite = $('#wkSite').val();
-				//let tr = $('tbody').children('tr');
 		}	
 				
 		function filterTable(page) {
@@ -224,9 +272,6 @@
 			$('#wkOut').on('click', wkouts);
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
-			
-			// 출근에 숫자값을 주고 한번만 눌러지도록 설정하기(기본값1 누르면 0 값이 0이면 전송취소) 하루가 지나면 초기화되기... 
-			// 현재 출퇴근조퇴까지 ajax성공 학원 버튼처럼 만들어짐.
 			
 			// 퇴근, 조퇴 숨기기 처음에는 출근만 보이도록
 			// setInterval(함수) : 일정시간 간격으로 계속해서 특정 작업을 수행하고자 할 때 사용함 (특정시간마다 계속 실행)
@@ -284,9 +329,9 @@
 				    		title: '퇴근하셨습니다!!', 
 				    		text: '수고많으셨습니다.',
 				    		icon: 'success'});
-				    	$('#wkIn').toggle();
+				    	/* $('#wkIn').toggle();
 				    	$('#wkOut').toggle();
-				    	$('#wkStop').toggle();
+				    	$('#wkStop').toggle(); */
 				    }
 				})
 			};
@@ -310,9 +355,9 @@
 				    		title: '조퇴하셨습니다!!', 
 				    		text: '',
 				    		icon: 'success'});
-				    	$('#wkIn').toggle();
+				    	/* $('#wkIn').toggle();
 				    	$('#wkOut').toggle();
-				    	$('#wkStop').toggle();
+				    	$('#wkStop').toggle(); */
 				    }
 				})
 			};
