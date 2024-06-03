@@ -27,7 +27,7 @@
 			<h2 class="ms-3">상시업무 등록</h2>
 		</div>
 
-		<div class="row m-2 p-2 d-flex justify-content-center col-8 table-responsive" style="border: 10px solid #7BD3EA;">
+		<div class="row m-2 p-2 d-flex justify-content-center col-8 table-responsive border border-secondary">
 		<form id="reguInsertForm" th:action="@{/cust/regu/insert}" method="post" th:object="${taskRegu}">
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
 			<div class="text-end m-3">	
@@ -92,7 +92,7 @@
 					  	</select>
 					</td>
 					<th>
-						<button type="button" id="crepBtn" class="btn btn-icon me-1 btn-primary ms-1">+</button>
+						<button type="button" id="crepBtn" class="btn btn-icon btn-success">+</button>
 						생성주기
 					</th>
 					<td id="creOpt">
@@ -108,18 +108,22 @@
 				</tr>
 				<tr>
 					<th>
-						자동스케줄
+						업무활성화
 					</th>
 					<td colspan="3">
-						<div class="form-check form-switch">
-					      <input class="form-check-input" type="checkbox" id="active" name="active" value="5D1d" checked>
-					      <label class="form-check-label" for="active">자동스케줄 활성화</label>
+						<div class="form-check">
+					      <input class="form-check-input" type="radio" id="active" name="active" value="5D1d" checked>
+					      <label class="form-check-label" for="active">업무활성화 (자동스케줄O)</label>
+					      &emsp;&emsp;&emsp;&emsp;
+					      <label class="form-check-label">
+					      <input class="form-check-input" type="radio" id="active" name="active" value="5D2d" checked>
+					      업무비활성화 (자동스케줄X)</label>
 					    </div>
 					</td>
 				</tr>
 			</table>
 			<div class="text-end mx-3">	
-			<button type="submit" class="btn btn-success text-end">등록</button>
+			<button type="submit" class="btn btn-success text-end">등&emsp;록</button>
 			</div>
 		</form>
 		</div>
@@ -568,19 +572,6 @@
 		
 	}
 	
-	// 활성화(자동스케줄) 체크
-	function activeChk() {
-		let isChk = $('#active').is(':checked');
-		if(isChk) {
-			$('#active').val('5D1d');
-			$('#active').next('label').text('자동스케줄 활성화');
-		}
-		if(!isChk) {
-			$('#active').val('5D2d');
-			$('#active').next('label').text('자동스케줄 비활성화');			
-		}
-		
-	}
 	
 	// 등록 전 체크
 	function reguCheck(e) {

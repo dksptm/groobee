@@ -21,5 +21,7 @@ public interface DeptMapper {
 	
 	// 한 회사의 부서전체 목록
 	public List<DeptVO> selectCustDeptAll(@Param("emp") EmpVO empVO);
+	// 관리자/부서장 가져오기(관리자:모든부서장,관리자 / 부서장:나의부서의 부서장만)
+	public List<EmpVO> selectDeptMngr(@Param("emp") EmpVO empVO);
 	
 }

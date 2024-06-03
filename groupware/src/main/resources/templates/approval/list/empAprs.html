@@ -31,7 +31,7 @@
 				<table class="table table-bordered table-hover text-center bg-white">
 					<thead >
 						<tr class="table-dark">
-							<th class="text-white col-1">문서번호</th>
+							<th class="text-white">문서번호</th>
 							<th class="text-white">문서종류</th>
 							<th class="text-white">부서명</th>
 							<th class="text-white">업무명</th>
@@ -47,10 +47,12 @@
 							<td>[[ ${doc.docNo} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
 							<td>[[ ${doc.deptName} ]]</td>
-							<td>[[ ${doc.taskCount} ]]
-								<th:block th:each="task : ${doc.taskList}"> 
-									<span>[[ ${task.taskName} ]]</span>
-								</th:block>
+							<td>
+							<span th:if="${#arrays.length(doc.taskList)} != 0">
+									[[ ${doc.taskList[0].taskName} ]]</span>
+							<span th:unless="${#arrays.length(doc.taskList)} != 0">
+									-</span>
+							<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
 							</td>
 							<td>[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>

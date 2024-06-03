@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.mapper.ReguMapper;
@@ -59,8 +60,8 @@ public class ReguServiceImpl implements ReguService {
 	
 	// 기존 상시업무목록 가져오기.
 	@Override
-	public List<ProjectVO> reguStadList(String custNo) {
-		return reguMapper.selectReguAll(custNo);
+	public List<ProjectVO> reguStadList(EmpVO empVO) {
+		return reguMapper.selectReguAll(empVO);
 	}
 
 	// 단건조회
@@ -108,13 +109,13 @@ public class ReguServiceImpl implements ReguService {
 
 	// 전체조회
 	@Override
-	public List<ProjectVO> reguTaskList(String custNo, SearchVO search) {
-		return reguMapper.selectReguTaskAll(custNo, search);
+	public List<ProjectVO> reguTaskList(EmpVO empVO, SearchVO search) {
+		return reguMapper.selectReguTaskAll(empVO, search);
 	}
 
 	@Override
-	public int countReguTasks(String custNo, SearchVO search) {
-		return reguMapper.countReguTasks(custNo, search);
+	public int countReguTasks(EmpVO empVO, SearchVO search) {
+		return reguMapper.countReguTasks(empVO, search);
 	}
 	
 	// 전체조회(상위)
@@ -131,6 +132,12 @@ public class ReguServiceImpl implements ReguService {
 	@Override
 	public ProjectVO reguStadInfo(EmpVO empVO, String reguId) {
 		return reguMapper.selectReguStad(empVO, reguId);
+	}
+	
+	// 단건조회(하위)의 연결문서
+	@Override
+	public List<DocVO> taskDocList(Integer taskNo) {
+		return reguMapper.selectTaskDocs(taskNo);
 	}
 
 }

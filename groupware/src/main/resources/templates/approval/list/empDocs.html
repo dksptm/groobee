@@ -31,10 +31,10 @@
 				<table class="table table-bordered table-hover text-center bg-white">
 					<thead >
 						<tr class="table-dark">
-							<th class="text-white col-1">문서번호</th>
+							<th class="text-white">문서번호</th>
 							<th class="text-white">작성일자</th>
 							<th class="text-white">완료일자</th>
-							<th class="text-white col-4">제목</th>
+							<th class="text-white col-3">제목</th>
 							<th class="text-white">업무명</th>
 							<th class="text-white">작성상태</th>
 							<th class="text-white">문서상태</th>
@@ -49,16 +49,12 @@
 							<td th:if="${doc.cmpltDt == null}">-</td>
 			                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
 							<td>[[ ${doc.title} ]]</td>
-							<td class="taskTitle">
-								<span th:text="${doc.taskCount != 0 ? doc.taskList[0].taskName : '-'}"></span>
-								<span th:text="${doc.taskCount > 1 ? '외' : ''}"></span>&ensp;
-								<span th:text="${doc.taskCount > 1 ? doc.taskCount - 1 : ''}"></span>
-								<div class="taskList" style="display:none;">
-								<th:block th:each="task : ${doc.taskList}">
-									<span>[[ ${task.deptName} ]]&ensp;[[ ${task.taskName} ]]</span>
-									<br>
-								</th:block>
-								</div>
+							<td>
+							<span th:if="${#arrays.length(doc.taskList)} != 0">
+									[[ ${doc.taskList[0].taskName} ]]</span>
+							<span th:unless="${#arrays.length(doc.taskList)} != 0">
+									-</span>
+							<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
 							</td>
 							<td>[[ ${doc.draftStatName} ]]</td>
 							<td>[[ ${doc.docStatName} ]]</td>
