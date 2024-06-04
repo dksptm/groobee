@@ -133,13 +133,13 @@
 	<script>
    
 		$(document).ready(function() {
-	        // 참여자 선택 모달 버튼 클릭 시 선택된 참여자 목록에 추가
+	        // 참여자 선택 모달 버튼 클릭  선택된 참여자 목록에 추가
 	        $('#deptEmpBtnM').click(function() {
 	            // 선택된 참여자 
-	            var selectedEmployees = [];
+	            let selectedEmployees = [];
 	            $("input[name='empCheck']:checked").each(function () {
-	                var empId = $(this).closest('tr').find('td:eq(4)').text();
-	                var empName = $(this).closest('tr').find('td:eq(3)').text();
+	            	let empId = $(this).closest('tr').find('td:eq(4)').text();
+	            	let empName = $(this).closest('tr').find('td:eq(3)').text();
 	                selectedEmployees.push({ empId: empId, empName: empName });
 	            });
 	
@@ -150,10 +150,8 @@
 	            });
 	        });
 	
-	        // 수정완료 버튼 클릭 시 처리
 	        $('#updateBtn').click(function() {
-	            // 폼 데이터를 수집하여 AJAX 요청 처리
-	            var formData = {
+	            let formData = {
 	                taskNo: $('input[name="taskNo"]').val(),
 	                taskName: $('input[name="taskName"]').val(),
 	                progress: $('input[name="progress"]').val(),
