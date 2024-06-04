@@ -194,8 +194,8 @@
 		  
 		  // 콜백 함수가 호출된다
 		  function callback(data) {
-			  $('#ipdata').text(data.ip);
-		    document.getElementById('client-ip').textContent = data.ip;
+			  $('#ips').attr('value', data.ip);
+			  $('#city').attr('value', data.city);
 		  }
 		
 		
@@ -271,18 +271,19 @@
 			$('#wkOut').on('click', wkouts);
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
-			let ipbox = ['58.238.119.17', '58.238.119.20', '58.238.119.08'];
-			let client = $('#ips').val();
-			let check = false;
 			
-			for(const element of ipbox){
-				if(element == client){
-					check = true;
-					console.log(check);
-				}
-			}
-			
-			console.log(check);
+			var ipbox = ['58.238.119.17', '58.238.119.20', '58.238.119.08'];
+			var client = $('#ips').val();
+			let ipcheck = false;
+			/* function check(ipcheck) {
+				for(var i = 0; i< ipbox.length; i++]) {
+					if(ipbox[i] === client){
+						ipcheck = true;
+						return ipcheck;
+					}
+				} 
+				return ipcheck;
+			} */
 		
 			// 출근
 			function wkins() {
@@ -309,12 +310,14 @@
 					    	title: '오늘은 이미 출근하셨습니다', 
 					    	text: '문의는 관리자에게',
 					    	icon: 'error'});
-				    	}
-				    	else{
+				    	}else{
 				    	Swal.fire({
 				    		title: '출근하셨습니다', 
 				    		text: '화이팅!!',
-				    		icon: 'success'});
+				    		icon: 'success'
+				    		}).then(function() {
+				    			location.reload(true);
+				    		});
 				    	
 				    	}
 				    }
@@ -344,7 +347,10 @@
 				    	Swal.fire({
 				    		title: '퇴근하셨습니다', 
 				    		text: '수고많으셨습니다.',
-				    		icon: 'success'});
+				    		icon: 'success'
+				    	}).then(function() {
+				    	location.reload(true);
+				    	});
 				    }
 				})
 			};
@@ -371,7 +377,10 @@
 				    	Swal.fire({
 				    		title: '조퇴하셨습니다!!', 
 				    		text: '',
-				    		icon: 'success'});
+				    		icon: 'success'
+				    	}).then(function() {
+				    		location.reload(true);
+				    	};
 				    }
 				})
 			};
