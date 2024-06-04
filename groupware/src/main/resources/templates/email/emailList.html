@@ -68,7 +68,7 @@
 								<th:block th:each="emailVO : ${list}">
 									<tr
 										th:onclick="|location.href='@{/cust/emailInfo/}@{${emailVO.senEmailNo}}'|">
-										<td>[[ ${emailVO.recp} ]]</td>
+										<td>[[ ${emailVO.recpName} ]]</td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
 										<td>

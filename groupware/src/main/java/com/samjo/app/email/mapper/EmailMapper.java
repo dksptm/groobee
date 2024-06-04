@@ -26,7 +26,10 @@ public interface EmailMapper {
 	public int insertEmail(EmailVO emailVO);
 	
 	// 메일 첨부파일 등록
-	public int insertEmailFile(EmailFileVO emailFileVO);
+	public int insertEmailFile(@Param("files") List<EmailFileVO> emailFileList);
+	
+	// 상세조회 시, 첨부파일 정보 가져오기
+	public List<EmailFileVO> selectEmailFile(@Param("senEmailNo")String senEmailNo);
 	
 	// 보낸메일 전체조회
 	public List<EmailVO> selectEmailAll(SearchVO searchVO);

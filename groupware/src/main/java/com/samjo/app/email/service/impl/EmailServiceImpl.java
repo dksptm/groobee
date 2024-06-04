@@ -1,11 +1,13 @@
 package com.samjo.app.email.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.email.mapper.EmailMapper;
@@ -44,13 +46,24 @@ public class EmailServiceImpl implements EmailService {
 	public EmailVO inboxInfo(String senEmailNo) {
 		EmailVO emailVO = new EmailVO();
 		emailVO = emailMapper.selectInbox(senEmailNo);
+		emailVO.setFiles(emailMapper.selectEmailFile(senEmailNo));
 		return emailVO;
 	}
 	
-	//메일 발송
+	//메일 발송, 파일 업로드를 한 트랜잭션에.
+	//단. 효주님은 인서트를 여기 다 몰았고, 나는 프로시저 안에 몰았다.
+	//그러므로, 파일 업로드 외에는 inserEmail로 다 처리됨
+	@Transactional
 	@Override
-	public int emailInsert(EmailVO emailVO) {
-		return emailMapper.insertEmail(emailVO);
+	public int emailInsert(EmailVO emailVO, List<Map<String, Object>> fileInfoList) {
+		//메일 내용 인서트 해주고.
+		int result = emailMapper.insertEmail(emailVO);
+		//메일 첨부파일 인서트
+		if(fileInfoList.size() > 0) {
+			List<EmailFileVO> emailFileList = getEmailFileList(emailVO, fileInfoList);
+			emailMapper.insertEmailFile(emailFileList);
+		}
+		return result;
 	}
 	
 	@Override
@@ -58,10 +71,11 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.getEmpList(empVO);
 	}
 	
-	//메일 첨부파일
+	//메일 첨부파일.. 버린 메소드
 	@Override
 	public int EmailFileInsert(EmailFileVO emailFileVO) {
-		return emailMapper.insertEmailFile(emailFileVO);
+		//emailMapper.insertEmailFile(emailFileVO);
+		return -1;
 	}
 	
 	//보낸메일함 전체조회
@@ -74,8 +88,8 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public EmailVO emailInfo(String senEmailNo) {
 		EmailVO emailVO = new EmailVO();
-		emailVO = emailMapper.selectInbox(senEmailNo);
-		emailMapper.selectEmail(senEmailNo);
+		emailVO = emailMapper.selectEmail(senEmailNo);
+		emailVO.setFiles(emailMapper.selectEmailFile(senEmailNo));
 		return emailVO;
 	}
 
@@ -158,6 +172,21 @@ public class EmailServiceImpl implements EmailService {
 		return emailMapper.countWasted(searchVO);
 	}
 
+	// List<Map<String, Object>> => EmailFileVO.
+	public List<EmailFileVO> getEmailFileList(EmailVO emailVO, List<Map<String, Object>> fileInfoList) {
+		
+		List<EmailFileVO> emailFileList = new ArrayList<>();
+		
+		fileInfoList.forEach(file -> { // object 형변환해서 fileVO 생성.
+			EmailFileVO emailFileVO =
+					new EmailFileVO(emailVO.getSenEmailNo(), (String) file.get("saveName"), 
+									(String) file.get("uplName"), (String) file.get("fileExt"), 
+									(Long) file.get("fileSize"), emailVO.getSender());
+			emailFileList.add(emailFileVO);
+		});
+		
+		return emailFileList;
+	}
 	
 	//받은메일 페이징
 	@Override
