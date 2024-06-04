@@ -9,7 +9,7 @@ import com.samjo.app.emp.service.EmpVO;
 
 public interface DeptMapper {
 	// 특정부서의 부서원 목록.
-	public DeptVO selectMyDept(@Param("did")String deptId);
+	public List<DeptVO> selectMyDept(@Param("emp") EmpVO empVO);
 	// 한 회사의 모든 사원 목록.
 	public List<EmpVO> selectEmps(@Param("cno")String custNo);
 	

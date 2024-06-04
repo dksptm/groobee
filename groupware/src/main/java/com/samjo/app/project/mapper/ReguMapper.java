@@ -38,6 +38,8 @@ public interface ReguMapper {
 	public int countReguTasks(@Param("emp") EmpVO empVO, @Param("sch") SearchVO search);
 	public List<DocVO> selectTaskDocs(@Param("tno") Integer taskNo);
 	
-	//
+	// 상시업무 수정(상위-타입등, 하위-목적개요)
+	public int updateReguStad(@Param("regu") ProjectVO regu);
+	public int updateTasks(@Param("regu") ProjectVO regu);
 	
 }

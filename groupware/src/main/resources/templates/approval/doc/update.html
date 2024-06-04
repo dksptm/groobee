@@ -494,36 +494,51 @@
 				// 필수입력 확인.
 				if(!docCheck()) return;
 				
-				// 
-				if(confirm('저장할까요?')) {
-					try{
-						// 지출결의서, 휴가원은 여기에...
-						let temp = document.querySelector('#tempId').value;
-						if(temp == "public01") {
-							ptoSubmit();
-							console.log($('input[name="pto.ptoStartDt"]').val());
-							console.log($('input[name="pto.ptoEndDt"]').val());
+				// 저장시작
+				Swal.fire({
+					title: '업무를 수정하시겠습니까?',
+					text: "",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: '승인',
+					cancelButtonText: '취소',
+					reverseButtons: true, // 버튼 순서 거꾸로
+				      
+			    }).then((result) => {
+			    	
+			    	if(result.value) {
+			    		
+			    		try{
+							// 지출결의서, 휴가원은 여기에...
+							let temp = document.querySelector('#tempId').value;
+							if(temp == "public01") {
+								ptoSubmit();
+								console.log($('input[name="pto.ptoStartDt"]').val());
+								console.log($('input[name="pto.ptoEndDt"]').val());
+							}
+							
+							// 나머지 템플릿은 알아서 저장됨
+							Swal.fire({
+								icon: 'success',               
+							  	title: '문서등록 완료.',    
+							  	text: '', 
+							});
+							
+							this.submit();
+						} catch {
+							Swal.fire({
+								icon: 'error',               
+							  	title: '문서저장 오류.',    
+							  	text: '', 
+							});
 						}
-						
-						// 나머지 템플릿은 알아서 저장됨
-						
-						Swal.fire({
-							icon: 'success',               
-						  	title: '문서등록 완료.',    
-						  	text: '', 
-						});
-						
-						this.submit();
-					} catch {
-						Swal.fire({
-							icon: 'error',               
-						  	title: '문서등록 오류.',    
-						  	text: '', 
-						});
-					}
-				}
+			    	}
+			    	
+			    })//Swal
 				
-			})// 작성완료end.
+			})// 수정버튼end.
 			
 			
 		})// end.

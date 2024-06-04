@@ -10,10 +10,10 @@ import com.samjo.app.emp.service.EmpVO;
 public interface ReguService {
 	
 	// 처음 상시업무 등록(regu_stad + task_common + task_emps)
-	public int reguStadInsert(ProjectVO regu);
+	public String reguStadInsert(ProjectVO regu);
 	
 	// 기존 상시업무 등록(task_common + task_emps)
-	public int reguCommonInsert(ProjectVO regu);
+	public String reguCommonInsert(ProjectVO regu);
 	
 	// 기존 상시업무 목록
 	public List<ProjectVO> reguStadList(EmpVO empVO);
@@ -35,4 +35,6 @@ public interface ReguService {
 	public int countReguTasks(EmpVO empVO, SearchVO search);
 	public List<DocVO> taskDocList(Integer taskNo);
 	
+	// 수정
+	public Map<String, Object> reguUpdate(ProjectVO ruge);
 }
