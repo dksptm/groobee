@@ -114,11 +114,11 @@ class GroupwareApplicationTests {
 	 @Autowired
 	 StringEncryptor jasyptStringEncryptor;
 	 
-	 //@Test
+	 @Test
 	 public void encryption() {
 			String[] strs = {
-					"",
-					""
+					"test",
+					"test"
 			};
 			
 			for(String str : strs) {

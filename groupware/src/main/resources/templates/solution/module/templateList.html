@@ -14,10 +14,10 @@
 						<th:block th:each="TempVO : ${list}">
 							<div class="col-3 mb-2">
 								<div class="card"
-									th:onclick="|location.href='@{solTempInfo/}@{${TempVO.tempNo}}'|">
+									th:onclick="|location.href='@{/sol/tempInfo/}@{${TempVO.tempNo}}'|">
 									<div class="card-body">
 										<img style="height: 18rem;"
-											th:src="@{|files/${TempVO.tempImg}|}" class="card-img-top"
+											th:src="@{|/files/${TempVO.tempImg}|}" class="card-img-top"
 											alt="...">
 										<p class="card-text">[[ ${TempVO.tempNo} ]]</p>
 										<p class="card-text">[[ ${TempVO.tempName} ]]</p>
@@ -34,19 +34,19 @@
 									
 									<th:block th:if="${TempDTO.prev}">
 										<li class="page-item prev"><a
-											th:href="|solTempList?page=${TempDTO.startPage - 1 }|"
+											th:href="|/sol/tempList?page=${TempDTO.startPage - 1 }|"
 											class="page-link"><i class="bx bx-chevron-left"></i></a></li>
 									</th:block>
 									<th:block
 										th:each="num : ${#numbers.sequence(1, TempDTO.endPage)}">
 										<li class="page-item "
 											th:attrappend="class=${num ==  TempDTO.page ? 'active' : ' '}">
-											<a th:href="|solTempList?page=${num}|" class="page-link">[[${num}]]</a>
+											<a th:href="|/sol/tempList?page=${num}|" class="page-link">[[${num}]]</a>
 										</li>
 									</th:block>
 									<th:block th:if="${TempDTO.next}">
 										<li class="page-item next"><a
-											th:href="|solTempList?page=${TempDTO.endPage + 1 }|"
+											th:href="|/sol/tempList?page=${TempDTO.endPage + 1 }|"
 											class="page-link"><i class="bx bx-chevron-right"></i></a></li>
 									</th:block>
 								</ul>
@@ -60,7 +60,7 @@
 					<!-- 템플릿 등록 버튼 -->
 					<div class="d-flex align-items-end flex-column mt-3">
 						<button type="button"
-							th:onclick="|location.href='@{insertSolTemp}'|"
+							th:onclick="|location.href='@{/sol/insertSolTemp}'|"
 							class="btn btn-primary mt-auto p-2">템플릿 등록</button>
 					</div>
 				</div>

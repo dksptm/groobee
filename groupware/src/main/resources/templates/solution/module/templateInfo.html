@@ -45,8 +45,8 @@
 								</tr>
 							</table>
 							<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a><br>
-							<button type="button" th:onclick="|location.href='@{/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
-							<button type="button" th:onclick="|location.href='@{/tempDelete/{tempNo}(tempNo=${tempVO.tempNo})}'|" class="btn btn-danger">삭제</button>
+							<button type="button" th:onclick="|location.href='@{/sol/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
+							<button type="button" th:onclick="|location.href='@{/sol/tempDelete/{tempNo}(tempNo=${tempVO.tempNo})}'|" class="btn btn-danger">삭제</button>
 						</div>
 					</div>
 				</div>

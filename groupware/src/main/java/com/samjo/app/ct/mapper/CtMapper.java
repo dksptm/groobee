@@ -39,5 +39,9 @@ public interface CtMapper {
 	public int ctInsert(CtVO ctVO);
 	//계약가능 고객사조회
 	public List<CustVO> selectCustAble();
+	//고객사 관리자 계약조회
+	public List<CtVO> selectCustCt(String custNo);
+	//계약 정기결제처리
+	public int ctPayCheck(CtVO ctVO);
 	
 }

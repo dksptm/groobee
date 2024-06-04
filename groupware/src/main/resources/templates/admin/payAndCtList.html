@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<div class="card-body w-90">
+				<h5 class="card-header">계약 목록</h5>
+					<!-- 계약 목록 출력 -->
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr class="table-secondary">
+									<th>계약번호</th>
+									<th>고객번호</th>
+									<th>계약상태</th>
+									<th>정기결제</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="CtVO : ${ctList}">
+									<tr>
+										<td class="ctNo">[[ ${CtVO.ctNo} ]]</td>
+										<td class="custNo">[[ ${CtVO.custNo} ]]</td>
+										<td>[[ ${CtVO.ctStatName} ]]</td>
+										<td>
+											<th:block th:if="${CtVO.payCheck} == 0">
+												<button type="button" class="btn btn-secondary payBtn" th:id="${CtVO.ctAmt}">정기결제인증</button>
+											</th:block>
+											<th:block th:if="${CtVO.payCheck} == 1">
+												<button type="button" class="btn btn-danger cancelBtn" th:id="${CtVO.ctNo}">정기결제중지</button>
+											</th:block>
+										</td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+						<p>결제인증 완료시 정기결제가 시작됩니다.</p>
+					</div>
+				</div>
+				<div class="card-body">
+				<h5 class="card-header">결제 목록</h5>
+					<!-- 결제 목록 출력 -->
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr class="table-secondary">
+									<th>결제번호</th>
+									<th>계약번호</th>
+									<th>결제분류</th>
+									<th>서비스금액</th>
+									<th>결제예정일</th>
+									<th>결제상태</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="PayVO : ${list}">
+										<tr th:onclick="|location.href='#'|" th:id="${PayVO.payNo}">
+											<td>[[ ${PayVO.payNo} ]]</td>
+											<td>[[ ${PayVO.ctNo} ]]</td>
+											<td>[[ ${PayVO.payTypeName} ]]</td>
+											<td class="amt">[[ ${PayVO.servAmt} ]]</td>
+											<th:block th:if="${not #strings.isEmpty(PayVO.payExpcDt)}">
+												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
+											</th:block>
+											<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
+												<td>정기결제등록</td>
+											</th:block>
+											<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
+										</tr>
+									</th:block>
+							</tbody>
+						</table>
+					</div>
+					<!-- 페이징 -->
+					<div>
+						<th:block th:if="${payDTO.totalCnt} != 0">
+							<nav aria-label="Page navigation">
+								<ul class="pagination justify-content-center">
+									
+									<th:block th:if="${payDTO.prev}">
+										<li class="page-item prev"><a
+											th:href="|/cust/admin/payAndCt?page=${payDTO.startPage - 1 }|"
+											class="page-link"><i class="bx bx-chevron-left"></i></a></li>
+									</th:block>
+									<th:block
+										th:each="num : ${#numbers.sequence(1, payDTO.endPage)}">
+										<li class="page-item "
+											th:attrappend="class=${num ==  payDTO.page ? 'active' : ' '}">
+											<a th:href="|/cust/admin/payAndCt?page=${num}|" class="page-link">[[${num}]]</a>
+										</li>
+									</th:block>
+									<th:block th:if="${payDTO.next}">
+										<li class="page-item next"><a
+											th:href="|/cust/admin/payAndCt?page=${payDTO.endPage + 1 }|"
+											class="page-link"><i class="bx bx-chevron-right"></i></a></li>
+									</th:block>
+								</ul>
+							</nav>
+						</th:block>
+						<th:block th:unless="${payDTO.totalCnt} != 0">
+							<p>조회가능한 결제내역이 없습니다.</p>
+						</th:block>
+					</div>
+					<!-- /페이징 -->
+				</div>
+			</div>
+		</div>
+	
+		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<script th:inline="javascript">
+			// CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
+			var IMP = window.IMP;
+			IMP.init('imp82376133');
+	
+			//최초 정기결제 인증
+			$('.payBtn').on('click', function kakaopay(e) {
+				let merchantUid = new Date().getTime();
+				let customerUid = $(this).parent().siblings('.custNo').text();
+				let amount = e.target.id;
+				let ctNo = $(this).parent().siblings('.ctNo').text();
+				
+				IMP.request_pay({
+					pg : 'kakaopay',
+					pay_method : 'card',
+					merchant_uid : merchantUid,
+					name : '최초결제인증',
+					amount : 1,
+					customer_uid : customerUid,
+					buyer_email : 'iamport@siot.do',
+					buyer_name : '아임포트',
+					buyer_tel : '02-1234-1234'
+				}, function(rsp) {
+					if (rsp.success) {
+						$.ajax({
+							url : '/payment',
+							beforeSend : function(xhr) {
+								xhr.setRequestHeader(header, token);
+							},
+							type : 'POST',
+							data : {
+								"customer_uid" : customerUid,
+								"price" : amount,
+								"merchant_uid" : merchantUid,
+								"ct_no" : ctNo
+							},
+							success : function(result) {
+								alert('정기 결제 예약 완료');
+								location.reload(true);
+							}
+						});
+					} else {
+						alert('결제 취소');
+					}
+				});
+			});
+			//결제 중지 처리
+			$('.cancelBtn').on('click', function kakaopay(e) {
+				
+			});
+		</script>
+	</th:block>
+</body>
+</html>

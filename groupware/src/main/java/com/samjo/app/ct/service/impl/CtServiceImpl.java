@@ -135,7 +135,7 @@ public class CtServiceImpl implements CtService{
 		payVO.setCustNo(ctVO.getCustNo());
 		payVO.setCtNo(ctVO.getCtNo());
 		payVO.setServAmt(ctVO.getCtAmt());
-		payMapper.payInsert(payVO);
+		payMapper.fstPayInsert(payVO);
 		
 		return null;
 	}
@@ -144,6 +144,16 @@ public class CtServiceImpl implements CtService{
 	@Override
 	public List<CustVO> custList() {
 		return ctMapper.selectCustAble();
+	}
+
+	@Override
+	public List<CtVO> custCtList(String custNo) {
+		return ctMapper.selectCustCt(custNo);
+	}
+
+	@Override
+	public int ctPayCheck(CtVO ctVO) {
+		return ctMapper.ctPayCheck(ctVO);
 	}
 
 }

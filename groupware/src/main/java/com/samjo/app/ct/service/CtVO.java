@@ -28,6 +28,7 @@ public class CtVO {
 	private int curEmps;
 	private String ctFile;
 	private MultipartFile[] uploadfile;
+	private int payCheck;
 	
 	private String brn;
 	private String rep;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -33,10 +34,8 @@ public class PayServiceImpl implements PayService{
 
 	@Autowired
 	PayMapper payMapper;
-	@Value("{app.data.impkey}")
-	private String impKey;
-	@Value("{app.data.imps}")
-	private String impS;
+	@Autowired
+	StringEncryptor jasyptStringEncryptor;
 
 	//결제 전체조회
 	@Override
@@ -61,12 +60,8 @@ public class PayServiceImpl implements PayService{
 	    headers.setContentType(MediaType.APPLICATION_JSON);
 	    
 	    Map<String, Object> map = new HashMap<>();
-	    String test1 = impKey;
-	    String test2 = impS;
-	    System.out.println("@@@@@"+ test1);
-	    System.out.println("@@@@@"+ test2);
-	    map.put("imp_key", "6512613888230017");
-	    map.put("imp_secret", "DOSk0YxWmmuak1WEwZBaduB0nrExkAujYf6NwTKBrJDB5w3ktJQHCiAyiyMfLe9lVz3tZki5Rk99yOuX");
+	    map.put("imp_key", jasyptStringEncryptor.decrypt("kO2u4ZT4ezy1/lww239rOWpXniHeS5N4s74PoEX9uMZ3Ia4CLAHtx0g2zlP8L0ew9DJydXw2psQ5VrUr6uS5kA=="));
+	    map.put("imp_secret", jasyptStringEncryptor.decrypt("gomT3MCD8uUZYf6ZxS91qaTBBIdEpN+WKq441/VywG9LXE2giwyNqFaLIIjSdq3cevOr4UEGNUv5z9YOT61kV4mdQGEGyUpW1dXlUIOGHH29PpoxmGcctLocmTC1MrAoM+b/9rm1j3JPJKbzR7x2tou4NP3RnKLgwwEbINukN74="));
 	   
 	    Gson var = new Gson();
 	    String json=var.toJson(map);
@@ -76,93 +71,69 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	//정기결제처리 테스트-삭제예정
-	@Override
-	public String requestSubPay() {
-		String token = getToken();
-		Gson str = new Gson();
-		token = token.substring(token.indexOf("response") + 10);
-		token = token.substring(0, token.length() - 1);
-
-		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
-
-		String access_token = vo.getAccess_token();
-		System.out.println("access_token : "+access_token);
-
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setBearerAuth(access_token);
-
-		Map<String, Object> map = new HashMap<>();
-		map.put("customer_uid", "24");
-		map.put("merchant_uid", "162443471100");
-		map.put("amount", "10000");
-		map.put("name", "test05");
-
-		Gson var = new Gson();
-		String json = var.toJson(map);
-		System.out.println(json);
-		HttpEntity<String> entity = new HttpEntity<>(json, headers);
-		
-		return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/again", entity, String.class);
-	}
-
 	//정기결제 처리
 	@Override
-	public String schedulePay(String customer_uid, int price) {
+	public String schedulePay(String customer_uid, int price, int ctNo) {
 		String token = getToken();
-		System.out.println("token : " + token);
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
+		Date payDay;
+		if(payMapper.payDay(customer_uid) != null) {
+			payDay = payMapper.payDay(customer_uid);
+		}else{
+			payDay = cal.getTime();
+		};
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
 		cal.add(Calendar.MINUTE, +1);
-		String date = sdf.format(cal.getTime());
+		String date = sdf.format(payDay);
 		try {
 			Date stp = sdf.parse(date);
 			timestamp = stp.getTime()/1000;
 			System.out.println(timestamp);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		 Gson str = new Gson(); 
-		 token = token.substring(token.indexOf("response") +10); 
-		 token = token.substring(0, token.length() - 1);
-		 GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
-		 String access_token = vo.getAccess_token();
-		 System.out.println("access_token : " + access_token);
+		Gson str = new Gson(); 
+		token = token.substring(token.indexOf("response") +10); 
+		token = token.substring(0, token.length() - 1);
+		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+		String access_token = vo.getAccess_token();
+		
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(access_token);
 		 
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("merchant_uid", timestamp);
+		jsonObject.addProperty("schedule_at", timestamp);
+		jsonObject.addProperty("amount", price);
+		
+		JsonArray jsonArr = new JsonArray();
 		 
-		 RestTemplate restTemplate = new RestTemplate();
-		 HttpHeaders headers = new HttpHeaders();
-		 headers.setContentType(MediaType.APPLICATION_JSON);
-		 headers.setBearerAuth(access_token);
+		jsonArr.add(jsonObject); JsonObject reqJson = new JsonObject();
 		 
-		 JsonObject jsonObject = new JsonObject();
-		 jsonObject.addProperty("merchant_uid", timestamp);
-		 jsonObject.addProperty("schedule_at", timestamp + 10);
-		 jsonObject.addProperty("amount", price);
-		 
-		 JsonArray jsonArr = new JsonArray();
-		 
-		 jsonArr.add(jsonObject); JsonObject reqJson = new JsonObject();
-		 
-		 reqJson.addProperty("customer_uid", customer_uid); 
-		 reqJson.add("schedules",jsonArr);
-		 String json = str.toJson(reqJson); 
-		 System.out.println(json);
-		 HttpEntity<String> entity = new HttpEntity<>(json, headers);
-		 System.out.println("entity : " + entity);
-		 try {
+		reqJson.addProperty("customer_uid", customer_uid); 
+		reqJson.add("schedules",jsonArr);
+		String json = str.toJson(reqJson); 
+		System.out.println(json);
+		HttpEntity<String> entity = new HttpEntity<>(json, headers);
+		System.out.println("entity : " + entity);
+		try {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		 String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
-		 System.out.println("API응답 : " + response);
-		 return response;
+	 	PayVO payVO = new PayVO();
+		payVO.setCustNo(customer_uid);
+		payVO.setCtNo(ctNo);
+		payVO.setServAmt(price);
+		payMapper.payUpdate(payVO);
+		payMapper.payInsert(payVO);
+		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
+		System.out.println("API응답 : " + response);
+		return response;
 	}
 
 	//dateStamp처리
@@ -221,5 +192,15 @@ public class PayServiceImpl implements PayService{
 		ImportResVO resVO = gson.fromJson(responseJson, ImportResVO.class);
 		System.out.println(resVO);
 		return list; 
+	}
+
+	@Override
+	public List<PayVO> custPayList(SearchVO searchVO) {
+		return payMapper.selectCustPayAll(searchVO);
+	}
+
+	@Override
+	public int custCount(String custNo) {
+		return payMapper.custPayCount(custNo);
 	}
 }
