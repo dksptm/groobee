@@ -48,20 +48,6 @@ public class DocController {
 	 * fileUploadService; }
 	 */
 	
-	// 문서 전체조회.
-	@GetMapping("docList")
-	public String docList(SearchVO searchVO, Model model) {
-		searchVO = checkSearch(searchVO);
-		
-		List<DocVO> list = docService.docList(searchVO);
-		model.addAttribute("list", list);
-		
-		PageDTO pageDTO = new PageDTO(searchVO.getPage(), docService.count());
-		model.addAttribute("pageDTO", pageDTO);
-		
-		return "approval/doc/list";
-	}
-	
 	// 한 직원이 작성한 문서 전체 조회.
 	@GetMapping("cust/doc/mydoc")
 	public String myDocList(SearchVO searchVO, Model model) {

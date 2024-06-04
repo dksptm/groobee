@@ -22,7 +22,7 @@
 </style>
 
 <div class="container container-p-y mt-3">
-	<h4>상시업무 관리 - 목록</h4>
+	<h4>상시업무 관리 - 등록</h4>
 		
 		<div class="bg-light p-3 col-8">
 		<div class="card d-flex justify-content-center table-responsive bg-light row m-2 p-2 shadow-lg">
@@ -105,13 +105,13 @@
 				<tr>
 					<th>업무활성화</th>
 					<td colspan="2">
-						<label class="form-control" for="active">
-						<input class="form-check-input" type="radio" id="active" name="active" value="5D1d" checked>
+						<label class="form-control" for="active1">
+						<input class="form-check-input" type="radio" id="active1" name="active" value="5D1d" checked>
 						업무활성화 (자동스케줄O)</label>
 					</td>
 					<td colspan="2"  style="border-left:hidden;">
-					    <label class="form-control">
-					    <input class="form-check-input" type="radio" id="active" name="active" value="5D2d" checked>
+					    <label class="form-control" for="active2">
+					    <input class="form-check-input" type="radio" id="active2" name="active" value="5D2d" checked>
 					      업무비활성화 (자동스케줄X)</label>
 					</td>
 					<td  style="border-left:hidden;"></td>
@@ -123,7 +123,7 @@
 		</form>
 		</div>
 		</div>
-		
+	</div>		
 		<!-- Enable Body scrolling 책임자 선택-->
 		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-reps" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
@@ -227,6 +227,7 @@
 					<tr><td colspan="4" style="display:none;">
 					<input type="hidden" name="tp" th:value="${rg.taskPurpose}" />
 					<input type="hidden" name="tc" th:value="${rg.taskCntn}" />
+					<input type="hidden" name="ac" th:value="${rg.active}" />
 					</td></tr>
 				</tbody>
 			</table>
@@ -238,8 +239,6 @@
 			</th:block>
 		  </div>
 		</div>
-		
-	</div>
 
 <script>
 	$(function(){
@@ -265,7 +264,6 @@
 		
 		// 기존상시업무 불러와서 선택할경우
 		$('.chk-regus-btn').on('click', function(e){
-			
 			
 			$('#reguInsertForm')[0].reset();
 			reguReset();
@@ -301,6 +299,18 @@
 			let cperd = tbody.find('tr').eq(4).find('th').eq(1).data('crep');
 			$('#crePerd').find('option').val(cperd).text(cperd).attr('selected',true);
 			$('#crePerd').prop('disabled', true);
+			
+			let act = tbody.find('input[name=ac]').val();
+			let acts = $('input[name=active]')
+			acts.each((i,e) => {
+				if(e.value == act) {
+					$(e).prop('checked' , true);
+				} else {
+					$(e).prop('checked' , false);
+				}
+				$(e).prop('disabled', true);
+			})
+			
 			
 			$('input[name="flag"]').val('YES');
 			

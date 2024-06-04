@@ -145,10 +145,10 @@ $(function(){
 	}
 	
 	function pagination() {
-		$('.page-item a').on('click',function(event){
-		event.preventDefault();
-		param.page = $(this).attr('href');
-		showTable(param);
+			$('.page-item a').on('click',function(event){
+			event.preventDefault();
+			param.page = $(this).attr('href');
+			showTable(param);
 		}); 
 	}
 	

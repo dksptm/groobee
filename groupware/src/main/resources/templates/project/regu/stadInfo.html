@@ -92,6 +92,11 @@
 				</th:block>
 			</tbody>
 		</table>	
+		<div>
+			<div id="pageArea">
+				<th:block th:replace="project/regu/page :: Page"></th:block>
+			</div>	
+		</div>
 	</div>		
 		
 </div>
@@ -118,16 +123,6 @@
 			$('.task-toggle-area').slideToggle();
 		});
 	 	
-		// tr클릭해서 문서상세로 이동
-		$('tr.go-regu-info').on('click', function(e) {
-
-			/* let createInput = $('<input type="text" name="taskNo" />').val($(this).data('tno'));
-			searchForm.prepend(createInput);
-			searchForm.attr('action', '/cust/regu/info');
-			
-			searchForm.submit(); */
-			
-		});
 		
 	})//end.
 

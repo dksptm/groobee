@@ -34,17 +34,6 @@ public class DocServiceImpl implements DocService {
 		this.tempMapper = tempMapper;
 	}
 	
-	// 문서전체조회.
-	@Override
-	public List<DocVO> docList(SearchVO searchVO) {
-		return docMapper.selectDocAll(searchVO);
-	}
-	// (전체페이지 수)
-	@Override
-	public int count() {
-		return docMapper.count();
-	}
-
 	// 문서조회 - 한 emp가 작성한 모든문서.
 	@Override
 	public List<DocVO> getMyDocList(String empId, SearchVO searchVO) {

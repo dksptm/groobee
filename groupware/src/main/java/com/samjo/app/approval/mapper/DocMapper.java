@@ -12,10 +12,6 @@ import com.samjo.app.project.service.ProjectVO;
 
 public interface DocMapper {
 
-	// 문서전체
-	public List<DocVO> selectDocAll(SearchVO searchVO);
-	// 문서전체-페이징
-	public int count();
 	// 한 직원이 작성한 문서.
 	public List<DocVO> selectEmpDocs(@Param("eid") String empId, @Param("sch") SearchVO searchVO);
 	//		-전체count.

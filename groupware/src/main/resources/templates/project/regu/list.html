@@ -7,13 +7,14 @@
 	<div class="container container-p-y mt-3">
 		<h2>상시업무 목록</h2>
 		
-		<div class="table-responsive p-3">
-			
-			<div class="d-flex justify-content-center table-responsive sch-area">
+		<div class="">
+			<div class="text-end mx-3">
+			<button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button></div>
+			<div class="collapse table-responsive bg-light sch-toggle-area">
 				<!-- 검색공간 -->
-				<form action="/cust/regu/list" method="get" th:object="${search}" id="searchForm">
+				<form action="javascript:void(0)" method="get" th:object="${search}" id="searchForm">
 				<input th:field="*{page}" type="hidden"  />
-				<table class="table table-borderless table-sm">
+				<table class="table table-borderless table-sm d-flex justify-content-center mt-3">
 					<tr>
 						<td>시작</td><td><input th:field="*{dtStart}" type="date" class="form-control" /></td>
 						<td>~</td>
@@ -24,11 +25,12 @@
 								<option value="all" class="form-control">전체</option>
 								<option value="5B1b" class="form-control">업무진행중</option>
 								<option value="5B2b" class="form-control">업무완료</option>
+								<option value="5B3b" class="form-control">업무취소</option>
+								<option value="5B4b" class="form-control">업무미완료</option>
 							</select></td>
 					</tr>
 					<tr>
 						<td><select th:field="*{keywordCondition}" class="form-select">
-								<option value="all" class="form-control">검색선택</option>
 								<option value="tc.task_name" class="form-control">업무명</option>
 								<option value="tc.task_no" class="form-control">업무번호</option>
 								<option value="resp_emp_name" class="form-control">책임자</option>
@@ -57,9 +59,8 @@
 						<td colspan="5">
 							<div class="text-end">
 								<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
-								<button class="btn btn-secondary ms-2"
-								type="reset"
-								th:onclick="|location.href='@{cust/regu/list}'|">초기화</button>
+								<button class="btn btn-secondary ms-2" type="reset"
+										th:onclick="|location.href='@{list}'|">초기화</button>
 							</div>						
 						</td>
 					</tr>
@@ -67,6 +68,7 @@
 				</form>
 			</div>
 			
+			<div id="ReguListArea" class="bg-light p-3">
 			<table class="table table-hover text-center bg-white">
 				<thead class="table-dark">
 					<tr>
@@ -125,6 +127,7 @@
 					<p>현재 문서가 없습니다.</p>
 				</th:block>
 			</div>
+			</div>
 		</div>
 	</div>
 
@@ -132,10 +135,19 @@
 	
 	$(function(){
 		
+		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+				
+		// searchVO
+		let param = {}
+		
+		// 페이지이벤트.tr클릭이벤트.
+		pagination(param);
+		trClick(param)
 		
 		// 토글
-		$('.sch-toggle').on('click', function(e){
-			$('.sch-area').slideToggle(600, 'linear');
+		$('.sch-toggle-btn').on('click', function(e){
+			$('.sch-toggle-area').slideToggle(600, 'linear');
 		})
 		
 		//기간 검색 범위처리
@@ -146,56 +158,82 @@
 			$('input[name="dtStart"]').attr('max', this.value);
 		});
 		
-		// 검색어를 클릭없이 페이지클릭만으로 submit 되는점 수정.
-		const searchForm = $('#searchForm');
-		
-		const begin = {
-			keywordCondition : $('#keywordCondition').val(),
-			keyword : $('#keyword').val(),
-			draftStatCondition : $('#prjtMat').val(),
-			aprStatCondition : $('#searchCondition').val(),
-			dtStart : $('#dtStart').val(),
-			dtEnd : $('#dtEnd').val(),
-			sortCondition : $('#sortCondition').val()
-		}
-		
-		// 페이징 a태그
-		$('li.page-item a').on('click', function(e){
-			e.preventDefault();
-			let pageNum = $(this).attr('href');
-			
-			$('#keywordCondition').val(begin.keywordCondition);
-			$('#keyword').val(begin.keyword);
-			$('#prjtMat').val(begin.prjtMat);
-			$('#searchCondition').val(begin.searchCondition);
-			$('#dtStart').val(begin.dtStart);
-			$('#dtEnd').val(begin.dtEnd);
-			$('#sortCondition').val(begin.sortCondition);
-			
-			searchForm.find('input[name="page"]').val(pageNum);
-			searchForm.submit();
-		});
-		
 		// 검색버튼
 		$('#schBtn').on('click', function(e) {
-			
-			$('input[name="page"]').val('1');
-			searchForm.submit();
-			
+			param = searchUpdate();
+			showTable(param);
 		});
-		
-		// tr클릭해서 문서상세로 이동
-		$('tr.go-regu-info').on('click', function(e) {
 
-			let createInput = $('<input type="text" name="taskNo" />').val($(this).data('tno'));
-			searchForm.prepend(createInput);
-			searchForm.attr('action', '/cust/regu/info');
+		// 검색/페이지 ajax.
+		function showTable(param) {
 			
-			searchForm.submit();
+			$.ajax({
+				type: 'POST',
+				url : 'list/sch',
+				beforeSend: function(xhr) {
+			        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+			    },
+			    data : param,
+			    dataType : 'Text'
+			})
+			.done(function(result){
+				$('#ReguListArea').replaceWith(result);
+				pagination(param);
+				trClick(param);
+			})
+		}
+		
+		
+		
+	})//end.
+	
+	// 페이징
+	function pagination(param) {
+		$('.page-item a').on('click',function(event){
+			event.preventDefault();
+			param['page'] = $(this).attr('href');
+			showTable(param);
+		}); 
+	}
+	
+	// tr클릭시 info이동
+	function trClick(param) {	
+		$('.go-regu-info').on('click', function(e) {
+			let tno = $(this).data('tno');
+			let queryString = stringifyQueryString(param);
+			
+			location.href = "info?taskNo=" + tno + queryString;
 			
 		});
+	}
+	
+	// 검색조건 업데이트.
+	const searchUpdate = () => {
+		param = {}
+		param = {
+				keywordCondition : $('#keywordCondition').val(),
+				keyword : $('#keyword').val(),
+				prjtMat : $('#prjtMat').val(),
+				searchCondition : $('#searchCondition').val(),
+				dtStart : $('#dtStart').val(),
+				dtEnd : $('#dtEnd').val(),
+				sortCondition : $('#sortCondition').val(),
+				page : 1
+		}
+		return param;
+	}
+	
+	// 쿼리스트링 만들기.
+	const stringifyQueryString = (param) => {
+		const result = Object.entries(param)
+						   .map((e) => {
+							   const [key, value] = e.map(encodeURIComponent)
+							   return `${key}=${value}`
+							})
+							.join('&');
 		
-	})
+		return `&${result}`;
+	}
 	
 	</script>
 

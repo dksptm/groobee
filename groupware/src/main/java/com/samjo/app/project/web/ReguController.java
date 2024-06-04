@@ -88,7 +88,7 @@ public class ReguController {
 	
 	// 단건조회
 	@GetMapping("cust/regu/info")
-	public String reguInfo(Model model, @RequestParam Integer taskNo) {
+	public String reguInfo(Model model, @RequestParam Integer taskNo, SearchVO searchVO) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
@@ -117,7 +117,7 @@ public class ReguController {
 		return reguService.reguCmpltModify(emps);
 	}
 	
-	// 전체조회
+	// 전체조회(하위)
 	@GetMapping("cust/regu/list")
 	public String reguTaskList(SearchVO searchVO, Model model) {
 		
@@ -138,7 +138,37 @@ public class ReguController {
 			model.addAttribute("search", searchVO);
 			model.addAttribute("path", "cust/regu/list"); 
 			
-			return "project/regu/list.html";
+			return "project/regu/list";
+			
+		} else {
+			
+			return "test/test";
+		}
+		
+	}
+	
+	// 전체조회(하위) - 검색
+	@PostMapping("cust/regu/list/sch")
+	public String reguTaskSearchList(SearchVO searchVO, Model model) {
+		
+		checkSearch(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		if(searchVO.getSortCondition().equals("tc.standard_no")) {
+			searchVO.setSortCondition("tc.task_no DESC");
+		}
+		
+		if(empVO != null) {
+			
+			List<ProjectVO> list = reguService.reguTaskList(empVO, searchVO);
+			int count = reguService.countReguTasks(empVO, searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
+			
+			model.addAttribute("list", list);
+			model.addAttribute("pageDTO", pageDTO);
+			model.addAttribute("search", searchVO);
+			model.addAttribute("path", "list/sch"); 
+			
+			return "project/regu/list :: #ReguListArea";
 			
 		} else {
 			
@@ -157,17 +187,15 @@ public class ReguController {
 		if(empVO != null) {
 			
 			List<ProjectVO> list = reguService.reguList(empVO, searchVO);
-			int count = reguService.countRegus(empVO, searchVO);
-			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
 			
-			if(empVO.getPermId().equals("1C2c")) {
-				List<DeptVO> depts = deptService.myCustDepts(empVO);				
-				model.addAttribute("depts", depts);
-			} 
+			int count = reguService.countRegus(empVO, searchVO);
+			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);			
+			List<DeptVO> depts = deptService.myCustDepts(empVO);				
 			
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
+			model.addAttribute("depts", depts);
 			model.addAttribute("path", "stadList"); 
 			
 			return "project/regu/stadList";				
@@ -177,21 +205,20 @@ public class ReguController {
 		return "test/test";
 	}
 	
-	// 검색어/페이지 조회.
+	// 전체조회(상위) - 검색
 	@PostMapping("cust/regu/stadList/sch")
 	public String reguStadSearchList(SearchVO searchVO, Model model) {
 		
 		checkSearch(searchVO);
 		EmpVO empVO = SecuUtil.getLoginEmp();
-		System.out.println(searchVO.getPage());
 		
 		if(empVO != null) {
 			
 			List<ProjectVO> list = reguService.reguList(empVO, searchVO);
+			
 			int count = reguService.countRegus(empVO, searchVO);
 			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
 			
-			System.out.println(searchVO.getPage());
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);

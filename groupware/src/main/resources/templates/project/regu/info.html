@@ -34,7 +34,8 @@
 		</tr>
 		<tr>
 			<td class="fw-bold">개요</td>
-				<td colspan="5">[[ ${regu.taskPurpose} ]]</td>
+				<td colspan="4">[[ ${regu.taskPurpose} ]]</td>
+			<td>[[${regu.creType}]] <span class="cre-perd">[[${regu.crePerd}]]</span></td>
 		</tr>
 		<tr>
 			<td class="fw-bold">목적</td>
@@ -101,14 +102,17 @@
 		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
 	</table>
 	
-	<div th:if="${#authentication.principal.permId} == '1C2c' or 
-				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
-	<!-- 연결된 문서들 -->
 	<div class="d-flex justify-content-between">
 		<button type="button" class="btn btn-primary ms-3 mb-3"
 				th:onclick="|location.href='@{list}'|">목록으로</button>
+		<th:block th:if="${#authentication.principal.permId} == '1C2c' or 
+				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 		<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서보기▽</button>
+		</th:block>
 	</div>
+	<div th:if="${#authentication.principal.permId} == '1C2c' or 
+				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
+	<!-- 연결된 문서들 -->
 	<div class="collapse bg-light pt-2 doc-toggle-area">
 		<th:block th:if="${#arrays.length(docs)} != 0">
 		<table class="table table-hover text-center">
@@ -159,6 +163,7 @@
 	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	
 	let tno = [[${regu.taskNo}]];
+	let cret = [[${regu.creType}]];
 	
 	$(function(){
 		
@@ -174,6 +179,21 @@
 			$('.regu-task-emps').find('input').prop('disabled', true);
 			$('button.regu-emp-ok-btn').prop('disabled', true);
 		}
+		
+		// 요일
+		let week = ["일","월","화","수","목","금","토"];
+	    if(cret == '매주'){
+		    let data = $('span.cre-perd').text();
+		    $('span.cre-perd').text(week[data] + '요일 마감');
+	    }
+	    if(cret == '매월'){
+		    let data = $('span.cre-perd').text();
+		    $('span.cre-perd').text(data + '일 마감');
+	    }
+	    if(cret == '매일'){
+		    let data = $('span.cre-perd').text();
+		    $('span.cre-perd').text(data + '시 마감');
+	    }
 		
 		// 담당업무 완료버튼.
 		$('button.regu-emp-ok-btn').on('click', reguEmpOk);
