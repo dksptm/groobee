@@ -584,6 +584,11 @@
 		
 		$('input[name="flag"]').val('NO');
 		
+		let acts = $('input[name=active]')
+		acts.each((i,e) => {
+			$(e).prop('disabled', false);
+		})
+		
 	}
 	
 	
