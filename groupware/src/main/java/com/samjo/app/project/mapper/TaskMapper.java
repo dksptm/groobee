@@ -23,10 +23,17 @@ public interface TaskMapper {
 		// 프로젝트 업무 참여자 조회
 		public List<TaskEmpsVO> selectTaskEmpList(int taskNo);
 		
+		// 업무 참여자 //
+		// 프로젝트 참여자 수정(프로시저)실행하기전 참여자의 참여여부를 초기화한다
+		public void updateTaskEmpBefore(int taskNo);
 		// 프로젝트 참여자 수정(프로시저)
 		public void updateTaskEmp(TaskEmpsVO emp);
-		// 업무모두완료시 -> 프로젝트완료상태 (프로시저)
+		// 업무모두완료시 -> 프로젝트완료상태(프로시저)
 		public void updatePrjt(ProjectVO projectVO);
+		// 프로젝트 상황 업데이트 
+		public ProjectVO upPrjt(ProjectVO projectVO);
+		// 업무 상황 업데이트 
+		public ProjectVO upTask(ProjectVO projectVO);
 		
 		
 		// 협력업체 조회

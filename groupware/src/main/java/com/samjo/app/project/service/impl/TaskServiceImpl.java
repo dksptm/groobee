@@ -47,7 +47,11 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override // 프로젝트(하위) 등록
 	public int taskInsert(ProjectVO projectVO) {
-		return taskMapper.insertTask(projectVO);
+		int result = taskMapper.insertTask(projectVO);
+		if(result > 0) {
+			return projectVO.getTaskNo();			
+		}
+		return -1;
 	}
 	
 	@Override // 프로젝트 단순조회 taskInsert용
@@ -60,19 +64,29 @@ public class TaskServiceImpl implements TaskService{
 		
 		List<TaskEmpsVO> emps = projectVO.getTaskEmps();
 		Map<String, Object> map = new HashMap<>();
-		
-		for(TaskEmpsVO emp : emps) {
-			// task_emps u..
-			taskMapper.updateTaskEmp(emp);
-			System.out.println("emp.getResult()--------->"+emp.getResult());
-			// task_common u (100)
-			if(emp.getResult() == 100) {
-				// prjt u
-				System.out.println("프로젝트프로시저 시작--------------!");
-				taskMapper.updatePrjt(projectVO);
+
+		if(!emps.isEmpty()) {
+			taskMapper.updateTaskEmpBefore(emps.get(0).getTaskNo());
+			
+			for(TaskEmpsVO emp : emps) {
+				// task_emps u..
+				taskMapper.updateTaskEmp(emp);
+				System.out.println("emp.getResult()--------->"+emp);
+				// task_common u (100)
+					// prjt u
+					System.out.println("프로젝트프로시저 시작--------------!");
+					taskMapper.updatePrjt(projectVO);
+					System.out.println(projectVO);
 			}
+			// 매퍼.xml에 추가한 프로시져 호출. 
+			
+		} else {
+			taskMapper.updateTaskEmpBefore(projectVO.getTaskNo());
+			// prjt update mapper
+			taskMapper.upPrjt(projectVO);
+			// task update mapper
+			taskMapper.upTask(projectVO);
 		}
-		// 매퍼.xml에 추가한 프로시져 호출. 
 		
 		map.put("OUT", emps);
 		return map;
@@ -98,7 +112,9 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 	
-		/*
+		
+	}
+/*
 		 * @Override //프로젝트(하위)업무 수정 public Map<String, Object> taskUpdate(ProjectVO
 		 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =
 		 * false; int result = taskMapper.updateTask(projectVO); if (result == 1) {
@@ -111,7 +127,6 @@ public class TaskServiceImpl implements TaskService{
 		 * result); if (result == 1) { map.put("taskNo", projectVO.getTaskNo()); }
 		 * return map; }
 		 */
-	}
 	/*
 	 * @Override // 협력업체 수정 public Map<String, Object> coopUpdate(ProjectVO
 	 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =

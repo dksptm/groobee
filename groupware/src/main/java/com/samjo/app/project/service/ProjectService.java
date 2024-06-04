@@ -14,12 +14,11 @@ public interface ProjectService {
 	public List<ProjectVO> PrjtAllList(SearchVO searchVO);
 	// 프로젝트 업무 페이징
 	public int count(SearchVO searchVO);
-	
 	// 프로젝트 단순조회(taskInsert용)
 	public List<ProjectVO> prjtList(SearchVO searchVO);
 	
-	// 단건조회(상위)
-	//public ProjectVO prjtInfo(EmpVO empVO, String prjtId);
+	//  공통업무VO List
+	public List<ProjectVO> taskList(String prjtId, String custNo);
 		
 	// 프로젝트 단건조회
 	public ProjectVO prjtInfo(String prjtId);
@@ -33,11 +32,5 @@ public interface ProjectService {
 	// 효주 - 업무공통 간략조회.
 	public List<ProjectVO> myCustTasks(String custNo);
 	// 효주 끝.
-	
-	public int countPrjt(EmpVO empVO, SearchVO search);
-	
-	
-	
-	
 	
 }

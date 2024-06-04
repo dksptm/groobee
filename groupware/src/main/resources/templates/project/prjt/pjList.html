@@ -77,7 +77,7 @@
 								</thead>
 								<tbody>
 									<th:block th:each="pjlist : ${pjlist}">
-									<tr th:attr="onclick=|redirectToProjectInfo('${pjlist.prjtId}')|">
+									<tr th:onclick="|location.href='@{/cust/pj/info?prjtId={pid}(pid=${pjlist.prjtId})}'|">
 											<td>[[ ${pjlist.prjtId} ]]</td>
 											<td>[[ ${pjlist.prjtName} ]]</td>
 											<td
@@ -211,12 +211,6 @@
 			});
 		}		
 		
-		// 행클릭하면 상세페이지로 이동
-		function redirectToProjectInfo(prjtId) {
-	            window.location.href = '/cust/pjInfo/' + prjtId;
-	    }
-	        
-	        
 		</script>
 	</th:block>
 </body>

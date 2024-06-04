@@ -67,13 +67,11 @@ public class ProjectServiceImpl implements ProjectService {
 		return map;
 	}
 
-	/*
-	 * @Override // 단건조회(상위) public ProjectVO prjtStadInfo(EmpVO empVO, String
-	 * prjtId) { return projectMapper.selectPrjt(empVO, prjtId); }
-	 * 
-	 * @Override public void prjtDelete(String prjtId) {
-	 * projectMapper.deletePrjt(prjtId); }
-	 */
+	  @Override 
+	  public void prjtDelete(String prjtId) {
+	  projectMapper.deletePrjt(prjtId); 
+	  }
+	
 	
 	// 효주 - 업무간단조회
 	@Override
@@ -82,19 +80,11 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	// 효주 끝.
 
-	@Override
-	public int countPrjt(EmpVO empVO, SearchVO search) {
-		// TODO Auto-generated method stub
-		return 0;
+	
+	@Override // 공통업무 List
+	public List<ProjectVO> taskList(String prjtId, String custNo) {
+		return projectMapper.taskList(prjtId, custNo);
 	}
-
-	@Override
-	public void prjtDelete(String prjtId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 
 
 }
