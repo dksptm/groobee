@@ -19,6 +19,8 @@ public interface WorkMapper {
 	public List<WorkVO> selectAllList(WorkSearchVO worksearchVO);
 	// 출근 업데이트
 	public int workin(WorkVO workVO);
+	//이미 체크한 값이 있는지 체크
+	public int workincheck(WorkVO workVO);
 	// 퇴근 업데이트
 	public int workout(WorkVO workVO);
 	// 조퇴 업데이트

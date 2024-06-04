@@ -177,7 +177,6 @@
 		</div>
 
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
-
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -207,7 +206,6 @@
 				//키워드 검색 처리
 				keyword = $('.searchKey').val();
 				searchCondition = $('.searchKeySelect').val();
-
 				// 정렬 처리
 				coSort = $('.searchSelect').val();
 			}
@@ -249,7 +247,6 @@
 						result[element.name] = element.value
 					}
 				}
-
 				$.each(this.serializeArray(), extend)
 				return result
 			}
@@ -257,9 +254,7 @@
 			// 등록모달
 			$('#modalInsertBtn').on('click', function() {
 				let formData = $('#coopForm').serializeObject();
-
-				console.log(formData);
-
+				//console.log(formData);
 				$.ajax({
 					type : 'POST',
 					url : '/cust/coopInsert',
@@ -269,11 +264,24 @@
 						xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
 					},
 					success : function(data) {
-						alert('협력업체 등록에 성공했습니다.');
-						location.reload();
+						Swal.fire({
+							title: '등록완료!',        
+							text:  '협력업체가 등록되었습니다.',  
+							icon:  'success' 
+						})
+						.then(function(){
+							location.reload(true);                  
+						})
 					},
 					error : function(err) {
-						alert('협력업체 등록에 실패했습니다.');
+						Swal.fire({
+							title:  '등록실패',        
+							text:  '협력업체 등록이 실패하였습니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							location.reload(true);                  
+						})
 					}
 				});
 			});

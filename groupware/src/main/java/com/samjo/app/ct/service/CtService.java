@@ -23,4 +23,8 @@ public interface CtService {
 	public List<CustVO> custList();
 	//계약 수정처리
 	public Map<String, Object> ctUpdate(CtVO ctVO, String[] modIds);
+	//고객사 관리자 계약조회
+	public List<CtVO> custCtList(String custNo);
+	//고객사 정기결제 갱신
+	public int ctPayCheck(CtVO ctVO);
 }

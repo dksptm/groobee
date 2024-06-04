@@ -26,9 +26,10 @@
 										<td class="form-control">결제상태</td>
 										<td><select class="form-select payStat">
 												<option value="statAll">전체</option>
-												<option value="0D3d">미결제</option>
+												<option value="0D3d">결제취소</option>
 												<option value="0D1d">결제대기</option>
 												<option value="0D2d">결제완료</option>
+												<option value="0D4d">최초결제인증</option>
 										</select></td>
 										<td>
 										<button class="btn btn-outline-success searchbtn"
@@ -84,7 +85,12 @@
 											<td>[[ ${PayVO.servAmt} ]]</td>
 											<td>[[ ${PayVO.payTypeName} ]]</td>
 											<td>[[ ${PayVO.payStatName} ]]</td>
-											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
+											<th:block th:if="${PayVO.payExpcDt == null}" >
+												<td>결제대기중</td>											
+											</th:block>
+											<th:block th:unless="${PayVO.payExpcDt == null}" >
+												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
+											</th:block>
 											<th:block th:if="${PayVO.payCmpltDt == null}" >
 												<td>미입금</td>											
 											</th:block>

@@ -17,18 +17,24 @@
 	</resultMap>
 
 	<!-- 로그인한 사원의 deptId로 해당 부서의 사원목록 가져오기.  -->
-	<select id="selectMyDept" resultMap="deptMap">
+	<select id="selectMyDept" parameterType="EmpVO" resultMap="deptMap">
 		SELECT dt.dept_id
 		       ,dt.dept_name
 		       ,e.emp_id
 		       ,e.job_no
 		       ,e.emp_name
 		       ,j.job_title
-		FROM dept dt JOIN emp e
-		            ON(dt.dept_id = e.dept_id)
-		           JOIN jobs j
-		            ON(e.job_no = j.job_no)
-		WHERE dt.dept_id = #{did}
+		FROM   dept dt JOIN emp e
+			             ON(dt.dept_id = e.dept_id)
+			           JOIN jobs j
+			             ON(e.job_no = j.job_no)
+		WHERE  dt.cust_no = #{emp.custNo}
+			<if test="!emp.permId.equals('1C2c')">
+		   		AND  (
+		   				dt.dept_id = #{emp.deptId}
+		   			or	j.perm_id = '1C2c'
+		   			)
+			</if>
 		ORDER BY job_no
 	</select>
 	
@@ -47,17 +53,16 @@
 		WHERE dt.cust_no = #{cno}
 		ORDER BY dt.dept_id, e.job_no	
 	</select>
-	
-	
+
 	<!-- 부서 전체 목록 -->
 	<select id="selectDeptAll" resultType="DeptVO">
-		SELECT dept_id
-		            ,cust_no
-		            ,dept_name
-		            ,dept_loc
-		            ,dept_info
-		            ,dept_mngr
-		FROM dept
+		SELECT  dept_id
+	            ,cust_no
+	            ,dept_name
+	            ,dept_loc
+	            ,dept_info
+	            ,dept_mngr
+		FROM   dept
 	</select>	
 	
 	<!-- 프로젝트 등록시 가져올 책임자 목록 -->	

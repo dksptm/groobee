@@ -15,10 +15,10 @@ public class EmailFileInfoController {
 	@Autowired
 	EmailFileUploadService emailFileUploadService;
 	
-	@PostMapping("/EmailFileUpload")
+	@PostMapping("cust/EmailFileUpload")
 	@ResponseBody
 	public void uploadFile(@RequestPart MultipartFile[] uploadFiles, String empId, String senEmailNo) {
-	    emailFileUploadService.uploadFileInfo(uploadFiles,empId,senEmailNo);
+	    emailFileUploadService.uploadFileInfo(uploadFiles);
 	}
 	
 }

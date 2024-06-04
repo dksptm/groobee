@@ -56,8 +56,6 @@
 		        FROM   task_common tc JOIN regu_stad rs 
 		        				      ON (rs.regu_id = tc.standard_no)
 		        WHERE  rs.cust_no = #{emp.custNo}
-		        
-		        
 		      ) g
 		WHERE 
 			  g.rn = 1
@@ -279,7 +277,10 @@
 							</when>
 							<when test="emp.permId.equals('1C3c')">
 								rs.cust_no = #{emp.custNo}
-								AND (rs.resp_emp_id = #{emp.empId} or tc.dept_id = #{emp.deptId})
+								AND (   rs.resp_emp_id = #{emp.empId} 
+									 or tc.dept_id = #{emp.deptId}
+								     or tc.task_no IN (SELECT task_no FROM task_emps WHERE task_emp_id = #{emp.empId})
+									)
 							</when>
 							<otherwise>
 								rs.cust_no = #{emp.custNo}
@@ -316,7 +317,7 @@
 		AND   
 				g.rn > (#{sch.page} - 1) * 10
 	</select>
-			
+	<!-- 위의 업무번호기준 전체조회 카운트. -->		
 	<select id="countReguTasks" parameterType="map" resultType="int">
 		SELECT count(*)
 		FROM   task_common tc JOIN regu_stad rs
@@ -332,7 +333,10 @@
 				</when>
 				<when test="emp.permId.equals('1C3c')">
 					rs.cust_no = #{emp.custNo}
-					AND (rs.resp_emp_id = #{emp.empId} or tc.dept_id = #{emp.deptId})
+					AND (   rs.resp_emp_id = #{emp.empId} 
+						 or tc.dept_id = #{emp.deptId}
+					     or tc.task_no IN (SELECT task_no FROM task_emps WHERE task_emp_id = #{emp.empId})
+						)
 				</when>
 				<otherwise>
 					rs.cust_no = #{emp.custNo}
@@ -364,6 +368,7 @@
 			</if>
 	</select>
 	
+	<!-- 상시업무관리에서 전체조회(상위) -->
 	<select id="selectReguStadAll" parameterType="map" resultType="ProjectVO">
 		SELECT  g.rn 
 		       ,g.regu_id
@@ -413,7 +418,7 @@
 		WHERE g.rn <![CDATA[<=]]> (#{sch.page} * 10)
 		AND   g.rn > (#{sch.page} - 1) * 10	
 	</select>
-	
+	<!-- 위의 상시업무(상위) 전체조회 카운트. -->
 	<select id="countRegus" parameterType="map" resultType="int">
 		SELECT  COUNT(*)
 		FROM  
@@ -426,7 +431,6 @@
 		                                         ,dept_id
 		                                  FROM   task_common
 		                                  WHERE  task_type = '5A2a'
-		                                  AND    prjt_mat = '5B1b' 
 		                                  GROUP BY standard_no, task_name, dept_id) tc
 		                              ON (rs.regu_id = tc.standard_no)
 		        WHERE  rs.cust_no = #{emp.custNo}
@@ -448,6 +452,7 @@
 		      ) g	
 	</select>
 	
+	<!-- 상위 단건조회 -->
 	<select id="selectReguStad" parameterType="map" resultType="ProjectVO">
 		SELECT  
 		        rs.regu_id
@@ -490,5 +495,21 @@
 		    </if>
 		AND    rs.regu_id = #{rid}	
 	</select>
+	
+	<!-- 수정(2개) -->
+	<update id="updateReguStad" parameterType="ProjectVO">
+		UPDATE regu_stad
+		SET    cre_type   = #{regu.creType}
+		       ,cre_perd  = #{regu.crePerd}
+		       ,active    = #{regu.active}
+		WHERE  regu_id = #{regu.reguId}
+	</update>
+
+	<update id="updateTasks" parameterType="ProjectVO">
+		UPDATE task_common
+		SET    task_purpose = #{regu.taskPurpose}
+		       ,task_cntn   = #{regu.taskCntn}
+		WHERE  standard_no = #{regu.reguId}
+	</update>
 
 </mapper>

@@ -33,22 +33,20 @@ public class WorkServiceImpl implements WorkService{
 		return workMapper.workcount(worksearchVO);
 	}
 	
+	
 	// 출근 수정
 	@Override
-	public Map<String, Object> workin(WorkVO workVO) {
-		Map<String, Object> map = new HashMap<>();
-		boolean isSuccessed = false;
+	public int workin(WorkVO workVO) {
+		int result = 0;
+		int workInCheck = workMapper.workincheck(workVO);
 		
-		int result = workMapper.workin(workVO);
-		
-		if(result == 1) {
-			isSuccessed = true;
+		if(workInCheck == 1) {
+			result = -1;
+		}else {
+		  workMapper.workin(workVO);
+		  result = 0;	
 		}
-		
-		map.put("result", isSuccessed);
-		map.put("target", workVO);
-		
-		return map;
+		return result;
 	}
 	// 퇴근 수정	
 	@Override
@@ -61,7 +59,6 @@ public class WorkServiceImpl implements WorkService{
 		if(result == 1) {
 			isSuccessed = true;
 		}
-		
 		map.put("result", isSuccessed);
 		map.put("target", workVO);
 		
@@ -73,6 +70,7 @@ public class WorkServiceImpl implements WorkService{
 	public List<WorkManagerVO> managerWorkList(WorkManagerSearchVO workmanagersearchVO) {
 		return workMapper.managerWorkList(workmanagersearchVO);
 	}
+	
 	// 페이지 상세조회
 	@Override
 	public WorkVO selectWork(WorkVO workVO) {
@@ -94,7 +92,6 @@ public class WorkServiceImpl implements WorkService{
 	public Map<String, Object> update(WorkVO workVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
-		System.err.println(workVO.getEmpId());
 		int result = workMapper.update(workVO);
 		
 		if(result == 1) {
@@ -130,6 +127,8 @@ public class WorkServiceImpl implements WorkService{
 	public WorkVO selectemp(WorkVO workVO) {
 		return workMapper.selectemp(workVO);
 	}
+
+
 	
 	
 

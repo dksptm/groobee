@@ -108,23 +108,25 @@
 						class="menu-link">
 							<div>프로젝트 업무조회</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/cust/regu/list}"
-						class="menu-link">
-							<div>상시(주기적)업무조회</div>
-					</a></li>
-					<li class="menu-item"
-						sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
-						<a th:href="@{/cust/regu/stadList}" class="menu-link">
-							<div>상시(주기적)업무관리</div>
-					</a></li>
-					<li class="menu-item"><a th:href="@{/cust/regu/insert}"
-						class="menu-link">
-							<div>상시(주기적)업무등록</div>
-					</a></li>
 					<li class="menu-item"><a th:href="@{/cust/prjtInsert}"
 						class="menu-link">
 							<div>프로젝트 등록</div>
 					</a></li>
+					<li class="menu-item"><a th:href="@{/cust/regu/list}"
+						class="menu-link">
+							<div>상시업무 조회</div>
+					</a></li>
+					<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
+					<li class="menu-item"
+						sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
+						<a th:href="@{/cust/regu/stadList}" class="menu-link">
+							<div>상시업무 관리</div>
+					</a></li>
+					<li class="menu-item"><a th:href="@{/cust/regu/insert}"
+						class="menu-link">
+							<div>상시업무 등록</div>
+					</a></li>
+					</th:block>
 					<li class="menu-item"><a th:href="@{/cust/coopAllList}"
 						class="menu-link">
 							<div>협력업체목록</div>
@@ -189,12 +191,12 @@
 					<li class="menu-item"><a href="#" class="menu-link">
 							<div>직급 관리</div>
 					</a></li>
-					<li class="menu-item"><a href="#" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/admin/payAndCt}" class="menu-link">
 							<div>결제/계약 관리</div>
 					</a></li>
-					<li class="menu-item"><a href="#" class="menu-link">
+					<!-- <li class="menu-item"><a href="#" class="menu-link">
 							<div>유지보수 관리</div>
-					</a></li>
+					</a></li> -->
 				</ul></li>
 		</th:block>
 		</th:block>
@@ -202,7 +204,7 @@
 		<!-- 솔루션 기능 -->
 		<th:block sec:authorize="hasAuthority('1C1c')">
 			<!-- 메인화면 메뉴 -->
-			<li class="menu-item"><a href="/solHome" class="menu-link">
+			<li class="menu-item"><a th:href="@{/home}" class="menu-link">
 					<i class="menu-icon tf-icons bx bx-home-circle"></i>
 					<div>메인</div>
 			</a></li>
@@ -249,19 +251,19 @@
 					<div>모듈/템플릿 관리</div>
 			</a>
 				<ul class="menu-sub">
-					<li class="menu-item"><a th:href="@{/solModList}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/sol/modList}" class="menu-link">
 							<div>보유모듈목록</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/solTempList}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/sol/tempList}" class="menu-link">
 							<div>템플릿 관리</div>
 					</a></li>
 				</ul></li>
 
 			<!-- 유지보수 메뉴 -->
-			<li class="menu-item"><a href="#" class="menu-link"> <i
+			<!-- <li class="menu-item"><a href="#" class="menu-link"> <i
 					class="menu-icon tf-icons bx bx-support"></i>
 					<div>유지보수</div>
-			</a></li>
+			</a></li> -->
 		</th:block>
 	</ul>
 

@@ -89,6 +89,7 @@ public class TaskController {
 			return "project/task/insert";
 		}
 		
+		@ResponseBody
 		@PostMapping("cust/taskInsert")
 		public String taskInsertProcess(@RequestBody ProjectVO projectVO,Model model) {
 			
@@ -101,10 +102,10 @@ public class TaskController {
 			model.addAttribute("task", new ProjectVO());
 			
 			int taskNo = taskService.taskInsert(projectVO);
-			
+			System.out.println("taskNo---->" + taskNo);
 
 			if (taskNo > -1) {
-				return"redirect:/cust/taskAllList";
+				return "" + taskNo;
 			} else {
 				return"test/test";
 			}
@@ -122,21 +123,9 @@ public class TaskController {
 		@ResponseBody
 		@PutMapping("cust/taskOk/{taskNo}")
 		public Map<String, Object> taskOk(@PathVariable Integer taskNo, @RequestBody ProjectVO projectVO) {
-			//System.out.println("프로젝트VO=====>" + projectVO);
+			System.out.println("프로젝트VO=====>" + projectVO);
 			return taskService.taskOk(projectVO);
 		}
-		
-		/*
-		 * // 프로젝트(하위) 업무 수정
-		 * 
-		 * @PostMapping("cust/taskUpdate/{taskNo}") public String
-		 * taskUpdate(@PathVariable int taskNo, Model model) { ProjectVO projectVO = new
-		 * ProjectVO(); projectVO.setTaskNo(taskNo);
-		 * 
-		 * ProjectVO findVO = taskService.taskInfo(taskNo);
-		 * model.addAttribute("taskInfo", findVO); return "project/task/list"; }
-		 */
-		
 		
 		// 협력업체 전체 조회
 		@GetMapping("cust/coopAllList")
@@ -176,7 +165,6 @@ public class TaskController {
 				model.addAttribute("TaskDTO", taskDTO);
 				return "project/coopCo/clist :: #coTable";
 		}
-		
 		
 		// 협력업체 단건조회.
 		@GetMapping("cust/coopInfo")
@@ -227,13 +215,31 @@ public class TaskController {
 			model.addAttribute("coopInfo", findVO);
 			return "project/coopCo/clist";
 		}
+
+		//효주 -----
+		@GetMapping("cust/custTasks")
+		public String getMyTasks(@RequestParam String custNo, Model model) {
+			List<ProjectVO> list = projectService.myCustTasks(custNo);
+			model.addAttribute("tasks", list);
+			return "approval/modal/modal_tasks";
+		}
+		//---- 효주.
+		
+}
 		
 		/*
+		 // 프로젝트(하위) 업무 수정
+		  
+		  @PostMapping("cust/taskUpdate/{taskNo}") public String
+		 taskUpdate(@PathVariable int taskNo, Model model) { ProjectVO projectVO = new
+		  ProjectVO(); projectVO.setTaskNo(taskNo);
+		  
+		  ProjectVO findVO = taskService.taskInfo(taskNo);
+		  model.addAttribute("taskInfo", findVO); return "project/task/list"; }
 		  @ResponseBody public Map<String, Object> coopUpdateProcessAjax(@RequestBody
 		  ProjectVO projectVO) { return taskService.coopUpdate(projectVO); }
 		 
 		  // 협력업체 삭제
-		 
 		  @GetMapping("cust/coopDelete") public String coopDelete(ProjectVO projectVO)
 		  { taskService.coopDelete(projectVO); return "redirect:cust/coopAllList"; }
 		 
@@ -250,15 +256,3 @@ public class TaskController {
 		    }
 		    return "redirect:coopAllList";
 		}*/
-		
-				
-		//효주 -----
-		@GetMapping("cust/custTasks")
-		public String getMyTasks(@RequestParam String custNo, Model model) {
-			List<ProjectVO> list = projectService.myCustTasks(custNo);
-			model.addAttribute("tasks", list);
-			return "approval/modal/modal_tasks";
-		}
-		//---- 효주.
-		
-}

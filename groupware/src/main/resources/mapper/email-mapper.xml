@@ -28,7 +28,10 @@
 			               s.sen_email_no, 
 			               s.title,
 						   s.sender,
-						   s.sent_dt
+						   s.sent_dt, 
+						   id_to_the_name(sender) AS sender_name,
+                           id_to_the_name(recp) AS recp_name,
+                           id_to_the_name(refer) AS refer_name
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
 				    WHERE  r.email_stat = '3B1b' 
@@ -80,15 +83,18 @@
 
 	<!-- inbox 상세조회 -->
 <select id="selectInbox" resultType="EmailVO">
-        SELECT s.sen_email_no AS senEmailNo,
-           r.rec_email_no AS recEmailNo,
-           s.sender AS sender,
-           r.recp AS recp,
-           r.refer AS refer,
-           s.title AS title,
-           s.cntn AS cntn,
+    SELECT s.sen_email_no,
+           r.rec_email_no,
+           s.sender,
+           r.recp,
+           r.refer,
+           s.title,
+           s.cntn,
            r.email_stat,
-           r.cust_no AS custNo
+           r.cust_no,
+           id_to_the_name(sender) AS sender_name,
+           id_to_the_name(recp) AS recp_name,
+           id_to_the_name(refer) AS refer_name
     FROM   email s JOIN inbox r 
                    ON s.sen_email_no = r.sen_email_no
     WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}
@@ -126,34 +132,36 @@
   	
 <!-- 첨부파일 등록. -->
 	<insert id="insertEmailFile" parameterType="EmailFileVO">
-		<selectKey keyProperty="fileNo"
-				   resultType="Integer"
-				   order="BEFORE">
-			SELECT NVL(MAX(file_no), 0) + 1
+		<selectKey keyProperty="fno" resultType="int" order="BEFORE">
+			SELECT NVL(TO_NUMBER(MAX(file_no)), 0) + 1
 			FROM email_file
 		</selectKey>
-		INSERT INTO email_file
-		        (
-		            file_no
-		            ,sen_email_no
-		            ,save_name
-		            ,upl_name
-		            ,file_ext
-		            ,file_dt
-		            ,file_size
-		            ,upl_emp      
-		        )
-		  VALUES
-		        (
-		         #{fileNo}
-		        ,#{senEmailNo}
-		        ,#{saveName}
-		        ,#{uplName}
-		        ,#{fileExt}
-		        ,SYSDATE
-		        ,#{fileSize}
-		        ,#{uplEmp}
-		        )	
+		INSERT ALL
+			<foreach collection="files" item="file" index="no">
+			INTO email_file
+			        (
+			            file_no
+			            ,sen_email_no
+			            ,save_name
+			            ,upl_name
+			            ,file_ext
+			            ,file_dt
+			            ,file_size
+			            ,upl_emp      
+			        )
+			  VALUES
+			        (
+			         #{fno} + #{no}
+			        ,#{file.senEmailNo}
+			        ,#{file.saveName}
+			        ,#{file.uplName}
+			        ,#{file.fileExt}
+			        ,SYSDATE
+			        ,#{file.fileSize}
+			        ,#{file.uplEmp}
+			        )	
+			</foreach>
+		SELECT * FROM DUAL
 	</insert>  	
   	
   <!-- 보낸메일함 전체조회 -->	
@@ -170,7 +178,10 @@
 			               s.email_stat AS sstat,
 			               s.title,
 						   s.sender,
-						   s.sent_dt
+						   s.sent_dt,
+						   id_to_the_name(sender) AS sender_name,
+           				   id_to_the_name(recp) AS recp_name,
+           				   id_to_the_name(refer) AS refer_name
 				    FROM email s JOIN inbox r
 							     ON (s.sen_email_no = r.sen_email_no)
 				    WHERE s.email_stat = '3B1b'
@@ -217,14 +228,17 @@
   	
   	<!-- 보낸메일 상세조회 -->
   	<select id="selectEmail" resultType="EmailVO">
-    SELECT s.sen_email_no AS senEmailNo,
-           s.sender AS sender,
-           r.recp AS recp,
-           r.refer AS refer,
-           s.title AS title,
-           s.cntn AS cntn,
+    SELECT s.sen_email_no,
+           s.sender,
+           r.recp,
+           r.refer,
+           s.title,
+           s.cntn,
            s.email_stat,
-           r.cust_no AS custNo
+           r.cust_no,
+           id_to_the_name(sender) AS sender_name,
+           id_to_the_name(recp) AS recp_name,
+           id_to_the_name(refer) AS refer_name
     FROM   email s JOIN inbox r 
                    ON s.sen_email_no = r.sen_email_no
     WHERE s.sen_email_no = #{senEmailNo, jdbcType=VARCHAR}

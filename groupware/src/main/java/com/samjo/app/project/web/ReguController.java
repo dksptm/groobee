@@ -46,11 +46,10 @@ public class ReguController {
 		if(empVO != null) {
 			
 			List<EmpVO> resp = deptService.myDeptMngrs(empVO); // 책임자.
-			DeptVO dept = deptService.myDeptEmps(empVO.getDeptId()); // 우리부서 모든사원.
+			List<DeptVO> depts = deptService.myDeptEmps(empVO); // 우리부서 모든사원.				
 			List<ProjectVO> regus = reguService.reguStadList(empVO); // 기존상시업무목록.
-			
 			model.addAttribute("resp", resp);					
-			model.addAttribute("dept", dept);					
+			model.addAttribute("depts", depts);					
 			model.addAttribute("regus", regus);					
 			model.addAttribute("taskRegu", new ProjectVO());
 			
@@ -64,22 +63,22 @@ public class ReguController {
 	
 	// 상시업무등록 - 등록.
 	@PostMapping("cust/regu/insert")
-	public String reguInsertProcess(ProjectVO projectVO, String flag) {
-		int result = 0;
+	public String reguInsertProcess(ProjectVO regu, String flag) {
+		String result = null;
 		
 		// (flag == YES) => 기존 상시업무에 등록.
 		if(flag.equals("YES")) {
 			
-			result = reguService.reguCommonInsert(projectVO);
-			if(result > 0) {
-				return "redirect:/cust/regu/info?taskNo=" + result;
+			result = reguService.reguCommonInsert(regu);
+			if(result != null) {
+				return "redirect:/cust/regu/stadInfo?reguId=" + regu.getReguId();
 			}
 			
 		} else if(flag.equals("NO")) {
 			
-			result = reguService.reguStadInsert(projectVO);
-			if(result > 0) {
-				return "redirect:/cust/regu/info?taskNo=" + result;
+			result = reguService.reguStadInsert(regu);
+			if(result != null) {
+				return "redirect:/cust/regu/stadInfo?reguId=" + regu.getReguId();
 			}
 			
 		} 
@@ -184,23 +183,19 @@ public class ReguController {
 		
 		checkSearch(searchVO);
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		System.out.println(searchVO.getPage());
 		
 		if(empVO != null) {
 			
-			System.out.println(searchVO);
 			List<ProjectVO> list = reguService.reguList(empVO, searchVO);
 			int count = reguService.countRegus(empVO, searchVO);
 			PageDTO pageDTO = new PageDTO(searchVO.getPage(), count);
 			
-			if(empVO.getPermId().equals("1C2c")) {
-				List<DeptVO> depts = deptService.myCustDepts(empVO);				
-				model.addAttribute("depts", depts);
-			} 
-			
+			System.out.println(searchVO.getPage());
 			model.addAttribute("list", list);
 			model.addAttribute("pageDTO", pageDTO);
 			model.addAttribute("search", searchVO);
-			model.addAttribute("path", "stadList"); 
+			model.addAttribute("path", "stadList/sch"); 
 			
 			return "project/regu/stadList :: #stadListArea";				
 			
@@ -239,6 +234,31 @@ public class ReguController {
 		}
 	
 		return "test/test";
+	}
+	
+	// 수정 - 양식.
+	@GetMapping("cust/regu/update")
+	public String reguUpdateForm(Model model, @RequestParam String reguId) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO != null) {
+			
+			ProjectVO regu = reguService.reguStadInfo(empVO, reguId);
+			model.addAttribute("regu", regu);
+			
+			return "project/regu/stadUpdate";
+			
+		} else {
+			
+			return "test/test";
+		}
+	}
+	
+	// 수정 - 처리.
+	@PostMapping("cust/regu/update")
+	@ResponseBody
+	public Map<String, Object> reguUpdateProcess(@RequestBody ProjectVO regu) {
+		return reguService.reguUpdate(regu);
 	}
 	
 	// SearchVO check

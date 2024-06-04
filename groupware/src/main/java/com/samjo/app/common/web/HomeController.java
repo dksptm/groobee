@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -26,17 +27,20 @@ public class HomeController {
 	}
 
 	// 로그인 페이지
-		@GetMapping("/loginPage")
-		public String loginPage(Model model) {
-			return "common/login";
-		}
+	@GetMapping("/loginPage")
+	public String loginPage(Model model,
+            @RequestParam(value="error", required = false) String error,
+            @RequestParam(value = "exception", required = false) String exception) {
+			model.addAttribute("error", error);
+	        model.addAttribute("exception", exception);
+	        System.out.println("error : "+ error);
+	        System.out.println("exception : "+ exception);
+		return "common/login";
+	}
 	
 	// 고객사 메인페이지
 	@GetMapping("/home")
 	public String HomePage(Model model) {
-		if (session != null) {
-			session.invalidate();
-		}
 		return "test/test";
 	}
 

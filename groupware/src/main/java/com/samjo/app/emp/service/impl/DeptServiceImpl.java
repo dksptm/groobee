@@ -2,6 +2,7 @@ package com.samjo.app.emp.service.impl;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,8 @@ public class DeptServiceImpl implements DeptService {
 	}
 
 	@Override
-	public DeptVO myDeptEmps(String deptId) {
-		return deptMappr.selectMyDept(deptId);
+	public List<DeptVO> myDeptEmps(EmpVO empVO) {
+		return deptMappr.selectMyDept(empVO);
 	}
 
 	@Override

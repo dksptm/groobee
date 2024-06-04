@@ -14,8 +14,7 @@ public interface WorkService {
 	public List<WorkVO> selectlist(WorkSearchVO worksearchVO);
 	
 	// 출근버튼
-	public Map<String, Object> workin(WorkVO workVo);
-	
+	public int workin(WorkVO workVo);
 	// 퇴근버튼
 	public Map<String, Object> workout(WorkVO workVo);
 	

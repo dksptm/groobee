@@ -162,14 +162,22 @@ WHERE l.rn > (#{page} -1) * 5
 	<update id="workin">
 	UPDATE wk
 	SET wk_in = sysdate,
-	    wk_stat = '2B1b'
+	    wk_stat = '2B1b',
+	    wk_in_loc = #{wkInLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
+	
+	<select id="workincheck">
+	SELECT COUNT(wk_in)
+	FROM WK
+	WHERE emp_id = #{empId} AND dt = #{dt}
+	</select>
 	
 	<!-- 퇴근을 입력하기위해... 중복이됨.-->
 	<update id="workout">
 	UPDATE wk
-	SET wk_out = sysdate
+	SET wk_out = sysdate,
+	    wk_out_loc = #{wkOutLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
 	
@@ -177,7 +185,8 @@ WHERE l.rn > (#{page} -1) * 5
 	<update id="workstop">
 	UPDATE wk
 	SET wk_out = sysdate,
-	    wk_stat = '2B4b'
+	    wk_stat = '2B4b',
+	    wk_out_loc = #{wkOutLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
    

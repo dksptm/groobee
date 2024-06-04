@@ -1,6 +1,8 @@
 package com.samjo.app.email.web;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -104,6 +106,7 @@ public class EmailController {
 		// VO 객체에 Service의 실행 결과를 담는다
 		// 데이터를 전달하는 model 객체에 rfindVO와 페이지에 제공될 이름 "emailInfo"를 담는다
 		EmailVO emailVO = emailService.inboxInfo(senEmailNo);
+		//emailService.getEmpName(emailVO);
 		String recp = emailVO.getRecp();
 		String refer = emailVO.getRefer();
 		String userId = currentUser.getEmpId();
@@ -116,7 +119,7 @@ public class EmailController {
 		        return "redirect:/home";
 		    }
 		}
-		
+		System.out.println("지금 VO에 담긴 첨부파일 : " + emailVO.getFiles());
 		model.addAttribute("emailVO", emailVO);
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
 
@@ -194,6 +197,7 @@ public class EmailController {
 		}
 
 		model.addAttribute("emailVO", emailVO);
+		System.out.println(emailVO.getFiles());
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
 
 		return "email/emailInfo";
@@ -238,15 +242,24 @@ public class EmailController {
 	public String emailSend(EmailVO emailVO, MultipartFile[] filelist) {
 		// 리퀘스트 바디(교재 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
 		// 수정. 그냥 폼데이터 받는걸로 변경
-		int SenEmailNo = emailService.emailInsert(emailVO);
-		if (SenEmailNo != -1) {
-			return "redirect:/cust/emailWrite";
-		}
+		
+		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
 		if (!filelist[0].isEmpty()) {
-			emailFileUploadService.uploadFileInfo(filelist, emailVO.getSender(), emailVO.getSenEmailNo());
+			fileInfoList = emailFileUploadService.uploadFileInfo(filelist);
 		}
-		return "redirect:/cust/emailList";
+		
+		//파일 저장과 인서트를 한 트랜잭션으로 묶는 작업.
+		int result = emailService.emailInsert(emailVO ,fileInfoList);
+		
+		if (result != -1) {
+			return "redirect:/cust/emailWrite";
+		} else if (result == 0) {
+			return "redirect:/cust/emailWrite";
+		} else {
+			return "redirect:/cust/emailList";
+		}
 	}
+	
 
 
 

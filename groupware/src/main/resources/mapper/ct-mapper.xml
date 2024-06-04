@@ -252,4 +252,23 @@
 		                WHERE c.cust_no = ct.cust_no)
 		ORDER BY c.cust_no
 	</select>
+	
+	<!-- 고객사 관리자 계약조회 -->
+	<select id="selectCustCt" resultType="CtVO">
+		SELECT ct_no,
+				cust_no,
+				ct_stat,
+				get_codename(ct.ct_stat) as ct_stat_name,
+				ct_amt,
+				pay_check
+		FROM ct
+		WHERE cust_no = #{custNo}
+	</select>
+	
+	<!-- 계약 정기결제 갱신 -->
+	<update id="ctPayCheck" parameterType="CtVO">
+		UPDATE ct
+		SET pay_check = #{payCheck}
+		WHERE ct_no = #{ctNo}
+	</update>
 </mapper>

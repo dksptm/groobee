@@ -12,6 +12,7 @@
 			</tr>
 		</thead>
 		<tbody>
+			<th:block th:each="dept : ${depts}">
 			<th:block th:each="emp : ${dept.emps}">
 			<tr th:if="${emp.empId != #authentication.principal.empId}" th:attr="data-emp=${emp.empId}">
 				<td><input type="checkbox" name="chk-list1" class="form-check-input"></td>
@@ -19,6 +20,7 @@
 				<td>[[ ${emp.empName} ]]</td>
 				<td>[[ ${emp.jobTitle} ]]</td>
 			</tr>
+			</th:block>
 			</th:block>
 		</tbody>
 	</table>

@@ -4,32 +4,31 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-10">
-				<h5 class="card-header">프로젝트 상세조회</h5>
-
-				<div class="card-body">
-					<input type="hidden" th:value="${pjlist.prjtId}" id="prjtId" />
+		<div class="container container-p-y mt-3">
+			<h2>프로젝트 상세조회</h2>
+			<div class="bg-light p-3 m-5">
+				<div class="table-responsive">
+					<input type="hidden" th:value="${prjt.prjtId}" id="prjtId" readonly />
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>프로젝트ID</th>
-								<td id="pid">[[ ${pjlist.prjtId}]]</td>
+								<td id="pid">[[ ${prjt.prjtId}]]</td>
 								<th>프로젝트명</th>
-								<td>[[ ${pjlist.prjtName}]]</td>
+								<td>[[ ${prjt.prjtName}]]</td>
 								<th>책임자</th>
-								<td>[[ ${pjlist.empName}]]</td>
+								<td>[[ ${prjt.empName}]]</td>
 								<th>진행상황</th>
-								<td>[[ ${pjlist.prjtStat}]]</td>
+								<td>[[ ${prjt.prjtStat}]]</td>
 							</tr>
 						</table>
 						<br>
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>시작일</th>
-								<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
+								<td>[[ ${#dates.format(prjt.prjtStartDt, "yyyy-MM-dd")}]]</td>
 								<th>마감일</th>
-								<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")}]]</td>
+								<td>[[ ${#dates.format(prjt.prjtDueDt, "yyyy-MM-dd")}]]</td>
 							</tr>
 						</table>
 						<br>
@@ -37,24 +36,54 @@
 							<thead>
 								<tr>
 									<th>목적</th>
-									<td>[[ ${pjlist.purpose}]]</td>
+									<td>[[ ${prjt.purpose}]]</td>
 									<th>개요</th>
-									<td>[[ ${pjlist.smry}]]</td>
+									<td>[[ ${prjt.smry}]]</td>
 								</tr>
 							</tbody>
 						</table>
 						<br>
-
-						<div style="text-align: center">
-							<button type="button" class="btn btn-secondary  mt-2"
-								onclick="goToList()">프로젝트 목록으로</button>
+						<div style="text-align: end">
+							<button type="button" class="btn btn-light  mt-2"
+								onclick="goToList()">프로젝트목록</button>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div class="bg-light p-3 m-5">
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>업무번호</th>
+								<th>업무상황</th>
+								<th>업무명</th>
+								<th>업무시작일</th>
+								<th>업무마감일</th>
+								<th>참여인원</th>
+								<th>진행도</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="task : ${list}"> 
+								<tr th:onclick="|location.href='@{/cust/tsInfo/{tno}(tno=${task.taskNo})}'|">
+									<td>[[ ${task.taskNo} ]]</td>
+									<td>[[ ${task.prjtMat} ]]</td>
+									<td>[[ ${task.taskName} ]]</td>
+									<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
+									<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
+									<td>[[ ${task.participantsCnt} ]] 명</td>
+									<td>[[ ${task.progress} ]] %</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 
 		<script>
+		
 			const token = document.querySelector('meta[name="_csrf"]')
 					.getAttribute('content');
 			const header = document.querySelector('meta[name="_csrf_header"]')
@@ -64,35 +93,7 @@
 			function goToList() {
 				window.location.href = '/cust/prjtAllList';
 			}
-			/*// 업무 목록으로 
-			function goToTaskList() {
-				window.location.href = '/cust/taskAllList';
-			}
 
-			 	// 삭제버튼 : 삭제 후 리스트로 이동 
-				$(function() {
-					$('#prjtDelBtn').on('click', function() {
-
-						let prjtId = $(this).data('prjtId');
-						console.log(prjtId); 
-
-					 	$.ajax({
-							type : 'POST',
-							url : '/cust/prjtDelete' ,
-							data : { prjtId: prjtId },	
-							dataType : 'json',
-							beforeSend: function(xhr) {
-						        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
-						    },
-							success : function(result) {
-								alert('삭제에 성공했습니다.');
-							},
-							error : function(error) {
-								alert('삭제에 실패했습니다.');
-							}
-						}); 
-					});
-				});  */
 		</script>
 	</th:block>
 </body>

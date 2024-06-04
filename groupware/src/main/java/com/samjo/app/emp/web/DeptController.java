@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -24,8 +25,11 @@ public class DeptController {
 	
 	@GetMapping("cust/deptEmps")
 	public String deptEmps(@RequestParam String deptId, Model model) {
-		DeptVO findDept = deptService.myDeptEmps(deptId);
-		model.addAttribute("dept", findDept);
+		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		List<DeptVO> findDept = deptService.myDeptEmps(empVO);
+		model.addAttribute("depts", findDept);
 		return "approval/modal/modal_aprs";
 	}
 

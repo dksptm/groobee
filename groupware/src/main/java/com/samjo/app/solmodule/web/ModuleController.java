@@ -47,7 +47,7 @@ public class ModuleController {
 	 * @param model
 	 * @return 
 	 */
-	@GetMapping("solModList")
+	@GetMapping("sol/modList")
 	public String moddulePage(Model model) {
 		List<ModuleVO> list = moduleservice.modList();
 		model.addAttribute("list", list);
@@ -60,7 +60,7 @@ public class ModuleController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("solTempList")
+	@GetMapping("sol/tempList")
 	public String tempList(SearchVO searchVO, Model model) {
 		if (searchVO.getPage() <= 0) {
 			searchVO.setPage(1);
@@ -79,7 +79,7 @@ public class ModuleController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("solTempInfo/{tempNo}")
+	@GetMapping("sol/tempInfo/{tempNo}")
 	public String tempInfo(@PathVariable String tempNo, Model model) {
 		TempVO tempVO = moduleservice.tempInfo(tempNo);
 		model.addAttribute("tempVO", tempVO);
@@ -93,7 +93,7 @@ public class ModuleController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("insertSolTemp")
+	@GetMapping("sol/insertSolTemp")
 	public String InsertTemplate(TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
 		model.addAttribute("custlist", list);
@@ -108,7 +108,7 @@ public class ModuleController {
 	 * @param binaryData
 	 * @return
 	 */
-	@PostMapping("insertSolTemp")
+	@PostMapping("sol/insertSolTemp")
 	@ResponseBody
 	public String tempInsert(@ModelAttribute TempVO tempVO, @RequestParam("imgSrc") String binaryData) {
 		tempVO.setTempImg(moduleservice.saveImg(binaryData));
@@ -122,7 +122,7 @@ public class ModuleController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("updateSolTemp")
+	@GetMapping("sol/updateSolTemp")
 	public String UpdateTemplate(@ModelAttribute TempVO tempVO, Model model) {
 		List<CustVO> list = moduleservice.custList();
 		model.addAttribute("custlist", list);
@@ -139,7 +139,7 @@ public class ModuleController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("tempUpdate/{id}")
+	@PostMapping("sol/tempUpdate/{id}")
 	public String tempUpdate(@PathVariable String id, @ModelAttribute TempVO tempVO, Model model) {
 		tempVO.setTempNo(id);
 		moduleservice.tempUpdate(tempVO);
@@ -152,12 +152,12 @@ public class ModuleController {
 	 * @param id
 	 * @return
 	 */
-	@GetMapping("tempDelete/{id}")
+	@GetMapping("sol/tempDelete/{id}")
 	public String tempDelete(@PathVariable String id) {
 		TempVO tempVO = new TempVO();
 		tempVO.setTempNo(id);
 		moduleservice.tempDelete(tempVO);
-		return "redirect:/solTempList";
+		return "redirect:/sol/tempList";
 	}
 
 	// 미리보기 이미지 저장 샘플
