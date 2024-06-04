@@ -122,6 +122,15 @@ public class ProjectController {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 프로젝트 삭제
 		@PostMapping("cust/prjtDelete")
 		@ResponseBody
@@ -129,7 +138,8 @@ public class ProjectController {
 	        projectService.prjtDelete(prjtId);
 	        return  "project/prjt/pjList";
 	    	}
-}
+
+}// end 
 		
 
 	/*

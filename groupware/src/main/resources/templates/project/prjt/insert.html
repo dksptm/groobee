@@ -132,7 +132,7 @@
 							}//
 						}); //
 
-				// 등록
+				
 				// 등록
 				$('#prjtInsertBtn').on('click', function() {
 					let formData = $('#prjtForm').serialize();
@@ -148,7 +148,9 @@
 								text : '프로젝트 업무 등록이 성공했습니다.',
 								icon : 'success'
 							}).then(function() {
-								window.location.href = "/cust/prjtAllList"
+								 let prjtId = data.prjtId;
+								 console.log(prjtId)
+					                window.location.href = "/cust/pj/info?prjtId=" + prjtId;
 							})
 						},
 						error : function(err) {

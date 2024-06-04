@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">업무 수정</h5>
+
+				<div class="card-body">
+					<input type="hidden" th:value="${task.taskNo}" name="taskNo" />
+					<div class="table-responsive">
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>업무명</th>
+								<td><input type="text" class="form-control"
+									th:value="${task.taskName}" name="taskName" /></td>
+								<th>진행도</th>
+								<td><input type="number" class="form-control"
+									th:value="${task.progress}" name="progress" /> %</td>
+								<th>진행상황</th>
+								<td><input type="text" class="form-control"
+									th:value="${task.prjtMat}" name="prjtMat" /></td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<tr>
+								<th>시작일</th>
+								<td><input type="date" class="form-control"
+									th:value="${#dates.format(task.taskStartDt, 'yyyy-MM-dd')}"
+									name="taskStartDt" /></td>
+								<th>마감일</th>
+								<td><input type="date" class="form-control"
+									th:value="${#dates.format(task.taskDueDt, 'yyyy-MM-dd')}"
+									name="taskDueDt" /></td>
+							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>업무목적</th>
+									<td><input type="text" class="form-control"
+										th:value="${task.taskPurpose}" name="taskPurpose" /></td>
+									<th>업무내용</th>
+									<td><input type="text" class="form-control"
+										th:value="${task.taskCntn}" name="taskCntn" /></td>
+								</tr>
+							</tbody>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>부서명</th>
+									<td><select class="form-select" style="width: 200px"
+										th:field="*{deptId}">
+											<option value="">부서명</option>
+											<option th:each="dept : ${dept}" th:value="${dept.deptId}"
+												th:text="${dept.deptName}"></option>
+									</select></td>
+								</tr>
+								<tr>
+									<th>부서참여인원</th>
+									<td>
+										<button type="button" class="btn btn-primary" id="deptEmpBtn"
+											data-bs-toggle="modal" data-bs-target="#deptEmpModal">선택</button>
+										<table>
+											<tbody id="deptEmpList"></tbody>
+										</table>
+									</td>
+								</tr>
+							</thead>
+						</table>
+						<br>
+						<div style="text-align: center">
+							<button type="button" class="btn btn-primary mt-2" id="">수정완</button>
+							<button type="button" class="btn btn-primary mt-2" id="">목록으로</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<!------------------------------------------------ 모달 -------------------------------------------------->
+	<!-- 참여자 선택창  -->
+	<div class="modal fade" id="deptEmpModal" tabindex="-1"
+		aria-labelledby="deptEmpModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="text-align: center;">
+			<div class=" modal-content">
+				<div class="modal-header" style="text-align: center">
+					<h5 class="modal-title" id="deptEmpModal">참여자 선택</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<table class="table table-light table-sm">
+					<thead>
+						<tr>
+							<th>부서번호</th>
+							<th>부서명</th>
+							<th>직급명</th>
+							<th>사원이름</th>
+							<th>사원번호</th>
+							<th>선택</th>
+						</tr>
+					</thead>
+					<tbody id="empList">
+						<th:block th:each="emp : ${emp}">
+							<tr>
+								<td>[[ ${emp.deptId} ]]</td>
+								<td>[[ ${emp.deptName} ]]</td>
+								<td>[[ ${emp.jobTitle} ]]</td>
+								<td>[[ ${emp.empName} ]]</td>
+								<td>[[ ${emp.empId} ]]</td>
+								<td><input class="form-radio-input" type="checkbox"
+									name="empCheck"></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="deptEmpBtnM"
+						data-bs-dismiss="modal">등록</button>
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!------------------------------------------------ 모달 끝-------------------------------------------------->
+	<script>
+   
+		$(document).ready(function() {
+	        // 참여자 선택 모달 버튼 클릭 시 선택된 참여자 목록에 추가
+	        $('#deptEmpBtnM').click(function() {
+	            // 선택된 참여자 
+	            var selectedEmployees = [];
+	            $("input[name='empCheck']:checked").each(function () {
+	                var empId = $(this).closest('tr').find('td:eq(4)').text();
+	                var empName = $(this).closest('tr').find('td:eq(3)').text();
+	                selectedEmployees.push({ empId: empId, empName: empName });
+	            });
+	
+	            // 선택된 참여자 목록을 테이블에 추가
+	            $('#deptEmpList').empty();
+	            $.each(selectedEmployees, function(index, employee) {
+	                $('#deptEmpList').append('<tr><td>' + employee.empName + '</td><td><input type="hidden" name="empIds" value="' + employee.empId + '"></td></tr>');
+	            });
+	        });
+	
+	        // 수정완료 버튼 클릭 시 처리
+	        $('#updateBtn').click(function() {
+	            // 폼 데이터를 수집하여 AJAX 요청 처리
+	            var formData = {
+	                taskNo: $('input[name="taskNo"]').val(),
+	                taskName: $('input[name="taskName"]').val(),
+	                progress: $('input[name="progress"]').val(),
+	                prjtMat: $('input[name="prjtMat"]').val(),
+	                taskStartDt: $('input[name="taskStartDt"]').val(),
+	                taskDueDt: $('input[name="taskDueDt"]').val(),
+	                taskPurpose: $('input[name="taskPurpose"]').val(),
+	                taskCntn: $('input[name="taskCntn"]').val(),
+	                deptId: $('select[name="deptId"]').val(),
+	                
+	            };
+	
+	            $.ajax({
+	                url: '/updateTask',
+	                type: 'POST',
+	                data: formData,
+	                success: function(response) {
+	                    alert('업무가 성공적으로 수정되었습니다.');
+	                    window.location.href = '/taskDetail?taskNo=' + response.taskNo;
+	                },
+	                error: function(xhr, status, error) {
+	                    alert('업무 수정에 실패했습니다.');
+	                    console.error(error);
+	                }
+	            });
+	        });
+	
+	        // 목록으로 
+	        $('#backToListBtn').click(function() {
+	            window.location.href = '/';
+	        });
+	    });
+	</script>
+
+	</th:block>
+</body>
+</html>
