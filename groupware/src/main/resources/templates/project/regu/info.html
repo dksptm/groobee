@@ -104,8 +104,13 @@
 	<div th:if="${#authentication.principal.permId} == '1C2c' or 
 				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 	<!-- 연결된 문서들 -->
-	<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서목록</button>
+	<div class="d-flex justify-content-between">
+		<button type="button" class="btn btn-primary ms-3 mb-3"
+				th:onclick="|location.href='@{list}'|">목록으로</button>
+		<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서보기▽</button>
+	</div>
 	<div class="collapse bg-light pt-2 doc-toggle-area">
+		<th:block th:if="${#arrays.length(docs)} != 0">
 		<table class="table table-hover text-center">
 			<thead class="table-dark">
 				<tr>
@@ -124,7 +129,7 @@
 					<td>[[ ${doc.docNo} ]]</td>
 					<td>[[ ${doc.tempName} ]]</td>
 					<td>[[ ${doc.title} ]]</td>
-					<td>[[ ${doc.draft} ]]</td>
+					<td>[[ ${doc.draftName} ]]</td>
 					<th:block th:switch="${doc.docStat}">
 						<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
 						<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
@@ -136,7 +141,11 @@
 				</tr>
 				</th:block>
 			</tbody>
-		</table>	
+		</table>
+		</th:block>	
+		<th:block th:unless="${#arrays.length(docs)} != 0">
+		<p class="text-center">현재 해당업무에 작성된 문서가 없습니다.</p>
+		</th:block>
 	</div>
 	</div>	
 		

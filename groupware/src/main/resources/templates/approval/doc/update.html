@@ -295,7 +295,7 @@
 			  						<th:block th:if="${#arrays.length(doc.files) != 0}">
 			 							<input type="hidden" name="flag" value="NO" />
 			  							<th:block th:each="file,fstat : ${doc.files}">
-											<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
+											<a th:href="'/download' + '/' + ${file.saveName}" th:download="${file.uplName}">
 									 			<span>[[ ${file.uplName} ]]</span>
 											</a><br>
 										</th:block>

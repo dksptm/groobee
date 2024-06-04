@@ -43,7 +43,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 			String filetype = uploadFile.getContentType() + "/";
 			
 			String originalName = uploadFile.getOriginalFilename();
-			
+			System.out.println("originalName"+originalName);
 			// 저장경로명, 업로드명, 파일확장자, 파일사이즈.
 			String saveName;
 			String uplName = originalName.substring(originalName.lastIndexOf("//") + 1);

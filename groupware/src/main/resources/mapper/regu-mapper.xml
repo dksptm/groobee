@@ -219,7 +219,8 @@
 		       ,draft_dt
 		       ,cmplt_dt
 		FROM   doc 
-		WHERE  doc_no IN (SELECT doc_no
+		WHERE  doc.draft_stat = '4A2a'
+		AND	   doc_no IN (SELECT doc_no
 		                  FROM task_doc
 		                  WHERE task_no = #{tno})		
 	</select>

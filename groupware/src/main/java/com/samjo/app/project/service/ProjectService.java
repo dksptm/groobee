@@ -30,7 +30,7 @@ public interface ProjectService {
 	public void prjtDelete(String prjtId);
 	
 	// 효주 - 업무공통 간략조회.
-	public List<ProjectVO> myCustTasks(String custNo);
+	public List<ProjectVO> myCustTasks(EmpVO empVO);
 	// 효주 끝.
 	
 }

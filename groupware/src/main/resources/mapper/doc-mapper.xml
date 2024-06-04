@@ -72,6 +72,8 @@
 		        ,g.title
 		        ,g.draft_stat_name
 		        ,g.doc_stat_name
+		        ,g.draft_stat
+		        ,g.doc_stat
 		        ,g.cur_apr
 		        ,g.draft_dt
 		        ,g.cmplt_dt
@@ -82,6 +84,8 @@
 		                ,get_tempname(d.temp_id) 	AS temp_name
 		                ,COUNT(td.task_no)		 	AS task_count
 		                ,d.title
+		                ,d.draft_stat
+		                ,d.doc_stat
 		                ,get_codename(d.draft_stat) AS draft_stat_name
 				        ,get_codename(d.doc_stat)	AS doc_stat_name
 		                ,NVL2(a.apr_yn, a.apr_name|| ' ' ||get_codename(a.apr_yn), '-') AS cur_apr
