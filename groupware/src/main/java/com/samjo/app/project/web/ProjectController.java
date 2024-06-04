@@ -8,10 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
@@ -66,21 +66,12 @@ public class ProjectController {
 			model.addAttribute("TaskDTO", taskDTO);
 			return "project/prjt/pjList :: #prjtTable";
 	}
-	 
-	// 프로젝트 단건조회
-	@GetMapping("/cust/pjInfo/{prjtId}")
-		public String prjtInfo1(@PathVariable String prjtId, Model model) {
-			ProjectVO projectVO = projectService.prjtInfo(prjtId);
-			model.addAttribute("pjlist", projectVO);
-			return "project/prjt/pjInfo";
-	}
 	
-	// 프로젝트 단건조회 ...
+	// 프로젝트 단건조회 
 	@GetMapping("/cust/pj/info")
 	public String prjtInfo(@RequestParam String prjtId, Model model) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
-		//SearchVO search = new SearchVO();
 		
 		if(empVO != null) {
 			
@@ -100,6 +91,7 @@ public class ProjectController {
 	public String prjtInsertForm(Model model) {
 
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		
 		if (empVO != null) {
 			List<EmpVO> list = deptService.respMngrList(empVO.getCustNo());
 			model.addAttribute("mngr", list);
@@ -113,19 +105,21 @@ public class ProjectController {
 	@ResponseBody
 	@PostMapping("cust/prjtInsert")
 	public String prjtInsertProcess(ProjectVO projectVO) {
+		
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		
 		String custNo = empVO.getCustNo();
 		projectVO.setCustNo(custNo);
 		projectVO.setPrjtStat("5E1e");
+		
 		int pId = projectService.prjtInsert(projectVO);
-		String uri = null;
+		System.out.println("pId---->" + pId);	
 
 		if (pId > -1) {
-			uri = "redirect:/cust/prjtAllList";
+			return "redirect:/cust/pj/info?prjtId=" + pId;
 		} else {
-			uri = "test/test";
+			return "test/test";
 		}
-		return uri;
 	}
 
 	// 프로젝트 삭제
@@ -135,21 +129,17 @@ public class ProjectController {
 	        projectService.prjtDelete(prjtId);
 	        return  "project/prjt/pjList";
 	    	}
-
-
 }
 		
-		
+
 	/*
-	 * 
 	// 프로젝트 단건조회
 	@GetMapping("/cust/pjInfo/{prjtId}")
-		public String prjtInfo(@PathVariable String prjtId, Model model) {
+		public String prjtInfo1(@PathVariable String prjtId, Model model) {
 			ProjectVO projectVO = projectService.prjtInfo(prjtId);
 			model.addAttribute("pjlist", projectVO);
 			return "project/prjt/pjInfo";
 	}
-	
 	// 프로젝트 수정 - 페이지
 	@GetMapping("prjtUpdate")
 	public String prjtUpdateForm(ProjectVO projectVO, Model model) {
@@ -158,7 +148,6 @@ public class ProjectController {
 		model.addAttribute("prjtInfo", findVO);
 		return "project/prjt/update";
 	}
-
 	// 수정 처리
 	@PostMapping("prjtUpdate")
 	@ResponseBody
@@ -167,4 +156,3 @@ public class ProjectController {
 	}
 	
 	 */
-

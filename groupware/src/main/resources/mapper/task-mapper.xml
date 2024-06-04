@@ -52,7 +52,7 @@
 					</when>
 				</choose>
 				</where>
-				ORDER BY ${taskSort},task_no) t 
+				ORDER BY ${taskSort} DESC ,task_no DESC) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10
   	</select>
@@ -172,6 +172,14 @@
 		select 1 from dual
 	</insert>
 	
+	
+	<!-- 프로젝트(하위) 업무 참여자 수정 프로시저 실행하기전 참여자의 참여여부를 초기화한다.-->
+	<update id="updateTaskEmpBefore" parameterType="Integer">
+	    UPDATE task_emps
+	    SET cmplt = '5F2f'
+	    WHERE task_no = #{taskNo}
+	</update>
+	
 	<!-- 프로젝트(하위) 업무 참여자 수정 프로시저-->
 	<update id="updateTaskEmp" parameterType="TaskEmpsVO" statementType="CALLABLE">
 		{CALL
@@ -193,11 +201,17 @@
 		}	
 	</update>
 		
-	<!-- 프로젝트(하위) 업무 삭제 -->
-<!-- 	<delete id="deleteTask" parameterType="int">
-		DELETE FROM task_common
-		WHERE task_no = #{taskNo}
-	</delete> -->
+	<update id="upTask"  parameterType="ProjectVO">
+	   UPDATE task_common
+       SET prjt_mat = '5B1b'
+       WHERE task_no = #{taskNo};
+	</update>
+	
+	<update id="upPrjt"  parameterType="ProjectVO">
+		UPDATE prjt
+      	SET prjt_stat = '5E1e'
+      	WHERE prjt_id = #{prjtId}
+	</update>
 	
 	<!-- 프로젝트(하위) 업무 단순조회 협력업체등록시 사용 -->
 	<select id="taskList" resultType="ProjectVO" parameterType="EmpVO">
@@ -206,7 +220,7 @@
 	FROM task_common
 	WHERE prjt_mat = '5B1b'
 	AND cust_no = #{custNo}
-	
+
 	</select>
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="SearchVO">
@@ -228,7 +242,7 @@
 						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 					</if>
 				</where>
-				ORDER BY  ${coSort}, c.coop_co_no ) t 
+				ORDER BY  ${coSort} DESC , c.coop_co_no DESC ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10 
 	
@@ -282,8 +296,12 @@
 		WHERE coop_co_no = #{coopCoNo}
 	</select>
 
+	
+	
+	
+	
 	<!-- 협력업체 수정 -->
-	<update id="updateCoop" parameterType="ProjectVO">
+	<!--<update id="updateCoop" parameterType="ProjectVO">
 		UPDATE coop_co
 		SET
 		<if test="coName != null and !coName.equals('')">
@@ -304,10 +322,10 @@
 		WHERE coop_co_no =#{coopCoNo}
 	</update>
 
-	<!-- 협력업체 삭제 -->
+	협력업체 삭제
 	<delete id="deleteCoop" parameterType="int">
 		DELETE FROM coop_co
 		WHERE coop_co_no = #{coopCoNo}
-	</delete>
+	</delete> -->
 
 </mapper>

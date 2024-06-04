@@ -264,11 +264,24 @@
 						xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
 					},
 					success : function(data) {
-						alert('협력업체 등록에 성공했습니다.');
-						location.reload();
+						Swal.fire({
+							title: '등록완료!',        
+							text:  '협력업체가 등록되었습니다.',  
+							icon:  'success' 
+						})
+						.then(function(){
+							location.reload(true);                  
+						})
 					},
 					error : function(err) {
-						alert('협력업체 등록에 실패했습니다.');
+						Swal.fire({
+							title:  '등록실패',        
+							text:  '협력업체 등록이 실패하였습니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							location.reload(true);                  
+						})
 					}
 				});
 			});

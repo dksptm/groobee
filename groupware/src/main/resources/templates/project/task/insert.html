@@ -1,80 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/default_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
 <body>
-    <th:block layout:fragment="Content">
-        <div class="container">
-            <form name="insertForm" th:action="@{/cust/taskinsert}" method="post" th:object="${task}">
-                <br><br><br>
-                <div style="text-align: center;">
-                    <button type="button" th:onclick="|location.href='@{/cust/prjtInsert}'|" class="btn btn-primary">프로젝트 등록</button>
-                    <button type="button" th:onclick="|location.href='@{/cust/taskInsert}'|" class="btn btn-primary">프로젝트 업무등록</button>
-                </div>
-				<br>	
-                <h3>프로젝트 업무 등록</h3>
-                <table id="taskForm" class="table">
-                	  <tr>
-                        <th>프로젝트</th>
-                        <td>
-                            <select class="form-select" style="width:100px" th:field="*{standardNo}">
-                                <option value="">프로젝트명</option>
-                                <option  th:each=" plist : ${pjlist}" th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>업무명</th>
-                        <td><input type="text" th:field="*{taskName}"></td>
-                    </tr>
-                    <tr>
-                        <th>부서명</th>
-                        <td>
-                            <select class="form-select" style="width:100px" th:field="*{deptId}">
-                                <option value="">부서명</option>
-                                <option  th:each=" dept : ${dept}" th:value="${dept.deptId}" th:text="${dept.deptName}"></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>부서참여인원</th>
-                        <td><button type="button" class="btn btn-primary" id="deptEmpBtn" data-bs-toggle="modal" data-bs-target="#deptEmpModal">선택</button>
-                            <table> <tbody id="deptEmpList"></tbody></table>
-                    </tr>
-                    <tr> 
-                        <th>시작일</th>
-                        <td><input type="date" th:field="*{taskStartDt}"></td>
-                    </tr>
-                    <tr>
-                        <th>마감일</th>
-                        <td>
-                            <input type="date" th:field="*{taskDueDt}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>업무목적</th>
-                        <td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
-                    </tr>
-                    <tr>
-                        <th>내용</th>
-                        <td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
-                    </tr>
-                </table>
-                <div style="text-align: center;">
-                    <button type="button" class="btn btn-primary" id="taskInsertBtn">저장</button>
-                    <button type="button" class="btn btn-secondary">취소</button>
-                </div>
-            </form>
-        </div>
-        
-        <!------------------------------------------------ 모달 -------------------------------------------------->
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h3 class="card-header">프로젝트 업무 등록</h3>
+
+				<div class="card-body">
+					<form name="insertForm" th:action="@{/cust/taskinsert}"
+						method="post" th:object="${task}">
+						<br><br><br>
+						
+						<div style="text-align: center;">
+							<button type="button"
+								th:onclick="|location.href='@{/cust/prjtInsert}'|"
+								class="btn btn-primary">프로젝트 등록</button>
+							<button type="button"
+								th:onclick="|location.href='@{/cust/taskInsert}'|"
+								class="btn btn-primary">프로젝트 업무등록</button>
+						</div>
+						<br><br>
+						<table id="taskForm" class="table">
+							<tr>
+								<th>프로젝트</th>
+								<td><select class="form-select" style="width: 200px"
+									th:field="*{standardNo}">
+										<option value="">프로젝트명</option>
+										<option th:each=" plist : ${pjlist}"
+											th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
+								</select></td>
+							</tr>
+							<tr>
+								<th>업무명</th>
+								<td><input type="text" th:field="*{taskName}" style="width: 200px"></td>
+							</tr>
+							<tr>
+								<th>부서명</th>
+								<td><select class="form-select" style="width: 200px"
+									th:field="*{deptId}">
+										<option value="">부서명</option>
+										<option th:each=" dept : ${dept}" th:value="${dept.deptId}"
+											th:text="${dept.deptName}"></option>
+								</select></td>
+							</tr>
+							<tr>
+								<th>부서참여인원</th>
+								<td><button type="button" class="btn btn-primary"
+										id="deptEmpBtn" data-bs-toggle="modal"
+										data-bs-target="#deptEmpModal">선택</button>
+									<table>
+										<tbody id="deptEmpList"></tbody>
+									</table>
+							</tr>
+							<tr>
+								<th>시작일</th>
+								<td><input type="date" th:field="*{taskStartDt}"></td>
+							</tr>
+							<tr>
+								<th>마감일</th>
+								<td><input type="date" th:field="*{taskDueDt}"></td>
+							</tr>
+							<tr>
+								<th>업무목적</th>
+								<td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
+							</tr>
+							<tr>
+								<th>내용</th>
+								<td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
+							</tr>
+						</table>
+						<br>
+						<div style="text-align: center;">
+							<button type="button" class="btn btn-primary" id="taskInsertBtn">저장</button>
+							<button type="button" class="btn btn-secondary">취소</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!------------------------------------------------ 모달 -------------------------------------------------->
 		<!-- 참여자 선택창  -->
-		<div  class="modal fade" id="deptEmpModal" tabindex="-1" aria-labelledby="deptEmpModalLabel" aria-hidden="true">
-			<div class="modal-dialog" style=" text-align: center;">
+		<div class="modal fade" id="deptEmpModal" tabindex="-1"
+			aria-labelledby="deptEmpModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="text-align: center;">
 				<div class=" modal-content">
-					<div class="modal-header" style=" text-align: center">
-						<h5 class="modal-title" id="deptEmpModal" >참여자 선택</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					<div class="modal-header" style="text-align: center">
+						<h5 class="modal-title" id="deptEmpModal">참여자 선택</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
 					</div>
 					<table class="table table-light table-sm">
 						<thead>
@@ -95,22 +111,25 @@
 									<td>[[ ${emp.jobTitle} ]]</td>
 									<td>[[ ${emp.empName} ]]</td>
 									<td>[[ ${emp.empId} ]]</td>
-									<td> <input class="form-radio-input" type="checkbox" name="empCheck"></td>
+									<td><input class="form-radio-input" type="checkbox"
+										name="empCheck"></td>
 								</tr>
-							</th:block>	
+							</th:block>
 						</tbody>
 					</table>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="deptEmpBtnM" data-bs-dismiss="modal">등록</button>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="deptEmpBtnM"
+							data-bs-dismiss="modal">등록</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
-		
-		<script  th:inline="javascript" >
+
+		<script th:inline="javascript">
 		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	
@@ -189,12 +208,22 @@
 					    },
 						success : function(data){
 							console.log(data)
-							alert('프로젝트업무 등록에 성공했습니다.');
-							window.location.href = "/cust/tsInfo/" + data;
-							
+							Swal.fire({
+								title:  '등록완료!',        
+								text:  '프로젝트 업무 등록이 성공했습니다.',  
+								icon:  'success' 
+							}).then(function(){
+								window.location.href = "/cust/tsInfo/" + data;             
+							})
 						},
 						error : function(err){
-							alert('프로젝트업무 등록에 실패했습니다.');
+							Swal.fire({
+								title:  '등록실패',        
+								text:  '프로젝트 업무 등록 실패했습니다.',  
+								icon:  'error' 
+							}).then(function(){
+								location.reload(true);            
+							})
 						} 
 					});
 				});
@@ -204,6 +233,7 @@
 					let deptEmpChk = $("input[name=empCheck]:checked");
 					deptEmp = [];
 					$("#deptEmpList").html("");
+					
 					
 					for(let i = 0; i < deptEmpChk.length; i++){
 						let tr = $(deptEmpChk[i]).closest('tr').clone()
@@ -219,6 +249,6 @@
 				})
 			});
 		</script>
-	</body>
+</body>
 </th:block>
 </html>
