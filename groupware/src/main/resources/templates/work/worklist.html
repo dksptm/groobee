@@ -8,47 +8,46 @@
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-11">
 
-					<!-- <div>이 컴퓨터의 IP 주소: <span id="client-ip"></span></div> -->
+
 
 				<div>
 					<input type="hidden" th:value="${#authentication.principal.empId}"
 						id="id"> <input type="hidden"
 						th:value="${#authentication.name}" id="name">
-					<input type="text" id="ipdata" >
 				</div>
 				<div>
-				
-				<table class="table table-striped-columns">
-					<tr>
-						<td>사원ID</td>
-						<td>사원번호</td>
-						<td>사원명</td>
-						<td>근속연수</td>
-						<td>근속월수</td>
-						<td>근무일수</td>
-						<td>연차사용</td>
-						<td>지각</td>
-						<td>조퇴</td>
-					</tr>
-					<tr>
-						<td>[[${emp.empId}]]</td>
-						<td>[[${emp.empNo}]]</td>
-						<td>[[${emp.empName}]]</td>
-						<td>[[${emp.year}]]</td>
-						<td>[[${emp.month}]]</td>
-						<td>[[${emp.day}]]</td>
-						<td>[[${emp.au}]]</td>
-						<td>[[${emp.tdy}]]</td>
-						<td>[[${emp.early}]]</td>
-					</tr>
-					
-				</table>
-				<div>
-					<button type="button" class="btn btn-primary" id="wkIn" value="1">출근</button>
-					<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
-					<button type="button" class="btn btn-primary" id="wkStop">조퇴</button>
-				</div>
-				
+
+					<table class="table table-striped-columns">
+						<tr>
+							<td>사원ID</td>
+							<td>사원번호</td>
+							<td>사원명</td>
+							<td>근속연수</td>
+							<td>근속월수</td>
+							<td>근무일수</td>
+							<td>연차사용</td>
+							<td>지각</td>
+							<td>조퇴</td>
+						</tr>
+						<tr>
+							<td>[[${emp.empId}]]</td>
+							<td>[[${emp.empNo}]]</td>
+							<td>[[${emp.empName}]]</td>
+							<td>[[${emp.year}]]</td>
+							<td>[[${emp.month}]]</td>
+							<td>[[${emp.day}]]</td>
+							<td>[[${emp.au}]]</td>
+							<td>[[${emp.tdy}]]</td>
+							<td>[[${emp.early}]]</td>
+						</tr>
+
+					</table>
+					<div>
+						<button type="button" class="btn btn-primary" id="wkIn" value="1">출근</button>
+						<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
+						<button type="button" class="btn btn-primary" id="wkStop">조퇴</button>
+					</div>
+
 				</div>
 
 				<div class="container-fluid">
@@ -136,43 +135,44 @@
 					<br>
 
 					<div class="paging mt-2">
-					<th:block th:if="${filter.totalCnt} != 0">
-						<nav aria-label="Page navigation">
-							<ul class="pagination">
-							
-								<th:block th:if="${filter.prev}">
-									<li class="page-item prev disabled"><a
-										class="page-link pagebtn"
-										th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.startPage - 1 }|">
-											<i class="bx bx-chevron-left"></i>
-									</a></li>
-								</th:block>
-								<th:block
-									th:each="num : ${#numbers.sequence(1, filter.endPage)}">
-									<li class="page-item"
-										th:attrappend="class=${num == filter.page?'active':' '}">
-										<a
-										th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
-										th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
-									</li>
-								</th:block>
-								<th:block th:if="${filter.next}">
-									<li class="page-item next"><a class="page-link pagebtn"
-										th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.endPage + 1 }|">
-											<i class="bx bx-chevron-right"></i>
-									</a></li>
-								</th:block>
-								<th:block th:unless="${filter.totalCnt} != 0">
-									<p class="text-center mt-4">현재 등록된 기록이 없습니다.</p>
-								</th:block>
-							</ul>
-						</nav>
+						<th:block th:if="${filter.totalCnt} != 0">
+							<nav aria-label="Page navigation">
+								<ul class="pagination">
+
+									<th:block th:if="${filter.prev}">
+										<li class="page-item prev disabled"><a
+											class="page-link pagebtn"
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.startPage - 1 }|">
+												<i class="bx bx-chevron-left"></i>
+										</a></li>
+									</th:block>
+									<th:block
+										th:each="num : ${#numbers.sequence(1, filter.endPage)}">
+										<li class="page-item"
+											th:attrappend="class=${num == filter.page?'active':' '}">
+											<a
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
+											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+										</li>
+									</th:block>
+									<th:block th:if="${filter.next}">
+										<li class="page-item next"><a class="page-link pagebtn"
+											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.endPage + 1 }|">
+												<i class="bx bx-chevron-right"></i>
+										</a></li>
+									</th:block>
+									<th:block th:unless="${filter.totalCnt} != 0">
+										<p class="text-center mt-4">현재 등록된 기록이 없습니다.</p>
+									</th:block>
+								</ul>
+							</nav>
 						</th:block>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+		<input type="hidden" id=ips>
+		<input type="hidden" id=city>
 		<script>
 		// CSRF
 		let header = $("meta[name='_csrf_header']").attr('content');
@@ -192,11 +192,11 @@
 		  document.body.appendChild(se);
 		  // 앞서 생성한 <script> 요소를 제거한다
 		  document.body.removeChild(se);
-
+		  
 		  // 콜백 함수가 호출된다
 		  function callback(data) {
-			  $('#ipdata').text(data.ip);
-		    /* document.getElementById('client-ip').textContent = data.ip; */
+			  $('#ips').attr("value", data.ip);
+			  $('#city').attr("value", data.city);
 		  }
 		
 		
@@ -207,7 +207,6 @@
 	    $('#twoDate').on('change', function(e) {
 	        $('#oneDate').attr('max', this.value);
 	    });
-	    
 	    
 		// 검색 조건 변수 생성
 			let oneDate;
@@ -238,6 +237,7 @@
 				oneDate = $('#oneDate').val();
 				twoDate = $('#twoDate').val();
 			// 상태 조건 
+			
 				wkYn = $('#wkYn').val();
 				wkStat = $('#wkStat').val();
 				wkSite = $('#wkSite').val();
@@ -272,66 +272,80 @@
 			$('#wkOut').on('click', wkouts);
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
+			let ipbox = ['58.238.119.17', '58.238.119.20', '58.238.119.08'];
+			let client = $('#ips').val();
+			let check = false;
 			
-			// 퇴근, 조퇴 숨기기 처음에는 출근만 보이도록
-			// setInterval(함수) : 일정시간 간격으로 계속해서 특정 작업을 수행하고자 할 때 사용함 (특정시간마다 계속 실행)
-			// setTimeout(함수) : 일정한 시간 후에 작업을 한번 실행 (특정시간이후 실행)
-
-			$('#wkOut').toggle();
-			$('#wkStop').toggle();
+			for(const element of ipbox){
+				if(element == client){
+					check = true;
+					console.log(check);
+				}
+			}
 			
+			console.log(check);
+		
+			// 출근
 			function wkins() {
 				let empId = $('#id').val();
 				let times = time;
 				let days = date;
-				console.log(empId,times);
-				if($('#wkIn').val() == 1) {
-			    	$('#wkIn').val(0);
-			    }
+				let ip = $('#ips').val();
+				let city = $('#city').val();
+				
 				$.ajax({
 					url : 'workin',
 					method :'POST',
 					data :{
 				           dt: days,
-				           empId: empId
+				           empId: empId,
+				           wkInLoc: city
 					},
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
 		            },
 				    success : function(result){
+				    	if(result == -1){
 				    	Swal.fire({
-				    		title: '출근하셨습니다!!', 
+					    	title: '오늘은 이미 출근하셨습니다', 
+					    	text: '문의는 관리자에게',
+					    	icon: 'error'});
+				    	}
+				    	else{
+				    	Swal.fire({
+				    		title: '출근하셨습니다', 
 				    		text: '화이팅!!',
 				    		icon: 'success'});
-				    	$('#wkIn').toggle();
-				    	$('#wkOut').toggle();
-				    	$('#wkStop').toggle();
+				    	
+				    	}
 				    }
-				})
-			};
+				});
+			}
 			
+			// 퇴근
 			function wkouts() {
 				let empId = $('#id').val();
 				let times = time;
 				let days = date;
+				let ip = $('#ips').val();
+				let city = $('#city').val();
+				
 				$.ajax({
 					url : 'workout',
 					method :'POST',
 					data :{
 				           dt: days,
-				           empId: empId
+				           empId: empId,
+				           wkOutLoc: city
 					},
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
 		            },
 				    success : function(result){
 				    	Swal.fire({
-				    		title: '퇴근하셨습니다!!', 
+				    		title: '퇴근하셨습니다', 
 				    		text: '수고많으셨습니다.',
 				    		icon: 'success'});
-				    	/* $('#wkIn').toggle();
-				    	$('#wkOut').toggle();
-				    	$('#wkStop').toggle(); */
 				    }
 				})
 			};
@@ -340,12 +354,16 @@
 				let empId = $('#id').val();
 				let times = time;
 				let days = date;
+				let ip = $('#ips').val();
+				let city = $('#city').val();
+				
 				$.ajax({
 					url : 'workstop',
 					method :'POST',
 					data :{
 				           dt: days,
-				           empId: empId
+				           empId: empId,
+				           wkOutLoc: city
 					},
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
@@ -355,9 +373,6 @@
 				    		title: '조퇴하셨습니다!!', 
 				    		text: '',
 				    		icon: 'success'});
-				    	/* $('#wkIn').toggle();
-				    	$('#wkOut').toggle();
-				    	$('#wkStop').toggle(); */
 				    }
 				})
 			};

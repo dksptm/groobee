@@ -143,10 +143,9 @@ public class WorkControll {
 
 	
 	  // 출근 업데이트 처리(최초 한번만 업데이트)
-	  // request.getRemoteAddr();(ipcheck)
 		  @PostMapping("work/workin")
 		  @ResponseBody
-		  public Map<String, Object> workin(WorkVO workVO) {
+		  public int workin(WorkVO workVO) {
 			  return workService.workin(workVO);
 		  }
 		  
