@@ -8,8 +8,6 @@
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-11">
 
-					<!-- <div>이 컴퓨터의 IP 주소: <span id="client-ip"></span></div> -->
-
 				<div>
 					<input type="hidden" th:value="${#authentication.principal.empId}"
 						id="id"> <input type="hidden"
@@ -196,7 +194,7 @@
 		  // 콜백 함수가 호출된다
 		  function callback(data) {
 			  $('#ipdata').text(data.ip);
-		    /* document.getElementById('client-ip').textContent = data.ip; */
+		    document.getElementById('client-ip').textContent = data.ip;
 		  }
 		
 		
