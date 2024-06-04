@@ -58,9 +58,14 @@
 							th:value="${emailVO.title}" readonly>
 					</div>
 				</div>
-
-				<div class="p-0 mt-3">
-					<p>첨부된 파일 다운로드 링크</p>
+					<div class="p-0 mt-3">
+						<p>첨부파일</p><br>
+						<th:block th:each="file,fstat : ${emailVO.files}">
+							<a th:href="'/download' + '/' + ${file.saveName}" download="${file.uplName}">
+								<span>[[ ${file.uplName} ]]</span>
+							</a><br>
+						</th:block>	
+			  		</div>
 				</div>
 
 				<div class="mb-3 row">

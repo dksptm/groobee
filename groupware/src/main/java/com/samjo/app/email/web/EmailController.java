@@ -1,6 +1,8 @@
 package com.samjo.app.email.web;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -106,24 +108,18 @@ public class EmailController {
 		EmailVO emailVO = emailService.inboxInfo(senEmailNo);
 		//emailService.getEmpName(emailVO);
 		String recp = emailVO.getRecp();
-		System.out.println("==========================");
-		System.out.println(recp);
-		System.out.println("===========================");
 		String refer = emailVO.getRefer();
 		String userId = currentUser.getEmpId();
 		
 		// 로그인 유저id가, 읽으려는 메일의 수신자, 참조자 어느것에도 해당하지 않는 경우 (하나라도 해당시 조회가능)
 		// (즉 url에 메일 PK만 적어서 남의 메일을 보려 할 경우) => 홈으로 튕겨 보낸다.
 		// 접속자가 수신자가 아니고(AND) 참조자가 NULL이면서 접속자가 참조자도 아닌 경우
-		System.out.println("===========================");
-		System.out.println(userId);
-		System.out.println("===========================");
-		
 		if (!recp.equals(userId)) {
 		    if (refer == null || !refer.equals(userId)) {
 		        return "redirect:/home";
 		    }
 		}
+		System.out.println("지금 VO에 담긴 첨부파일 : " + emailVO.getFiles());
 		model.addAttribute("emailVO", emailVO);
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
 
@@ -201,6 +197,7 @@ public class EmailController {
 		}
 
 		model.addAttribute("emailVO", emailVO);
+		System.out.println(emailVO.getFiles());
 		// 담은 것들을 가지고 아래 페이지로 이동하게 한다.
 
 		return "email/emailInfo";
@@ -245,15 +242,24 @@ public class EmailController {
 	public String emailSend(EmailVO emailVO, MultipartFile[] filelist) {
 		// 리퀘스트 바디(교재 367쪽. 전달된 요청의 바디(ajax로 넘어옴)를 emailVO객체에 자동 매핑(필드명을 맞춰야 함)
 		// 수정. 그냥 폼데이터 받는걸로 변경
-		int SenEmailNo = emailService.emailInsert(emailVO);
-		if (SenEmailNo != -1) {
-			return "redirect:/cust/emailWrite";
-		}
+		
+		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
 		if (!filelist[0].isEmpty()) {
-			emailFileUploadService.uploadFileInfo(filelist, emailVO.getSender(), emailVO.getSenEmailNo());
+			fileInfoList = emailFileUploadService.uploadFileInfo(filelist);
 		}
-		return "redirect:/cust/emailList";
+		
+		//파일 저장과 인서트를 한 트랜잭션으로 묶는 작업.
+		int result = emailService.emailInsert(emailVO ,fileInfoList);
+		
+		if (result != -1) {
+			return "redirect:/cust/emailWrite";
+		} else if (result == 0) {
+			return "redirect:/cust/emailWrite";
+		} else {
+			return "redirect:/cust/emailList";
+		}
 	}
+	
 
 
 

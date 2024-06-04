@@ -76,18 +76,20 @@
 								<th:block th:each="emailVO : ${list}">
 									<tr
 										th:onclick="|location.href='@{/cust/inboxInfo/}@{${emailVO.senEmailNo}}'|">
-										<td>[[ ${emailVO.sender} ]]</td>
+										<td>[[ ${emailVO.senderName} ]]</td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
 										<td>	
 											<th:block th:if="${emailVO.sender == emailVO.recp}">
 											   	(셀프)
 											</th:block> 
-											<th:block th:if="${(emailVO.recp == searchVO.recp)
+											<th:block th:if="${(emailVO.sender != emailVO.recp)
+											AND (emailVO.recp == searchVO.recp)
 											AND (emailVO.recp != emailVO.refer)}">
 											   	수신
 											</th:block> 
-											<th:block th:if="${emailVO.refer == searchVO.refer}">
+											<th:block th:if="${(emailVO.refer != null)
+											AND (emailVO.refer == searchVO.refer)}">
 											   	참조
 											</th:block>
 										</td>

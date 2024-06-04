@@ -1,8 +1,10 @@
 package com.samjo.app.email.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
 
 import lombok.Data;
 
@@ -33,7 +35,9 @@ public class EmailVO {
 	private Date readDt; //안 쓰는 값, 추후 삭제
 	private String rstat;
 	
-	// email_file TABLE
+	// 첨부파일 리스트
+    private List<EmailFileVO> files;
+    // email_file TABLE
 	private Integer fileNo;
 	private String saveName;
 	private String uplName;
