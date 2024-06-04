@@ -42,6 +42,7 @@
 		<include refid="listSql" />
 	</select>
 	
+	<!-- 결제 조회 검색조건 -->
 	<sql id="listSql">
 		WHERE p.cust_no NOT IN '0000'
 		<if test="keyword != null and keyword != ''">
@@ -58,6 +59,33 @@
 		</if> 
 	</sql>
 	
+	<!-- 최초결제인증 등록 -->
+	<insert id="fstPayInsert" parameterType="PayVO">
+	<selectKey  keyProperty="payNo"
+				resultType="int"
+				order="BEFORE">
+		SELECT NVL(MAX(pay_no), 0) + 1 as pay_no
+		FROM pay
+	</selectKey>
+		INSERT INTO pay(pay_no,
+				        cust_no, 
+				        ct_no,
+				        pay_type,
+				        pay_cre_dt,
+				        serv_amt,
+				        pay_how,
+				        pay_stat)
+		VALUES(#{payNo},
+		        #{custNo}, 
+		        #{ctNo},
+		        '0B1b',
+		        SYSDATE,
+		        1,
+		        '0C1c',
+		        '0D4d')
+	</insert>
+	
+	<!-- 결제 등록 -->
 	<insert id="payInsert" parameterType="PayVO">
 	<selectKey  keyProperty="payNo"
 				resultType="int"
@@ -85,7 +113,8 @@
 		        #{ctNo},
 		        '0B1b',
 		        SYSDATE,
-		        GET_PAY_EXPC_DT(),
+		        SYSDATE + (interval '10' second),
+		        <!-- GET_PAY_EXPC_DT(), -->
 		        GET_PAY_EXPC_DT() + (interval '2' day),
 		        #{servAmt},
 		        '0C1c',
@@ -97,10 +126,66 @@
 		        #{remk} -->)
 	</insert>
 	
+	<!-- 계약수정시 결제내역 수정 -->
 	<update id="payReset" parameterType="PayVO">
-	UPDATE pay
-	SET pay_stat = '0D3d'
-	WHERE  ct_no = #{ctNo}
+		UPDATE pay
+		SET pay_stat = '0D3d'
+		WHERE  ct_no = #{ctNo}
+	</update>
+	
+	<!-- 고객사관리자 결제내역조회 -->
+	<select id="selectCustPayAll" resultType="PayVO">
+		SELECT r.*
+		FROM (SELECT rownum rn,
+			t.*
+			FROM (SELECT p.pay_no,
+				        p.cust_no, 
+				        c.cust_name,
+				        p.ct_no,
+				        p.pay_type,
+				        get_codename(p.pay_type) as pay_type_name,
+				        p.pay_cre_dt,
+				        p.pay_expc_dt,
+				        p.pay_due_dt,
+				        p.serv_amt,
+				        p.pay_how,
+				        get_codename(p.pay_stat) as pay_stat_name,
+				        p.pay_stat,   
+				        p.pay_cmplt_dt,
+				        p.payer,
+				        p.pay_amt,
+				        p.overdue,
+				        p.remk
+				FROM pay p JOIN cust c
+				            ON(p.cust_no = c.cust_no)
+				WHERE p.cust_no = #{custNo}
+				ORDER BY p.pay_no DESC, p.cust_no ) t 
+			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
+		WHERE r.rn > (#{page} -1) * 10
+	</select>
+	
+	<!-- 고객사 결제 페이징 -->
+	<select id="custPayCount">
+		SELECT COUNT(*)
+		FROM pay p JOIN cust c
+		            ON(p.cust_no = c.cust_no)
+        WHERE p.cust_no = #{custNo}
+	</select>
+	
+	<!-- 결제예정일자 조회 -->
+	<select id="payDay">
+		SELECT pay_expc_dt
+		FROM pay
+		WHERE cust_no = #{custNo}
+		AND pay_stat IN ('0D1d','0D4d')
+	</select>
+	
+	<!-- 정기결제 갱신 -->
+	<update id="payUpdate">
+		UPDATE pay
+		SET pay_stat = '0D2d'
+		WHERE ct_no = #{ctNo}
+		AND cust_no = #{custNo}
 	</update>
 
 </mapper>

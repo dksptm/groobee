@@ -7,8 +7,11 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.stereotype.Component;
+
+import com.samjo.app.pay.mapper.PayMapper;
 
 @Component
 public class ReqPaymentScheduler {
@@ -17,21 +20,27 @@ public class ReqPaymentScheduler {
     
 	@Autowired
 	PayService setSchedulePay;
-	//@Autowired 
-	//DeliveryService deliService;
-	//@Autowired
-	//GetDate getDate;
+	@Autowired
+	PayMapper payMapper;
 	
     public void stopScheduler() {
     	//구독 취소 시 scheduler shutdown을 통해 결제 요청 멈춤
         scheduler.shutdown();
     }
  
-    public void startScheduler(String customer_uid, int price, long packageId) {
+    public void startScheduler(String customer_uid, int price, long packageId, int ctNo) {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
         // 스케쥴러 시작
-        scheduler.schedule(getRunnable(customer_uid, price, packageId), getTrigger());
+        scheduler.schedule(getRunnable(customer_uid, price, packageId,ctNo), new CronTrigger("0 10 10 15 * ?"));
+        //scheduler.schedule(getRunnable(customer_uid, price, packageId,ctNo), new CronTrigger("10 0/1 * * * *"));
+        //scheduler.schedule(getRunnable(customer_uid, price, packageId,ctNo), getTrigger());
+        PayVO payVO = new PayVO();
+   		payVO.setCustNo(customer_uid);
+   		payVO.setCtNo(ctNo);
+   		payVO.setServAmt(price);
+   		payMapper.payUpdate(payVO);
+   		payMapper.payInsert(payVO);
     }
     
     public static java.sql.Date convertFromJAVADateToSQLDate(
@@ -43,16 +52,17 @@ public class ReqPaymentScheduler {
         return sqlDate;
     }
  
-    private Runnable getRunnable(String customer_uid, int price, long packageId){
-    	//Date date = getDate.getDate();
-    	Calendar cal = Calendar.getInstance();
-    	//cal.setTime(date);
-    	cal.add(Calendar.MONTH, 1);
-    	cal.add(Calendar.DATE, 1);
-    	Date s = convertFromJAVADateToSQLDate(cal.getTime());
+    private Runnable getRunnable(String customer_uid, int price, long packageId, int ctNo){
         return () -> {
-        	setSchedulePay.schedulePay(customer_uid, price);
-        	//Service.nsert(packageId,customer_uid,s);
+        	setSchedulePay.schedulePay(customer_uid, price, ctNo);
+        	/*
+        	PayVO payVO = new PayVO();
+	   		payVO.setCustNo(customer_uid);
+	   		payVO.setCtNo(ctNo);
+	   		payVO.setServAmt(price);
+	   		payMapper.payUpdate(payVO);
+	   		payMapper.payInsert(payVO);
+	   		*/
         };
     }
  
