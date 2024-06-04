@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.samjo.app.approval.service.DocVO;
 import com.samjo.app.common.service.SearchVO;
@@ -27,35 +28,36 @@ public class ReguServiceImpl implements ReguService {
 	
 	// 처음 상시업무 등록.
 	@Override
-	public int reguStadInsert(ProjectVO regu) {
+	@Transactional
+	public String reguStadInsert(ProjectVO regu) {
 		int result = 0;
 		
 		result = reguMapper.insertRegu(regu);
 		if(result != 1) {
-			return -1;
+			return null;
 		}
 		
 		result = 0;	
 		
 		result = reguMapper.insertReguTaskEmp(regu);
-		if(result > 0) {
-			result = regu.getTaskNo();			
+		if(result == 0) {
+			return null;	
 		}
 		
-		return result;
+		return regu.getReguId();
 	}
 	
 	// 기존 상시업무 등록.
 	@Override
-	public int reguCommonInsert(ProjectVO regu) {
+	public String reguCommonInsert(ProjectVO regu) {
 		int result = 0;
 		
 		result = reguMapper.insertReguTaskEmp(regu);
-		if(result > 0) {
-			result = regu.getTaskNo();
+		if(result == 0) {
+			return null;
 		}
 		
-		return result;
+		return regu.getReguId();
 	}
 	
 	// 기존 상시업무목록 가져오기.
@@ -64,7 +66,7 @@ public class ReguServiceImpl implements ReguService {
 		return reguMapper.selectReguAll(empVO);
 	}
 
-	// 단건조회
+	// 단건조회(하위)
 	@Override
 	public ProjectVO reguInfo(String custNo, Integer taskNo) {
 		ProjectVO findVO = reguMapper.selectRegu(custNo, taskNo);
@@ -107,12 +109,11 @@ public class ReguServiceImpl implements ReguService {
 		return map;
 	}
 
-	// 전체조회
+	// 전체조회(하위)
 	@Override
 	public List<ProjectVO> reguTaskList(EmpVO empVO, SearchVO search) {
 		return reguMapper.selectReguTaskAll(empVO, search);
 	}
-
 	@Override
 	public int countReguTasks(EmpVO empVO, SearchVO search) {
 		return reguMapper.countReguTasks(empVO, search);
@@ -138,6 +139,37 @@ public class ReguServiceImpl implements ReguService {
 	@Override
 	public List<DocVO> taskDocList(Integer taskNo) {
 		return reguMapper.selectTaskDocs(taskNo);
+	}
+	
+	// 수정
+	@Override
+	@Transactional
+	public Map<String, Object> reguUpdate(ProjectVO ruge) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", "ERROR");
+		int result = 0;
+		
+		result = reguMapper.updateReguStad(ruge);
+		if(result == 1) {
+			map.put("stad", result);
+			result = 0;
+		} else {
+			map.put("success", "NG");
+			map.put("msg", "수정실패. 업무ID 확인필요.");
+			return map;
+		}
+		
+		result = reguMapper.updateTasks(ruge);
+		if(result > 0) {
+			map.put("tasks", result);
+			map.put("success", "OK");
+			map.put("msg", "수정완료.");
+		} else {
+			map.put("success", "NG");
+			map.put("msg", "수정실패. 업무번호 확인필요.");
+		}
+		
+		return map;
 	}
 
 }

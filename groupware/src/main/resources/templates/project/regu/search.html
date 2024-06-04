@@ -5,25 +5,18 @@
 
 <button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button>
 <div class="collapse bg-light pt-2 sch-toggle-area">
-<div class="d-flex justify-content-center table-responsive col-9">
-	<table class="table table-borderless table-sm text-end">
+<div class="table-responsive">
+	<table class="table table-borderless table-sm text-end d-flex justify-content-center">
 		<tbody>
 			<tr>
 				<td>부서별</td>
-				<th:block th:if="${#authentication.principal.permId} == '1C2c'">
 				<td><select name="dept" class="form-select">
 						<option value="all" class="form-control">전체</option>
 						<th:block th:each="dept : ${depts}">
 						<option th:value="${dept.deptId}" class="form-control">[[ ${dept.deptName} ]]</option>
 						</th:block>
-					</select></td>
-				</th:block>
-				<th:block th:unless="${#authentication.principal.permId} == '1C2c'">
-				<td><select name="deptdefault" class="form-select" disabled>
-						<option value="${list[0].deptId}" class="form-control"
-							    selected>[[ ${list[0].deptName} ]]</option>
-					</select></td>
-				</th:block>
+					</select>
+				</td>
 				<td>생성유형</td>
 				<td><select name="searchCondition" class="form-select">
 						<option value="all" class="form-control">전체</option>
@@ -66,7 +59,22 @@
 	</table>
 </div>
 </div>
+<script th:inline="javascript">
+$(function(){
+	let perm = [[ ${#authentication.principal.permId} ]];
+	let dept = [[ ${#authentication.principal.deptId} ]]
+	if(perm != '1C2c') {
+		let opts = $('select[name=dept]').find('option');
+		for(opt of opts) {
+			if(opt.value == dept) {
+				opt.setAttribute('selected', true); 
+			}
+		}
+		$('select[name=dept]').attr('disabled', true);
+	}
+})
 
+</script>
 </th:block>
 
 </html>

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}">
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 
 <th:block layout:fragment="Content">
-
+<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
 <div class="container container-p-y mt-3">
-	<h2>상시업무관리 - 상세</h2>
+	<h4>상시업무관리 - 수정</h4>
 <div class="bg-light p-3">
 <div class="table-responsive">
 	
@@ -21,11 +22,11 @@
 		</tr>
 		<tr>
 			<td class="fw-bold">개요</td>
-				<td colspan="5" contenteditable="true">[[ ${regu.taskPurpose} ]]</td>
+				<td colspan="5"><input type="text" th:value="${regu.taskPurpose}" name="taskPurpose"  class="form-control" /></td>
 		</tr>
 		<tr>
 			<td class="fw-bold">목적</td>
-				<td colspan="5" contenteditable="true">[[ ${regu.taskCntn} ]]</td>
+				<td colspan="5"><textarea name="taskCntn" class="form-control" >[[ ${regu.taskCntn} ]]</textarea></td>
 		</tr>
 		<tr>
 			<td class="fw-bold">부서명</td>
@@ -36,29 +37,30 @@
 				<td>[[ ${#dates.format(regu.reguDt, 'yyyy-MM-dd')} ]]</td>	
 		</tr>
 		<tr>
-			<td class="fw-bold">생성유형[[${regu.creType}]]</td>
-			<td><select class="form-select" name="creType" th:value="${regu.creType}">
+			<td class="fw-bold">생성유형</td>
+			<td><select class="form-select" name="creType" id="creType">
 				    <option value="5C1c">매일</option>
 				    <option value="5C2c">매주</option>
 				    <option value="5C3c">매월</option>
 			  	</select>
 			</td>
 			<td class="fw-bold">생성주기</td>
-			<td>
-				<select class="form-select" th:value="${regu.crePerd}">
-				<option value="-1">유형을 선택하세요</option></select>
+			<td id="creOpt">
+				<select class="form-select" name="crePerd">
+				<option value="-1"> </option></select>
 			</td>
 			<td class="fw-bold">활성화 상태</td>
-			<td><select class="form-select" name="creType" th:value="${regu.active}">
+			<td><select class="form-select" name="active" id="active">
 				    <option value="5D1d">활성화</option>
 				    <option value="5D2d">비활성화</option>
 			  	</select></td>
 		</tr>
 	</table>
 	
-	<div class="d-flex justify-content-between">
-		<button type="button" class="btn btn-info mb-3">수정완료</button>
-		<button type="button" class="btn btn-secondary mb-3">수정취소</button>
+	<div class="d-flex justify-content-end">
+		<button type="button" class="btn btn-info mb-3 rugu-up-btn">수정완료</button>
+		<button type="button" class="btn btn-secondary ms-3 mb-3"
+				th:onclick="|location.href='@{/cust/regu/stadInfo?reguId={rid}(rid=${regu.reguId})}'|">수정취소</button>
 	</div>
 			
 </div>
@@ -69,33 +71,147 @@
 
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	const reguId = [[${regu.reguId}]];
+	let type = [[${regu.creType}]];
+	let perd = [[${regu.crePerd}]];
+	let act = [[${regu.active}]]; 
 	
 	$(function(){
 		
-		// 요일
-		let week = ["일","월","화","수","목","금","토"];
-	    //let td = $('td[data-cret]');
-	    /* if(td.data('cret') == '5C2c'){
-		    let data = $('span.cre-perd').text();
-		    $('span.cre-perd').text(week[data]);
-	    } */
-	    
-	 	
-		// tr클릭해서 문서상세로 이동
-		$('tr.go-regu-info').on('click', function(e) {
-
-			/* let createInput = $('<input type="text" name="taskNo" />').val($(this).data('tno'));
-			searchForm.prepend(createInput);
-			searchForm.attr('action', '/cust/regu/info');
-			
-			searchForm.submit(); */
-			
+		// 처음 값 세팅
+		// 1.active
+		let aopts = $('#active').find('option');
+		for(opt of aopts) {
+			if(opt.value == act) {
+				opt.setAttribute('selected', true); 
+			}
+		}
+		// 2.생성유형
+		let topts = $('#creType').find('option');
+		for(opt of topts) {
+			if(opt.value == type) {
+				opt.setAttribute('selected', true); 
+			}
+		}
+		// 3.생성주기
+		perdCreate(type);
+		let popts = $('#creOpt select').find('option');
+		for(opt of popts) {
+			if(opt.value == perd) {
+				opt.setAttribute('selected', true); 
+			}
+		}
+		
+		// 생성유형 바꿀때마다 옵션값 달라짐
+		$('#creType').on('change', function(e){
+			let creType = this.value;
+			perdCreate(creType);
 		});
 		
+		// 수정버튼을 선택하면
+		$('.rugu-up-btn').on('click', function() {
+			
+			Swal.fire({
+				title: '업무를 수정하시겠습니까?',
+				text: "",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: '승인',
+				cancelButtonText: '취소',
+				reverseButtons: true, // 버튼 순서 거꾸로
+			      
+		    }).then((result) => {
+		    	
+		    	if(result.value) {
+			    	// 데이터담고
+					let param = {}
+					param['reguId']	     = reguId;
+					param['taskPurpose'] = $('input[name=taskPurpose]').val();
+					param['taskCntn'] 	 = $('textarea[name=taskCntn]').val();
+					param['creType'] 	 = $('select[name=creType]').val();
+					param['crePerd'] 	 = $('select[name=crePerd]').val();
+					param['active'] 	 = $('select[name=active]').val();
+			    	
+					// 아작스전송
+					$.ajax('update', {
+						type: 'post',
+						data : JSON.stringify(param),
+						contentType : 'application/json',
+						beforeSend: function(xhr) {
+					        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+					    },
+						dataType : 'json'
+					})
+					.done(response => {
+						if(response.success == 'OK' || response.success == 'NG') {
+							Swal.fire({
+					    		  position: "center-center",
+					    		  icon: "success",
+					    		  title: response.msg,
+					    		  showConfirmButton: false,
+					    		  timer: 1500
+					    	})
+					    	location.href='stadInfo?reguId=' + reguId;
+	
+						} else {
+							Swal.fire({
+					    		  position: "center-center",
+					    		  icon: "success",
+					    		  title: "에러",
+					    		  showConfirmButton: false,
+					    		  timer: 1500
+					    	})
+					    	location.href='/home';
+						}
+					})
+					.fail(err => console.error(err));
+		    	}
+		    	
+		    })//Swal
+		})// 수정.
+		
+		
 	})//end.
+	
+	function perdCreate(creType) {
+		
+		let select = $('#creOpt > select');
+		let createOpt = $('<option></option>');
+		let week = ["일","월","화","수","목","금","토"];
+		
+		if(creType == '5C1c') {
+			select.children().remove();
+			for(let i=9 ; i<=18 ; i++){
+				let copy = createOpt.clone();
+				copy.val(i);
+				copy.text(i + "시");
+				select.append(copy);
+			}
+			
+		} else if(creType == '5C2c') {
+			select.children().remove();
+			for(let i=0 ; i<7 ; i++){
+				let copy = createOpt.clone();
+				copy.val(i);
+				copy.text(week[i]);
+				select.append(copy);
+			}
+			
+		} else if (creType == '5C3c') {
+			select.children().remove();
+			for(let i=1 ; i<=31 ; i++){
+				let copy = createOpt.clone();
+				copy.val(i);
+				copy.text(i + "일");
+				select.append(copy);
+			}
+		}
+	}
 
 </script>
-
+</th:block>
 </th:block>
 		
 </html>

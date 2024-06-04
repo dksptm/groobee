@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}">
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 
 <th:block layout:fragment="Content">
-
+<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
 <style>
 .offcanvas.offcanvas-end.regu{
 	width: 600px; 
@@ -12,7 +13,7 @@
 .regu-table th{
 	font-size: 0.9rem;
 	font-weight: bold;
-	text-align: right;
+	text-align: center;
 	background-color:#DAF5FFV;
 }
 .regu-table td{
@@ -20,14 +21,11 @@
 }
 </style>
 
-	<div class="container-xxl flex-grow-1">
-	<div class="flex-xl-nowrap row">
-	<div class="row">
-		<div class="row mt-3 pt-3">
-			<h2 class="ms-3">상시업무 등록</h2>
-		</div>
-
-		<div class="row m-2 p-2 d-flex justify-content-center col-8 table-responsive border border-secondary">
+<div class="container container-p-y mt-3">
+	<h4>상시업무 관리 - 목록</h4>
+		
+		<div class="bg-light p-3 col-8">
+		<div class="card d-flex justify-content-center table-responsive bg-light row m-2 p-2 shadow-lg">
 		<form id="reguInsertForm" th:action="@{/cust/regu/insert}" method="post" th:object="${taskRegu}">
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
 			<div class="text-end m-3">	
@@ -39,96 +37,94 @@
 				<button type="reset" class="btn rounded-pill btn-outline-secondary ms-2 chk-regus-reset-btn">
 						입력 초기화</button>
 			</div>
-			<table class="table table-bordered border-2 regu-table col-12">
+			<table class="table table-bordered border-2 col-12 regu-table">
 				<tr>
 					<th class="col-3">업무명</th>
-					<td colspan="3">
+					<td colspan="5">
 						<input type="text" class="form-control bg-transparent" th:field="*{taskName}" />
 					</td>
 				</tr>
 				<tr>
 					<th>업무목적</th>
-					<td colspan="3">
+					<td colspan="5">
 						<input type="text" class="form-control bg-transparent" th:field="*{taskPurpose}" />
 					</td>
 				</tr>
 				<tr>
 					<th>업무내용</th>
-					<td colspan="3">
+					<td colspan="5">
 						<textarea class="form-control bg-transparent" th:field="*{taskCntn}"></textarea>
 					</td>
 				</tr>
 				<tr>
-					<th>
-						<button type="button" class="btn btn-icon btn-info me-1" 
+					<th>책임자</th>
+					<td><input type="hidden" class="form-control" th:field="*{respEmpId}" readonly /></td>
+					<td class="col-1" style="border-left:hidden;"><button type="button" class="btn btn-icon btn-info me-1" 
 								data-bs-toggle="offcanvas" data-bs-target="#chk-reps" aria-controls="offcanvasScroll">
 							<span class="tf-icons bx bx-user-circle"></span>
-						</button>
-						책임자
-					</th>
-					<td><input type="hidden" class="form-control" th:field="*{respEmpId}" readonly /></td>
+						</button></td>
 					<th class="col-3">부서</th>
-					<td><input type="hidden" class="form-control" th:field="*{deptId}" readonly /></td>
+					<td colspan="2"><input type="hidden" class="form-control" th:field="*{deptId}" readonly /></td>
 				</tr>
 				<tr>
-					<th>
+					<th>담당자</th>
+					<td colspan="4" id="add-emp">
+					</td>
+					<td class="col-1" style="border-left:hidden;">
 						<button type="button" class="btn btn-icon me-1 btn-secondary" 
 								data-bs-toggle="offcanvas" data-bs-target="#chk-emps" aria-controls="offcanvasScroll">
 							<span class="tf-icons bx bx-user-circle"></span>
 						</button>
-						담당자
-					</th>
-					<td colspan="3" id="add-emp">
 					</td>
 				</tr>
 				<tr>
 					<th>생성유형
 					</th>
-					<td><select class="form-select" th:field="*{creType}">
+					<td colspan="2" class="col-4"><select class="form-select" th:field="*{creType}">
 							<option value="no-data" selected>유형선택</option>
 						    <option value="5C1c">매일</option>
 						    <option value="5C2c">매주</option>
 						    <option value="5C3c">매월</option>
 					  	</select>
 					</td>
-					<th>
-						<button type="button" id="crepBtn" class="btn btn-icon btn-success">+</button>
-						생성주기
-					</th>
+					<th>생성주기</th>
 					<td id="creOpt">
 						<select class="form-select" th:field="*{crePerd}">
 						<option value="-1">유형을 선택하세요</option></select>
 					</td>
+					<td class="col-1" style="border-left:hidden;">
+						<button type="button" id="crepBtn" class="btn btn-icon btn-success">+</button>
+					</td>
 				</tr>
 				<tr>
 					<th>시작일자</th>
-					<td><input type="datetime-local" class="form-control" th:field="*{taskStartDt}" readonly />
+					<td colspan="2"><input type="datetime-local" class="form-control" th:field="*{taskStartDt}" readonly />
 					<th>마감일자</th>
-					<td><input type="datetime-local" class="form-control" th:field="*{taskDueDt}"  readonly />
+					<td colspan="2" ><input type="datetime-local" class="form-control" th:field="*{taskDueDt}"  readonly />
 				</tr>
 				<tr>
-					<th>
-						업무활성화
-					</th>
-					<td colspan="3">
-						<div class="form-check">
-					      <input class="form-check-input" type="radio" id="active" name="active" value="5D1d" checked>
-					      <label class="form-check-label" for="active">업무활성화 (자동스케줄O)</label>
-					      &emsp;&emsp;&emsp;&emsp;
-					      <label class="form-check-label">
-					      <input class="form-check-input" type="radio" id="active" name="active" value="5D2d" checked>
-					      업무비활성화 (자동스케줄X)</label>
-					    </div>
+					<th>업무활성화</th>
+					<td colspan="2">
+						<label class="form-control" for="active">
+						<input class="form-check-input" type="radio" id="active" name="active" value="5D1d" checked>
+						업무활성화 (자동스케줄O)</label>
 					</td>
+					<td colspan="2"  style="border-left:hidden;">
+					    <label class="form-control">
+					    <input class="form-check-input" type="radio" id="active" name="active" value="5D2d" checked>
+					      업무비활성화 (자동스케줄X)</label>
+					</td>
+					<td  style="border-left:hidden;"></td>
 				</tr>
 			</table>
-			<div class="text-end mx-3">	
-			<button type="submit" class="btn btn-success text-end">등&emsp;록</button>
+			<div class="text-end m-3">	
+				<button type="submit" class="btn btn-primary text-end">등&emsp;록</button>
 			</div>
 		</form>
 		</div>
+		</div>
 		
-		<!-- Enable Body scrolling -->
+		<!-- Enable Body scrolling 책임자 선택-->
 		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-reps" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
 		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">책임자 선택</h5>
@@ -160,7 +156,7 @@
 		  </div>
 		</div>
 		
-		<!-- Enable Body scrolling -->
+		<!-- Enable Body scrolling 담당자 선택-->
 		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-emps" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
 		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">담당자 선택</h5>
@@ -177,6 +173,7 @@
 					</tr>
 				</thead>
 				<tbody>
+					<th:block th:each="dept : ${depts}">
 					<th:block th:each="emp : ${dept.emps}">
 					<tr th:attr="data-emp=${emp.empId}">
 						<td th:attr="data-empd=${dept.deptId}">[[ ${dept.deptName} ]]</td>
@@ -186,19 +183,21 @@
 						</td>
 					</tr>
 					</th:block>
+					</th:block>
 				</tbody>
 			</table>
 		    <button type="button" class="btn btn-info mb-2 d-grid w-100 chk-emps-btn" data-bs-dismiss="offcanvas">선택</button>
 		  </div>
 		</div>
 		
-		<!-- Enable Body scrolling -->
+		<!-- Enable Body scrolling 기존업무 선택-->
 		<div class="offcanvas offcanvas-end regu" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-regus" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
 		    <h5 id="offcanvasScrollLabel" class="offcanvas-title">업무 선택</h5>
 		    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 		  </div>
 		  <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+		  	<th:block th:if="${#arrays.length(regus)} != 0">
 		  	<table class="table table-bordered" th:each="rg : ${regus}">
 				<tbody>
 					<tr class="table-warning">
@@ -232,11 +231,14 @@
 				</tbody>
 			</table>
 		    <button type="button" class="btn btn-info mb-2 d-grid w-100 chk-regus-btn" data-bs-dismiss="offcanvas">선택</button>
+			</th:block>		
+			<th:block th:unless="${#arrays.length(regus)} != 0">
+			<p class="text-center">기존에 등록된 상시업무가 없습니다.</p>
+		    <button type="button" class="btn btn-secondary mb-2 d-grid w-100" data-bs-dismiss="offcanvas">닫기</button>
+			</th:block>
 		  </div>
 		</div>
 		
-	</div>
-	</div>
 	</div>
 
 <script>
@@ -263,6 +265,8 @@
 		
 		// 기존상시업무 불러와서 선택할경우
 		$('.chk-regus-btn').on('click', function(e){
+			
+			
 			$('#reguInsertForm')[0].reset();
 			reguReset();
 			
@@ -411,8 +415,6 @@
 			
 		})
 		
-		// 활성화
-		$('#active').on('click', activeChk)
 		
 		// 등록
 		$('#reguInsertForm').submit(function(e) {
@@ -433,15 +435,17 @@
 				      
 			    }).then((result) => {
 			    	
-			    	Swal.fire({
-			    		  position: "center-center",
-			    		  icon: "success",
-			    		  title: "업무등록이 완료!",
-			    		  showConfirmButton: false,
-			    		  timer: 1500
-			    	});
-			    	
-			    	this.submit();
+			    	if(result.value){
+				    	Swal.fire({
+				    		  position: "center-center",
+				    		  icon: "success",
+				    		  title: "업무등록이 완료!",
+				    		  showConfirmButton: false,
+				    		  timer: 1500
+				    	});
+				    	
+				    	this.submit();
+			    	}
 					
 			    })//Swal
 			}
@@ -566,7 +570,7 @@
 		
 		$('#creType').prop('disabled', false);
 		
-		$('#chktime').find('input').prop('readonly', false);
+		$('#crePerd').find('input').prop('readonly', false);
 		
 		$('input[name="flag"]').val('NO');
 		
@@ -633,7 +637,7 @@
 	}
 
 </script>
-
+</th:block>
 </th:block>
 		
 </html>

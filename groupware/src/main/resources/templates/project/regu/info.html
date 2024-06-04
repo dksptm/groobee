@@ -46,8 +46,9 @@
 			<td class="fw-bold">마감</td>
 				<td colspan="2">[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd  a hh:mm')} ]]</td>
 		</tr>
+		
 		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
-		<tr th:if="${#authentication.principal.permId} != '1C2c' or 
+		<tr th:if="${#authentication.principal.permId} == '1C2c' or 
 					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 			<td class="fw-bold">담당자</td>
 			<td colspan="4" class="regu-task-emps">
@@ -66,7 +67,7 @@
 				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
 			</td>
 		</tr>
-		<tr th:unless="${#authentication.principal.permId} != '1C2c' or 
+		<tr th:unless="${#authentication.principal.permId} == '1C2c' or 
 					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 			<td class="fw-bold">담당자</td>
 			<td colspan="4" class="regu-task-emps">
@@ -131,7 +132,7 @@
 					</th:block>
 					<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 					<td th:if="${doc.cmpltDt == null}"> - </td>
-					<td th:usless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+					<td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
 				</tr>
 				</th:block>
 			</tbody>
@@ -193,6 +194,7 @@
 			obj['flag'] = 'N';
 			param.push(obj);
 		})
+		
 		
 		// 담당자 수정 아작스.
 		$.ajax({
