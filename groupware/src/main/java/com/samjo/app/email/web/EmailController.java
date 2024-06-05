@@ -87,6 +87,9 @@ public class EmailController {
 		String custNo = empVO.getCustNo();
 		String eid = empVO.getEmpId();
 		searchVO.setRecp(eid);
+		//
+		//searchVO.setRefer(eid);
+		//
 		searchVO.setCustNo(custNo);
 		List<EmailVO> list = emailService.inboxList(searchVO);
 		model.addAttribute("list", list);

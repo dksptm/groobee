@@ -35,7 +35,7 @@
 					<label for="recp" class="col-sm-2 col-form-label">수신자</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control" name="recpIdName"
-							id="recpIdName"> <input type="hidden" name="recp"
+							id="recpIdName" readonly> <input type="hidden" name="recp"
 							id="recp">
 					</div>
 					<div class="col-sm-2">
@@ -47,11 +47,11 @@
 					<label for="refer" class="col-sm-2 col-form-label">참조자</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control" name="referIdName"
-							id="referIdName"> <input type="hidden" name="refer"
+							id="referIdName" readonly> <input type="hidden" name="refer"
 							id="refer">
 					</div>
 					<div class="col-sm-2">
-						<button type="button" id="selectReferBtn"
+						<button type="button"
 							class="btn btn-primary w-100" data-bs-toggle="modal"
 							data-bs-target="#GetReferListModal">주소록</button>
 					</div>
@@ -176,37 +176,74 @@
 		    let title = document.getElementById('title');
 			try{
 			    if (recp.value === '') {
-			        alert('수신자가 없습니다.');
+			        	Swal.fire ({
+							icon : 'error',
+							title : '잠깐!',
+							text : '수신자가 없습니다.',
+						})
 			        recp.focus();
 			        return;
+						//.then((result) => {
+							//if(result.value){
+								//location.href = "/cust/inboxList";
+							//}
+						//})	
 			    } else if (title.value === '') {
-			        alert('제목은 필수입니다.');
+			        //alert('제목은 필수입니다.');
+			        Swal.fire ({
+					icon : 'error',
+					title : '잠깐!',
+					text : '제목은 필수입니다.',
+						})
 			        title.focus();
 			        return;
+			    } else if (recp.value === refer.value) {
+			        Swal.fire ({
+						icon : 'error',
+						title : '잠깐!',
+						text : '수신자와 참조자는 같지 않아야 합니다.',
+							})
+				        refer.focus();
+			        	return;
 			    }
-			    alert('발송 완료!');
-			    this.submit();
+			    //alert('발송 완료!');
+			    Swal.fire ({
+							icon : 'success',
+							title : '성공!',
+							text : '메일이 발송되었습니다!',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/emailList";
+							}
+						})
+						this.submit();
 			} catch {
-				alert('발송 실패.');
+				Swal.fire({
+					icon : 'error',
+					title : '실패',
+					text : '발송 중 오류가 발생했습니다.',
+				})
+				return;
 			}
 			})
 			
             // 모달창 - 수신자 선택 : 이름과 아이디를 함께 표시, Form제출때 아이디만.
             $("#selectRecpBtn").off().on("click", function(e){
-                var selectedRadio = $('input[name="check"]:checked');
-                var empId = selectedRadio.val();
-                var empName = selectedRadio.closest('tr').find('td:first').text();
-                $("#recpIdName").val(empName + " (" + empId + ")");
-                $("#recp").val(empId);
+                let selectedRecp = $('input[name="check"]:checked');
+                let recpId = selectedRecp.val();
+                let recpName = selectedRecp.closest('tr').find('td:first').text();
+                $("#recpIdName").val(recpName + " (" + recpId + ")");
+                $("#recp").val(recpId);
             });
 
             // 모달창 - 참조자 선택 : 이름과 아이디를 함께 표시, Form제출때 아이디만.
             $("#selectReferBtn").off().on("click", function(e){
-                var selectedRadio = $('input[name="check"]:checked');
-                var empId = selectedRadio.val();
-                var empName = selectedRadio.closest('tr').find('td:first').text();
-                $("#referIdName").val(empName + " (" + empId + ")");
-                $("#refer").val(empId);
+                let selectedRefer = $('input[name="check"]:checked');
+                let referId = selectedRefer.val();
+                let referName = selectedRefer.closest('tr').find('td:first').text();
+                $("#referIdName").val(referName + " (" + referId + ")");
+                $("#refer").val(referId);
             });
 		</script>
 	</th:block>

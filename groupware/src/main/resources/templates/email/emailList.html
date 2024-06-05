@@ -125,6 +125,9 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 
+			
+			console.log()
+			
 			//기간 검색 범위처리
 			$('.fromDt').on('change', function(e) {
 				$('.toDt').attr('min', this.value);
@@ -152,7 +155,14 @@
 				let page = 1;
 				showTable(page);
 			});
-
+	
+			// 검색입력창 엔터시 이벤트 처리
+			$(".searchKey").on("change", function(e) {
+				updateParams();
+				let page = 1;
+				showTable(page);
+			});
+			
 			//페이징 링크 처리
 			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
@@ -206,7 +216,11 @@
 				});
 
 				if (selectedEmails.length === 0) {
-					alert("선택된 메일이 없습니다.");
+					Swal.fire({
+						icon : 'error',	
+						title : '잠깐!',
+						text : '선택한 메일이 없습니다.',
+					})
 					return;
 				}
 
@@ -222,12 +236,29 @@
 					dataType : 'text',
 					data : JSON.stringify(selectedEmails),
 					success : function(result) {
-						alert("선택된 메일이 휴지통으로 이동되었습니다.");
-						location.reload();
+						Swal.fire ({
+							icon : 'success',
+							title : '성공!',
+							text : '선택한 메일이 휴지통으로 이동되었습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/emailList";
+							}
+						})
 					},
 					error : function(xhr, status, error) {
 						console.error(error);
-						alert("휴지통으로 이동 중 오류가 발생했습니다.");
+						Swal.fire({
+							icon : 'error',
+							title : '실패',
+							text : '휴지통 이동 중 오류가 발생했습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/emailList";
+							}
+						})
 					}
 				});
 			});
