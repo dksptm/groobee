@@ -129,34 +129,31 @@ public class TaskController {
 		}
 		
 		// 업무 전체 수정 - 페이지
-		@GetMapping("cust/taskModify")
+		@GetMapping("cust/tsModify")
 		public String taskModifyForm(@RequestParam int taskNo, Model model) {
 			ProjectVO projectVO = new ProjectVO();
 			projectVO.setTaskNo(taskNo);
 			
-			List<DeptVO> list = deptService.deptAllList();
-			model.addAttribute("dept", list);
-			
-			model.addAttribute("task", new ProjectVO());
+			EmpVO empVO = SecuUtil.getLoginEmp();
 			
 			ProjectVO ts = taskService.taskInfo(taskNo);
 			model.addAttribute("task", ts);
 			
-			EmpVO empVO = SecuUtil.getLoginEmp();
+			List<DeptVO> list = deptService.deptAllList();
+			model.addAttribute("dept", list);
 			
-			if (empVO != null) {
-					List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
-					model.addAttribute("emp", elist);
-					
-					model.addAttribute("projects", new ProjectVO());
-				return"project/task/tsModify";
-			} else {
-				return "test/test";
-			}
+			List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
+			model.addAttribute("emp", elist);
+			
+			model.addAttribute("task", new ProjectVO());
+			
+
+			return"project/task/tsModify";
+			
 		}
 		
 		// 업무 전체 수정 - 처리
-		@PostMapping("cust/taskModify")
+		@PostMapping("cust/tsModify")
 		@ResponseBody
 		public String taskModifyProcess(@RequestBody ProjectVO projectVO) {
 			
@@ -166,7 +163,7 @@ public class TaskController {
 			projectVO.setCustNo(custNo);
 			
 			taskService.taskModify(projectVO);
-			return "redirect:/cust/taskInfo/" + projectVO.getTaskNo();
+			return "redirect:/cust/tsModify/" + projectVO.getTaskNo();
 		}
 		
 		// 협력업체 전체 조회

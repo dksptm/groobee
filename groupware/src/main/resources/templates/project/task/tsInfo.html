@@ -70,7 +70,9 @@
 						<br>
 						<div style="text-align: center">
 							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
-							
+							<button type="button"
+							 th:onclick="|location.href='/cust/tsModify/${task.taskNo}'|"
+							   class="btn btn-success mt-2">수정</button>
 						</div>
 					</div>
 				</div>

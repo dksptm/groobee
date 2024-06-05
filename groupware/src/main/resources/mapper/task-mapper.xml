@@ -172,7 +172,6 @@
 		select 1 from dual
 	</insert>
 	
-	
 	<!-- 프로젝트(하위) 업무 참여자 수정 프로시저 실행하기전 참여자의 참여여부를 초기화한다.-->
 	<update id="updateTaskEmpBefore" parameterType="Integer">
 	    UPDATE task_emps
@@ -200,7 +199,7 @@
 			)
 		}	
 	</update>
-		
+	<!-- taskOk에서 사용 -->	
 	<update id="upTask"  parameterType="ProjectVO">
 	   UPDATE task_common
        SET prjt_mat = '5B1b'
@@ -220,8 +219,35 @@
 	FROM task_common
 	WHERE prjt_mat = '5B1b'
 	AND cust_no = #{custNo}
-
 	</select>
+	
+	<!-- 업무 전체 수정 -->
+	<update id="modifyTask" parameterType="ProjectVO" >
+		UPDATE task_common
+		SET 
+			<if test="taskName != null and !taskName.equals('')">
+				 task_name = #{taskName},
+			</if>
+			<if test="prjtMat != null and !prjtMat.equals('')">
+				 prjt_mat = #{prjtMat},
+			</if>
+		    <if test="taskStartDt != null and !taskStartDt.equals('')">
+				 task_start_dt = #{taskStartDt}
+			</if>
+		    <if test="taskDueDt != null and !taskDueDt.equals('')">
+				 task_start_dt = #{taskDueDt},
+			</if>
+			<if test="taskPurpose != null and !taskPurpose.equals('')">
+				 task_purpose = #{taskPurpose},
+			</if>
+		    <if test="taskCntn != null and !taskCntn.equals('')">
+				task_cntn = #{taskCntn}
+			</if>
+		WHERE task_no= #{taskNo}
+	 	AND cust_no =#{custNo}
+		AND standard_no=#{standardNo}
+	</update>
+	
 	<!-- 협력업체 전체 조회 -->
 	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="SearchVO">
 		SELECT r.*
