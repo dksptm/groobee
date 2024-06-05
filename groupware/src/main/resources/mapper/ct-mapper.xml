@@ -268,7 +268,15 @@
 	<!-- 계약 정기결제 갱신 -->
 	<update id="ctPayCheck" parameterType="CtVO">
 		UPDATE ct
-		SET pay_check = #{payCheck}
+		SET pay_check = #{payCheck},
+			ct_pay_dt = ${custName}
 		WHERE ct_no = #{ctNo}
 	</update>
+	
+	<!-- 계약 정기결제 상태 조회 -->
+	<select id="selectCtPayCheck" parameterType="CtVO">
+		SELECT pay_check
+		FROM ct
+		WHERE ct_no = #{ctNo}
+	</select>
 </mapper>

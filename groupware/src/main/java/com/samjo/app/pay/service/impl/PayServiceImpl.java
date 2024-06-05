@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.ct.mapper.CtMapper;
 import com.samjo.app.pay.mapper.PayMapper;
 import com.samjo.app.pay.service.GetTokenVO;
 import com.samjo.app.pay.service.ImportResVO;
@@ -34,6 +34,8 @@ public class PayServiceImpl implements PayService{
 
 	@Autowired
 	PayMapper payMapper;
+	@Autowired
+	CtMapper ctMapper;
 	@Autowired
 	StringEncryptor jasyptStringEncryptor;
 
@@ -71,7 +73,7 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	//정기결제 처리
+	//정기결제 예약 및 DB생성
 	@Override
 	public String schedulePay(String customer_uid, int price, int ctNo) {
 		String token = getToken();
@@ -81,10 +83,10 @@ public class PayServiceImpl implements PayService{
 		if(payMapper.payDay(customer_uid) != null) {
 			payDay = payMapper.payDay(customer_uid);
 		}else{
+			cal.add(Calendar.MINUTE, +5);
 			payDay = cal.getTime();
 		};
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
-		cal.add(Calendar.MINUTE, +1);
 		String date = sdf.format(payDay);
 		try {
 			Date stp = sdf.parse(date);
@@ -117,25 +119,65 @@ public class PayServiceImpl implements PayService{
 		reqJson.addProperty("customer_uid", customer_uid); 
 		reqJson.add("schedules",jsonArr);
 		String json = str.toJson(reqJson); 
-		System.out.println(json);
 		HttpEntity<String> entity = new HttpEntity<>(json, headers);
-		System.out.println("entity : " + entity);
 		try {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
 	 	PayVO payVO = new PayVO();
 		payVO.setCustNo(customer_uid);
 		payVO.setCtNo(ctNo);
 		payVO.setServAmt(price);
-		payMapper.payUpdate(payVO);
+		payVO.setPayExpcDt(payDay);
+		payVO.setMerchantUid(timestamp);
 		payMapper.payInsert(payVO);
-		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
 		System.out.println("API응답 : " + response);
+		
 		return response;
 	}
 
+	@Override
+	public String payCheck(long merchantUid, int ctNo) {
+		String token = getToken();
+		System.out.println("token : " + token);
+		
+		Gson str = new Gson(); 
+		token = token.substring(token.indexOf("response") +10); 
+		token = token.substring(0, token.length() - 1);
+		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+		String access_token = vo.getAccess_token();
+		System.out.println("access_token : " + access_token);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(access_token);
+		
+		Gson var = new Gson();
+		String json = var.toJson("");
+		HttpEntity<String> entity = new HttpEntity<>(json, headers);
+		
+		String url = "https://api.iamport.kr/subscribe/payments/schedule/";
+		String fullUrl = url + merchantUid;
+		String list = restTemplate.exchange(fullUrl, HttpMethod.GET, entity, String.class).getBody();
+		
+		list = list.substring(list.indexOf("payment_status\":\"") + 17);
+		list = list.substring(0, 4);
+		String result = "NOT UPDATE";
+		if(list.equals("paid")){
+			PayVO payVO = new PayVO();
+			payVO.setCtNo(ctNo);
+			payMapper.payUpdate(payVO);
+			result = "UPDATE";
+		}
+		return result;
+	}
+	
+	
+	//이하 삭제예정 ========================================================================================================================
 	//dateStamp처리
 	@Override
 	public long dateStamp(String dateString) throws ParseException {
@@ -203,4 +245,5 @@ public class PayServiceImpl implements PayService{
 	public int custCount(String custNo) {
 		return payMapper.custPayCount(custNo);
 	}
+
 }

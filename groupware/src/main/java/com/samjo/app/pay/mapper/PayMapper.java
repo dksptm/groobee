@@ -25,4 +25,8 @@ public interface PayMapper {
 	public Date payDay(String custNo);
 	//결제 내역 갱신
 	public int payUpdate(PayVO payVO);
+	//결제 예정내역 조회
+	public List<PayVO> selectConPay();
+	//결제대기 내역조회
+	public List<PayVO> selectWaitPay();
 }

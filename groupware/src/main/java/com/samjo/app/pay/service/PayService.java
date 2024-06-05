@@ -19,6 +19,7 @@ public interface PayService {
 	public String schedulePay(String customer_uid, int price, int ctNo);
 	
 	//정기결제 내역조회
+	public String payCheck(long merchantUid, int ctNo);
 	public String payLList() throws ParseException;
 	public long dateStamp(String date) throws ParseException;
 	

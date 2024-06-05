@@ -26,6 +26,8 @@
 						<tbody>
 						</tbody>
 					</table>
+					<button type="button" class="btn btn-primary" onclick="Scheduler()">스케줄러
+						테스트</button>
 				</div>
 			</div>
 		</div>
@@ -39,6 +41,17 @@
 			var IMP = window.IMP;
 			IMP.init('imp82376133');
 
+			//스케줄러
+			function Scheduler() {
+				$.ajax({
+					url : '/sol/startScheduler',
+					type : 'GET',
+					success : function(result) {
+						alert(result);
+					}
+				});
+			}
+			
 			//테스트2
 			function kakaopay() {
 				let merchantUid = new Date().getTime();

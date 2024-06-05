@@ -161,7 +161,21 @@
 			});
 			//결제 중지 처리
 			$('.cancelBtn').on('click', function kakaopay(e) {
-				
+				let ctNo = $(this).parent().siblings('.ctNo').text();
+				$.ajax({
+					url : '/paymentStop',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					type : 'POST',
+					data : {
+						"ctNo" : ctNo
+					},
+					success : function(result) {
+						alert('정기 결제 중지');
+						location.reload(true);
+					}
+				});
 			});
 		</script>
 	</th:block>
