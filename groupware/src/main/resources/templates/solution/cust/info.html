@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+	  
+<th:block layout:fragment="Content">
+<div class="container container-p-y mt-3">
+	<h4>고객관리 - 조회</h4>
+	<div class="bg-light p-3 col-9">
+		<div class="card d-flex justify-content-center table-responsive m-2 p-2">
+			<div>
+				<table class="table table-bordered border-1">
+					<tr>
+						<td id="cno">[[ ${cust.custNo} ]]</td>
+						<td colspan="3"><b class="text-center">고객사 상세정보</b></td>
+					</tr>
+					<tr>
+						<th class="col-3">상호명</th>
+						<td colspan="3">
+							[[ ${cust.custName} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">대표자</th>
+						<td colspan="3">
+							[[ ${cust.rep} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">사업자번호</th>
+						<td colspan="3">
+							[[ ${cust.brn} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">주소</th>
+						<td colspan="3">
+							[[ ${cust.custAddr} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">전화번호</th>
+						<td colspan="3">
+							[[ ${cust.custTel} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">결제담당자</th>
+						<td>
+							[[ ${cust.payPic} ]]
+						</td>
+						<th class="col-3">결제담당자 전화번호</th>
+						<td>
+							[[ ${cust.payPicTel} ]]
+						</td>
+					</tr>
+					<tr>
+						<th class="col-3">계약상태</th>
+						<td>
+							[[ ${cust.lastCtStatName} ]] 
+							<span><a href="/sol/ctInsert" th:if="${cust.lastCtStat != '0A1a'}">>>신규계약 등록하기</a></span>
+						</td>
+						<td>계약번호</td>
+						<td th:if="${cust.lastCtNo != null}">[[ ${cust.lastCtNo} ]]</td>
+						<td th:unless="${cust.lastCtNo != null}">-</td>
+					</tr>
+				</table>
+				<div class="text-end">
+					<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp">최초계정생성</button>	
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$(function() { 
+	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	
+	document.getElementById('firstEmp').addEventListener('click', function(e) {
+		
+		let cno = document.getElementById('cno').innerText;
+		let url = 'firstEmp';
+		let obj = {custNo : cno}
+		
+		fetch(url, {
+			method : 'post',
+			body : JSON.stringify(obj),
+			headers : {
+				'Content-type' : 'application/json',
+				[header]: token // [헤더네임]:토큰번호로 CSRF 토큰을 헤더에 포함
+			}
+		})
+		.then(res => res.json())
+		.then(ret => {
+			
+			console.log(ret);
+			
+		})
+		.catch(err => console.error(err))		
+		
+	})
+	
+
+	
+	
+}) //end.
+
+</script>
+
+</th:block>
+</html>

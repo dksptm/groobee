@@ -24,4 +24,11 @@ public interface DeptMapper {
 	// 관리자/부서장 가져오기(관리자:모든부서장,관리자 / 부서장:나의부서의 부서장만)
 	public List<EmpVO> selectDeptMngr(@Param("emp") EmpVO empVO);
 	
+	// 최초계정 등록시 필요한 해당회사 부서 최초등록.
+	public int insertFirstDept(EmpVO empVO);
+	// 최초계정 등록시 해당회사의 최초직급 등록.
+	public int insertFirstJob(EmpVO empVO);
+	// 현재 계약중인 계약번호 가져오기.
+	public Integer selectCurCtNo(String custNo);
+	
 }

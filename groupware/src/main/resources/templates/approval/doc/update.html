@@ -35,7 +35,7 @@
 			<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
 			<div class="text-end">
 				<button type="submit" class="btn btn-success">수정완료</button>
-				<button type="reset" th:onclick="|location.href='@{/docList}'|" 
+				<button type="reset" th:onclick="|location.href='@{mydoc}'|" 
 						class="btn btn-secondary">수정취소</button>
 			</div>
 			</th:block>
@@ -295,7 +295,7 @@
 			  						<th:block th:if="${#arrays.length(doc.files) != 0}">
 			 							<input type="hidden" name="flag" value="NO" />
 			  							<th:block th:each="file,fstat : ${doc.files}">
-											<a th:href="'download' + '/' + ${file.saveName}" download="${file.uplName}">
+											<a th:href="'/download' + '/' + ${file.saveName}" th:download="${file.uplName}">
 									 			<span>[[ ${file.uplName} ]]</span>
 											</a><br>
 										</th:block>

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class EmpVO {
 	private String empId;
-	private String ctNo;
+	private Integer ctNo;
 	private String custNo;
 	private String deptId;
-	private String jobNo;
+	private Integer jobNo;
 	private String empNo;
 	private String pw;
 	private String empName;

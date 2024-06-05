@@ -32,34 +32,42 @@
 					<thead >
 						<tr class="table-dark">
 							<th class="text-white">문서번호</th>
-							<th class="text-white">작성일자</th>
-							<th class="text-white">완료일자</th>
-							<th class="text-white col-3">제목</th>
 							<th class="text-white">업무명</th>
+							<th class="text-white col-3">제목</th>
 							<th class="text-white">작성상태</th>
 							<th class="text-white">문서상태</th>
 							<th class="text-white">결재상황</th>
+							<th class="text-white">작성일자</th>
+							<th class="text-white">완료일자</th>
 						</tr>
 					</thead>
 					<tbody>
 						<th:block th:each="doc : ${list}">
 						<tr th:attr="data-dno=${doc.docNo}" class="go-doc-info">
 							<td>[[ ${doc.docNo} ]]</td>
-							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
-							<td th:if="${doc.cmpltDt == null}">-</td>
-			                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
-							<td>[[ ${doc.title} ]]</td>
 							<td>
 							<span th:if="${#arrays.length(doc.taskList)} != 0">
 									[[ ${doc.taskList[0].taskName} ]]</span>
 							<span th:unless="${#arrays.length(doc.taskList)} != 0">
 									-</span>
-							<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
+							<span th:if="${doc.taskCount} > 1">외 </span>
 							</td>
-							<td>[[ ${doc.draftStatName} ]]</td>
-							<td>[[ ${doc.docStatName} ]]</td>
-							<td th:if="${doc.draftStat == '4A1a'}">-</td>
+							<td>[[ ${doc.title} ]]</td>
+							<th:block th:switch="${doc.draftStat}">
+								<td th:case="4A1a" class="table-secondary">[[ ${doc.draftStatName} ]]</td>
+								<td th:case="4A2a" class="table-info">[[ ${doc.draftStatName} ]]</td>
+							</th:block>
+							<th:block th:switch="${doc.docStat}">
+								<td th:case="4B1b" class="table-secondary">[[ ${doc.docStatName} ]]</td>
+								<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
+								<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
+								<td th:case="4B4b" class="table-warning">[[ ${doc.docStatName} ]]</td>
+							</th:block>
+							<td th:if="${doc.draftStat == '4A1a'}">상신전</td>
 							<td th:unless="${doc.draftStat == '4A1a'}"> [[ ${doc.curApr} ]]</td>
+							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+							<td th:if="${doc.cmpltDt == null}">-</td>
+			                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
 						</tr>
 						</th:block>
 					</tbody>

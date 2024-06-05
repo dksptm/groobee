@@ -16,13 +16,13 @@
 							<td><select class="form-select" th:field="*{keywordCondition}">
 									<option value="d.title" selected>제목</option>
 									<!-- '문서함'에서는 기안자검색 비활성화 -->
-									<option value="d.draft_name" th:disabled="${path} == 'cust/doc/mydoc'">기안자</option>
+									<option value="d.draft_name" th:disabled="${path} == 'mydoc'">기안자</option>
 							</select></td>
 							<td colspan='3'><input class="form-control" th:field="*{keyword}"
 								type="text" placeholder="검색어입력"></td>
 							<td class="form-control bg-transparent">작성상태</td>
 							<!-- '문서함' 에서만 작성상태 검색가능 -->
-							<th:block th:if="${path} == 'cust/doc/mydoc'">
+							<th:block th:if="${path} == 'mydoc'">
 								<td><select class="form-select" th:field="*{draftStatCondition}">
 										<option th:value="draftStatAll">전체</option>
 										<option value="4A1a">작성중</option>
@@ -30,14 +30,14 @@
 								</select></td>
 							</th:block>
 							<!-- '문서함' 이외는 작성상태 상신완료로 고정 -->
-							<th:block th:unless="${path} == 'cust/doc/mydoc'">
+							<th:block th:unless="${path} == 'mydoc'">
 								<td><select class="form-select" disabled>
 										<option value="4A2a" selected>상신완료</option>
 								</select></td>
 							</th:block>
 							<td class="form-control bg-transparent">결재상태</td>
 							<!-- '결재함'은 결재 대기상태만 조회 -->
-							<th:block th:if="${path} != 'cust/doc/myapr'">
+							<th:block th:if="${path} != 'myapr'">
 								<td><select class="form-select" th:field="*{aprStatCondition}">
 										<option value="aprStatAll">전체</option>
 										<option value="4D1d">대기</option>
@@ -46,7 +46,7 @@
 										<option value="4D4d">반려</option>
 								</select></td>
 							</th:block>
-							<th:block th:unless="${path} != 'cust/doc/myapr'">
+							<th:block th:unless="${path} != 'myapr'">
 							<td><select class="form-select" disabled>
 									<option value="4D1d">대기</option>
 							</select></td>
@@ -56,7 +56,7 @@
 							<td><select class="form-select" th:field="*{dateCondition}">
 									<option value="d.draft_dt">상신일자</option>
 									<option value="d.cmplt_dt" 
-											th:disabled="${path} != 'cust/doc/ing' and ${path} != 'cust/doc/myapr'">
+											th:disabled="${path} != 'ing' and ${path} != 'myapr'">
 											완료일자</option><!-- '결재함','결재진행중'은 결재진행중인 문서만(완료일자없음) -->
 							</select></td>
 							<td><input class="form-select sdt" th:field="*{dtStart}" type="date"></td>
@@ -64,7 +64,7 @@
 							<td><input class="form-select edt" th:field="*{dtEnd}" type="date"></td>
 							<td class="form-control bg-transparent">문서상태</td>
 							<!-- '결재함','결재진행중'은 결재진행중인 문서만 검색 -->
-							<th:block th:if="${path} != 'cust/doc/myapr' and ${path} != 'cust/doc/ing'">
+							<th:block th:if="${path} != 'myapr' and ${path} != 'ing'">
 								<td><select class="form-select" th:field="*{docStatCondition}">
 										<option value="docStatAll">전체</option>
 										<option value="4B1b">결재전</option>
@@ -73,7 +73,7 @@
 										<option value="4B4b">반려문서</option>
 								</select></td>
 							</th:block>
-							<th:block th:unless="${path} != 'cust/doc/myapr' and ${path} != 'cust/doc/ing'">
+							<th:block th:unless="${path} != 'myapr' and ${path} != 'ing'">
 								<td><select class="form-select" disabled>
 										<option value="4B2b">결재진행중</option>
 								</select></td>
@@ -85,7 +85,7 @@
 									<option value="d.draft_dt">상신일자순</option>
 									<option value="d.draft_dt DESC">상신일자순(역순)</option>
 									<!-- '결재함','결재진행중'은 결재진행중인 문서만(완료일자없음) -->
-									<th:block th:if="${path} != 'cust/doc/myapr' and ${path} != 'cust/doc/ing'">
+									<th:block th:if="${path} != 'myapr' and ${path} != 'ing'">
 										<option value="d.cmplt_dt">완료일자순</option>
 										<option value="d.cmplt_dt DESC">완료일자순(역순)</option>
 									</th:block>

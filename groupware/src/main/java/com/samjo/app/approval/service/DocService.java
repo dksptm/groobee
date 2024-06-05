@@ -9,11 +9,6 @@ import com.samjo.app.project.service.ProjectVO;
 
 public interface DocService {
 	
-	// 문서전체조회
-	public List<DocVO> docList(SearchVO searchVO);
-	// 전체페이지
-	public int count();
-
 	// 한 직원이 작성한 모든문서.
 	public List<DocVO> getMyDocList(String empId, SearchVO searchVO);
 	public int countEmpDocs(String empId, SearchVO searchVO);

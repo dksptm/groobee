@@ -261,7 +261,8 @@ public class TaskController {
 		//효주 -----
 		@GetMapping("cust/custTasks")
 		public String getMyTasks(@RequestParam String custNo, Model model) {
-			List<ProjectVO> list = projectService.myCustTasks(custNo);
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			List<ProjectVO> list = projectService.myCustTasks(empVO);
 			model.addAttribute("tasks", list);
 			return "approval/modal/modal_tasks";
 		}

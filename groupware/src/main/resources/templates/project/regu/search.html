@@ -61,13 +61,17 @@
 </div>
 <script th:inline="javascript">
 $(function(){
+	
 	let perm = [[ ${#authentication.principal.permId} ]];
 	let dept = [[ ${#authentication.principal.deptId} ]]
+	
 	if(perm != '1C2c') {
 		let opts = $('select[name=dept]').find('option');
 		for(opt of opts) {
 			if(opt.value == dept) {
 				opt.setAttribute('selected', true); 
+			} else {
+				opt.remove();
 			}
 		}
 		$('select[name=dept]').attr('disabled', true);
