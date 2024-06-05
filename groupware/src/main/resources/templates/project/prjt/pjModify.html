@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="container container-p-y mt-3">
+			<h2>프로젝트 수정</h2>
+			<div class="bg-light p-3 m-5">
+				<div class="table-responsive">
+					<div class="table-responsive">	
+					<table class="table table-hover table-bordered">
+								<tr>
+									<th class="fw-bold">프로젝트ID</th>
+										<!-- <td id="prjtId">[[ ${prjt.prjtId}]]</td> -->
+										<td><input type="text" th:value="${prjt.prjtId}" class="form-control" name="prjtId" id="prjtId" readonly/></td>
+									<th class="fw-bold">프로젝트명</th>
+										<td><input type="text" th:value="${prjt.prjtName}" class="form-control" name="prjtName" id="prjtName"/></td>
+									<th class="fw-bold">책임자</th>
+										<td>[[ ${prjt.empName}]]</td>
+									<td class="fw-bold">진행상황</td>
+									<td><select class="form-select" name="prjtStat" id="prjtStat">
+										    <option value="5E1e">프로젝트진행중</option>
+										    <option value="5E2e">프로젝트완료</option>
+									  	</select>
+									</td>
+								</tr>
+							</table>
+							<br>
+							<table class="table table-hover table-bordered">
+								<tr>
+									<th>시작일</th>			
+									<td><input type="date" th:value="${#dates.format(prjt.prjtStartDt, 'yyyy-MM-dd')}" class="form-control"  id="prjtStartDt" /></td>
+									<th>마감일</th>
+									<td><input type="date" th:value="${#dates.format(prjt.prjtDueDt, 'yyyy-MM-dd')}" class="form-control" id="prjtDueDt" /></td> 
+								</tr>
+							</table>
+							<br>
+							<table class="table table-hover table-bordered">
+								<thead>
+									<tr>
+										<th>목적</th>
+										<td colspan="5"><textarea name="purpose" class="form-control" id="purpose">[[ ${prjt.purpose} ]]</textarea></td>
+										<th>개요</th>
+										<td colspan="5"><textarea name="smry" class="form-control" id="smry">[[ ${prjt.smry} ]]</textarea></td>
+									</tr>
+								</thead>
+							</table>
+							<br>
+							<div style="text-align: end">
+								<button type="button" class="btn btn-primary mt-2" id="modiBtn">저장</button>
+								<button type="button" class="btn btn-light mt-2"
+									onclick="goToInfo()">취소</button>
+							</div>
+							
+						</div>
+					</div>
+			</div>
+		</div>
+		
+ 
+		<script th:inline="javascript">
+		const token = document.querySelector('meta[name="_csrf"]')
+			.getAttribute('content');
+		const header = document.querySelector('meta[name="_csrf_header"]')
+			.getAttribute('content');
+	
+			        $('#modiBtn').click(function() {
+			        	
+			        	
+			        	let project = {
+			        			
+			                prjtId: $('#prjtId').val(),
+			                prjtName: $('#prjtName').val(),
+			                prjtStat: $('#prjtStat').val(),
+			                prjtStartDt: $('#prjtStartDt').val(),
+			                prjtDueDt: $('#prjtDueDt').val(),
+			                purpose: $('#purpose').val(),
+			                smry: $('#smry').val()
+			            };
+			
+			            $.ajax({
+			                url: '/cust/prjtModify',
+			                type: 'POST',
+			                data: JSON.stringify(project),
+			                contentType: 'application/json',
+			                beforeSend : function(xhr) {
+								xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+							},
+							success : function(data) {
+								Swal.fire({
+									title: '수정완료!',        
+									text:  '프로젝트 수정이 완료되었습니다.',  
+									icon:  'success' 
+								})
+								.then(function(){
+									console.log(project.prjtId)
+									location.href='/cust/pj/info?prjtId=' + project.prjtId;                
+								})
+							},
+							error : function(err) {
+								Swal.fire({
+									title: '수정실패',        
+									text:  '프로젝트 수정이 실패하였습니다.',  
+									icon:  'error' 
+								})
+								.then(function(){
+									location.reload(true);                  
+								})
+							}
+			            });
+			        });
+		
+		 	
+			 // 프로젝트 상세로 
+				function goToInfo() {
+					let project = { prjtId: $('#prjtId').val() }
+					location.href='/cust/pj/info?prjtId=' + project.prjtId;  ;
+				};
+			 
+		</script> 
+	</th:block>
+</body>
+</html>

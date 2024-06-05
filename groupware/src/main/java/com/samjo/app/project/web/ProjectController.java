@@ -1,12 +1,12 @@
 package com.samjo.app.project.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +19,6 @@ import com.samjo.app.emp.service.EmpVO;
 import com.samjo.app.project.service.ProjectService;
 import com.samjo.app.project.service.ProjectVO;
 import com.samjo.app.project.service.TaskDTO;
-
 
 @Controller
 public class ProjectController {
@@ -113,56 +112,51 @@ public class ProjectController {
 		projectVO.setPrjtStat("5E1e");
 		
 		int pId = projectService.prjtInsert(projectVO);
-		System.out.println("pId---->" + pId);	
-
+		//System.out.println("pId---->" + pId);	
+	
 		if (pId > -1) {
-			return "redirect:/cust/pj/info?prjtId=" + pId;
+			 return "redirect:/cust/pj/info?prjtId=" + projectVO.getPrjtId();
+			
 		} else {
 			return "test/test";
 		}
 	}
 
+	// 프로젝트 수정 - 페이지
+	@GetMapping("cust/prjtModify")
+	public String prjtModifyForm(@RequestParam String prjtId, Model model) {
+		ProjectVO projectVO = new ProjectVO();
+		projectVO.setPrjtId(prjtId);
+		
+		ProjectVO pj = projectService.prjtInfo(prjtId);
+		model.addAttribute("prjt", pj);
+		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if (empVO != null) {
+				List<EmpVO> list = deptService.respMngrList(empVO.getCustNo());
+				model.addAttribute("mngr", list);
+				model.addAttribute("projects", new ProjectVO());
+			return"project/prjt/pjModify";
+		} else {
+			return "test/test";
+		}
+	}
 	
+	// 프로젝트 수정 - 처리
+	@PostMapping("cust/prjtModify")
+	@ResponseBody
+	public String prjtModifyProcess(@RequestBody ProjectVO projectVO) {
+		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		String custNo = empVO.getCustNo();
+		projectVO.setCustNo(custNo);
+		
+		projectService.prjtModify(projectVO);
+		return "redirect:/cust/pj/info?prjtId=" + projectVO.getPrjtId();
 	
-	
-	
-	
-	
-	
-	
-	
-	// 프로젝트 삭제
-		@PostMapping("cust/prjtDelete")
-		@ResponseBody
-	    public String prjtDelete(@RequestParam("prjtId") String prjtId) {
-	        projectService.prjtDelete(prjtId);
-	        return  "project/prjt/pjList";
-	    	}
+	}
 
 }// end 
 		
-
-	/*
-	// 프로젝트 단건조회
-	@GetMapping("/cust/pjInfo/{prjtId}")
-		public String prjtInfo1(@PathVariable String prjtId, Model model) {
-			ProjectVO projectVO = projectService.prjtInfo(prjtId);
-			model.addAttribute("pjlist", projectVO);
-			return "project/prjt/pjInfo";
-	}
-	// 프로젝트 수정 - 페이지
-	@GetMapping("prjtUpdate")
-	public String prjtUpdateForm(ProjectVO projectVO, Model model) {
-
-		ProjectVO findVO = projectService.prjtInfo(prjtId);
-		model.addAttribute("prjtInfo", findVO);
-		return "project/prjt/update";
-	}
-	// 수정 처리
-	@PostMapping("prjtUpdate")
-	@ResponseBody
-	public Map<String, Object> prjtUpdateProcess(ProjectVO projectVO) {
-		return projectService.prjtUpdate(projectVO);
-	}
-	
-	 */

@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.project.mapper.ProjectMapper">
-	<!-- 프로젝트(상위), 상시업무는, 업무공통(효주) // 프로젝트(하위), 협력업체 task-mapper.xml에 -->
+	<!-- 프로젝트(상위),업무공통(효주) // 프로젝트(하위), 협력업체 task-mapper.xml에 -->
 	
 	<!-- 프로젝트(상위) 전체 조회 -->
 	<select id="selectPrjtAllList" resultType="ProjectVO" parameterType="SearchVO">
@@ -161,11 +161,34 @@
 		WHERE prjt_id = #{prjtId}
 	</update>	
 		
-	<!-- 프로젝트(상위) 삭제-->
-	<delete id="deletePrjt">
-		DELETE FROM prjt
+	<!-- 프로젝트 전체 수정  -->
+	<update id="modifyPrjt" parameterType="ProjectVO">
+		UPDATE prjt
+		SET   
+			<if test="prjtName != null and !prjtName.equals('')">
+				 prjt_name = #{prjtName}
+			</if>     		
+			<if test="prjtStat != null and !prjtStat.equals('')">
+				, prjt_stat =  #{prjtStat}
+			</if>
+			<if test="prjtStartDt != null and !prjtStartDt.equals('')">
+				, prjt_start_dt = #{prjtStartDt}
+			</if>
+			<if test="prjtDueDt != null and !prjtDueDt.equals('')">
+				, prjt_due_dt = #{prjtDueDt}
+			</if>
+			<if test="purpose != null and !purpose.equals('')">
+				, purpose = #{purpose}
+			</if>
+			<if test="smry != null and !smry.equals('')">
+				, smry = #{smry}
+			</if>
+			 <if test="respMngrId != null and !respMngrId.equals('')">
+				, resp_mngr_id = #{respMngrId}
+			</if>
 		WHERE prjt_id = #{prjtId}
-	</delete>
+		AND cust_no =#{custNo}
+	</update>
 	
 	<!-- 효주 - 업무공통 조회 : 마감날짜 이전 업무번호,부서ID,부서명,업무명. -->
 	<select id="selectTasks" resultType="ProjectVO">

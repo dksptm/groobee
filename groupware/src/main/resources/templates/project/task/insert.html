@@ -230,10 +230,10 @@
 			
 				// 사원 선택시 모달 
 				$("#deptEmpBtnM").on('click',function(){
-					let deptEmpChk = $("input[name=empCheck]:checked");
+					let deptEmpChk = $("#empList input[name=empCheck]:checked");
+					console.log(deptEmpChk);
 					deptEmp = [];
 					$("#deptEmpList").html("");
-					
 					
 					for(let i = 0; i < deptEmpChk.length; i++){
 						let tr = $(deptEmpChk[i]).closest('tr').clone()

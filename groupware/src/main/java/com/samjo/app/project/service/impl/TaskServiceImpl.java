@@ -27,17 +27,17 @@ public class TaskServiceImpl implements TaskService{
 		this.taskMapper = taskMapper;
 	}
 
-	@Override // 프로젝트(하위)업무 전체조회
+	@Override // 업무 전체조회
 	public List<ProjectVO> taskAllList(SearchVO searchVO) {
 		return taskMapper.selectTaskAllList(searchVO);
 	}
 	
-	@Override // 프로젝트업무 페이징
+	@Override // 업무 페이징
 	public int count(SearchVO searchVO) {
 		return taskMapper.taskCount(searchVO);
 	}
 	
-	@Override // 프로젝트(하위)업무 단건조회
+	@Override // 업무 단건조회
 	public ProjectVO taskInfo(int taskNo) {
 		ProjectVO projectVO = new ProjectVO();
 		projectVO = taskMapper.selectTask(taskNo);
@@ -45,7 +45,7 @@ public class TaskServiceImpl implements TaskService{
 		return projectVO;
 	}
 	
-	@Override // 프로젝트(하위) 등록
+	@Override // 업무 등록
 	public int taskInsert(ProjectVO projectVO) {
 		int result = taskMapper.insertTask(projectVO);
 		if(result > 0) {
@@ -59,7 +59,7 @@ public class TaskServiceImpl implements TaskService{
 		return taskMapper.taskList(empVO);
 	}
 	
-	@Override // 업무참여자 수정 
+	@Override // 업무 참여자 수정 
 	public Map<String, Object> taskOk(ProjectVO projectVO) {
 		
 		List<TaskEmpsVO> emps = projectVO.getTaskEmps();
@@ -92,7 +92,22 @@ public class TaskServiceImpl implements TaskService{
 		return map;
 	}
 	
-
+	@Override // 업무 수정
+	public Map<String, Object> taskModify(ProjectVO projectVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		int result = taskMapper.modifyTask(projectVO);
+		
+		if (result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		map.put("target", projectVO);
+		
+		return map;
+	}
+	
 	@Override // 협력업체 조회
 	public List<ProjectVO> CoopCoAllList(SearchVO searchVO) {
 		return taskMapper.selectCoopCoAllList(searchVO);
@@ -110,8 +125,9 @@ public class TaskServiceImpl implements TaskService{
 	public ProjectVO coopInfo(ProjectVO projectVO) {
 		return taskMapper.selectCoop(projectVO);
 	}
+
 	
-	
+
 		
 	}
 /*

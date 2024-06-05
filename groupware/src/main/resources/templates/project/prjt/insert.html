@@ -129,7 +129,7 @@
 
 								$('#respMngrName').val(mngrName);
 								$('#respMngrId').val(mngrId);
-							}//
+							}
 						}); //
 
 				
@@ -150,7 +150,7 @@
 							}).then(function() {
 								 let prjtId = data.prjtId;
 								 console.log(prjtId)
-					                window.location.href = "/cust/pj/info?prjtId=" + prjtId;
+									 location.href='/cust/pj/Info?prjtId=' + prjtId;
 							})
 						},
 						error : function(err) {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.ui.Model;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
@@ -24,13 +25,13 @@ public interface ProjectService {
 	public ProjectVO prjtInfo(String prjtId);
 	// 프로젝트 등록
 	public int prjtInsert(ProjectVO projectVO);
-	// 프로젝트 수정
-	public Map<String, Object> prjtUpdate(ProjectVO projectVO);
-	// 프로젝트 삭제
-	public void prjtDelete(String prjtId);
+	
+	// 프로젝트 전체 수정
+	public Map<String, Object> prjtModify(ProjectVO projectVO);
 	
 	// 효주 - 업무공통 간략조회.
 	public List<ProjectVO> myCustTasks(String custNo);
 	// 효주 끝.
+
 	
 }
