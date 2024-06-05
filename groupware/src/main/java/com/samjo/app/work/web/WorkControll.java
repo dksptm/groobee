@@ -85,7 +85,7 @@ public class WorkControll {
 
 	// 관리자 페이지 전체 조회
 	@GetMapping("work/workmanager")
-	public String managerWorkList(WorkManagerSearchVO workmanagersearchVO, Model model) {
+	public String managerWorkList(WorkManagerSearchVO workmanagersearchVO, Model model, WorkVO workVO) {
 		if (workmanagersearchVO.getPage() == 0) {
 			workmanagersearchVO.setPage(1);
 		}
@@ -93,6 +93,10 @@ public class WorkControll {
 		model.addAttribute("list", list);
 		WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount());
 		model.addAttribute("filter", workpageDTO);
+		List<WorkVO> ipinlist = workService.selectinip(workVO);
+		model.addAttribute("iplist", ipinlist);
+		List<WorkVO> ipoutlist = workService.selectoutip(workVO);
+		model.addAttribute("ipoutlist", ipoutlist);
 		return "work/workmanager";
 	}
 	
@@ -138,7 +142,7 @@ public class WorkControll {
 	@PostMapping("work/workupdate")
 	public String update(WorkVO workVO) {
 		workService.update(workVO);
-		return "redirect:/home";
+		return "redirect:/work/worklist?empId="+workVO.getEmpId();
 	}
 
 	

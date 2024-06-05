@@ -37,5 +37,6 @@ public class WorkVO {
 	private int au;    // 연차횟수
 	private int tdy;   // 지각횟수
 	private int early; // 조퇴횟수
+	private String ip;
 
 }

@@ -87,7 +87,7 @@ public class WorkServiceImpl implements WorkService{
 		public List<WorkVO> workList(WorkSearchVO worksearchVO) {
 			return workMapper.selectAllList(worksearchVO);
 		}
-
+	// 수정 처리
 	@Override
 	public Map<String, Object> update(WorkVO workVO) {
 		Map<String, Object> map = new HashMap<>();
@@ -122,10 +122,24 @@ public class WorkServiceImpl implements WorkService{
 		return map;
 	}
 
-
+	// 사원 정보(근속일수, 휴가사용 등) 
 	@Override
 	public WorkVO selectemp(WorkVO workVO) {
 		return workMapper.selectemp(workVO);
+	}
+
+	
+	// ip 관련
+	// 신청ip목록
+	@Override
+	public List<WorkVO> selectoutip(WorkVO workVO) {
+		return workMapper.selectoutip(workVO);
+	}
+
+	// 등록된 ip목록
+	@Override
+	public List<WorkVO> selectinip(WorkVO workVO) {
+		return workMapper.selectinip(workVO);
 	}
 
 

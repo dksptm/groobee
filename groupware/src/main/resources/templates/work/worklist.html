@@ -7,8 +7,6 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-11">
-
-
 				<div>
 					<input type="hidden" th:value="${#authentication.principal.empId}"
 						id="id"> <input type="hidden"
@@ -42,9 +40,13 @@
 
 					</table>
 					<div>
-						<button type="button" class="btn btn-primary" id="wkIn" value="1">출근</button>
-						<button type="button" class="btn btn-primary" id="wkOut">퇴근</button>
-						<button type="button" class="btn btn-primary" id="wkStop">조퇴</button>
+						<button type="button" class="btn btn-primary" id="wkIn" value="1"
+							style="float: left;">출근</button>
+						<button type="button" class="btn btn-primary" id="wkStop"
+							style="float: right;">조퇴</button>
+						<button type="button" class="btn btn-primary" id="wkOut"
+							style="float: right;">퇴근</button>
+							<button type="button" id="test">test</button>
 					</div>
 
 				</div>
@@ -83,17 +85,15 @@
 				</div>
 				<br>
 				<!-- 
-					list = 필터 수정, Ajax수정(ip조건 넣기)
-					lists = 자신의 출퇴근 기록만 보이기.
-					update = 업데이트 부분 제대로 보기 
-					info = 부서ID수정
-					managerinfo = 페이지만들어서 리스트보여주기
-					
 					사원계정 접속시 사원번호 사원명 가리기
-					<th:block sec:authorize="hasAuthority('1D3d')">
-					출근, 퇴근 값안들어가면 행에 색상 적용,
-					지각, 조퇴, 오전반차, 오후반차 셀색상변경
+					<th:block sec:authorize="hasAuthority('1D4d')">
 					얼럿창 -> 스윗얼럿
+					
+					doc_pto 테이블에서 휴가여부 구분 후 오라클 프로시저 수정
+					apr테이블aprYN(결재상태유무), doc_pto테이블doc_stat
+					doc테이블docNo(문서번호)
+					문서, 전자결제 테이블 두개 조인 후 
+					
 					 -->
 				<div id="workTable">
 					<table class="table table-striped-columns">
@@ -170,8 +170,9 @@
 				</div>
 			</div>
 		</div>
-		<input type="hidden" id=ips>
-		<input type="hidden" id=city>
+		<input type="hidden" id="ips">
+		<input type="hidden" id="city">
+		
 		<script>
 		// CSRF
 		let header = $("meta[name='_csrf_header']").attr('content');
@@ -235,8 +236,8 @@
 			// 날짜 검색
 				oneDate = $('#oneDate').val();
 				twoDate = $('#twoDate').val();
+				
 			// 상태 조건 
-			
 				wkYn = $('#wkYn').val();
 				wkStat = $('#wkStat').val();
 				wkSite = $('#wkSite').val();
@@ -264,6 +265,7 @@
 					}
 					});
 		        }
+			let ipcheck = false;
 			
 			// 출근
 			 $('#wkIn').on('click', wkins);
@@ -271,27 +273,31 @@
 			$('#wkOut').on('click', wkouts);
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
+			$('#test').on('click', test);
+			function test() {
 			
-			var ipbox = ['58.238.119.17', '58.238.119.20', '58.238.119.08'];
-			var client = $('#ips').val();
-			let ipcheck = false;
-			/* function check(ipcheck) {
-				for(var i = 0; i< ipbox.length; i++]) {
-					if(ipbox[i] === client){
-						ipcheck = true;
-						return ipcheck;
-					}
-				} 
-				return ipcheck;
-			} */
+			}
+			console.log(ipcheck);
+				
 		
 			// 출근
 			function wkins() {
+				// 출근 등록
 				let empId = $('#id').val();
 				let times = time;
 				let days = date;
 				let ip = $('#ips').val();
 				let city = $('#city').val();
+				// ipcheck
+				let ipbox = ['58.238.119.80', '58.238.119.20', '58.238.119.08', '58.238.119.17'];
+				let client = $('#ips').val();
+				let ipcheck = false;
+					for(let i = 0; i< ipbox.length; i++) {
+						if(ipbox[i] == client){
+							ipcheck = true;
+						}
+					}
+				if (ipcheck == true) {
 				
 				$.ajax({
 					url : 'workin',
@@ -322,6 +328,12 @@
 				    	}
 				    }
 				});
+				}
+				Swal.fire({
+			    	title: '회사 IP가 아닙니다.', 
+			    	text: '문의는 관리자에게',
+			    	icon: 'error'});
+				
 			}
 			
 			// 퇴근
@@ -378,9 +390,9 @@
 				    		title: '조퇴하셨습니다!!', 
 				    		text: '',
 				    		icon: 'success'
-				    	}).then(function() {
-				    		location.reload(true);
-				    	};
+				    		}).then(function() {
+				    			location.reload(true);
+				    	})
 				    }
 				})
 			};

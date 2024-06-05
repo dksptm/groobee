@@ -177,6 +177,7 @@ WHERE l.rn > (#{page} -1) * 5
 	<update id="workout">
 	UPDATE wk
 	SET wk_out = sysdate,
+		wk_stat = '2B1b',
 	    wk_out_loc = #{wkOutLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
@@ -230,6 +231,37 @@ where dt = #{dt} and j.emp_id = #{empId}
      AND  dt = #{dt}
    </update>
    
+   <!-- ip관련 -->
+   
+   <!-- 신청 ip -->
+	<select id="selectoutip">
+	SELECT emp_id,
+	       ip,
+	       dt
+	FROM outip
+	</select>
+	<!-- 신청된 ip -->
+   <select id="selectinip">
+    SELECT emp_id,
+	       ip,
+	       dt
+	FROM inip
+   </select>
+   
+   <!-- 신청 ip삭제 -->
+   <delete id="outdelete">
+   delete from inip
+   where ip = #{ip}
+   </delete>
+   
+   <!-- 신청 ip등록 -->
+  <!-- <insert id=insertinip parameterType="WorkVO">
+   INSERT INTO outip
+   VALUES(
+   #{empId},
+   #{ip},
+   #{dt})
+   </insert>  -->
    
   </mapper>
   

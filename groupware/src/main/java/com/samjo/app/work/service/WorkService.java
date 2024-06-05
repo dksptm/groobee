@@ -35,4 +35,11 @@ public interface WorkService {
 	
 	// 계정 정보 조회
 	public WorkVO selectemp(WorkVO workVO);
+	
+	// ip관리
+	
+	// ip 조회
+	public List<WorkVO> selectoutip(WorkVO workVO);
+	public List<WorkVO> selectinip(WorkVO workVO);
+	
 }

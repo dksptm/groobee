@@ -38,8 +38,11 @@ public interface WorkMapper {
 	// 관리자 페이지 수정
 	public int update(WorkVO workVO);
 	
+	// ip관리
 	
-	
+	// ip 조회
+	public List<WorkVO> selectoutip(WorkVO workVO);
+	public List<WorkVO> selectinip(WorkVO workVO);
 	
 	
 	
