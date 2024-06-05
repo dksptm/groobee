@@ -28,7 +28,7 @@
 		           , #{deptId}
 		           , #{jobNo}
 		           , '000'
-		           , '1111'
+		           , #{pw}
 		           , rep
 		           , SYSDATE
 		           , '1D1d'

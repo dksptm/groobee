@@ -132,6 +132,8 @@
 <script>
 $(function() { 
 	
+	$('#sample6_postcode').on('focus', sample6_execDaumPostcode);
+	
 	$("#brn").keyup(function(){
 		$(this).val($(this).val().replace(/[^0-9]/gi, "").replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`));
 	});

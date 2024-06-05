@@ -74,13 +74,18 @@
 </div>
 
 <script>
-$(function() { 
+window.addEventListener('load', function() {
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-	
-	document.getElementById('firstEmp').addEventListener('click', function(e) {
+    
+    
+	if(document.getElementById('firstEmp') != null) {
+	    document.getElementById('firstEmp').addEventListener('click', firstEmp);	
+	}
+    
 		
+   	function firstEmp(){
 		let cno = document.getElementById('cno').innerText;
 		let url = 'firstEmp';
 		let obj = {custNo : cno}
@@ -100,13 +105,10 @@ $(function() {
 			
 		})
 		.catch(err => console.error(err))		
-		
-	})
-	
-
-	
-	
-}) //end.
+   	}
+    	
+    
+})
 
 </script>
 
