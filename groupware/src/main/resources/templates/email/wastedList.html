@@ -70,15 +70,20 @@
 									<tr>
 										<td>
 											<th:block th:if="${emailVO.sender == emailVO.recp}">
-							                    (셀프)
+							                    셀프메일
 							                </th:block>
-							                <th:block th:if="${(emailVO.sender == searchVO.sender)
-							                AND (emailVO.recp != searchVO.sender )}">
+							                <th:block th:if="${(emailVO.sender != emailVO.recp)
+							                AND (emailVO.sender == searchVO.sender)}">
 							                    보낸메일 
 							                </th:block>
-							                <th:block th:if="${(emailVO.recp == searchVO.recp)}">
+							                <th:block th:if="${(emailVO.sender != emailVO.recp)
+							                AND (emailVO.recp == searchVO.recp)}">
 							                    받은메일 
-							                </th:block>	    		              
+							                </th:block>
+							                <th:block th:if="${(emailVO.sender != emailVO.recp)
+							                AND (emailVO.refer == searchVO.refer)}">
+							                    참조메일 
+							                </th:block>								                	    		              
 						                </td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
@@ -162,7 +167,14 @@
 				let page = 1;
 				showTable(page);
 			});
-
+	
+			// 검색입력창 엔터시 이벤트 처리
+			$(".searchKey").on("change", function(e) {
+				updateParams();
+				let page = 1;
+				showTable(page);
+			});
+			
 			//페이징 링크 처리
 			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
@@ -220,7 +232,12 @@
 				});
 
 				if (selectedEmails.length === 0) {
-					alert("선택된 메일이 없습니다.");
+					//alert("선택된 메일이 없습니다.");
+					Swal.fire({
+						icon : 'error',
+						title : '잠깐!',
+						text : '선택된 메일이 없습니다.',
+					})
 					return;
 				}
 
@@ -236,12 +253,31 @@
 					dataType : 'text',
 					data : JSON.stringify(selectedEmails),
 					success : function(result) {
-						alert("선택된 메일이 복원되었습니다.");
-						location.reload();
+						//alert("선택된 메일이 복원되었습니다.");
+						Swal.fire({
+							icon : 'success',
+							title : '성공!',
+							text : '선택한 메일이 복원되었습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/wastedList";
+							}
+						})
 					},
 					error : function(xhr, status, error) {
 						console.error(error);
-						alert("복원 중 오류가 발생했습니다.");
+						//alert("복원 중 오류가 발생했습니다.");
+						Swal.fire({
+							icon : 'error',
+							title : '실패',
+							text : '복원 중 오류가 발생했습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/wastedList";
+							}
+						})						
 					}
 				});
 			});
@@ -253,7 +289,12 @@
 				});
 
 				if (selectedEmails.length === 0) {
-					alert("선택된 메일이 없습니다.");
+					//alert("선택된 메일이 없습니다.");
+					Swal.fire({
+						icon : 'error',	
+						title : '잠깐!',
+						text : '선택된 메일이 없습니다.'
+					})
 					return;
 				}
 
@@ -269,12 +310,31 @@
 					dataType : 'text',
 					data : JSON.stringify(selectedEmails),
 					success : function(result) {
-						alert("선택된 메일이 완전히 삭제되었습니다.");
-						location.reload();
+						//alert("선택된 메일이 완전히 삭제되었습니다.");
+						Swal.fire ({
+							icon : 'success',
+							title : '성공!',
+							text : '선택한 메일이 완전히 삭제되었습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/wastedList";
+							}
+						})						
 					},
 					error : function(xhr, status, error) {
 						console.error(error);
-						alert("완전삭제 중 오류가 발생했습니다.");
+						//alert("완전삭제 중 오류가 발생했습니다.");
+						Swal.fire({
+							icon : 'error',
+							title : '실패',
+							text : '완전삭제 중 오류가 발생했습니다.',
+						})
+						.then((result) => {
+							if(result.value){
+								location.href = "/cust/wastedList";
+							}
+						})						
 					}
 				});
 			});
