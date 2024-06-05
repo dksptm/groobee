@@ -11,22 +11,22 @@ import com.samjo.app.project.service.TaskEmpsVO;
 
 public interface TaskMapper {
 	
-		// 프로젝트 업무 조회
+		// 업무 조회
 		public List<ProjectVO> selectTaskAllList(SearchVO searchVO);
-		//프로젝트 업무 페이징
+		// 업무 페이징
 		public int taskCount(SearchVO searchVO);
-		// 프로젝트 업무 등록
+		//  업무 등록
 		public int insertTask(@Param("pj") ProjectVO projectVO);
 		
-		// 프로젝트 단건조회
+		// 업무 단건조회
 		public ProjectVO selectTask(int taskNo);
-		// 프로젝트 업무 참여자 조회
+		// 업무 참여자 조회
 		public List<TaskEmpsVO> selectTaskEmpList(int taskNo);
 		
 		// 업무 참여자 //
-		// 프로젝트 참여자 수정(프로시저)실행하기전 참여자의 참여여부를 초기화한다
+		// 업무 참여자 수정(프로시저)실행하기전 참여자의 참여여부를 초기화한다
 		public void updateTaskEmpBefore(int taskNo);
-		// 프로젝트 참여자 수정(프로시저)
+		// 업무 참여자 수정(프로시저)
 		public void updateTaskEmp(TaskEmpsVO emp);
 		// 업무모두완료시 -> 프로젝트완료상태(프로시저)
 		public void updatePrjt(ProjectVO projectVO);
@@ -35,6 +35,11 @@ public interface TaskMapper {
 		// 업무 상황 업데이트 
 		public ProjectVO upTask(ProjectVO projectVO);
 		
+		// 프로젝트업무 단순조회
+		public List<ProjectVO> taskList(EmpVO empVO);
+		
+		// 업무 전체 수정
+		public int modifyTask(ProjectVO projectVO);
 		
 		// 협력업체 조회
 		public List<ProjectVO> selectCoopCoAllList(SearchVO searchVO);
@@ -44,21 +49,11 @@ public interface TaskMapper {
 		public int insertCoop(ProjectVO projectVO);
 		// 협력업체 단건
 		public ProjectVO selectCoop(ProjectVO projectVO);
-	
-		// 프로젝트업무 단순조회
-		public List<ProjectVO> taskList(EmpVO empVO);
 		
-		
-		/*
-		 * // 프로젝트 업무 수정 
-		 * public int updateTask(ProjectVO projectVO); 
-		 * // 프로젝트 업무 삭제
-		 * public int deleteTask(@Param("taskNo")int taskNo);
-		 */	
-			/*
-		 * // 협력업체 수정 
-		 * public int updateCoop(ProjectVO projectVO); 
-		 * // 협력업체 삭제 public int
-		 * deleteCoop(@Param("coopCoNo")int coopCoNo);
+		/*	 	
+		  // 협력업체 수정 
+		  public int updateCoop(ProjectVO projectVO); 
+		  // 협력업체 삭제 public int
+		  deleteCoop(@Param("coopCoNo")int coopCoNo);
 		 */
 }

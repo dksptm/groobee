@@ -37,7 +37,7 @@ public class TaskController {
 		this.taskService = taskService;
 	}
 	
-	// 프로젝트(하위) 업무 전체조회
+		// 업무 전체조회
 		@GetMapping("cust/taskAllList")
 		public String taskListPage(SearchVO searchVO, Model model) {
 			if (searchVO.getPage() <= 0) {
@@ -54,7 +54,7 @@ public class TaskController {
 			return "project/task/tsList";
 		}
 		
-		//프로젝트 업무 조회페이지 검색/페이징 처리
+		// 업무 조회페이지 검색/페이징 처리
 		@PostMapping("cust/viewTsList")
 		public String viewTsListPage(SearchVO searchVO, Model model) {
 			//System.out.println("searchVO: "+searchVO);
@@ -72,7 +72,7 @@ public class TaskController {
 			return "project/task/tsList :: #taskTable";
 		}
 		 
-		// 프로젝트(하위) 업무 등록
+		// 업무 등록 - 페이지 
 		@GetMapping("cust/taskInsert")
 		public String taskInsertForm(SearchVO searchVO, Model model) {
 			List<DeptVO> list = deptService.deptAllList();
@@ -89,6 +89,7 @@ public class TaskController {
 			return "project/task/insert";
 		}
 		
+		// 업무 등록 - 처리
 		@ResponseBody
 		@PostMapping("cust/taskInsert")
 		public String taskInsertProcess(@RequestBody ProjectVO projectVO,Model model) {
@@ -102,7 +103,7 @@ public class TaskController {
 			model.addAttribute("task", new ProjectVO());
 			
 			int taskNo = taskService.taskInsert(projectVO);
-			System.out.println("taskNo---->" + taskNo);
+			//System.out.println("taskNo---->" + taskNo);
 
 			if (taskNo > -1) {
 				return "" + taskNo;
@@ -111,7 +112,7 @@ public class TaskController {
 			}
 		}
 		
-		// 프로젝트(하위) 업무 단건
+		//  업무 단건
 		@GetMapping("cust/tsInfo/{taskNo}")
 		public String taskInfo(@PathVariable int taskNo, Model model) {
 			ProjectVO projectVO = taskService.taskInfo(taskNo);	
@@ -123,8 +124,49 @@ public class TaskController {
 		@ResponseBody
 		@PutMapping("cust/taskOk/{taskNo}")
 		public Map<String, Object> taskOk(@PathVariable Integer taskNo, @RequestBody ProjectVO projectVO) {
-			System.out.println("프로젝트VO=====>" + projectVO);
+			//System.out.println("프로젝트VO=====>" + projectVO);
 			return taskService.taskOk(projectVO);
+		}
+		
+		// 업무 전체 수정 - 페이지
+		@GetMapping("cust/taskModify")
+		public String taskModifyForm(@RequestParam int taskNo, Model model) {
+			ProjectVO projectVO = new ProjectVO();
+			projectVO.setTaskNo(taskNo);
+			
+			List<DeptVO> list = deptService.deptAllList();
+			model.addAttribute("dept", list);
+			
+			model.addAttribute("task", new ProjectVO());
+			
+			ProjectVO ts = taskService.taskInfo(taskNo);
+			model.addAttribute("task", ts);
+			
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			
+			if (empVO != null) {
+					List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
+					model.addAttribute("emp", elist);
+					
+					model.addAttribute("projects", new ProjectVO());
+				return"project/task/tsModify";
+			} else {
+				return "test/test";
+			}
+		}
+		
+		// 업무 전체 수정 - 처리
+		@PostMapping("cust/taskModify")
+		@ResponseBody
+		public String taskModifyProcess(@RequestBody ProjectVO projectVO) {
+			
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			
+			String custNo = empVO.getCustNo();
+			projectVO.setCustNo(custNo);
+			
+			taskService.taskModify(projectVO);
+			return "redirect:/cust/taskInfo/" + projectVO.getTaskNo();
 		}
 		
 		// 협력업체 전체 조회
@@ -191,7 +233,7 @@ public class TaskController {
 		@ResponseBody
 		@PostMapping("cust/coopInsert")
 		public String coopInsertProcess(@RequestBody ProjectVO projectVO, Model model) {
-			System.out.print(projectVO);
+			//System.out.print(projectVO);
 			//projectVO.setTaskNo(taskNo); 
 			
 			int cNo =  taskService.coopInsert(projectVO);

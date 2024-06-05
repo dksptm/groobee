@@ -70,7 +70,7 @@
 						<br>
 						<div style="text-align: center">
 							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
-							<!-- <button type="button" class="btn btn-secondary  mt-2" id="delBtn">삭제</button> -->
+							
 						</div>
 					</div>
 				</div>
@@ -89,22 +89,18 @@
 				
 			});
 			
- 		// 하나도 체크되지않으면 alert
-			/* $('input:checkbox[name="chk"]').each(function() {
-				
-				//let chk = $("input[name='chk']").prop("checked");
-				//if(chk == false){
-				
-				if($("input[name=chk]:checked").length == 0){
-					Swal.fire({
-						title:  '반영실패',        
-						text:  '한명이상을 선택해주세요.',  
-						icon:  'error' 
-					})
-				}
-			}); */
-			
 			function taskOK() {
+				
+                if ($("input[name=chk]:checked").length == 0) {
+                    Swal.fire({
+                        title:  '반영실패',        
+                        text:  '한명이상을 선택해주세요.',  
+                        icon:  'error' 
+                    });
+                    return;
+                }
+				
+				
 				let chkEmps = $(".task-emp-ok:checked").not(':disabled').next();
 				let taskNo = $('input[name="taskNo"]').val();
 				

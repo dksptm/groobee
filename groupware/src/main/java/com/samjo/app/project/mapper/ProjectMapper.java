@@ -21,11 +21,11 @@ public interface ProjectMapper {
 	public ProjectVO selectPrjt(String prjtId);
 	// 프로젝트 등록
 	public int insertPrjt(ProjectVO projectVO);
-	
-	// 프로젝트 수정
+	// 프로젝트 수정 - 단건 상위
 	public int updatePrjt(ProjectVO projectVO);
-	// 프로젝트 삭제
-	public int deletePrjt(@Param("prjtId")String prjtId);
+
+	// 프로젝터 전체 수정
+	public int modifyPrjt(ProjectVO projectVO);
 	
 	// 공통업무VO List
 	public List<ProjectVO> taskList(@Param("pid")String prjtId, @Param("cno")String custNo);

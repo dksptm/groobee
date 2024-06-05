@@ -55,23 +55,21 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override // 프로젝트 수정
-	public Map<String, Object> prjtUpdate(ProjectVO projectVO) {
+	public Map<String, Object> prjtModify(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
-		int result = projectMapper.updatePrjt(projectVO);
+		int result = projectMapper.modifyPrjt(projectVO);
+		
 		if (result == 1) {
 			isSuccessed = true;
 		}
+		
 		map.put("result", isSuccessed);
 		map.put("target", projectVO);
+		
 		return map;
 	}
 
-	  @Override 
-	  public void prjtDelete(String prjtId) {
-	  projectMapper.deletePrjt(prjtId); 
-	  }
-	
 	
 	// 효주 - 업무간단조회
 	@Override
@@ -80,7 +78,6 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	// 효주 끝.
 
-	
 	@Override // 공통업무 List
 	public List<ProjectVO> taskList(String prjtId, String custNo) {
 		return projectMapper.taskList(prjtId, custNo);
