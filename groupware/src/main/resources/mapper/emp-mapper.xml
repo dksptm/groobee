@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.samjo.app.emp.mapper.EmpMapper">
+
+	<!-- 최초계정 등록. -->
+	<insert id="insertFirstEmp" parameterType="EmpVO">
+		INSERT INTO emp(
+		                    emp_id,
+		                    ct_no,
+		                    cust_no,
+		                    dept_id,
+		                    job_no,
+		                    emp_no,
+		                    pw,
+		                    emp_name,
+		                    hire_dt,
+		                    emp_stat,
+		                    emp_addr1,
+		                    emp_tel,
+		                    email_addr
+		                )
+		    SELECT  
+		    		cust_no || '000'
+		           , #{ctNo}
+		           , cust_no
+		           , #{deptId}
+		           , #{jobNo}
+		           , '000'
+		           , '1111'
+		           , rep
+		           , SYSDATE
+		           , '1D1d'
+		           , SUBSTR(cust_addr, -6, 5)
+		           , cust_tel
+		           , cust_no||'000@'||cust_no||'yedam'
+		    FROM  cust
+		    where cust_no = #{custNo}
+	</insert>
+
+
+</mapper>

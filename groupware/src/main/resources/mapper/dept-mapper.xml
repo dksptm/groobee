@@ -100,5 +100,54 @@
 		WHERE  cust_no = #{emp.custNo}
 	</select>
 	
+	<!-- 첫계정 등록시 부서등록해야. -->
+	<insert id="insertFirstDept" parameterType="EmpVO">
+		<selectKey keyProperty="deptId" resultType="string" order="BEFORE">
+			SELECT 'DF'||LPAD((NVL((MAX(TO_NUMBER(SUBSTR(dept_id, -3)))),0) + 1), 3, '0')
+         	FROM   dept
+          	WHERE  dept_id LIKE 'DF%'
+		</selectKey>
+		INSERT INTO dept(
+							dept_id,
+		                 	cust_no,
+		                 	dept_name,
+		                 	dept_loc
+		                 )
+		  SELECT  #{deptId}
+		  		  ,cust_no
+		  		  ,'DEPT-TBD'
+		  		  ,cust_addr
+		  FROM    cust
+		  WHERE   cust_no = #{custNo}
+	</insert>
+	
+	<!-- 최초계정 등록시 필요: 최초직급 -->
+	<insert id="insertFirstJob" parameterType="EmpVO">
+		<selectKey  keyProperty="jobNo" resultType="Integer" order="BEFORE">
+			SELECT TO_NUMBER(NVL(MAX(job_no),0)) + 1 
+			FROM   jobs
+		</selectKey>
+		INSERT INTO jobs(
+							 job_no
+							,perm_id
+		                    ,cust_no
+		                    ,job_title
+		                 )
+		  VALUES(
+		  			  #{jobNo}
+		  			, '1C2c'
+		  			, #{custNo}
+		  			, '관리자'
+		        )
+	</insert>
+	
+	<!-- 계약번호 가져오기 -->
+	<select id="selectCurCtNo" parameterType="String" resultType="Integer">
+		SELECT ct_no 
+		FROM   ct 
+		WHERE  cust_no = #{custNo}
+		AND    SYSDATE BETWEEN ct_start_dt AND ct_end_dt	
+	</select>	
+	
 </mapper>
   

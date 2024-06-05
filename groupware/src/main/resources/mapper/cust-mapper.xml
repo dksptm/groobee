@@ -4,6 +4,22 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.samjo.app.cust.mapper.CustMapper">
 	
+	<resultMap type="CustVO" id="custMap">
+		<id property="custNo" column="cust_no" />
+		<result property="brn" column="brn" />
+		<result property="custName" column="cust_name" />
+		<result property="rep" column="rep" />
+		<result property="custAddr" column="cust_addr" />
+		<result property="custTel" column="cust_tel" />
+		<result property="payPic" column="pay_pic" />
+		<result property="payPicTel" column="pay_pic_tel" />
+		<collection property="ctList" column="cust_no" javaType="java.util.List" ofType="CtVO">
+			<id property="ctNo" column="ct_no"/>
+			<result property="ctStat" column="ct_stat"/>
+			<result property="ctStatName" column="ct_stat_name"/>
+		</collection>
+	</resultMap>
+	
 	<!-- 고객 전체목록 -->
 	<select id="selectCustAll" resultType="CustVO">
 		SELECT cust_no, 
@@ -17,5 +33,58 @@
 		FROM cust
 		ORDER BY cust_no
 	</select>
+	
+	<!-- 고객사 등록 -->
+	<insert id="insertCust" parameterType="CustVO">
+		<selectKey keyProperty="custNo" resultType="string" order="BEFORE">
+			SELECT #{spell}||LPAD((NVL((MAX(TO_NUMBER(SUBSTR(cust_no, -2)))),0) + 1), 2, '0')
+			FROM   cust	
+			WHERE  cust_no LIKE '${spell}%'	
+		</selectKey>
+		INSERT INTO cust (
+		                     cust_no
+		                    ,brn
+		                    ,cust_name
+		                    ,rep
+		                    ,cust_addr
+		                    ,cust_tel
+		                    ,pay_pic
+		                    ,pay_pic_tel
+		                  )
+		  VALUES (
+		             #{custNo}
+		            ,#{brn}
+		            ,#{custName}
+		            ,#{rep}
+		            ,#{custAddr}
+		            ,#{custTel}
+		            ,#{payPic}
+		            ,#{payPicTel}
+		         )
+	</insert>
+	
+	<!-- 고객사 단건조회 -->
+	<select id="selectCustInfo" resultType="CustVO">
+		SELECT   c.cust_no
+		        ,c.brn
+		        ,c.cust_name
+		        ,c.rep
+		        ,c.cust_addr 
+		        ,c.cust_tel
+		        ,c.pay_pic 
+		        ,c.pay_pic_tel
+		        ,g.ct_stat		as 	last_ct_stat
+		        ,NVL2(g.ct_stat, get_codename(g.ct_stat), '미계약') as last_ct_stat_name
+		        ,g.ct_no		as	last_ct_no
+		FROM 	cust c FULL OUTER JOIN (
+										 SELECT rownum rn, cust_no, ct_no, ct_stat, ct_end_dt
+										 FROM   ct
+										 WHERE  cust_no = #{cno}
+										 ORDER BY ct_end_dt DESC
+										) g
+		                         	ON (c.cust_no = g.cust_no AND g.rn = 1)
+		WHERE 	c.cust_no = #{cno}
+	</select>
 
+	
 </mapper>

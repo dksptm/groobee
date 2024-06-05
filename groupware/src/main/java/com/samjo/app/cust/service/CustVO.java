@@ -1,5 +1,9 @@
 package com.samjo.app.cust.service;
 
+import java.util.List;
+
+import com.samjo.app.ct.service.CtVO;
+
 import lombok.Data;
 
 @Data
@@ -12,4 +16,11 @@ public class CustVO {
 	private String custTel;
 	private String payPic;
 	private String payPicTel;
+	
+	private Integer lastCtNo;
+	private String lastCtStat;
+	private String lastCtStatName;
+	
+	private String spell;
+	private List<CtVO> ctList;
 }

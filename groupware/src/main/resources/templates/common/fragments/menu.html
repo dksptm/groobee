@@ -210,10 +210,18 @@
 			</a></li>
 
 			<!-- 고객관리 메뉴 -->
-			<li class="menu-item"><a href="#" class="menu-link"> <i
-					class="menu-icon tf-icons bx bx-crown"></i>
+			<li class="menu-item"><a href="javascript:void(0);" class="menu-link menu-toggle">
+				<i class="menu-icon tf-icons bx bx-crown"></i>
 					<div>고객관리</div>
-			</a></li>
+			</a>
+				<ul class="menu-sub">
+					<li class="menu-item"><a th:href="@{/sol/customer/insert}" class="menu-link">
+							<div>고객 등록</div>
+					</a></li>
+					<li class="menu-item"><a th:href="@{/}" class="menu-link">
+							<div>고객 목록</div>
+					</a></li>
+				</ul></li>
 
 			<!-- 계약관리 메뉴 -->
 			<li class="menu-item"><a href="javascript:void(0);"
