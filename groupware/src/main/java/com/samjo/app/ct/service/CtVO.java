@@ -29,6 +29,8 @@ public class CtVO {
 	private String ctFile;
 	private MultipartFile[] uploadfile;
 	private int payCheck;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date ctPayDt;
 	
 	private String brn;
 	private String rep;

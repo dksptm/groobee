@@ -30,4 +30,5 @@ public class PayVO {
 	private int payAmt;
 	private int overdue;
 	private String remk;
+	private long merchantUid;
 }

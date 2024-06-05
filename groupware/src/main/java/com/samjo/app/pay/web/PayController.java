@@ -68,21 +68,42 @@ public class PayController {
 		//model.addAttribute("portVO", importVO);
 		return "solution/pay/payTest";
 	}
+	//결제 스케줄러 시작
+	@GetMapping("sol/startScheduler")
+	@ResponseBody
+	public String schedulerStart() {
+		scheduler.startScheduler();
+		return "스케줄러 실행";
+	}
 	
-	//결제 스케줄러
+	//정기결제 등록
 	@PostMapping("/payment")
 	@ResponseBody 
-	public void getImportToken(@RequestParam Map<String, Object> map)
+	public void payStart(@RequestParam Map<String, Object> map)
 			throws JsonMappingException, JsonProcessingException {
 		int ctNo = Integer.parseInt((String) map.get("ct_no"));
 		String customer_uid = (String) map.get("customer_uid");
 		int price = Integer.parseInt((String) map.get("price"));
 		long merchant_uid =  Long.parseLong((String) map.get("merchant_uid"));
-
-		scheduler.startScheduler(customer_uid, price, merchant_uid, ctNo);
+		payservice.schedulePay(customer_uid, price, ctNo);
 		CtVO ctVO = new CtVO();
 		ctVO.setCtNo(ctNo);
 		ctVO.setPayCheck(1);
+		ctVO.setCustName("SYSDATE");
 		ctservice.ctPayCheck(ctVO);
 	}
+	
+	//정기결제 중지
+	@PostMapping("/paymentStop")
+	@ResponseBody 
+	public void payStop(@RequestParam Map<String, Object> map)
+			throws JsonMappingException, JsonProcessingException {
+		int ctNo = Integer.parseInt((String) map.get("ctNo"));
+		CtVO ctVO = new CtVO();
+		ctVO.setCtNo(ctNo);
+		ctVO.setPayCheck(0);
+		ctVO.setCustName("NULL");
+		ctservice.ctPayCheck(ctVO);
+	}
+	
 }
