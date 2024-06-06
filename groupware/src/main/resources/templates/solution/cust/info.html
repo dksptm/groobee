@@ -4,13 +4,13 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 	  
 <th:block layout:fragment="Content">
+<th:block sec:authorize="hasAuthority('1C1c')">
 <style>
 .cust-table th{
 	font-size: 0.9rem;
 	font-weight: bold;
 	text-align: center;
 }
-
 </style>
 
 <div class="container container-p-y mt-3">
@@ -188,6 +188,6 @@ function showTable(param) {
 })//end
 
 </script>
-
+</th:block>
 </th:block>
 </html>

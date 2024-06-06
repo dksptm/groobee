@@ -10,6 +10,7 @@ import com.samjo.app.emp.mapper.DeptMapper;
 import com.samjo.app.emp.service.DeptService;
 import com.samjo.app.emp.service.DeptVO;
 import com.samjo.app.emp.service.EmpVO;
+import com.samjo.app.emp.service.JobVO;
 
 @Service
 public class DeptServiceImpl implements DeptService {
@@ -48,9 +49,14 @@ public class DeptServiceImpl implements DeptService {
 		return deptMappr.selectCustDeptAll(empVO);
 	}
 
-	@Override
+	@Override // 상시업무 등록시 책임자 목록
 	public List<EmpVO> myDeptMngrs(EmpVO empVO) {
 		return deptMappr.selectDeptMngr(empVO);
+	}
+
+	@Override // 한 회사의 직급전체 목록
+	public List<JobVO> myCustJobs(EmpVO empVO) {
+		return deptMappr.selectCustJobAll(empVO);
 	}
 
 }

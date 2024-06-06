@@ -15,7 +15,9 @@ public interface DeptService {
 	
 	public List<EmpVO> respMngrList(String custNo);
 	
-	// 한 회사의 부서전체 목록
+	// 한 회사의 부서전체 목록 / 부서장이상 목록 / 직급전체목록
 	public List<DeptVO> myCustDepts(EmpVO empVO);
 	public List<EmpVO> myDeptMngrs(EmpVO empVO);
+	public List<JobVO> myCustJobs(EmpVO empVO);
+
 }

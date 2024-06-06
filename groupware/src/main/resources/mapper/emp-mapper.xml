@@ -115,5 +115,120 @@
 		        </if>
 		     )
 	</select>
+	
+	<select id="countEno" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM emp
+		WHERE cust_no = #{cno}
+		AND  emp_no = #{eno}
+	</select>
+	
+	<!-- 사원등록 -->
+	<insert id="insertEmp" parameterType="EmpVO">
+		<selectKey keyProperty="empId" resultType="string" order="BEFORE">
+			SELECT #{custNo}||#{empNo}
+			FROM   dual
+		</selectKey>
+		INSERT INTO emp(
+		                    emp_id,
+		                    ct_no,
+		                    cust_no,
+		                    dept_id,
+		                    job_no,
+		                    emp_no,
+		                    pw,
+		                    emp_name,
+		                    hire_dt,
+		                    emp_stat,
+		                    emp_addr1,
+		                    emp_addr2,
+		                    emp_addr3,
+		                    emp_addr4,
+		                    emp_tel,
+		                    email_addr
+		                )
+		    VALUES (
+		                #{empId}
+		                ,#{ctNo}
+		                ,#{custNo}
+		                ,#{deptId}
+		                ,#{jobNo}
+		                ,#{empNo}
+		                ,#{pw}
+		                ,#{empName}
+		                ,#{hireDt}
+		                ,'1D1d'
+		                ,#{empAddr1}
+		                ,#{empAddr2}
+		                ,#{empAddr3}
+		                ,#{empAddr4}
+		                ,#{empTel}
+		                ,#{custNo}||#{empNo}||'@'||#{custNo}||'.yedam'
+		            )
+	</insert>
+	
+	<!-- 사원단건조회 -->
+	<select id="selectEmpInfo" parameterType="map" resultType="EmpVO">
+		SELECT  e.emp_id
+		       ,e.emp_no
+		       ,e.emp_name
+		       ,e.dept_id
+		       ,get_deptname(e.dept_id) as dept_name
+		       ,e.job_no
+		       ,j.job_title
+		       ,j.perm_id
+		       ,get_codename(j.perm_id) as perm_name
+		       ,e.hire_dt
+		       ,e.emp_stat
+		       ,get_codename(e.emp_stat) as emp_stat_name
+		       ,e.emp_addr1
+		       ,e.emp_addr2
+		       ,e.emp_addr3
+		       ,e.emp_addr4
+		       ,e.emp_tel
+		       ,e.email_addr
+		       ,e.fire_dt
+		FROM emp e LEFT OUTER JOIN jobs j
+		                        ON (e.job_no = j.job_no)
+		WHERE emp_id = #{eid}
+			<if test="!cno.equals('0000')">
+			AND   e.cust_no = #{cno}
+			</if>
+	</select>
+	
+	<!-- 사원수정 -->
+	<update id="updateEmp" parameterType="EmpVO">
+		UPDATE  emp
+		SET		emp_no = emp_no
+				<if test="emp.pw != null and !emp.pw.equals('')">
+					, pw = #{emp.pw}	
+				</if>     
+				<if test="emp.empName != null and !emp.empName.equals('')">
+		        	, emp_name = #{emp.empName}
+		        </if>
+				<if test="emp.deptId != null and !emp.deptId.equals('')">
+		       		, dept_id = #{emp.deptId}
+		       	</if>
+				<if test="emp.jobNo != null and emp.jobNo != 0">
+			        , job_no = #{emp.jobNo}
+			    </if>
+				<if test="emp.empTel != null and !emp.empTel.equals('')">
+		       		, emp_tel = #{emp.empTel}
+		       	</if>
+				<if test="emp.hireDt != null and !emp.hireDt.equals('')">
+		       		, hire_dt = #{emp.hireDt}
+		       	</if>
+				<if test="emp.fireDt != null and !emp.fireDt.equals('')">		       	
+		       		, fire_dt = #{emp.fireDt}
+		       	</if>
+				<if test="emp.empAddr1 != null and !emp.empAddr1.equals('')">		       	
+		       		, emp_addr1 = #{emp.empAddr1}
+		       		, emp_addr2 = #{emp.empAddr2}
+		       		, emp_addr3 = #{emp.empAddr3}
+		       		, emp_addr4 = #{emp.empAddr4}
+		       	</if>
+		WHERE  emp_id = #{emp.empId}	
+	</update>
+	
 
 </mapper>

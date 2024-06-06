@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+<html xmlns:th="https://www.thymeleaf.org/">
 
-<th:block sec:authorize="hasAuthority('1C1c')">
 <th:block th:fragment="Emps">
 <div id="EmpListArea">
 	<th:block th:if="${pageDTO.totalCnt} != 0">
@@ -21,7 +19,8 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="emp : ${list}">
+					<tr th:each="emp : ${list}"
+						th:onclick="|location.href='@{/cust/emp/info?eid={id}(id=${emp.empId})}'|">
 						<td>[[ ${emp.empId} ]]</td>
 						<td>[[ ${emp.permName} ]]</td>
 						<td>[[ ${emp.deptName} ]]</td>
@@ -65,5 +64,5 @@
 	</th:block>
 </div>
 </th:block>
-</th:block>
+
 </html>

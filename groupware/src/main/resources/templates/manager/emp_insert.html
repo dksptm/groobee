@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+	  
+<th:block layout:fragment="Content">
+<th:block sec:authorize="hasAuthority('1C2c')">
+
+<style>
+.cust-table th{
+	font-size: 0.9rem;
+	font-weight: bold;
+	text-align: center;
+}
+</style>
+
+<div class="container container-p-y mt-3">
+	<h4>사원관리 - 등록</h4>
+	<div class="bg-light p-3 col-8">
+		<div class="card d-flex justify-content-center table-responsive m-2 p-4">
+			<form th:action="@{empInsert}" id="empInsertForm" method="post" th:object="${emp}">
+				<table class="table table-bordered cust-table">
+					<tr>
+						<th colspan="4" class="py-3 table-primary">
+							<h4 class="p-0 m-0">사원정보 입력</h4>
+							<input type="hidden" th:value="${#authentication.principal.ctNo}" name="ctNo" readonly />
+							<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
+						</th>
+					</tr>
+					<tr>
+						<th>사원번호</th>
+						<td>
+							<input type="text" th:field="*{empNo}" maxlength="5" class="form-control bg-transparent" />
+						</td>
+						<th>아이디</th>
+						<td>
+							<input type="text" placeholder="자동부여" id="test1" class="form-control bg-transparent" disabled />
+						</td>
+					</tr>
+					<tr>
+						<th>이름</th>
+						<td>
+							<input type="text" th:field="*{empName}" class="form-control bg-transparent" />
+						</td>
+						<th>입사일</th>
+						<td>
+							<input type="date" max="9999-12-31" th:field="*{hireDt}" class="form-control bg-transparent" />
+						</td>
+					</tr>
+					<tr>
+						<th>부서</th>
+						<td>
+							<select class="form-select" th:field="*{deptId}">
+								<th:block th:each="dept : ${depts}">
+									<option th:value="${dept.deptId}">[[ ${dept.deptName} ]]</option>
+								</th:block>
+							</select>
+						</td>
+						<th>직급</th>
+						<td>
+							<select class="form-select" th:field="*{jobNo}">
+								<th:block th:each="job : ${jobs}">
+									<option th:value="${job.jobNo}">[[ ${job.jobTitle} ]]</option>
+								</th:block>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th rowspan="2">주소</th>
+						<td colspan="2">
+							<input type="text" class="form-control bg-transparent" th:field="*{empAddr1}" placeholder="우편번호">
+						</td>
+						<td class="text-center">
+							<input type="button" class="btn btn-secondary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<input type="text" class="form-control bg-transparent" th:field="*{empAddr2}" placeholder="주소">
+							<div class="d-flex justify-content-center">
+							<input type="text" class="form-control bg-transparent" th:field="*{empAddr3}" placeholder="상세주소">
+							<input type="text" class="form-control bg-transparent" th:field="*{empAddr4}" placeholder="참고항목">
+							</div>
+						</td>					
+					</tr>
+					<tr>
+						<th>연락처</th>
+						<td>
+							<input type="text" th:field="*{empTel}" class="form-control bg-transparent tell-chk"
+								   placeholder="숫자만 입력하세요." />
+						</td>
+						<th>이메일</th>
+						<td>
+							<input type="text" id="test2" placeholder="자동부여" class="form-control bg-transparent" disabled />
+						</td>
+					</tr>
+				</table>
+				<div class="text-end">
+					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">사원등록</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("empAddr4").value = extraAddr;
+                
+                } else {
+                    document.getElementById("empAddr4").value = '';
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('empAddr1').value = data.zonecode;
+                document.getElementById("empAddr2").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("empAddr3").focus();
+            }
+        }).open();
+    }
+</script>
+
+<script>
+$(function() { 
+	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center-center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	 })
+	
+	$(".tell-chk").keyup(function(){
+		$(this).val($(this).val().replace(/[^0-9]/gi, "").replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`));
+	});
+	
+	// 사번중복체크.
+	$("#empNo").blur(function(){
+		let eno = $('input[name=empNo]').val();
+		let cno = $('input[name=custNo]').val();
+		
+		$.ajax({
+			type : 'GET',
+			url	 : 'idCheck?eno=' + eno + '&cno=' + cno,
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+		    dataType: 'Text'
+		})
+		.done(result => {
+			if(result > 0) {
+				Swal.fire({
+		    		  position: "center-center",
+		    		  icon: "error",
+		    		  title: "이미 있는 사번입니다.",
+		    		  showConfirmButton: false,
+		    		  timer: 800
+		    	});
+				$('input[name=empNo]').val('');
+				$('#test1').val('');
+				$('#test2').val('');
+			} else if(result == 0) {
+				let eid = cno + eno;
+				let mail = eid + '@' + cno + '.yedam';
+				$('#test1').val(eid);
+				$('#test2').val(mail);
+			}
+		})
+		.fail(err => console.error(err));	
+	});
+	
+	$('#empInsertForm').submit(function(event) {
+		
+		event.preventDefault();
+		
+		if(dataCheck() != true) return;
+		
+		Swal.fire({
+		      title: '사원을 등록할까요?',
+		      text: "",
+		      icon: 'warning',
+		      showCancelButton: true,
+		      confirmButtonText: '등록',
+		      cancelButtonText: '취소',
+		      reverseButtons: true, // 버튼 순서 거꾸로	      
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+				
+				Toast.fire({
+					icon: 'success',
+				    title: '사원을 등록중입니다...'
+				})
+				
+				this.submit();
+			}
+		})
+		
+	})
+		
+	
+}) //end.
+
+function dataCheck() {
+	
+	if($('#empNo').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '사번 필수입력',
+			  confirmButtonText: '확인'
+		});
+		$('#empNo').focus();
+		return false;
+	} else if($('#empName').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '이름 필수입력',
+			  confirmButtonText: '확인'
+		});
+		$('#empName').focus();
+		return false;
+	} else if($('#hireDt').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '입사일자 필수입력',
+			  confirmButtonText: '확인'
+		});
+		$('#hireDt').focus();
+		return false;
+	} else if($('#empAddr1').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '주소 필수입력',
+			  confirmButtonText: '확인'
+		});
+		$('#empAddr1').focus();
+		return false;
+	} else if($('#empTel').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '결제담당 필수입력',
+			  confirmButtonText: '확인'
+		});
+		$('#empTel').focus();
+		return false;
+	}
+	
+	return true;
+	
+}
+
+
+
+</script>
+</th:block>
+</th:block>
+</html>
