@@ -53,24 +53,37 @@
 					<tr>
 					</tr>
 				</table>
-				
+					<button th:if="${#arrays.length(list)} != 0" type="button" class="btn btn-secondary py-1 doc-toggle-btn">등록계정 ▼</button>
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 계정목록 -->
-	<div th:if="${#arrays.length(list)} != 0">
-		<p>있다</p>
-		<!-- Emps Fragment -->
-		<div id="EmpListArea">
-			<th:block th:replace="solution/cust/modal :: Emps"></th:block>
+	<div th:if="${#arrays.length(list)} != 0" class="collapse doc-toggle-area">
+		<div class="d-flex justify-content-end condition">
+		<div class="col-3 d-flex justify-content-between">
+			<select class="form-select keywordCondition">
+				<option value="all">권 한</option>
+				<option value="1C2c">관리자</option>
+				<option value="1C3c">부서장</option>
+				<option value="1C4c">사원</option>
+			</select>
+			<select class="form-select searchCondition">
+				<option value="all">계정상태</option>
+				<option value="1D1d">재직</option>
+				<option value="1D2d">퇴직</option>
+				<option value="1D3d">최초</option>
+			</select>
 		</div>
+		</div>
+		<!-- Emps Fragment -->
+		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
 	</div>
 	
 	<div th:unless="${#arrays.length(list)} != 0">
-		<p>없다</p>
 		<div class="text-end">
-			<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp">최초계정생성</button>	
+			<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp"
+					class="btn btn-danger">최초계정생성</button>	
 		</div>
 	</div>
 	
@@ -81,14 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	let cno = document.getElementById('cno').innerText;
     
+    // 최초계정생성 버튼클릭이벤트.
 	if(document.getElementById('firstEmp') != null) {
 	    document.getElementById('firstEmp').addEventListener('click', firstEmp);	
 	}
     
 	// 최초계정 생성 ajax.
    	function firstEmp(){
-		let cno = document.getElementById('cno').innerText;
 		let url = 'firstEmp';
 		let obj = {custNo : cno}
 		
@@ -103,26 +117,76 @@ document.addEventListener('DOMContentLoaded', function() {
 		.then(res => res.json())
 		.then(ret => {
 			
-			console.log(ret);
+			Swal.fire({
+				icon: 'success',
+			    title: ret.result,
+			    text: '최초 비밀번호 1111',
+			})
+			.then((ret) => {
+				if(ret.value){
+					location.reload();
+				}
+			})
 			
 		})
 		.catch(err => console.error(err))		
    	}
 	
-	// offcanvas -> 계정목록.
-	let offcanvasElement = document.getElementById('offcanvasEnd');
-	offcanvasElement.addEventListener('show.bs.offcanvas', function(e) {
-		 let content = document.getElementById('offcanvasEmps');
-		 
-		 var iframe = document.createElement('iframe');
-		 iframe.src = 'https://www.naver.com'; // 불러올 웹사이트의 URL
-	    iframe.width = '100%'; // 적절한 크기 지정
-	    iframe.height = '100%'; // 적절한 크기 지정
-	    iframe.style.border = 'none'; // 외곽선 없애기
-	    content.appendChild(iframe); // Offcanvas에 iframe 삽입
-	})
-    
-})
+	// 계정공간 토글
+	if($('.doc-toggle-btn') != null) {
+		$('.doc-toggle-btn').click(function() {
+			$('.doc-toggle-area').slideToggle();
+		});
+	}
+	
+	// 
+	if($('.condition') != null) {
+		//
+		pagination();
+		
+		// 셀렉트변경.
+		$('.condition').on('change', 'select', function(e) {
+			let keywordCondition = $('.keywordCondition').val();
+			let searchCondition = $('.searchCondition').val();
+			let page = 1;
+			let param = {keywordCondition, searchCondition, page};
+			showTable(param);
+		})
+
+	}
+
+	
+// 페이징
+function pagination() {
+	$('.page-item a').on('click',function(event){
+		event.preventDefault();
+		let keywordCondition = $('.keywordCondition').val();
+		let searchCondition = $('.searchCondition').val();
+        let page = $(this).attr('href');
+        let param = {keywordCondition, searchCondition, page};
+		showTable(param);
+	}); 
+}
+
+//검색 AJAX 함수
+function showTable(param) {
+    $.ajax({
+        url: 'emps?custNo=' + cno,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        data: param,
+        dataType: 'Text',
+        success: function(result) {
+            $('#EmpListArea').replaceWith(result);
+            pagination();
+        }
+    });
+}
+	
+})//end
+
 </script>
 
 </th:block>

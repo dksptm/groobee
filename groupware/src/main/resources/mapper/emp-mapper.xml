@@ -71,11 +71,18 @@
 		                   JOIN perm p ON (j.perm_id = p.perm_id)
 		        WHERE cust_no <![CDATA[<>]]> '0000' 
 		        AND   cust_no = #{cno}
-		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
-		        	AND   e.emp_stat = '1D1d'
+		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+		        	<choose>
+		        		<when test="sch.searchCondition.equals('1D3d')">
+		        		AND   emp_stat = '1D1d' and substr(emp_id, -3) = '000'
+		        		</when>
+		        		<otherwise>
+			        	AND   e.emp_stat = #{sch.searchCondition}
+		        		</otherwise>
+		        	</choose>
 		        </if>
-		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('permAll')">
-		        	AND   j.perm_id = '1C4c'
+		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+		        	AND   j.perm_id = #{sch.keywordCondition}
 		        </if>
 		     ) g
 		WHERE  g.rn <![CDATA[<=]]> (#{sch.page} * 10)
@@ -93,11 +100,18 @@
 		                   JOIN perm p ON (j.perm_id = p.perm_id)
 		        WHERE cust_no <![CDATA[<>]]> '0000' 
 		        AND   cust_no = #{cno}
-		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
-		        	AND   e.emp_stat = '1D1d'
+		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('all')">
+		        	<choose>
+		        		<when test="sch.searchCondition.equals('1D3d')">
+		        		AND   emp_stat = '1D1d' and substr(emp_id, -3) = '000'
+		        		</when>
+		        		<otherwise>
+			        	AND   e.emp_stat = #{sch.searchCondition}
+		        		</otherwise>
+		        	</choose>
 		        </if>
-		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('permAll')">
-		        	AND   j.perm_id = '1C4c'
+		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('all')">
+		        	AND   j.perm_id = #{sch.keywordCondition}
 		        </if>
 		     )
 	</select>

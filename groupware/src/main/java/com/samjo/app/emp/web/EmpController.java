@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.samjo.app.common.service.PageDTO;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpService;
 import com.samjo.app.emp.service.EmpVO;
@@ -29,16 +30,19 @@ public class EmpController {
 	}
 	
 	// 고객사 소속 계정 전체조회
-	@GetMapping("sol/customer/emps")
+	@PostMapping("sol/customer/emps")
 	public String custEmpList(SearchVO search, String custNo, Model model) {
 		if(search.getPage() == 0) {
 			search.setPage(1);
 		}
 		
 		List<EmpVO> list = empService.selectEmpAll(custNo, search);
+		int count = empService.countEmpAll(custNo, search);	
+		PageDTO pageDTO = new PageDTO(search.getPage(), count);
 		model.addAttribute("list", list);
+		model.addAttribute("pageDTO", pageDTO);
 		
-		return "sol/customer/modal";
+		return "solution/cust/modal :: #EmpListArea";
 	}
 	
 	

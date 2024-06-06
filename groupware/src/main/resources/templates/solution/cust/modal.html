@@ -3,18 +3,20 @@
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 
 <th:block sec:authorize="hasAuthority('1C1c')">
-<th:block th:fragment="Emps">	
+<th:block th:fragment="Emps">
+<div id="EmpListArea">
+	<th:block th:if="${pageDTO.totalCnt} != 0">
 	<div class="bg-light p-3">
 		<div class="table-responsive">
 			<table class="table table-bordered text-center emps-table">
 				<thead>
 					<tr>
 						<th class="col-1">아이디</th>
-						<th>권한</th>
-						<th>부서명</th>
-						<th>이름</th>
-						<th>직급</th>
-						<th>계정상태</th>
+						<th class="col-1">권한</th>
+						<th class="col-2">부서명</th>
+						<th class="col-2">이름</th>
+						<th class="col-2">직급</th>
+						<th class="col-2">계정상태</th>
 						<th class="col-2">입사일</th>
 					</tr>
 				</thead>
@@ -30,8 +32,38 @@
 					</tr>				
 				</tbody>
 			</table>
+			<div>
+			<!-- 페이징공간 -->
+			<nav aria-label="Page navigation">
+				<ul class="pagination justify-content-center">
+					<th:block th:if="${pageDTO.prev}">
+						<li class="page-item prev">
+							<a th:href="${pageDTO.startPage - 1}"
+							   class="page-link"><i class="bx bx-chevron-left"></i></a>
+						</li>
+					</th:block>
+					<th:block th:each="num : ${#numbers.sequence(pageDTO.startPage, pageDTO.endPage)}">
+						<li class="page-item "
+							th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
+							<a th:href="${num}" class="page-link">[[${num}]]</a>
+						</li>
+					</th:block>
+					<th:block th:if="${pageDTO.next}">
+						<li class="page-item next">
+							<a th:href="${pageDTO.endPage + 1}"
+							   class="page-link"><i class="bx bx-chevron-right"></i></a>
+						</li>
+					</th:block>
+				</ul>
+			</nav>
+			</div>
 		</div>
 	</div>
+	</th:block>
+	<th:block th:unless="${pageDTO.totalCnt} != 0">
+		<p class="text-center mt-4">해당조건의 결과가 없습니다.</p>
+	</th:block>
+</div>
 </th:block>
 </th:block>
 </html>

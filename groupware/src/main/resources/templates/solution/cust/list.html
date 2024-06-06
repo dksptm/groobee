@@ -134,7 +134,6 @@
 			
 		    // 검색버튼 이벤트 처리
 		    $(".searchbtn").on("click", function(e) {
-		    	console.log('클릭')
 		        updateParams();
 		        showTable();
 		    });
@@ -154,7 +153,6 @@
 		
 		    // 검색 조건 갱신 함수
 		    function updateParams() {
-		    	console.log('업데이트')
 		        // 키워드 검색 처리
 		        keywordCondition = $('.keywordCondition').val();
 		        keyword = $('.keyword').val();

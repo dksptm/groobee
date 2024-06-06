@@ -27,6 +27,7 @@ public class EmpServiceImpl implements EmpService {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
+	// 최초계정 생성
 	@Transactional
 	@Override
 	public Map<String, Object> insertFirstEmp(EmpVO empVO) {

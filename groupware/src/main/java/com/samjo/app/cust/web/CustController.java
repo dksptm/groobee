@@ -1,6 +1,5 @@
 package com.samjo.app.cust.web;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +50,15 @@ public class CustController {
 		if(search.getPage() == 0) {
 			search.setPage(1);
 		}
+		
 		CustVO cust = custService.selectCustInfo(custNo);
-		List<EmpVO> list = empService.selectEmpAll(custNo, search);
 		model.addAttribute("cust", cust);
+		
+		List<EmpVO> list = empService.selectEmpAll(custNo, search);
+		int count = empService.countEmpAll(custNo, search);	
+		PageDTO pageDTO = new PageDTO(search.getPage(), count);
 		model.addAttribute("list", list);
+		model.addAttribute("pageDTO", pageDTO);
 		
 		return "solution/cust/info";
 	}
