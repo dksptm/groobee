@@ -163,30 +163,39 @@
 	</select>
 	
 	<!-- 정기결제 갱신 -->
-	<update id="payUpdate">
+	<update id="payUpdate" parameterType="PayVO">
 		UPDATE pay
 		SET pay_stat = '0D2d'
 		WHERE ct_no = #{ctNo}
+		<choose>
+			<when test="merchantUid != null and merchantUid != ''">
+				AND merchant_uid = #{merchantUid}
+			</when>
+			<otherwise>
+				AND merchant_uid IS NULL
+			</otherwise>
+		</choose>
 	</update>
 	
 	<!-- 결제예정 내역조회 -->
-	<select id="selectConPay">
+	<select id="selectConPay" resultType="PayVO">
 		SELECT p.ct_no, p.cust_no, p.serv_amt, p.pay_expc_dt
 		FROM pay p
 		WHERE pay_stat = '0D1d'
 		AND cust_no NOT IN '0000'
+		AND to_char(p.pay_expc_dt, 'yyyy/mm/dd HH:MI') = to_char(SYSDATE - (interval '5' minute), 'yyyy/mm/dd HH:MI')
 		AND EXISTS (SELECT 1
 	                FROM ct ct
 	                WHERE p.cust_no = ct.cust_no
 	                AND ct.pay_check = 1)
-		AND to_char(p.pay_expc_dt, 'yyyy/mm/dd HH:MI') = to_char(SYSDATE - (interval '5' minute), 'yyyy/mm/dd HH:MI')
 	</select>
 	
 	<!-- 미결제 내역 조회 -->
-	<select id="selectWaitPay">
-		SELECT ct_no, merchant_uid
+	<select id="selectWaitPay" resultType="PayVO">
+		SELECT ct_no, cust_no, merchant_uid, serv_amt
 		FROM pay
 		WHERE merchant_uid IS NOT NULL
+		AND pay_stat = '0D1d'
 	</select>
 
 </mapper>

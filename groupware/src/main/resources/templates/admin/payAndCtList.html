@@ -6,10 +6,10 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<div class="card-body w-90">
-				<h5 class="card-header">계약 목록</h5>
+				<div class="card-body d-flex justify-content-center">
 					<!-- 계약 목록 출력 -->
-					<div class="table-responsive">
+					<div class="table-responsive w-50">
+						<h5 class="card-header">계약 목록</h5>
 						<table class="table table-hover">
 							<thead>
 								<tr class="table-secondary">
@@ -21,18 +21,26 @@
 							</thead>
 							<tbody>
 								<th:block th:each="CtVO : ${ctList}">
-									<tr>
+									<tr class="ctRow" 
+									th:data-ctno="${CtVO.ctNo}" 
+									th:data-custno="${CtVO.custNo}" 
+									th:data-ctstatname="${CtVO.ctStatName}"
+									th:data-ctstartdt="${#dates.format(CtVO.ctStartDt, 'yyyy-MM-dd')}"
+									th:data-ctenddt="${#dates.format(CtVO.ctEndDt, 'yyyy-MM-dd')}"
+									th:data-ctAmt="${CtVO.ctAmt}"
+									th:data-maxemps="${CtVO.maxEmps}"
+									th:data-curemps="${CtVO.curEmps}"
+									th:data-usemodcnt="${CtVO.useModCnt}">
 										<td class="ctNo">[[ ${CtVO.ctNo} ]]</td>
 										<td class="custNo">[[ ${CtVO.custNo} ]]</td>
 										<td>[[ ${CtVO.ctStatName} ]]</td>
-										<td>
-											<th:block th:if="${CtVO.payCheck} == 0">
-												<button type="button" class="btn btn-secondary payBtn" th:id="${CtVO.ctAmt}">정기결제인증</button>
-											</th:block>
-											<th:block th:if="${CtVO.payCheck} == 1">
-												<button type="button" class="btn btn-danger cancelBtn" th:id="${CtVO.ctNo}">정기결제중지</button>
-											</th:block>
-										</td>
+										<td><th:block th:if="${CtVO.payCheck} == 0">
+												<button type="button" class="btn btn-primary payBtn"
+													th:id="${CtVO.ctAmt}">정기결제인증</button>
+											</th:block> <th:block th:if="${CtVO.payCheck} == 1">
+												<button type="button" class="btn btn-danger cancelBtn"
+													th:id="${CtVO.ctNo}">정기결제중지</button>
+											</th:block></td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -41,9 +49,9 @@
 					</div>
 				</div>
 				<div class="card-body">
-				<h5 class="card-header">결제 목록</h5>
+					<h5 class="card-header">결제 목록</h5>
 					<!-- 결제 목록 출력 -->
-					<div class="table-responsive">
+					<div class="table-responsive mb-2">
 						<table class="table table-hover">
 							<thead>
 								<tr class="table-secondary">
@@ -57,20 +65,21 @@
 							</thead>
 							<tbody>
 								<th:block th:each="PayVO : ${list}">
-										<tr th:onclick="|location.href='#'|" th:id="${PayVO.payNo}">
-											<td>[[ ${PayVO.payNo} ]]</td>
-											<td>[[ ${PayVO.ctNo} ]]</td>
-											<td>[[ ${PayVO.payTypeName} ]]</td>
-											<td class="amt">[[ ${PayVO.servAmt} ]]</td>
-											<th:block th:if="${not #strings.isEmpty(PayVO.payExpcDt)}">
-												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
-											</th:block>
-											<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
-												<td>정기결제등록</td>
-											</th:block>
-											<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
-										</tr>
-									</th:block>
+									<tr th:onclick="|location.href='#'|" th:id="${PayVO.payNo}">
+										<td>[[ ${PayVO.payNo} ]]</td>
+										<td>[[ ${PayVO.ctNo} ]]</td>
+										<td>[[ ${PayVO.payTypeName} ]]</td>
+										<td class="amt">[[ ${PayVO.servAmt} ]]</td>
+										<th:block th:if="${not #strings.isEmpty(PayVO.payExpcDt)}">
+											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")}
+												]]</td>
+										</th:block>
+										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
+											<td>정기결제등록</td>
+										</th:block>
+										<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
+									</tr>
+								</th:block>
 							</tbody>
 						</table>
 					</div>
@@ -79,7 +88,7 @@
 						<th:block th:if="${payDTO.totalCnt} != 0">
 							<nav aria-label="Page navigation">
 								<ul class="pagination justify-content-center">
-									
+
 									<th:block th:if="${payDTO.prev}">
 										<li class="page-item prev"><a
 											th:href="|/cust/admin/payAndCt?page=${payDTO.startPage - 1 }|"
@@ -89,7 +98,8 @@
 										th:each="num : ${#numbers.sequence(1, payDTO.endPage)}">
 										<li class="page-item "
 											th:attrappend="class=${num ==  payDTO.page ? 'active' : ' '}">
-											<a th:href="|/cust/admin/payAndCt?page=${num}|" class="page-link">[[${num}]]</a>
+											<a th:href="|/cust/admin/payAndCt?page=${num}|"
+											class="page-link">[[${num}]]</a>
 										</li>
 									</th:block>
 									<th:block th:if="${payDTO.next}">
@@ -108,7 +118,65 @@
 				</div>
 			</div>
 		</div>
-	
+
+		<!-- 계약정보 모달화면 -->
+		<div class="modal fade" id="CtModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">계약상세</h5>
+						<button type="button" class="btn-close"
+							data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover text-center">
+							<thead>
+								<tr>
+									<th>계약번호</th>
+									<th>고객번호</th>
+									<th>계약상태</th>
+								</tr>
+							</thead>
+							<tbody>
+									<tr>
+										<td id="modal-ctNo"></td>
+										<td id="modal-custNo"></td>
+										<td id="modal-ctStatName"></td>
+									</tr>
+							</tbody>
+						</table>
+						<table class="table table-hover text-center">
+							<thead>
+								<tr>
+									<th>계약시작일</th>
+									<th>계약종료일</th>
+									<th>계약금액</th>
+									<th>최대사용가능인원</th>
+									<th>현재사용중인인원</th>
+									<th>사용중인모듈갯수</th>
+								</tr>
+							</thead>
+							<tbody>
+									<tr>
+										<td id="modal-ctStartDt"></td>
+										<td id="modal-ctEndDt"></td>
+										<td id="modal-ctAmt"></td>
+										<td id="modal-maxEmps"></td>
+										<td id="modal-curEmps"></td>
+										<td id="modal-useModCnt"></td>
+									</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 		<script th:inline="javascript">
@@ -117,14 +185,14 @@
 			let token = $("meta[name='_csrf']").attr('content');
 			var IMP = window.IMP;
 			IMP.init('imp82376133');
-	
+
 			//최초 정기결제 인증
 			$('.payBtn').on('click', function kakaopay(e) {
 				let merchantUid = new Date().getTime();
 				let customerUid = $(this).parent().siblings('.custNo').text();
 				let amount = e.target.id;
 				let ctNo = $(this).parent().siblings('.ctNo').text();
-				
+
 				IMP.request_pay({
 					pg : 'kakaopay',
 					pay_method : 'card',
@@ -176,6 +244,31 @@
 						location.reload(true);
 					}
 				});
+			});
+			
+			$('.ctRow').on('click', function() {
+				let ctNo = $(this).attr('data-ctno');
+		        let custNo = $(this).attr('data-custno');
+		        let ctStatName = $(this).attr('data-ctstatname');
+		        let ctStartDt = $(this).attr('data-ctstartdt');
+		        let ctEndDt = $(this).attr('data-ctenddt');
+		        let ctAmt = $(this).attr('data-ctAmt');
+		        let maxEmps = $(this).attr('data-maxemps');
+		        let curEmps = $(this).attr('data-curemps');
+		        let useModCnt = $(this).attr('data-usemodcnt');
+		        
+		        $('#modal-ctNo').text(ctNo);
+		        $('#modal-custNo').text(custNo);
+		        $('#modal-ctStatName').text(ctStatName);
+		        $('#modal-ctStartDt').text(ctStartDt);
+		        $('#modal-ctEndDt').text(ctEndDt);
+		        $('#modal-ctAmt').text(ctAmt);
+		        $('#modal-maxEmps').text(maxEmps);
+		        $('#modal-curEmps').text(curEmps);
+		        $('#modal-useModCnt').text(useModCnt);
+				
+				let myModal = new bootstrap.Modal(document.getElementById('CtModal'));
+				myModal.show();
 			});
 		</script>
 	</th:block>

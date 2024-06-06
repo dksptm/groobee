@@ -44,6 +44,6 @@ public interface CtMapper {
 	//계약 정기결제처리
 	public int ctPayCheck(CtVO ctVO);
 	//계약 정기결제 상태 조회
-	public int selectCtPayCheck(CtVO ctVO);
+	public int selectCtPayCheck(int ctNo);
 	
 }
