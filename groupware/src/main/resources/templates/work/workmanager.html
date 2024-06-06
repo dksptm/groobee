@@ -11,7 +11,7 @@
 				<h4 style="text-align: center">사원 목록</h4>
 				<div>
 					<!-- ip insert 모달 -->
-				<button type="button" class="btn btn-primary" data-bs-toggle="modal"data-bs-target="#staticBackdrop">ip관리</button>
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal"data-bs-target="#staticBackdrop">IP설정</button>
 				</div>
 				<table class="table table-striped-columns">
 					<thead>
@@ -74,7 +74,8 @@
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h3 class="modal-title fs-5" id="staticBackdropLabel">신청한 ip</h3>
+								<h3 class="modal-title fs-5" id="staticBackdropLabel">IP 관리 목록</h3>
+								<br>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body" >
@@ -133,15 +134,32 @@
 			// CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
-			//  sorting 이벤트 처리
-			$("#insert").on("click", function(e) {
-				let outcheck = $("#input[name=outcheck]:checked");
-				
-				if(outcheck.val().length > 0) {
-					let 
-				}
-			});
+			
+			// allout 체크시 모든 out테이블 체크항목 체크
+			$('#allout').click(function() {
+			let checked = $('#allout').is(':checked');
 		
+				if(checked)
+					$('input[name=outcheck]:checkbox').prop('checked',true);
+			});
+			
+			$("#insert").on("click", insertBtn);
+			
+			let date = [];
+			//  insert버튼
+			function insertBtn() {
+				let check = $('input[name=outcheck]:checkbox');
+			
+				let empid = $(check).closest().next().text();
+				let ip = $(check).closest().text();
+				let dt = $(check).text();
+				
+				console.log(empid);
+				console.log(ip);
+				console.log(dt);
+			
+			}
+			
 		</script>
 	</th:block>
 </body>
