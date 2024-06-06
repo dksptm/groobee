@@ -1,6 +1,7 @@
 package com.samjo.app.emp.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.mapper.DeptMapper;
 import com.samjo.app.emp.mapper.EmpMapper;
 import com.samjo.app.emp.service.EmpService;
@@ -58,6 +60,17 @@ public class EmpServiceImpl implements EmpService {
 		}
 		
 		return map;
+	}
+
+	// 고객사 소속 계정 전체조회.
+	@Override
+	public List<EmpVO> selectEmpAll(String custNo, SearchVO search) {
+		return empMapper.selectEmpAll(custNo, search);
+	}
+
+	@Override
+	public int countEmpAll(String custNo, SearchVO search) {
+		return empMapper.countEmpAll(custNo, search);
 	}
 
 }

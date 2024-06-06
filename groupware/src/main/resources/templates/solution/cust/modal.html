@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+
+<th:block sec:authorize="hasAuthority('1C1c')">
+<th:block th:fragment="Emps">	
+	<div class="bg-light p-3">
+		<div class="table-responsive">
+			<table class="table table-bordered text-center emps-table">
+				<thead>
+					<tr>
+						<th class="col-1">아이디</th>
+						<th>권한</th>
+						<th>부서명</th>
+						<th>이름</th>
+						<th>직급</th>
+						<th>계정상태</th>
+						<th class="col-2">입사일</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="emp : ${list}">
+						<td>[[ ${emp.empId} ]]</td>
+						<td>[[ ${emp.permName} ]]</td>
+						<td>[[ ${emp.deptName} ]]</td>
+						<td>[[ ${emp.empName} ]]</td>
+						<td>[[ ${emp.jobTitle} ]]</td>
+						<td>[[ ${emp.empStatName} ]]</td>
+						<td>[[ ${#dates.format(emp.hireDt, 'yyyy년 MM월 dd일')} ]]</td>
+					</tr>				
+				</tbody>
+			</table>
+		</div>
+	</div>
+</th:block>
+</th:block>
+</html>

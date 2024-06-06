@@ -27,11 +27,10 @@ public class EmpVO {
 	private String empTel;
 	private String emailAddr;
 	
-	// 직급명, 부서명
+	// 직급명, 부서명, 상태명, 권한 및 권한명
 	private String jobTitle;
 	private String deptName;
-	
-	// 권한.
+	private String empStatName;
 	private String permId;
 	private String permName;
 	
@@ -43,6 +42,7 @@ public class EmpVO {
 		this.permId = permId;
 	}
 	
-	
+	//
+	private Integer rn;
 	 
 }

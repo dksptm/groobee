@@ -38,6 +38,68 @@
 		    FROM  cust
 		    where cust_no = #{custNo}
 	</insert>
-
+	
+	<!-- 한 회사의 등록된 계정들 목록 -->
+	<select id="selectEmpAll" parameterType="map" resultType="EmpVO">
+		SELECT   g.rn
+		        ,g.emp_id
+		        ,g.perm_id
+		        ,g.perm_name
+		        ,g.dept_id
+		        ,g.dept_name
+		        ,g.emp_name
+		        ,g.job_no
+		        ,g.job_title
+		        ,g.hire_dt
+		        ,g.emp_stat
+		        ,g.emp_stat_name
+		FROM (
+		        SELECT  ROW_NUMBER() OVER (ORDER BY  e.emp_id) rn
+		                ,e.emp_id
+		                ,j.perm_id
+		                ,p.perm_name
+		                ,e.dept_id
+		                ,d.dept_name
+		                ,e.emp_name
+		                ,e.job_no
+		                ,j.job_title
+		                ,e.hire_dt
+		                ,e.emp_stat
+		                ,get_codename(emp_stat) as emp_stat_name
+		        FROM emp e JOIN dept d ON (e.dept_id = d.dept_id)
+		                   JOIN jobs j ON (e.job_no = j.job_no)
+		                   JOIN perm p ON (j.perm_id = p.perm_id)
+		        WHERE cust_no <![CDATA[<>]]> '0000' 
+		        AND   cust_no = #{cno}
+		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
+		        	AND   e.emp_stat = '1D1d'
+		        </if>
+		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('permAll')">
+		        	AND   j.perm_id = '1C4c'
+		        </if>
+		     ) g
+		WHERE  g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND    g.rn > (#{sch.page} - 1) * 10	
+	</select>
+	
+	<select id="countEmpAll" parameterType="map" resultType="int">
+		SELECT  COUNT(*)
+		FROM (
+		        SELECT   e.emp_id
+		                ,j.perm_id
+		                ,e.emp_stat
+		        FROM emp e JOIN dept d ON (e.dept_id = d.dept_id)
+		                   JOIN jobs j ON (e.job_no = j.job_no)
+		                   JOIN perm p ON (j.perm_id = p.perm_id)
+		        WHERE cust_no <![CDATA[<>]]> '0000' 
+		        AND   cust_no = #{cno}
+		        <if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
+		        	AND   e.emp_stat = '1D1d'
+		        </if>
+		        <if test="sch.keywordCondition != null and !sch.keywordCondition.equals('permAll')">
+		        	AND   j.perm_id = '1C4c'
+		        </if>
+		     )
+	</select>
 
 </mapper>

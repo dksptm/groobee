@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="d-flex justify-content-center">
+			<div style="min-width:880px" class="card my-4 col-10">
+				<h5 class="card-header">고객 목록</h5>
+				<div class="card-body ">
+
+					<!-- 검색 -->
+					<p class="navbar-brand"></p>
+					<nav class="navbar navbar-expand-lg navbar-light">
+						<div class="container-fluid">
+							<div class="" id="navbarSupportedContent">
+								<table class="">
+									<tr>
+										<td><select class="form-select keywordCondition">
+												<option value="c.cust_name">상호명</option>
+												<option value="c.cust_no">고객번호</option>
+												<option value="c.rep">대표자</option>
+												<option value="l.ct_no">계약번호</option>
+										</select></td>
+										<td><input class="form-control keyword" placeholder="검색어 입력" type="text"></td>
+										<td class="text-white">_</td>
+										<td class="form-control">계약상태</td>
+										<td><select class="form-select searchCondition">
+												<option value="statAll">전체</option>
+												<option value="= '0A1a'">계약중</option>
+												<option value="= '0A2a'">계약종료</option>
+												<option value="is null">미계약</option>
+										</select></td>
+										<td class="text-white">_</td>
+										<td class="form-control">정렬조건</td>
+										<td><select class="form-select sortCondition">
+												<option value="c.cust_no">고객번호순</option>
+												<option value="c.cust_no DESC">고객번호역순</option>
+												<option value="l.ct_no">계약번호순</option>
+												<option value="l.ct_no DESC">계약번호역순</option>
+												<option value="c.cust_name">상호명순</option>
+												<option value="c.cust_name DESC">상호명역순</option>
+										</select></td>
+										<td class="text-white">___</td>
+										<td>
+											<button class="btn btn-outline-success searchbtn"
+													type="button">검&emsp;색</button>
+										</td>						
+									</tr>
+								</table>
+							</div>
+						</div>
+					</nav>
+					<div id="CustListArea">
+						<!-- 계약 목록 출력 -->
+						<div class="table-responsive">
+							<table class="table table-hover text-center">
+								<thead>
+									<tr class="table-secondary">
+										<th class="col-1">고객번호</th>
+										<th class="col-2">상호명</th>
+										<th class="col-2">대표자</th>
+										<th class="col-2">담당자번호</th>
+										<th class="col-1">계약번호</th>
+										<th class="col-1">계약상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="cust : ${list}">
+										<tr th:onclick="|location.href='@{info?custNo={cno}(cno=${cust.custNo})}'|">
+											<th class="table-secondary text-start">&emsp;[[ ${cust.custNo} ]]</th>
+											<td>[[ ${cust.custName} ]]</td>
+											<td>[[ ${cust.rep} ]]</td>
+											<td>[[ ${cust.payPicTel} ]]</td>
+											<td th:if="${cust.lastCtNo != null}">[[ ${cust.lastCtNo} ]]</td>
+											<td th:unless="${cust.lastCtNo != null}">-</td>
+											<th:block th:switch="${cust.lastCtStat}">
+												<td th:case="0A1a" class="table-primary">[[ ${cust.lastCtStatName} ]]</td>
+												<td th:case="0A2a"    class="table-secondary">[[ ${cust.lastCtStatName} ]]</td>
+												<td th:case="${null}" class="table-warning">[[ ${cust.lastCtStatName} ]]</td>
+											</th:block>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+						<!-- 페이징 -->
+						<div class="paging mt-2">
+							<th:block th:if="${pageDTO.totalCnt} != 0">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center">
+
+										<th:block th:if="${pageDTO.prev}">
+											<li class="page-item prev"><a href="#"
+												th:id="${pageDTO.startPage - 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-left"></i></a></li>
+										</th:block>
+										<th:block
+											th:each="num : ${#numbers.sequence(pageDTO.startPage, pageDTO.endPage)}">
+											<li class="page-item "
+												th:attrappend="class=${num ==  pageDTO.page ? 'active' : ' '}">
+												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+											</li>
+										</th:block>
+										<th:block th:if="${pageDTO.next}">
+											<li class="page-item next"><a href="#"
+												th:id="${pageDTO.endPage + 1 }" class="page-link pagebtn"><i
+													class="bx bx-chevron-right"></i></a></li>
+										</th:block>
+									</ul>
+								</nav>
+							</th:block>
+							<th:block th:unless="${pageDTO.totalCnt} != 0">
+								<p class="text-center mt-4">현재 등록된 계약이 없습니다.</p>
+							</th:block>
+						</div>
+						<!-- /페이징 -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+		    // CSRF
+		    let header = $("meta[name='_csrf_header']").attr('content');
+		    let token = $("meta[name='_csrf']").attr('content');
+		
+		    // 검색 조건 변수 생성
+		    let keywordCondition;
+			let keyword;
+			let searchCondition;
+			let sortCondition;
+		    let page;
+			
+		    // 검색버튼 이벤트 처리
+		    $(".searchbtn").on("click", function(e) {
+		    	console.log('클릭')
+		        updateParams();
+		        showTable();
+		    });
+		    
+		    // 검색입력창 엔터시 이벤트 처리
+		    $(".keyword").on("change", function(e) {
+		    	updateParams();
+		        showTable();
+		    });
+		
+		    // 페이징 링크 처리
+		    $(document).on("click", ".pagebtn", function(e) {
+		        e.preventDefault();
+		        page = e.target.id;
+		        showTable();
+		    });
+		
+		    // 검색 조건 갱신 함수
+		    function updateParams() {
+		    	console.log('업데이트')
+		        // 키워드 검색 처리
+		        keywordCondition = $('.keywordCondition').val();
+		        keyword = $('.keyword').val();
+				searchCondition = $('.searchCondition').val();
+				sortCondition = $('.sortCondition').val();
+				page = 1;
+		    }
+		
+		    // 검색 AJAX 함수
+		    function showTable() {
+		    	console.log('아작스')
+		        $.ajax({
+		            url: 'list/sch',
+		            type: 'POST',
+		            beforeSend: function(xhr) {
+		                xhr.setRequestHeader(header, token);
+		            },
+		            data: {
+		                page,
+		                keywordCondition,
+		                keyword,
+		                searchCondition,
+		                sortCondition
+		            },
+		            dataType: 'Text',
+		            success: function(result) {
+		                $('#CustListArea').replaceWith(result);
+		            }
+		        });
+		    }
+		</script>
+	</th:block>
+</body>
+</html>
