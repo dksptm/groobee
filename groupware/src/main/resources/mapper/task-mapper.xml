@@ -232,10 +232,10 @@
 				 prjt_mat = #{prjtMat},
 			</if>
 		    <if test="taskStartDt != null and !taskStartDt.equals('')">
-				 task_start_dt = #{taskStartDt}
+				 task_start_dt = #{taskStartDt},
 			</if>
 		    <if test="taskDueDt != null and !taskDueDt.equals('')">
-				 task_start_dt = #{taskDueDt},
+				 task_due_dt = #{taskDueDt},
 			</if>
 			<if test="taskPurpose != null and !taskPurpose.equals('')">
 				 task_purpose = #{taskPurpose},
@@ -245,7 +245,6 @@
 			</if>
 		WHERE task_no= #{taskNo}
 	 	AND cust_no =#{custNo}
-		AND standard_no=#{standardNo}
 	</update>
 	
 	<!-- 협력업체 전체 조회 -->

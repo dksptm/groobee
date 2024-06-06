@@ -38,8 +38,6 @@ public interface TaskService {
 
 	
 	/*
-	 * // 프로젝트 업무 수정 
-	  public Map<String, Object> taskUpdate(ProjectVO projectVO); 
 	
 	// 협력업체 수정
 		public Map<String, Object> coopUpdate(ProjectVO projectVO);

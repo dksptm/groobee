@@ -13,6 +13,8 @@
 					<div class="table-responsive">
 						<table class="table table-hover table-bordered">
 							<tr>
+								<th>업무번호</th>
+								<td id="taskNo">[[ ${task.taskNo}]]</td>
 								<th>업무명</th>
 								<td><input type="text" class="form-control"
 									th:value="${task.taskName}" name="taskName" /></td>
@@ -20,12 +22,33 @@
 								<td>[[ ${task.progress}]] %</td>
 								<th>진행상황</th>
 								<td class="fw-bold">진행상황</td>
-									<td><select class="form-select" name="prjtMat" id="prjtMat">
-										    <option value="5B1b">업무진행중</option>
-										    <option value="5B2b">업무완료</option>
-										    <option value="5B3b">업무취소</option>
-									  	</select>
+								<td><select class="form-select" name="prjtMat" id="prjtMat">
+										<option value="5B1b">업무진행중</option>
+										<option value="5B2b">업무완료</option>
+										<option value="5B3b">업무취소</option>
+								</select>
 							</tr>
+						</table>
+						<br>
+						<table class="table table-hover table-bordered">
+							<thead>
+								<tr>
+									<th>부서명</th>
+									<th>부서참여인원</th>
+								</tr>
+							</thead>
+							<tbody>
+							                                <!--  <tr th:each="dept : ${dept}">
+         						   <td th:text="${dept.deptName}"></td>
+                                    <td th:text="${emp.empName}"></td>
+                                     -->
+                                    <td>[[ ${task.deptName}]]</td>
+                                     <td>[[ ${task.empName}]]</td>
+								<tr th:each="emp : ${empList}">
+									<td th:text="${emp.deptName}"  id="deptId"></td>
+									<td th:each="emp : ${empList}" th:text="${emp.empName}" id="empId"></td>
+								</tr>
+							</tbody>
 						</table>
 						<br>
 						<table class="table table-hover table-bordered">
@@ -45,34 +68,19 @@
 							<thead>
 								<tr>
 									<th>업무목적</th>
-									<td><input type="text" class="form-control"
-										th:value="${task.taskPurpose}" name="taskPurpose" /></td>
-									<th>업무내용</th>
-									<td><input type="text" class="form-control"
-										th:value="${task.taskCntn}" name="taskCntn" /></td>
+									<td colspan="5"><textarea name="purpose"
+											class="form-control" id="taskPurpose">[[ ${task.taskPurpose} ]]</textarea></td>
+									<th style="">업무내용</th>
+									<td colspan="5"><textarea name="taskCntn"
+											class="form-control" id="taskCntn">[[ ${task.taskCntn} ]]</textarea></td>
 								</tr>
 							</tbody>
 						</table>
-						<br>
-						<table class="table table-hover table-bordered">
-							<thead>
-								<tr>
-									<th>부서명</th>
-									<td> </td>
-								</tr>
-								<tr>
-									<th>부서참여인원</th>
-									<td>
-										
-									</td>
-								</tr>
-							</thead>
-						</table>
-						<br>
-						
+						<br> <br>
 						<div style="text-align: center">
 							<button type="button" class="btn btn-primary mt-2" id="modiBtn">수정</button>
-							<button type="button" class="btn btn-primary mt-2" onclick="goToInfo()">취소</button>
+							<button type="button" class="btn btn-primary mt-2"
+								onclick="goInfo()">취소</button>
 						</div>
 					</div>
 				</div>
@@ -82,47 +90,60 @@
 
 	<script th:inline="javascript">
 		const token = document.querySelector('meta[name="_csrf"]')
-			.getAttribute('content');
+				.getAttribute('content');
 		const header = document.querySelector('meta[name="_csrf_header"]')
-			.getAttribute('content');
-   
-		 $('#modiBtn').click(function() {
-	            let formData = {
-	                taskNo: $('input[name="taskNo"]').val(),
-	                taskName: $('input[name="taskName"]').val(),
-	                progress: $('input[name="progress"]').val(),
-	                prjtMat: $('input[name="prjtMat"]').val(),
-	                taskStartDt: $('input[name="taskStartDt"]').val(),
-	                taskDueDt: $('input[name="taskDueDt"]').val(),
-	                taskPurpose: $('input[name="taskPurpose"]').val(),
-	                taskCntn: $('input[name="taskCntn"]').val(),
-	                deptId: $('select[name="deptId"]').val()
-	                
-	            };
-	
-	            $.ajax({
-	                url: 'cust/task',
-	                type: 'POST',
-	                data: formData,
-	                success: function(response) {
-	                    alert('업무가 성공적으로 수정되었습니다.');
-	                    window.location.href = '/cust/taskInfo/' + response.taskNo;
-	                },
-	                error: function(xhr, status, error) {
-	                    alert('업무 수정에 실패했습니다.');
-	                    console.error(error);
-	                }
-	            });
-	        });
-	
-	     // 프로젝트 상세로 
-			function goToInfo() {
-				let task = { taskNo: $('#taskNo').val() }
-				location.href='/cust/taskInfo/' + task.taskNo;  ;
+				.getAttribute('content');
+
+		$('#modiBtn').click(function() {
+			
+			let formData = {
+				taskNo : $('input[name="taskNo"]').val(),
+				taskName : $('input[name="taskName"]').val(),
+				progress : $('input[name="progress"]').val(),
+				prjtMat : $('input[name="prjtMat"]').val(),
+				taskStartDt : $('input[name="taskStartDt"]').val(),
+				taskDueDt : $('input[name="taskDueDt"]').val(),
+				taskPurpose : $('input[name="taskPurpose"]').val(),
+				taskCntn : $('input[name="taskCntn"]').val(),
+				//deptId : $('select[name="deptId"]').val(),
+				//empId : $('select[name="deptId"]').val()
 			};
-	
+
+			$.ajax({
+				url : '/cust/tsModify',
+				type : 'POST',
+				data : formData,		
+				success : function(data) {
+					Swal.fire({
+						title: '수정완료!',        
+						text:  '업무가 성공적으로 수정되었습니다.',  
+						icon:  'success' 
+					})
+					.then(function(data){
+						location.href = '/cust/taskInfo/' + data.taskNo;               
+					})
+				},
+				error : function(err) {
+					Swal.fire({
+						title: '수정실패',        
+						text:  '업 수정이 실패하였습니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					})
+				}
+			});
+		});
+
+		// 프로젝트 상세로 
+		function goInfo() {
+			let task = { taskNo : $('#taskNo').val() }
+			location.href = '/cust/taskInfo/' + taskNo ;
+		};
 	</script>
 
 	</th:block>
 </body>
 </html>
+

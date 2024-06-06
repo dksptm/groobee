@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -128,33 +129,32 @@ public class TaskController {
 			return taskService.taskOk(projectVO);
 		}
 		
+		
 		// 업무 전체 수정 - 페이지
 		@GetMapping("cust/tsModify")
 		public String taskModifyForm(@RequestParam int taskNo, Model model) {
 			ProjectVO projectVO = new ProjectVO();
 			projectVO.setTaskNo(taskNo);
 			
-			EmpVO empVO = SecuUtil.getLoginEmp();
-			
 			ProjectVO ts = taskService.taskInfo(taskNo);
 			model.addAttribute("task", ts);
 			
 			List<DeptVO> list = deptService.deptAllList();
 			model.addAttribute("dept", list);
-			
+
+			EmpVO empVO = SecuUtil.getLoginEmp();
 			List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
 			model.addAttribute("emp", elist);
 			
-			model.addAttribute("task", new ProjectVO());
-			
-
+			System.out.println("==============>" + elist);
+			System.out.println("==============>" + list);
 			return"project/task/tsModify";
 			
 		}
 		
 		// 업무 전체 수정 - 처리
-		@PostMapping("cust/tsModify")
 		@ResponseBody
+		@PostMapping("cust/tsModify")
 		public String taskModifyProcess(@RequestBody ProjectVO projectVO) {
 			
 			EmpVO empVO = SecuUtil.getLoginEmp();
@@ -163,8 +163,10 @@ public class TaskController {
 			projectVO.setCustNo(custNo);
 			
 			taskService.taskModify(projectVO);
-			return "redirect:/cust/tsModify/" + projectVO.getTaskNo();
+			//return "redirect:/cust/tsModify/" + projectVO.getTaskNo();
+			 return "redirect:/cust/tsModify?taskNo=" + projectVO.getTaskNo();
 		}
+		
 		
 		// 협력업체 전체 조회
 		@GetMapping("cust/coopAllList")
