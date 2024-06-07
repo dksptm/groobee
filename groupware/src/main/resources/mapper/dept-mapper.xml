@@ -159,5 +159,21 @@
 		AND    SYSDATE BETWEEN ct_start_dt AND ct_end_dt	
 	</select>	
 	
+	<select id="selectCustDeptinfoAll" parameterType="EmpVO" resultType="DeptVO">
+		SELECT    d.dept_id
+		        , d.dept_name
+		        , d.dept_loc
+		        , d.dept_info
+		        , d.dept_mngr
+		        , e.emp_name as mngr_name
+		        , c.cnt
+		FROM   dept d LEFT OUTER JOIN emp e
+		                           ON (d.dept_mngr = e.emp_id)
+		              LEFT OUTER JOIN (SELECT COUNT(*) cnt,dept_id FROM emp GROUP BY dept_id) c
+		                           ON (d.dept_id = c.dept_id)
+		WHERE  d.cust_no = #{emp.custNo}
+		ORDER BY d.dept_id
+	</select>
+	
 </mapper>
   

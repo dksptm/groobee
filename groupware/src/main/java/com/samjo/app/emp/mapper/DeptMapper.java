@@ -33,4 +33,7 @@ public interface DeptMapper {
 	// 현재 계약중인 계약번호 가져오기.
 	public Integer selectCurCtNo(String custNo);
 	
+	// 한 회사의 부서전체 목록(상세목록)
+	public List<DeptVO> selectCustDeptinfoAll(@Param("emp") EmpVO empVO);
+	
 }

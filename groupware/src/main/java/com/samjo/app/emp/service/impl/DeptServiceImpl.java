@@ -2,7 +2,6 @@ package com.samjo.app.emp.service.impl;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +56,11 @@ public class DeptServiceImpl implements DeptService {
 	@Override // 한 회사의 직급전체 목록
 	public List<JobVO> myCustJobs(EmpVO empVO) {
 		return deptMappr.selectCustJobAll(empVO);
+	}
+	
+	@Override	// 부서전체상세.
+	public List<DeptVO> custDeptinfoAll(EmpVO empVO) {
+		return deptMappr.selectCustDeptinfoAll(empVO);
 	}
 
 }

@@ -40,5 +40,24 @@ public class DeptController {
 		return "approval/modal/modal_refs";
 	}
 	
+	@GetMapping("cust/manager/dept")
+	public String custDeptinfoList(Model model) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		if(empVO == null) {
+			return "test/test";
+		}
+		
+		if(!empVO.getPermId().equals("1C2c")) {
+			return "test/test";
+		}
+		
+		List<DeptVO> depts = deptService.custDeptinfoAll(empVO);
+		model.addAttribute("depts", depts);
+		
+		return "manager/dept_list";
+	}
+	
+	
 
 }
