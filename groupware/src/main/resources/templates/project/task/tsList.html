@@ -8,9 +8,9 @@
 			<div class="card my-4 col-10">
 				<h5 class="card-header">프로젝트 업무조회</h5>
 				<div class="card-body ">
-					
+
 					<!-- 검색 -->
-					<p class="navbar-brand">검색조건</p>
+					<p class="navbar-brand"></p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
 							<button class="navbar-toggler" type="button"
@@ -28,7 +28,8 @@
 												<option value="p.prjt_name">프로젝트명</option>
 												<option value="t.task_no">업무번호</option>
 										</select></td>
-										<td colspan='3'><input class="form-control searchKey" type="text"></td>
+										<td colspan='3'><input class="form-control searchKey"
+											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="text-white">_</td>
 										<td class="form-control">진행상태</td>
@@ -38,9 +39,14 @@
 												<option value="5B2b">업무완료</option>
 												<option value="5B3b">업무취소</option>
 										</select></td>
+										<td>
+											<div class="text-end">
+												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+											</div>
+										</td>
 									</tr>
 									<tr>
-									<td class="form-control" >기간</td>
+										<td class="form-control">기간</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
@@ -58,45 +64,52 @@
 												<option value="participants_cnt DESC">참여인원많은순</option>
 												<option value="progress">진행도순</option>
 										</select></td>
+										<td>
+										<div class="text-end">
+											<button class="btn btn-secondary ms-2" type="reset"
+												th:onclick="|location.href='@{/cust/taskAllList}'|">초기화</button></div>
+										</td>
 									</tr>
 								</table>
-								<span class="position-absolute top-50 end-0 translate-middle-y">
-									<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
-								</span>
 							</div>
-						</div>
+							</div>
 					</nav>
+					<br>
 					<div id="taskTable">
 						<!-- 업무 목록 출력 -->
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
 									<tr>
-										<th>업무번호</th>
-										<th>프로젝트명</th>
-										<th>업무명</th>
-										<th>시작일</th>
-										<th>마감일</th>
-										<th>참여인원</th>
-										<th>진행도</th>
-										<th>진행상황</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">업무번호</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">프로젝트명</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">업무명</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">시작일</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">마감일</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">참여인원</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">진행도</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">진행상황</th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="task : ${list}">
-										<tr
-											th:onclick="|location.href='/cust/tsInfo/${task.taskNo}'|">
+										<tr th:onclick="|location.href='/cust/tsInfo/${task.taskNo}'|">
 											<td>[[ ${task.taskNo} ]]</td>
 											<td>[[ ${task.prjtName} ]]</td>
 											<td>[[ ${task.taskName} ]]</td>
-											<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
+											<td>[[ ${#dates.format(task.taskStartDt,
+												"yyyy-MM-dd")}]]</td>
 											<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${task.participantsCnt} ]] 명</td>
-											<td>[[ ${task.progress} ]] %</td>
-											<td
+											<td th:class="${task.progress == 100 ? 'table-success' : ''}">[[
+												${task.progress} ]] % %</td>
+											<td th:if="${task.prjtMat == '업무진행중'}"
+												class="table-secondary">[[${task.prjtMat}]]</td>
+											<td th:if="${task.prjtMat == '업무완료'}" class="table-success">[[${task.prjtMat}]]</td>
+											<td th:if="${task.prjtMat == '업무취소'}" class="table-danger">[[${task.prjtMat}]]</td>
+											<!-- <td
 												th:class="${task.prjtMat == '5B2b' ? 'table-secondary' : ''}">
-												[[ ${task.prjtMat} ]]</td>
+												[[ ${task.prjtMat} ]]</td> -->
 										</tr>
 									</th:block>
 								</tbody>
@@ -150,7 +163,7 @@
 			$('.toDt').on('change', function(e) {
 				$('.fromDt').attr('max', this.value);
 			});
-			
+
 			// 검색 조건 변수 
 			let keyword;
 			let searchCondition;
@@ -160,7 +173,7 @@
 			let taskStart;
 			let taskDue;
 			let taskSort;
-			
+
 			//검색버튼 이벤트 처리
 			$(".searchbtn").on("click", function(e) {
 				//e.preventDefault(); 
@@ -176,59 +189,59 @@
 				//updateParams();
 				showTable(page);
 			});
-			
+
 			// 검색 조건 갱신 함수
-			 function updateParams() {
+			function updateParams() {
 				//키워드 검색 처리
-		        keyword = $('.searchKey').val();
-		        searchCondition = $('.searchKeySelect').val();
-		        
-		    	// 기간 검색 처리
-		        taskDt = $('.taskDt').val();
-		        taskStart = $('.fromDt').val();
-		        taskDue = $('.toDt').val();
-		
+				keyword = $('.searchKey').val();
+				searchCondition = $('.searchKeySelect').val();
+
+				// 기간 검색 처리
+				taskDt = $('.taskDt').val();
+				taskStart = $('.fromDt').val();
+				taskDue = $('.toDt').val();
+
 				// 프로젝트 상황 검색 처리
 				if ($('.prjtMat').val() != 'statAll') {
 					prjtMat = $('.prjtMat').val();
-		        } else {
-		        	prjtMat = null;
-		        }
-				
+				} else {
+					prjtMat = null;
+				}
+
 				// 타입 검색처리
 				if ($('.taskType').val() != 'typeAll') {
 					taskType = $('.taskType').val();
-		        } else {
-		        	taskType = null;
-		        }
-				
+				} else {
+					taskType = null;
+				}
+
 				// 정렬 처리
 				taskSort = $('.searchSelect').val();
-			 
-			 }
-			 
+
+			}
+
 			// 검색 AJAX 함수
-			    function showTable(page) {
+			function showTable(page) {
 				$.ajax({
-						url : '/cust/viewTsList',
-						type : 'POST',
-						beforeSend : function(xhr) {
-							xhr.setRequestHeader(header, token);
-						},
-						data : {
-							page : page,
-							taskSort : taskSort,
-							taskStart : taskStart,
-							taskDue : taskDue,
-							taskDt : taskDt,
-							prjtMat : prjtMat,
-							taskType : taskType,
-							keyword: keyword,
-			                searchCondition: searchCondition
-						},
-						dataType : 'Text',
-						success : function(result) {
-								$('#taskTable').replaceWith(result);
+					url : '/cust/viewTsList',
+					type : 'POST',
+					beforeSend : function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					data : {
+						page : page,
+						taskSort : taskSort,
+						taskStart : taskStart,
+						taskDue : taskDue,
+						taskDt : taskDt,
+						prjtMat : prjtMat,
+						taskType : taskType,
+						keyword : keyword,
+						searchCondition : searchCondition
+					},
+					dataType : 'Text',
+					success : function(result) {
+						$('#taskTable').replaceWith(result);
 					}
 				});
 			}

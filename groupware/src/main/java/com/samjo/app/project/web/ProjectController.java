@@ -39,7 +39,7 @@ public class ProjectController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
-			searchVO.setPrjtSort("prjt_id");
+			searchVO.setPrjtSort("prjt_id DESC");
 		}
 		
 		List<ProjectVO> list = projectService.PrjtAllList(searchVO);

@@ -37,7 +37,7 @@
 					</when>
 				</choose>
 				</where>
-				ORDER BY  ${prjtSort} DESC, prjt_id DESC) t 
+				ORDER BY  ${prjtSort} , prjt_id ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10 
 	</select>
