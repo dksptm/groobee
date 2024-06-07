@@ -15,4 +15,39 @@
     WHERE  cust_no = #{custNo}
 	</select>
 	
+	<!-- 상세정보로 출력할 것이 별로 없음. 그냥 스크립트에서 들고와서 모달 띄우게 처리 -->
+	
+	<!-- 직급 등록 -->
+	<insert id="jobInsert" parameterType="jobVO">
+		<selectKey keyProperty="jobNo" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(job_no),0) + 1 
+			FROM   jobs 
+		</selectKey>
+	INSERT INTO jobs(
+					 job_no,
+					 perm_id,
+					 job_title,
+					 cust_no
+					 )
+	VALUES (
+			#{jobNo},
+			#{permId},
+			#{jobTitle},
+			#{custNo}
+			)
+	</insert>
+	<!-- 직급 수정, jobId는 수정대상 아니다. -->
+	<update id="jobUpdate" parameterType="jobVO">
+	UPDATE jobs
+	SET   (job_no = #{jobNo},
+		   perm_id = #{permId},
+		   job_title = #{jobTitle},
+		   cust_no = #{custNo})
+	</update>
+	<!-- 직급 삭제, doc-mapper -->
+	<delete id="jobDelete" parameterType="jobVO">
+	DELETE jobs
+	WHERE  job_no = #{jobNo}
+	</delete>
+	
 </mapper>

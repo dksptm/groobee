@@ -93,7 +93,6 @@
     </div>
 
     <!-- 직급 상세/수정/삭제 모달화면, 개별 행을 클릭할 시 출력됨 -->
-    <!-- 클릭한 행의 정보를 들고 와야 함.. 스승님의 코드 참고 중 -->
     <div class="modal fade" id="JobInfoModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -163,8 +162,7 @@ $(document).ready(function() {
 			})
 			return;
         }
-		
-        //텍스트로 해버리자
+
         $.ajax({
             url: '/cust/admin/jobInsert',
             type: 'POST',
@@ -204,7 +202,9 @@ $(document).ready(function() {
 				})
 			}
         });
-
+    }
+    
+    
     // 수정 버튼 클릭 이벤트. 지금생각해보니 jobNo는 수정 불가하게 해야됨!
     $('#updateBtn').click(function(e) {
         let jobNo = $('#updateJobNo').val();

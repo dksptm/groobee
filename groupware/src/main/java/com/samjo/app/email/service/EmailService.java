@@ -7,9 +7,6 @@ import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.emp.service.EmpVO;
 
 public interface EmailService {
-	// 발신자, 수신자, 참조자의 id를 받아, 그 이름을 리턴하는.
-	public EmailVO getEmpName(EmailVO emailVO);
-	
 	// 받은메일 전체조회
 	public List<EmailVO> inboxList(SearchVO searchVO);
 	

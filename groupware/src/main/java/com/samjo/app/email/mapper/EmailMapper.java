@@ -13,8 +13,7 @@ import com.samjo.app.emp.service.EmpVO;
 // Service 인터페이스와 1:1 매치가 되는 구조가 되어버렸는데, 다른 조원은 어떤지 확인해보기
 // 네이밍도 어떻게 했는지 살펴보기
 public interface EmailMapper {
-	//empId를 가지고 가서, emp이름을 얻어오기
-	public EmailVO getEmpName(EmailVO emailVO);
+
 	
 	// 받은메일 전체조회
 	public List<EmailVO> selectInboxAll(SearchVO searchVO);
