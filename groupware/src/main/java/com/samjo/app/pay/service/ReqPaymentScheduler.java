@@ -66,7 +66,7 @@ public class ReqPaymentScheduler {
         			String result = payservice.payResultCheck(payVO.getMerchantUid(), payVO.getCtNo());
         			if(result.equals("UPDATE")) {
         				if(ctMapper.selectCtPayCheck(payVO.getCtNo()) == 1) {
-        					payservice.schedulePay(payVO.getCustNo(), payVO.getServAmt(), payVO.getCtNo());
+        					payservice.schedulePay(payVO.getCustNo(), payVO.getCtNo());
         				};
         			};
         		};

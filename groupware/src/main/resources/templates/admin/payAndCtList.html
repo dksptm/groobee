@@ -22,7 +22,7 @@
 							<tbody>
 								<th:block th:each="CtVO : ${ctList}">
 									<tr class="ctRow" 
-									th:data-ctno="${CtVO.ctNo}" 
+									th:data-ctno="${CtVO.ctNo}"
 									th:data-custno="${CtVO.custNo}" 
 									th:data-ctstatname="${CtVO.ctStatName}"
 									th:data-ctstartdt="${#dates.format(CtVO.ctStartDt, 'yyyy-MM-dd')}"
@@ -75,7 +75,7 @@
 												]]</td>
 										</th:block>
 										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
-											<td>정기결제등록</td>
+											<td>결제인증</td>
 										</th:block>
 										<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
 									</tr>
@@ -234,6 +234,7 @@
 				let amount = e.target.id;
 				let ctNo = $(this).parent().siblings('.ctNo').text();
 
+				//빌링키 발급
 				IMP.request_pay({
 					pg : 'kakaopay',
 					pay_method : 'card',
@@ -241,11 +242,14 @@
 					name : '최초결제인증',
 					amount : 1,
 					customer_uid : customerUid,
-					buyer_email : 'iamport@siot.do',
-					buyer_name : '아임포트',
-					buyer_tel : '02-1234-1234'
+					buyer_email : '',
+					buyer_name : '',
+					buyer_tel : ''
 				}, function(rsp) {
 					if (rsp.success) {
+						//최초결제 내역 등록
+						
+						//정기결제 등록
 						$.ajax({
 							url : '/payment',
 							beforeSend : function(xhr) {
@@ -270,7 +274,11 @@
 			});
 			//결제 중지 처리
 			$('.cancelBtn').on('click', function kakaopay(e) {
+				e.stopPropagation();
+				
+				let customerUid = $(this).parent().siblings('.custNo').text();
 				let ctNo = $(this).parent().siblings('.ctNo').text();
+				
 				$.ajax({
 					url : '/paymentStop',
 					beforeSend : function(xhr) {
@@ -278,6 +286,7 @@
 					},
 					type : 'POST',
 					data : {
+						"customer_uid" : customerUid,
 						"ctNo" : ctNo
 					},
 					success : function(result) {
@@ -288,7 +297,6 @@
 			});
 			
 			$('.ctRow').on('click', function() {
-				
 				
 				let ctNo = $(this).attr('data-ctno');
 		        let custNo = $(this).attr('data-custno');

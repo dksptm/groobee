@@ -69,7 +69,8 @@
 				        pay_cre_dt,
 				        serv_amt,
 				        pay_how,
-				        pay_stat)
+				        pay_stat,
+				        merchant_uid)
 		VALUES(#{payNo},
 		        #{custNo}, 
 		        #{ctNo},
@@ -77,7 +78,8 @@
 		        SYSDATE,
 		        1,
 		        '0C1c',
-		        '0D4d')
+		        '0D2d',
+		        #{merchantUid})
 	</insert>
 	
 	<!-- 결제 등록 -->
@@ -116,7 +118,7 @@
 	<!-- 계약수정시 결제내역 수정 -->
 	<update id="payReset" parameterType="PayVO">
 		UPDATE pay
-		SET pay_stat = '0D3d'
+		SET serv_amt = #{serv_amt}
 		WHERE  ct_no = #{ctNo}
 	</update>
 	
@@ -175,6 +177,14 @@
 				AND merchant_uid IS NULL
 			</otherwise>
 		</choose>
+	</update>
+	
+	<!-- 정기결제 취소 -->
+	<update id="cancelPay">
+		UPDATE pay
+		SET pay_stat = '0D3d'
+		WHERE pay_stat = '0D1d'
+		AND ct_no = #{ctNo}
 	</update>
 	
 	<!-- 결제예정 내역조회 -->
