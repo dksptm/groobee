@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.common.util.SecuUtil;
@@ -53,7 +57,6 @@ public class AdminController {
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
 				LoginUserVO loginUserVO = (LoginUserVO) principal;
-				String empId = loginUserVO.getEmpId();
 				String custNo = loginUserVO.getCustNo();
 				
 		JobVO jobVO = new JobVO();
@@ -65,31 +68,39 @@ public class AdminController {
 		}
 		return "admin/jobList";	
 	}
-//	//직급관리 상세조회 => 모달
-//	@GetMapping("cust/admin/JobInfo")
-//	public String empJobInfo(SearchVO searchVO, Model model) {
-//		
-//		return "admin/JobInfo";
-//	}
-//	//직급관리 등록 => 모달
-//	@GetMapping("cust/admin/JobInsertForm")
-//	public String empAccInsertForm(Model model) {
-//		
-//		return "admin/JobInsert";
-//	}
-//	//직급관리 수정 => 모달
-//	@PostMapping("cust/admin/JobInsert")
-//	public String empAccInsert(EmpVO empVO) {
-//		
-//		return "admin/JobList";
-//	}
-//	
-//	//직급관리 삭제 => 모달
-//	@ResponseBody
-//	@DeleteMapping("cust/admin/deleteJob")
-//	public Map<String, Object> deleteJob(@PathVariable Integer jobNo,
-//												@RequestBody JobVO jobVO) {
-//	
-//	}
+	
+	@ResponseBody
+	@PutMapping("cust/admin/JobInsert")
+	public String JobInsert(@RequestBody JobVO jobVO, Model model) {
+		//Object principal = authentication.getPrincipal();
+//		if (principal instanceof LoginUserVO) {
+//				LoginUserVO loginUserVO = (LoginUserVO) principal;
+//				String custNo = loginUserVO.getCustNo();
+//				
+//		jobVO.setCustNo(custNo);
+		int jNo = jobService.jobInsert(jobVO);
+		String uri = "admin/JobList";
+		
+		if (jNo > -1) {
+			uri = "true";
+		} else {
+			uri = "false";
+		}
+		return uri;
+	}
+	
+	@ResponseBody
+	@PutMapping("cust/admin/JobUpdate")
+	public String JobUpdate(@RequestBody JobVO jobVO) {
+		
+		return "admin/JobList";
+	}
+	
+	@ResponseBody
+	@DeleteMapping("cust/admin/JobDelete")
+	public String JobDelete(@RequestBody JobVO jobVO) {
+	
+		return "admin/JobList";
+	}
 	
 }

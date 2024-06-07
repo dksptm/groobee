@@ -27,13 +27,6 @@ public class EmailServiceImpl implements EmailService {
 		this.emailMapper = emailMapper;
 	}
 	
-	//empId -> 이름 얻어오기
-	@Override
-	public EmailVO getEmpName(EmailVO emailVO) {
-		EmailVO nameVO = emailMapper.getEmpName(emailVO);
-		//
-		return nameVO;
-	}
 	
 	//받은메일함 전체조회
 	@Override

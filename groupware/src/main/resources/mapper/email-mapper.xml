@@ -4,15 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.email.mapper.EmailMapper">
   
-  <!-- 발신자,수신자,참조자 id를 매개로 이름 가져오는 함수 정의했다. 호출문! -->
-   <select id="getEmpName" parameterType="emailVO" resultType="emailVO">
-    { call get_email_name(
-        #{sender, mode=IN, jdbcType=VARCHAR},
-        #{recp, mode=IN, jdbcType=VARCHAR},
-        #{refer, mode=IN, jdbcType=VARCHAR}
-    ) }
-  </select>
-  
   <!-- 받은메일함 전체조회 -->
  	<select id="selectInboxAll" parameterType="searchVO" resultType="EmailVO">
   		SELECT g.*
