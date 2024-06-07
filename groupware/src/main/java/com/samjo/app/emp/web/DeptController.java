@@ -1,12 +1,14 @@
 package com.samjo.app.emp.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
@@ -57,6 +59,16 @@ public class DeptController {
 		
 		return "manager/dept_list";
 	}
+	
+	@ResponseBody
+	@GetMapping("cust/manager/dept/mngrs")
+	public List<EmpVO> getCustMngrList() {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<EmpVO> list = deptService.myDeptMngrs(empVO);
+		return list;
+	}
+	
+	
 	
 	
 

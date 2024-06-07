@@ -183,6 +183,7 @@ public class EmpController {
 		return "manager/emp_list";
 	}
 	
+	// 관리자 - 사원목록 - 검색.
 	@PostMapping("cust/manager/empList/sch")
 	public String myEmpListSch(SearchVO search, Model model) {
 		

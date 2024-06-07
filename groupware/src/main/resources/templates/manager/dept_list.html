@@ -7,16 +7,16 @@
 <div class="d-flex justify-content-center">
 <div class="card my-4 col-10">
 	<h5 class="card-header">부서관리 - 목록</h5>
+	<input type="hidden" th:value="${#authentication.principal.custNo}" id="cno" readonly />
 	<div class="card-body">
 		<div id="taskTable">
 			<div class="table-responsive">
 				<div class="text-end">
-					<button type="button" class="btn px-2 py-0 me-1 btn-danger dept-del"><b>부서삭제</b>
-						<span class="icon bx bx-message-square-minus bx-md"></span>
-					</button>
-					<button type="button" class="btn px-2 py-0 ms-1 dept-add"><b>부서추가</b>
-						<span class="icon bx bx-message-square-add bx-md"></span>
-					</button>	
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-danger dept-delete">삭제</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-info dept-insert">저장</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-secondary dept-reset">취소</button>
+					<button type="button" class="btn mb-1 btn-danger dept-del">부서삭제</button>
+					<button type="button" class="btn mb-1 btn-info dept-add">부서추가</button>	
 				</div>
 				<table th:if="${#arrays.length(depts)} != 0" class="table table-hover text-center">
 					<thead>
@@ -46,11 +46,13 @@
 						</tr>
 						</th:block>
 						<tr id="insertForm" style="display:none;">
-							<td><input type="text" class="form-control" name="deptName" /></td>
-							<td><input type="text" class="form-control" name="deptLoc" /></td>
-							<td><input type="text" class="form-control" name="deptInfo" /></td>
-							<td><input type="text" class="form-control" name="mngrName" readonly /></td>
-							<td><button type="button" class="btn btn-primary">사원조회</button></td>						
+							<td><input type="text" class="form-control" id="bname" /></td>
+							<td><button type="button" class="btn btn-primary btn-sm p-1" id="locBtn">주소입력</button></td>
+							<td><input type="text" class="form-control" id="dinfo" /></td>
+							<td><input type="text" class="form-control" id="dmngr" readonly /></td>
+							<td><button type="button" class="btn btn-primary btn-sm p-1" id="empBtn">사원조회
+								</button>
+							</td>						
 						</tr>
 					</tbody>
 				</table>
@@ -65,6 +67,39 @@
 <input type="hidden" class="form-control bg-transparent" id="empAddr2">
 <input type="hidden" class="form-control bg-transparent" id="empAddr3">
 <input type="hidden" class="form-control bg-transparent" id="empAddr4">												
+</div>
+
+<div style="display:none;">
+<div class="list-group list-copy">
+  <label class="list-group-item">
+    <input class="form-check-input me-1" type="radio" name="mngr" value="">
+  </label>
+</div>
+<div class="spinner-border text-info spinner-copy" role="status">
+  <span class="visually-hidden spinner-copy">Loading...</span>
+</div>
+</div>
+
+<!-- 모달: 부서장급 사원목록.-->
+<div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">부서장급 사원조회</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -98,8 +133,35 @@
                 }
 
                 document.getElementById('empAddr1').value = data.zonecode;
-                document.getElementById("empAddr2").value = addr;
-                document.getElementById("empAddr3").focus();
+                document.getElementById("empAddr2").value = addr + " ";
+                
+                let creTag = document.createElement("span");
+                let locTag = document.querySelector('#locBtn');
+                
+                creTag.classList.add('juso');
+                creTag.innerText = document.getElementById("empAddr2").value;
+                
+                locTag.insertAdjacentElement('beforebegin', creTag);
+                
+                creTag = document.createElement("input");
+                creTag.placeholder = "상세주소를 입력하세요..";
+                creTag.classList.add('form-control');
+                creTag.classList.add('juso');
+                
+                locTag.insertAdjacentElement('beforebegin', creTag);
+                
+                creTag.focus();
+                //document.getElementById("empAddr3").focus();
+
+            	$('input.juso').blur(function() {
+            		console.log('111')
+            		let span = $('<span></span>').text($('input.juso').val());
+            		span.addClass('juso');
+            		$('input.juso').after(span);
+            		$('input.juso').remove();
+            		
+            	});
+                
             }
         }).open();
     }
@@ -107,18 +169,124 @@
 <script>
 $(function(){
 	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	
+	//<span class="icon bx bx-message-square-minus bx-md"></span>
+	//<span class="icon bx bx-message-square-add bx-md"></span>
+	
+	// 버튼클릭시
 	$('button.dept-add').on('click', function(e) {
 		$('#insertForm').show();
 		
-		$(this).addClass('btn-info');
+		$(this).hide();
+		$('button.dept-del').hide();
+		$('button.dept-insert').show();
+		$('button.dept-reset').show();
 		
 	});
 	
-	$('input[name="deptLoc"]').on('click', function(e){
-		console.log('!')
-		sample6_execDaumPostcode();
-	})
+	// 주소버튼
+	$('#locBtn').on('click', function(e) {
+		$('.juso').remove();
+    	
+    	sample6_execDaumPostcode();
+	});
 	
+	$('input.juso').blur(function() {
+		console.log('111')
+		let span = $('<span></span>').text($('input.juso').val());
+		span.addClass('juso');
+		$('input.juso').after(span);
+		$('input.juso').remove();
+		
+	});
+	
+	// 사번중복체크.
+	$("#dname").blur(function(){
+		
+		let dname = $('#dname').val();
+		let cno = $('#id').val();
+		
+		$.ajax({
+			type : 'GET',
+			url	 : 'dnameCheck?dname=' + dname + '&cno=' + cno,
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+		    dataType: 'Text'
+		})
+		.done(result => {
+
+			if(result > 0) {
+			
+				Toast.fire({
+					icon: 'error',
+				    title: '이미 있는 부서명입니다..'
+				});
+			
+				$("#dname").val('').focus();
+			
+			} 
+		})
+		.fail(err => console.error(err));
+		
+	});
+	
+	$('#empBtn').on('click', function(e) {
+		var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        myModal.show();
+        
+        $('#exampleModal .modal-body').html('');
+        
+        let copy1 = $('div.spinner-copy').clone();
+        let copy2 = $('span.spinner-copy').clone();
+        copy1.append(copy2);
+        $('#exampleModal .modal-body').html(copy1);
+        
+        
+		let listDiv = $('.list-copy');
+		let copyDiv = listDiv.clone();
+		let label = listDiv.find('label');
+		let input = label.find('input');
+		
+		let copyLabel = label.clone();
+		let copyInput = input.clone();
+		copyLabel.append(copyInput);
+		
+		$.ajax({
+			type : 'GET',
+			url	 : 'dept/mngrs',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+		    dataType: 'json'
+		})
+		.done(result => {
+			
+			copyDiv.children().remove();
+			
+			result.forEach((val,idx) => {
+				
+				copyLabel.text(" " + val.deptName + " " + val.empName + " " + val.jobTitle);
+				copyInput.val(val.empId);
+				
+				copyLabel.prepend(copyInput);
+				copyDiv.append(copyLabel);
+				
+				copyLabel = label.clone();
+				copyInput = input.clone();
+				
+			})
+			
+			$('#exampleModal .modal-body').html(copyDiv);
+			
+			console.log('완성?');
+		})
+		.fail(err => console.error(err));
+		
+		
+	});	
 	
 }) // end.
 </script>
