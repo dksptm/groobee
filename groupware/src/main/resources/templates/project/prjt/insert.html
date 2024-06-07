@@ -22,10 +22,10 @@
 						<div style="text-align: center;">
 							<button type="button"
 								th:onclick="|location.href='@{/cust/prjtInsert}'|"
-								class="btn btn-primary">프로젝트 등록</button>
+								class="btn btn-light">프로젝트 등록</button>
 							<button type="button"
 								th:onclick="|location.href='@{/cust/taskInsert}'|"
-								class="btn btn-primary">프로젝트 업무등록</button>
+								class="btn btn-light">프로젝트 업무등록</button>
 						</div>
 						<br>
 						<br>
@@ -100,7 +100,7 @@
 									<td>[[ ${mngr.empName} ]]</td>
 									<td>[[ ${mngr.empId} ]]</td>
 									<td><input class="form-radio-input" type="radio"
-										name="mngrCheck" th:value="${mngr.empId}"></td>
+										id="mngrCheck" name="mngrCheck" th:value="${mngr.empId}"></td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -119,9 +119,7 @@
 		<script>
 			$(function() {
 				// 책임자이름 선택 등록  
-				$('#respInBtn').on(
-						'click',
-						function() {
+				$('#respInBtn').on('click',function() {
 							let chkMngr = $("input[name=mngrCheck]:checked");
 
 							if (chkMngr.val().length > 0) {
@@ -135,13 +133,19 @@
 								$('#respMngrId').val(mngrId);
 							}
 						}); //
-
+			});
 				
 				// 등록
 				$('#prjtInsertBtn').on('click', function() {
+					
 					let formData = $('#prjtForm').serialize();
-					console.log(formData);
-					$.ajax({
+					//console.log(formData);
+					
+					let result = validationCheck();
+					
+					if (result){
+					
+						$.ajax({
 						type : 'POST',
 						url : '/cust/prjtInsert',
 						data : formData,
@@ -168,9 +172,74 @@
 
 						}
 					});
+					} else {
+						
+					}
+				
 				});
-
-			});
+				
+				// 등록 전 체크
+				function validationCheck() {
+					
+					if($('input[name="prjtName"]').val() == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트명은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							prjtName.focus();               
+						});
+						return false; 
+					} 
+					
+					let startdt = document.getElementById('prjtStartDt');
+					if(startdt.value == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트시작일은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							startdt.focus();              
+						});
+						return false;
+					}
+					
+					let duedt = document.getElementById('prjtDueDt');
+					if(duedt.value == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트마감일은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							duedt.focus();                
+						});
+						return false;
+					}
+					
+					let mngrCheck = document.getElementById('mngrCheck');
+					if(mngrCheck.value == '') {
+					//if($('input[name="mngrCheck"]').val() == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '책임자를 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							mngrCheck.focus();                
+						});
+						return false;
+					}
+					
+					return true;
+				};
+			
+			
+			
+			
+			
 		</script>
 	</th:block>
 </body>

@@ -29,9 +29,13 @@
 												<option value="pic">담당자</option>
 												<option value="cntn">내용</option>
 										</select></td>
-										<td colspan='3'><input class="form-control searchKey"
+										<td><input class="form-control searchKey"
 											type="text"></td>
-										<td class="text-white">_</td>
+										<td>
+											<div class="text-end">
+												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+											</div>
+										</td>
 									</tr>
 									<tr>
 										<td class="form-control">정렬조건</td>
@@ -40,26 +44,28 @@
 												<option value="pic">담당자순</option>
 												<option value="cntn">내용순</option>
 										</select></td>
+										<td>
+										<div class="text-end">
+											<button class="btn btn-secondary ms-2" type="reset"
+												th:onclick="|location.href='@{/cust/coopAllList}'|">초기화</button></div>
+										</td>
 									</tr>
 								</table>
-								<span class="position-absolute top-50 end-0 translate-middle-y">
-									<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
-								</span>
 							</div>
 						</div>
 					</nav>
+					<br>
 					<div id="coTable">
 						<div class="table-responsive">
 							<table class="table table-hover">
 								<thead>
 									<tr>
-										<th>업체번호</th>
-										<th>업체명</th>
-										<th>업무명</th>
-										<th>담당자</th>
-										<th>연락처</th>
-										<th>내용</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">업체번호</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">업체명</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">업무명</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">담당자</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">연락처</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">내용</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -284,13 +290,27 @@
 			// 등록 전 체크
 			function validationCheck() {
 				
+				if($('input[name="coName"]').val() == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '협력업체명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+					coName.focus();
+					return false; 
+				} 
+				
+				/* 
 				let coTel = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$/;
 				let thisVal = $(this).val();
 				
 				if(coTel.length == 0){
 					Swal.fire({
-						title:  '프로젝트명 입력 필요!',        
-						text:  '프로젝트명은 필수로 선택해야합니다.',  
+						title:   '입력확인',        
+						text:  '협력업체연락처는 필수로 선택해야합니다.',  
 						icon:  'error' 
 					})
 					.then(function(){
@@ -318,51 +338,8 @@
 					});
 					pname.focus();
 					return false; 
-				} 
+				}  */
 				
-				/* let tname = document.getElementById('taskName');
-				if(tname.value == '') {
-					Swal.fire({
-						title:  '입력확인',        
-						text:  '업무명은 필수로 입력해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					tname.focus();
-					return false; 
-				}
-				
-				let startdt = document.getElementById('taskStartDt');
-				if(startdt.value == '') {
-					Swal.fire({
-						title:  '입력확인',        
-						text:  '업무시작일은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				}
-				
-				let duedt = document.getElementById('taskStartDt');
-				if(duedt.value == '') {
-					Swal.fire({
-						title:  '입력확인',        
-						text:  '업무마감일은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				} */
-				
-
 				return true;
 			};
 			

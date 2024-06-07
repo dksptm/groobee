@@ -38,7 +38,7 @@
 							<tr>
 								<th style="font-size:15px">부서명</th>
 								<td><select class="form-select" style="width: 200px"
-									th:field="*{deptId}">
+									th:field="*{deptId}" id="deptId">
 										<option value="">부서명</option>
 										<option th:each=" dept : ${dept}" th:value="${dept.deptId}"
 											th:text="${dept.deptName}"></option>
@@ -111,7 +111,7 @@
 									<td>[[ ${emp.empName} ]]</td>
 									<td>[[ ${emp.empId} ]]</td>
 									<td><input class="form-radio-input" type="checkbox"
-										name="empCheck"></td>
+										name="empCheck" id="empCheck"></td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -260,16 +260,15 @@
 			// 등록 전 체크
 			function validationCheck() {
 				
-				if($('input[name="standardNo"]').val() == 'no-data') {
+				if($('select[name="standardNo"]').val() == '') {
 					Swal.fire({
 						title:  '프로젝트명 입력 필요!',        
 						text:  '프로젝트명은 필수로 선택해야합니다.',  
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						standardNo.focus();               
 					});
-					pname.focus();
 					return false; 
 				} 
 				
@@ -281,11 +280,35 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						tname.focus();              
 					});
-					tname.focus();
 					return false; 
 				}
+				
+				if($('select[name="deptId"]').val() == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '부서명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						deptId.focus();     
+					});
+					return false; 
+				}
+				
+				/* let demp = document.getElementById('deptEmpList');
+				if(demp.value == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '참여인원은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						demp.focus();           
+					});
+					return false;
+				} */
 				
 				let startdt = document.getElementById('taskStartDt');
 				if(startdt.value == '') {
@@ -295,13 +318,12 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						startdt.focus();              
 					});
-					name.focus();
 					return false;
 				}
 				
-				let duedt = document.getElementById('taskStartDt');
+				let duedt = document.getElementById('taskDueDt');
 				if(duedt.value == '') {
 					Swal.fire({
 						title:  '입력확인',        
@@ -309,38 +331,11 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						duedt.focus();                
 					});
-					name.focus();
 					return false;
 				}
 				
-/* 				let dname = document.getElementById('dname');
-				if(dname.value == '') {
-					Swal.fire({
-						title:  '부서명 선택 필요!,        
-						text:  '부서명은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				}
-				let demp = document.getElementById('demp');
-				if(name.value == '') {
-					Swal.fire({
-						title:  '부서인원 선택 필요!',        
-						text:  '부서인원은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				} */
 				return true;
 			};
 			
