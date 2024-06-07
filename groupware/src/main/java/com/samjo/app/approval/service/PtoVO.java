@@ -11,9 +11,9 @@ public class PtoVO {
 	
 	private Integer docNo;
 	private String ptoType;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date ptoStartDt;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date ptoEndDt;
 	private String reason;
 

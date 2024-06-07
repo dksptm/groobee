@@ -20,7 +20,7 @@
 	<div class="bg-light p-3 col-8">
 		<div class="card d-flex justify-content-center table-responsive m-2 p-4">
 			<form th:action="@{empInsert}" id="empInsertForm" method="post" th:object="${emp}">
-				<table class="table table-bordered cust-table">
+				<table class="table table-bordered border-3 cust-table">
 					<tr>
 						<th colspan="4" class="py-3 table-primary">
 							<h4 class="p-0 m-0">사원정보 입력</h4>
@@ -98,6 +98,7 @@
 				</table>
 				<div class="text-end">
 					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">사원등록</button>
+					<button type="reset" th:onclick="|location.href='@{empList}'|" class="btn btn-secondary mt-3">등록취소</button>
 				</div>
 			</form>
 		</div>

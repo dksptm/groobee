@@ -290,6 +290,7 @@ const ptoSubmit = () => {
 	$('div#pto > input[name="pto.ptoEndDt"]').remove();
 	
 	let ptoStartDt = $('#sdt').val() + ' ' + $('#stime').val();
+	console.log(ptoStartDt)
 	$('div#pto').append($('<input type="hidden" name="pto.ptoStartDt" />').val(ptoStartDt));
 	let ptoEndDt = $('#edt').val() + ' ' + $('#etime').val()
 	$('div#pto').append($('<input type="hidden" name="pto.ptoEndDt" />').val(ptoEndDt));
