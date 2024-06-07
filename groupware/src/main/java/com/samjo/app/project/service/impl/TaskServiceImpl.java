@@ -122,39 +122,37 @@ public class TaskServiceImpl implements TaskService{
 		return taskMapper.insertCoop(projectVO);
 	}
 	@Override // 협력업체 단건
-	public ProjectVO coopInfo(ProjectVO projectVO) {
-		return taskMapper.selectCoop(projectVO);
+	public ProjectVO coopInfo(int coopCoNo) {
+		return taskMapper.selectCoop(coopCoNo);
 	}
 
-	
-
+	@Override // 협력업체 수정
+	public Map<String, Object> coopUpdate(ProjectVO projectVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+		int result = taskMapper.updateCoop(projectVO);
 		
+		if (result == 1) {
+			isSuccessed = true;
+		}
+		
+		map.put("result", isSuccessed);
+		map.put("target", projectVO);
+		
+		return map;
 	}
+
+		@Override // 협력업체 삭제
+		public int coopDelete(ProjectVO projectVO) {
+			return taskMapper.deleteCoop(projectVO);
+		}
+	}
+
+
+
+
 /*
-		 * @Override //프로젝트(하위)업무 수정 public Map<String, Object> taskUpdate(ProjectVO
-		 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =
-		 * false; int result = taskMapper.updateTask(projectVO); if (result == 1) {
-		 * isSuccessed = true; } map.put("result", isSuccessed); map.put("target",
-		 * projectVO); return map; }
-		 * 
-		 * @Override // 프로젝트(하위) 업무 삭제 public Map<String, Object> taskDelete(ProjectVO
-		 * projectVO) { Map<String, Object> map = new HashMap<>(); int result =
-		 * taskMapper.deleteTask(projectVO.getTaskNo()); //System.out.println("result:"+
-		 * result); if (result == 1) { map.put("taskNo", projectVO.getTaskNo()); }
-		 * return map; }
-		 */
-	/*
-	 * @Override // 협력업체 수정 public Map<String, Object> coopUpdate(ProjectVO
-	 * projectVO) { Map<String, Object> map = new HashMap<>(); boolean isSuccessed =
-	 * false; int result = taskMapper.updateCoop(projectVO); if (result == 1) {
-	 * isSuccessed = true; } map.put("result", isSuccessed); map.put("target",
-	 * projectVO); return map; }
-	 */
-	//@Override // 협력업체 삭제
-	/*public int coopDelete(ProjectVO projectVO) {
-		return projectMapper.deleteCoop(projectVO);
-	}*/
-/*	public Map<String, Object> coopDelete(ProjectVO projectVO) {
+	public Map<String, Object> coopDelete(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
 		int result = taskMapper.deleteCoop(projectVO.getCoopCoNo());
 		//System.out.println("result:"+ result);
