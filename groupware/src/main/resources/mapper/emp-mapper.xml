@@ -38,6 +38,4 @@
 		    FROM  cust
 		    where cust_no = #{custNo}
 	</insert>
-
-
 </mapper>

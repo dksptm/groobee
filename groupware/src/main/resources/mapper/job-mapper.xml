@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.samjo.app.emp.mapper.JobMapper">
+
+
+	<!-- 고객사가 관리하는 직급 전체조회 -->
+	<select id="getJobList" parameterType="jobVO" resultType="jobVO">
+	SELECT job_no,
+       	   get_codename(perm_id) AS permId,
+           job_title,
+           cust_no
+    FROM   jobs
+    WHERE  cust_no = #{custNo}
+	</select>
+	
+</mapper>

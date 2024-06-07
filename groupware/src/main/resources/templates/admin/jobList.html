@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+    <div class="container-xxl flex-grow-1">
+        <div class="flex-xl-nowrap row">
+            <div class="row">
+                <div class="row mt-3 pt-3">
+                    <h2 class="ms-3">직급 목록</h2>
+                </div>
+                <hr>
+                
+                <div class="mt-3 pt-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center bg-white">
+                            <thead>
+                                <tr class="table-dark">
+                                    <th class="text-white">직급번호</th>
+                                    <th class="text-white">직급명</th>
+                                    <th class="text-white">권한</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="jobVO : ${getJobList}">
+                                    <tr class="toJobInfo" data-job-no="[[${jobVO.jobNo}]]" 
+                                    data-job-title="[[${jobVO.jobTitle}]]" 
+                                    data-perm-id="[[${jobVO.permId}]]"
+                                    data-bs-toggle="modal" data-bs-target="#JobInfoModal">
+                                        <td th:text ="${jobVO.jobNo}"></td>
+                                        <td th:text ="${jobVO.jobTitle}"></td>
+                                        <td th:text ="${jobVO.permId}"></td>
+                                    </tr>
+                                </th:block>
+                            </tbody>
+                        </table>
+                        <div>
+                            <button type="button" class="btn btn-primary w-100"
+                                    data-bs-toggle="modal" data-bs-target="#insertJobModal">등록</button>
+                        </div>
+                    </div>          
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달들 -->
+    <!-- 직급 등록 모달화면 -->
+    <div class="modal fade" id="insertJobModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalScrollableTitle">직급 등록</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>직급번호</th>
+                                <th>직급명</th>
+                                <th>권한</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <th:block>
+                                <tr>
+                                    <td>
+                                        <input id="jobNo" placeholder="직급번호 입력(3자리 숫자)" required>
+                                    </td>
+                                    <td>
+                                        <input id="jobTitle" placeholder="직급명 입력" required>
+                                    </td>
+                                    <td>
+                                        <select id="permId" required>
+                                            <option value="1C4c">사원</option>
+                                            <option value="1C3c">부서장</option>
+                                            <option value="1C2c">관리자</option>
+                                        </select>                                        
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="insertBtn" data-bs-dismiss="modal">등록</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 직급 상세/수정/삭제 모달화면, 개별 행을 클릭할 시 출력됨 -->
+    <!-- 클릭한 행의 정보를 들고 와야 함.. 스승님의 코드 참고 중 -->
+    <div class="modal fade" id="JobInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">직급 수정/삭제</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>직급번호</th>
+                                <th>직급명</th>
+                                <th>권한</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input id="updateJobNo" placeholder="직급번호 입력(3자리 숫자)"></td>
+                                <td><input id="updateJobTitle" placeholder="직급명 입력"></td>
+                                <td>
+                                    <select id="updatePermId">
+                                        <option value="1C4c">사원</option>
+                                        <option value="1C3c">부서장</option>
+                                        <option value="1C2c">관리자</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="updateBtn" data-bs-dismiss="modal">등록</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn" data-bs-dismiss="modal">삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // 마우스 갖다대면 색깔 바뀌게. 클릭유도?..
+    $('.toJobInfo').hover(
+        function() {
+            $(this).css('background-color', '#f5f5f5');
+        },
+        function() {
+            $(this).css('background-color', '');
+        }
+    )
+    });
+
+    // 등록 버튼 클릭 이벤트
+    $('#insertBtn').click(function(e) {
+        let jobNo = $('#jobNo').val();
+        let jobTitle = $('#jobTitle').val();
+        let permId = $('#permId').val();
+
+        if (!jobNo || !jobTitle || !permId) {
+        	Swal.fire({
+				icon : 'error',	
+				title : '잠깐!',
+				text : '모든 값을 입력하세요.',
+			})
+			return;
+        }
+		
+        //텍스트로 해버리자
+        $.ajax({
+            url: '/cust/admin/jobInsert',
+            type: 'POST',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+            contentType: 'application/json',
+			dataType : 'text',
+            data: JSON.stringify({
+                jobNo: jobNo,
+                jobTitle: jobTitle,
+                permId: permId
+            }),
+			success : function(result) {
+				Swal.fire ({
+					icon : 'success',
+					title : '성공!',
+					text : '등록되었습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			},
+			error : function(xhr, status, error) {
+				console.error(error);
+				Swal.fire({
+					icon : 'error',
+					title : '실패',
+					text : '등록 중 오류가 발생했습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			}
+        });
+
+    // 수정 버튼 클릭 이벤트. 지금생각해보니 jobNo는 수정 불가하게 해야됨!
+    $('#updateBtn').click(function(e) {
+        let jobNo = $('#updateJobNo').val();
+        let jobTitle = $('#updateJobTitle').val();
+        let permId = $('#updatePermId').val();
+
+        if (!jobNo || !jobTitle || !permId) {
+            alert('모든 값을 입력하세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/cust/admin/jobUpdate',
+            type: 'POST',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+            contentType: 'application/json',
+			dataType : 'text',
+            data: JSON.stringify({
+                jobNo: jobNo,
+                jobTitle: jobTitle,
+                permId: permId
+            }),
+			success : function(result) {
+				Swal.fire ({
+					icon : 'success',
+					title : '성공!',
+					text : '수정되었습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			},
+			error : function(xhr, status, error) {
+				console.error(error);
+				Swal.fire({
+					icon : 'error',
+					title : '실패',
+					text : '수정 중 오류가 발생했습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			}
+
+    // 삭제 버튼 클릭 이벤트
+    $('#deleteBtn').click(function(e) {
+        var jobNo = $('#updateJobNo').val();
+
+        if (!confirm('정말 삭제하시겠습니까?')) {
+            return;
+        }
+
+        $.ajax({
+            url: '/cust/admin/jobDelete',
+            type: 'POST',
+			beforeSend : function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+            contentType: 'application/json',
+			dataType : 'text',
+            data: JSON.stringify({
+                jobNo: jobNo,
+                jobTitle: jobTitle,
+                permId: permId
+            }),
+			success : function(result) {
+				Swal.fire ({
+					icon : 'success',
+					title : '성공!',
+					text : '삭제되었습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			},
+			error : function(xhr, status, error) {
+				console.error(error);
+				Swal.fire({
+					icon : 'error',
+					title : '실패',
+					text : '삭제 중 오류가 발생했습니다.',
+				})
+				.then((result) => {
+					if(result.value){
+						location.href = "/cust/admin/jobList";
+					}
+				})
+			}
+});
+</script>
+
+</html>
