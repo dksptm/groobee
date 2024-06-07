@@ -68,6 +68,7 @@ public class PayController {
 		//model.addAttribute("portVO", importVO);
 		return "solution/pay/payTest";
 	}
+	
 	//결제 스케줄러 시작
 	@GetMapping("sol/startScheduler")
 	@ResponseBody
@@ -84,13 +85,8 @@ public class PayController {
 		int ctNo = Integer.parseInt((String) map.get("ct_no"));
 		String customer_uid = (String) map.get("customer_uid");
 		int price = Integer.parseInt((String) map.get("price"));
-		//long merchant_uid = Long.parseLong((String) map.get("merchant_uid"));
-		payservice.firstPay(customer_uid, price, ctNo);
-		CtVO ctVO = new CtVO();
-		ctVO.setCtNo(ctNo);
-		ctVO.setPayCheck(1);
-		ctVO.setCustName("SYSDATE");
-		ctservice.ctPayCheck(ctVO);
+		long merchant_uid = Long.parseLong((String) map.get("merchant_uid"));
+		payservice.firstPay(customer_uid, ctNo, merchant_uid);
 	}
 	
 	//정기결제 중지
@@ -99,11 +95,8 @@ public class PayController {
 	public void payStop(@RequestParam Map<String, Object> map)
 			throws JsonMappingException, JsonProcessingException {
 		int ctNo = Integer.parseInt((String) map.get("ctNo"));
-		CtVO ctVO = new CtVO();
-		ctVO.setCtNo(ctNo);
-		ctVO.setPayCheck(0);
-		ctVO.setCustName("NULL");
-		ctservice.ctPayCheck(ctVO);
+		String customer_uid = (String) map.get("customer_uid");
+		payservice.cancelPay(ctNo, customer_uid);
 	}
 	
 }

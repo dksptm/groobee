@@ -94,14 +94,17 @@ public class CtServiceImpl implements CtService{
 			modVO.setUseEndDt(ctVO.getCtEndDt());
 			ctMapper.useModInsert(modVO);
 		}
+		
+		/*
 		PayVO payVO = new PayVO();
 		payVO.setCustNo(ctVO.getCustNo());
 		payVO.setCtNo(ctVO.getCtNo());
 		payVO.setServAmt(ctVO.getCtAmt());
+		*/
 		//기존 결제 수정
-		payMapper.payReset(payVO);
+		//payMapper.payReset(payVO);
 		//계약 결제 등록
-		payMapper.payInsert(payVO);
+		//payMapper.payInsert(payVO);
 		return null;
 	}
 

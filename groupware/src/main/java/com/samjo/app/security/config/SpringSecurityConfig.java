@@ -33,8 +33,8 @@ public class SpringSecurityConfig {
 //								 인가경로			인가대상
 				.antMatchers("/", "/introduce").permitAll()
 				.antMatchers("/sol/**").hasAuthority("1C1c") //솔루션 계정 접근가능
+				.antMatchers("/cust/admin/**").hasAnyAuthority("1C2c","1C3c") //고객사 계정(관리자,부서장) 접근가능
 				.antMatchers("/cust/**").hasAnyAuthority("1C2c","1C3c","1C4c") //고객사 계정(전부) 접근가능
-//				.antMatchers("admin/**").hasAnyAuthority("1C2c","1C3c") //고객사 계정(관리자,부서장) 접근가능
 				.anyRequest().authenticated()
 //						모든경로대상
 				/*

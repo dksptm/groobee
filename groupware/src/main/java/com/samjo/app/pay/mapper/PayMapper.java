@@ -29,4 +29,6 @@ public interface PayMapper {
 	public List<PayVO> selectConPay();
 	//결제대기 내역조회
 	public List<PayVO> selectWaitPay();
+	//정기결제 취소
+	public int cancelPay(int ctNo);
 }

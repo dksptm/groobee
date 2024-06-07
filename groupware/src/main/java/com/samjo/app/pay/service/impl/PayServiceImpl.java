@@ -23,6 +23,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.samjo.app.common.service.SearchVO;
 import com.samjo.app.ct.mapper.CtMapper;
+import com.samjo.app.ct.service.CtService;
+import com.samjo.app.ct.service.CtVO;
 import com.samjo.app.pay.mapper.PayMapper;
 import com.samjo.app.pay.service.GetTokenVO;
 import com.samjo.app.pay.service.ImportResVO;
@@ -32,6 +34,8 @@ import com.samjo.app.pay.service.PayVO;
 @Service
 public class PayServiceImpl implements PayService{
 
+	@Autowired
+	CtService ctservice;
 	@Autowired
 	PayMapper payMapper;
 	@Autowired
@@ -73,12 +77,25 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
+	
+	
 	//최초정기결제 예약 및 DB생성
 	@Override
-	public String firstPay(String customer_uid, int price, int ctNo) {
+	public String firstPay(String customer_uid, int ctNo, long merchant_uid) {
+		CtVO ctVO = new CtVO();
+		ctVO.setCtNo(ctNo);
+		ctVO.setPayCheck(1);
+		ctVO.setCustName("SYSDATE");
+		ctservice.ctPayCheck(ctVO);
+
 		PayVO fPayVO = new PayVO();
 		fPayVO.setCtNo(ctNo);
-		payMapper.payUpdate(fPayVO);
+		fPayVO.setCustNo(customer_uid);
+		fPayVO.setMerchantUid(merchant_uid);
+		payMapper.fstPayInsert(fPayVO);
+		
+		CtVO pCtVO = ctMapper.ctInfo(ctNo);
+		int price = pCtVO.getCtAmt();
 		
 		String token = getToken();
 		long timestamp = 0;
@@ -138,7 +155,10 @@ public class PayServiceImpl implements PayService{
 	
 	//정기결제 예약 및 DB생성(현재 1시간단위)
 	@Override
-	public String schedulePay(String customer_uid, int price, int ctNo) {
+	public String schedulePay(String customer_uid, int ctNo) {
+		CtVO pCtVO = ctMapper.ctInfo(ctNo);
+		int price = pCtVO.getCtAmt();
+		
 		String token = getToken();
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
@@ -231,7 +251,48 @@ public class PayServiceImpl implements PayService{
 		return result;
 	}
 	
+	//결제 취소
+	@Override
+	public String cancelPay(int ctNo, String customer_uid) {
+		CtVO ctVO = new CtVO();
+		ctVO.setCtNo(ctNo);
+		ctVO.setPayCheck(0);
+		ctVO.setCustName("NULL");
+		ctservice.ctPayCheck(ctVO);
+		
+		String token = getToken();
+		
+		Gson str = new Gson(); 
+		token = token.substring(token.indexOf("response") +10); 
+		token = token.substring(0, token.length() - 1);
+		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+		String access_token = vo.getAccess_token();
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(access_token);
+
+		JsonObject reqJson = new JsonObject();
+		 
+		reqJson.addProperty("customer_uid", customer_uid); 
+		String json = str.toJson(reqJson); 
+		HttpEntity<String> entity = new HttpEntity<>(json, headers);
+		
+		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/unschedule", entity, String.class);
+		payMapper.cancelPay(ctNo);
+		return "";
+	}
 	
+	@Override
+	public List<PayVO> custPayList(SearchVO searchVO) {
+		return payMapper.selectCustPayAll(searchVO);
+	}
+	
+	@Override
+	public int custCount(String custNo) {
+		return payMapper.custPayCount(custNo);
+	}
 	//이하 삭제예정 ========================================================================================================================
 	//dateStamp처리
 	@Override
@@ -291,14 +352,5 @@ public class PayServiceImpl implements PayService{
 		return list; 
 	}
 
-	@Override
-	public List<PayVO> custPayList(SearchVO searchVO) {
-		return payMapper.selectCustPayAll(searchVO);
-	}
-
-	@Override
-	public int custCount(String custNo) {
-		return payMapper.custPayCount(custNo);
-	}
 
 }
