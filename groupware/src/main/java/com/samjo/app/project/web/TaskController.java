@@ -46,7 +46,7 @@ public class TaskController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
-			searchVO.setTaskSort("task_no");
+			searchVO.setTaskSort("task_no DESC");
 		}
 		// System.out.println(searchVO);
 		List<ProjectVO> list = taskService.taskAllList(searchVO);
@@ -77,13 +77,16 @@ public class TaskController {
 	// 업무 등록 - 페이지
 	@GetMapping("cust/taskInsert")
 	public String taskInsertForm(SearchVO searchVO, Model model) {
-		List<DeptVO> list = deptService.deptAllList();
-		model.addAttribute("dept", list);
-
+		/*
+		 * EmpVO empVO = SecuUtil.getLoginEmp(); List<DeptVO> list =
+		 * deptService.selectCustDeptAll(empVO); model.addAttribute("dept", list);
+		 */
 		List<ProjectVO> pjlist = projectService.prjtList(searchVO);
 		model.addAttribute("pjlist", pjlist);
 
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<DeptVO> list = deptService.myCustDepts(empVO);
+		model.addAttribute("dept", list);
 		List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
 		model.addAttribute("emp", elist);
 
@@ -164,7 +167,7 @@ public class TaskController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getCoSort() == null || searchVO.getCoSort().trim().isEmpty()) {
-			searchVO.setCoSort("coop_co_no");
+			searchVO.setCoSort("coop_co_no DESC");
 		}
 
 		List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
@@ -265,11 +268,13 @@ public class TaskController {
 	}
 	
 
-	  // 협력업체 삭제
-
-	  @GetMapping("cust/coopDelete") 
-	  public String coopDelete(ProjectVO projectVO)
-	  { taskService.coopDelete(projectVO); return "redirect:cust/coopAllList"; }
+	// 협력업체 삭제
+	@ResponseBody
+	@GetMapping("cust/coopDelete") 
+	public int coopDelete(ProjectVO projectVO){ 
+		
+		return taskService.coopDelete(projectVO); 
+	}
 
 	
 	//효주 -----

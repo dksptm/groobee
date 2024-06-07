@@ -13,7 +13,7 @@
 						<table class="table table-hover table-bordered">
 							<tr>
 								<th>업체번호</th>
-								<td id="coopCoNo">[[ ${coop.coopCoNo}]]</td>
+								<td id="coopCoNo" >[[ ${coop.coopCoNo}]]</td>
 								<th>업체명</th>
 								<td>[[ ${coop.coName}]]</td>
 								<th>업무명</th>
@@ -37,7 +37,7 @@
 						</table>
 						<br>
 						<div style="text-align: end">
-							<button type="button" class="btn btn-light  mt-2" onclick="goToList()">프로젝트목록</button>
+							<button type="button" class="btn btn-light  mt-2" onclick="goToList()">협력업체목록</button>
 							<button type="button" 
 							  th:onclick="|location.href='@{/cust/coopUpdate(coopCoNo=${coop.coopCoNo})}'|" class="btn btn-success  mt-2">수정</button>
 								<button type="button" class="btn btn-danger mt-2" id="delBtn">삭제</button>
@@ -57,36 +57,47 @@
 				window.location.href = '/cust/coopAllList';
 			};
 			
-			// 삭제 버튼
-			$('#delBtn').on('click', function() {
+			
+			$(function() {
 				
-			  $.ajax({
-	                url: '/cust/coopDelete',
-	                type: 'GET',
-	                dataType : 'json',
-	                beforeSend : function(xhr) {
-						xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
-					},
-					success : function(data) {
-						Swal.fire({
-							title: '삭제완료!',        
-							text:  '협력업체 삭제가 완료되었습니다.',  
-							icon:  'success'
-						})
-						.then(function(){
-							location.href='/cust/coopDelete?coopCoNo=' + coopCoNo;                  
-						})
-					},
-					error : function(err) {
-						Swal.fire({
-							title: '삭제실패',        
-							text:  '협력업체 삭제 실패하였습니다.',  
-							icon:  'error'
-						})
-						.then(function(){
-							location.href='/cust/coopAllList;                   
-						})
-	           	 });
+				// 삭제 버튼
+				$('#delBtn').on('click', function() {
+					let coopCoNo = $('#coopCoNo').val();
+	
+					//console.log(coopCoNo); // 값을 제대로 가져왔는지 확인
+
+					$.ajax({
+						type : 'GET',
+						url : '/cust/coopDelete?coopCoNo=' + coopCoNo,
+						dataType : 'json',
+						success : function(result) {
+							
+							if(result == 1) {
+								Swal.fire({
+									title: '완료!',        
+									text:  '협력업체 삭제가 완료되었습니다.',  
+									icon:  'success' 
+								})
+								.then(function(){
+									window.location.href = '/cust/coopAllList';                
+								})
+							} else {
+								Swal.fire({
+									title: '실패',        
+									text:  '협력업체 삭제를 실패하였습니다.',  
+									icon:  'error' 
+								})
+								.then(function(){
+									window.location.href = '/cust/coopAllList';                 
+								})
+							}
+						},
+						error : function(error) {
+							console.log(error)
+							alert('ERR!!')
+						}
+					});
+				});
 			});
 			
 		</script>

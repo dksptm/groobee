@@ -52,7 +52,7 @@
 					</when>
 				</choose>
 				</where>
-				ORDER BY ${taskSort} DESC ,task_no DESC) t 
+				ORDER BY ${taskSort}  ,task_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10
   	</select>
@@ -267,7 +267,7 @@
 						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 					</if>
 				</where>
-				ORDER BY  ${coSort} DESC , c.coop_co_no DESC ) t 
+				ORDER BY  ${coSort} , c.coop_co_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10 
 	

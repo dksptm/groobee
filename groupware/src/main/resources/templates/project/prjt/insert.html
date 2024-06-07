@@ -4,11 +4,17 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
+<style>
+.form-item input:focus{
+    border-color:#0982f0;
+    outline: none;
+}
+</style>	
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
 				<h3 class="card-header">프로젝트 등록</h3>
 
-				<div class="card-body">
+				<div class="card-body form-item">
 					<form name="insertForm" th:action="@{/cust/prjtInsert}"
 						method="post" th:object="${projects}" id="prjtForm">
 						<br>
@@ -24,35 +30,33 @@
 						<br>
 						<br>
 						<br>
-						<table id="form" class="table">
+						<input type="hidden" th:field="*{prjtId}" style="width: 100px  height: 100px" readonly>
+						<table id="form" class="table table-bordered border-2 col-12">
 							<tr>
-								<td><input type="hidden" th:field="*{prjtId}" style="width: 100px  height: 100px" readonly></td>
-							</tr>
-							<tr>
-								<th>프로젝트명</th>
+								<th style="font-size:15px">프로젝트명</th>
 								<td><input type="text" th:field="*{prjtName}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th>시작일</th>
+								<th style="font-size:15px">시작일</th>
 								<td><input type="date" th:field="*{prjtStartDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th>마감일</th>
+								<th style="font-size:15px">마감일</th>
 								<td><input type="date" th:field="*{prjtDueDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th>책임자</th>
+								<th style="font-size:15px">책임자</th>
 								<td><input type="hidden" th:field="*{respMngrId}" style="width: 230px">
 									<input type="text" id="respMngrName" placeholder="버튼을 눌러 선택하세요">&ensp;
 									<button type="button" class="btn btn-primary" id="respMngrId"
 										data-bs-toggle="modal" data-bs-target="#respModal">선택</button></td>
 							</tr>
 							<tr>
-								<th>개요</th>
+								<th style="font-size:15px">개요</th>
 								<td><input type="text" th:field="*{smry}"style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th>목적</th>
+								<th style="font-size:15px">목적</th>
 								<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
 							</tr>
 						</table>

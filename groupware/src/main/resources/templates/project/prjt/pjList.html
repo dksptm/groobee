@@ -6,11 +6,11 @@
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
-				<h5 class="card-header">프로젝트 조회</h5>
+				<h2 class="card-header">프로젝트 조회</h2>
 				<div class="card-body ">
-					
+
 					<!-- 검색 -->
-					<p class="navbar-brand">검색조건</p>
+					<p class="navbar-brand"></p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
 							<button class="navbar-toggler" type="button"
@@ -27,7 +27,8 @@
 												<option value="prjt_name">프로젝트명</option>
 												<option value="prjt_id">프로젝트번호</option>
 										</select></td>
-										<td colspan='3'><input class="form-control searchKey" type="text"></td>
+										<td colspan='3'><input class="form-control searchKey"
+											type="text"></td>
 										<td class="text-white">_</td>
 										<td class="text-white">_</td>
 										<td class="form-control">진행상태</td>
@@ -36,9 +37,12 @@
 												<option value="5E1e">프로젝트진행중</option>
 												<option value="5E2e">프로젝트완료</option>
 										</select></td>
+										<td><div class="text-end">
+												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+											</div></td>
 									</tr>
 									<tr>
-									<td class="form-control" >기간</td>
+										<td class="form-control">기간</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
@@ -53,142 +57,154 @@
 												<option value="prjt_due_dt">프로젝트마감일순</option>
 												<option value="prjt_due_dt DESC">프로젝트마감일역순</option>
 										</select></td>
+										<td>
+											<div class="text-end">
+												<button class="btn btn-secondary ms-2" type="reset"
+													th:onclick="|location.href='@{/cust/prjtAllList}'|">초기화</button>
+											</div>
+										</td>
+
 									</tr>
 								</table>
-								<span class="position-absolute top-50 end-0 translate-middle-y">
-									<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
-								</span>
+
 							</div>
 						</div>
 					</nav>
-					<div id="prjtTable">
-						<div class="table-responsive">
-							<table class="table table-hover">
-								<thead>
-									<tr>
-										<th>프로젝트ID</th>
-										<th>프로젝트명</th>
-										<th>진행상황</th>
-										<th>시작일</th>
-										<th>마감일</th>
-										<th>개요</th>
-									</tr>
-								</thead>
-								<tbody>
-									<th:block th:each="pjlist : ${pjlist}">
-									<tr th:onclick="|location.href='@{/cust/pj/info?prjtId={pid}(pid=${pjlist.prjtId})}'|">
-											<td>[[ ${pjlist.prjtId} ]]</td>
-											<td>[[ ${pjlist.prjtName} ]]</td>
-											<td
-												th:class="${pjlist.prjtStat == '5E2e' ? 'table-secondary' : ''}">[[ ${pjlist.prjtStat} ]]</td>
-											<td>[[ ${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</td>
-											<td>[[ ${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")} ]]</td>
-											<td>[[ ${pjlist.purpose} ]]</td>
-										</tr>
-									</th:block>
-								</tbody>
-							</table>
-						</div>
-						
-						<!-- 페이징 -->
-						<div class="paging mt-2">
-							<th:block th:if="${TaskDTO.totalCnt} != 0">
-								<nav aria-label="Page navigation">
-									<ul class="pagination justify-content-center">
+					<!-- 검색 끝 -->
 
-										<th:block th:if="${TaskDTO.prev}">
-											<li class="page-item prev"><a href="#"
-												th:id="${TaskDTO.startPage - 1 }" class="page-link pagebtn"><i
-													class="bx bx-chevron-left"></i></a></li>
-										</th:block>
-										<th:block
-											th:each="num : ${#numbers.sequence(1, TaskDTO.endPage)}">
-											<li class="page-item "
-												th:attrappend="class=${num ==  TaskDTO.page ? 'active' : ' '}">
-												<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
-											</li>
-										</th:block>
-										<th:block th:if="${TaskDTO.next}">
-											<li class="page-item next"><a href="#"
-												th:id="${TaskDTO.endPage + 1 }" class="page-link pagebtn"><i
-													class="bx bx-chevron-right"></i></a></li>
-										</th:block>
-									</ul>
-								</nav>
-							</th:block>
-							<th:block th:unless="${TaskDTO.totalCnt} != 0">
-								<p class="text-center mt-4">현재 등록된 업무가 없습니다.</p>
-							</th:block>
+
+					<div class="bg-light p-3">
+						<div id="prjtListArea">
+							<div class="row">
+								<th:block th:each="pjlist : ${pjlist}">
+									<div class="w-20 p-3">
+										<div class="card text-center">
+											<div class="card-header p-2">[[ ${pjlist.prjtId} ]]</div>
+											<div class="card-body pt-2 pb-1"
+												style="background-color: #FFEFEF;">
+												<h5 class="card-title">[[ ${pjlist.prjtName} ]]</h5>
+											</div>
+											<div>
+												<ul class="list-group list-group-flush text-start">
+													<li class="list-group-item">시작일: [[
+														${#dates.format(pjlist.prjtStartDt, "yyyy-MM-dd")}]]</li>
+													<li class="list-group-item">마감일 :[[
+														${#dates.format(pjlist.prjtDueDt, "yyyy-MM-dd")} ]]</li>
+												</ul>
+											</div>
+											<div class="card-body text-end p-1">
+												<a
+													th:href="@{/cust/pj/info?prjtId={pid}(pid=${pjlist.prjtId})}"
+													class="btn rounded-pill me-2 btn-outline-info">상세보기</a>
+											</div>
+											<div class="card-footer p-2"
+												th:classappend="${pjlist.prjtStat} == '5E2e' ? 'text-warning' : 'text-secondary'">
+												[[ ${pjlist.prjtStat} ]]</div>
+										</div>
+									</div>
+								</th:block>
+							</div>
+
+
+
+							<!-- 페이징 -->
+							<div class="paging mt-2">
+								<th:block th:if="${TaskDTO.totalCnt} != 0">
+									<nav aria-label="Page navigation">
+										<ul class="pagination justify-content-center">
+
+											<th:block th:if="${TaskDTO.prev}">
+												<li class="page-item prev"><a href="#"
+													th:id="${TaskDTO.startPage - 1 }" class="page-link pagebtn"><i
+														class="bx bx-chevron-left"></i></a></li>
+											</th:block>
+											<th:block
+												th:each="num : ${#numbers.sequence(1, TaskDTO.endPage)}">
+												<li class="page-item "
+													th:attrappend="class=${num ==  TaskDTO.page ? 'active' : ' '}">
+													<a href="#" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+												</li>
+											</th:block>
+											<th:block th:if="${TaskDTO.next}">
+												<li class="page-item next"><a href="#"
+													th:id="${TaskDTO.endPage + 1 }" class="page-link pagebtn"><i
+														class="bx bx-chevron-right"></i></a></li>
+											</th:block>
+										</ul>
+									</nav>
+								</th:block>
+								<th:block th:unless="${TaskDTO.totalCnt} != 0">
+									<p class="text-center mt-4">현재 등록된 업무가 없습니다.</p>
+								</th:block>
+							</div>
+							<!-- /페이징 -->
 						</div>
-						<!-- /페이징 -->
 					</div>
 				</div>
 			</div>
 		</div>
 
-		
 		<script>
-		//CSRF
-		let header = $("meta[name='_csrf_header']").attr('content');
-		let token = $("meta[name='_csrf']").attr('content');
+			//CSRF
+			let header = $("meta[name='_csrf_header']").attr('content');
+			let token = $("meta[name='_csrf']").attr('content');
 
-		//기간 검색 범위처리
-		$('.fromDt').on('change', function(e) {
-			$('.toDt').attr('min', this.value);
-		});
-		$('.toDt').on('change', function(e) {
-			$('.fromDt').attr('max', this.value);
-		});
-		
-		// 검색 조건 변수 
-		let keyword;
-		let searchCondition;
-		let prjtStat;
-		let prjtDt;
-		let prjtStart;
-		let prjtDue;
-		let prjtSort;
-		
-		//검색버튼 이벤트 처리
-		$(".searchbtn").on("click", function(e) {
-			updateParams();
-			let page = 1;
-			showTable(page);
-		});
+			//기간 검색 범위처리
+			$('.fromDt').on('change', function(e) {
+				$('.toDt').attr('min', this.value);
+			});
+			$('.toDt').on('change', function(e) {
+				$('.fromDt').attr('max', this.value);
+			});
 
-		//페이징 링크 처리
-		$(document).on("click", ".pagebtn", function(e) {
-			e.preventDefault();
-			let page = e.target.id;
-			showTable(page);
-		});
-		
-		// 검색 조건 갱신 함수
-		 function updateParams() {
-			//키워드 검색 처리
-	        keyword = $('.searchKey').val();
-	        searchCondition = $('.searchKeySelect').val();
-	        
-	    	// 기간 검색 처리
-	        prjtDt = $('.prjtDt').val();
-	        prjtStart = $('.fromDt').val();
-	        prjtDue = $('.toDt').val();
-	
-			// 프로젝트 상황 검색 처리
-			if ($('.prjtStat').val() != 'statAll') {
-				prjtStat = $('.prjtStat').val();
-	        } else {
-	        	prjtStat = null;
-	        }
-			
-			// 정렬 처리
-			prjtSort = $('.searchSelect').val();
-		 }
-		 
-		// 검색 AJAX 함수
-		    function showTable(page) {
-			$.ajax({
+			// 검색 조건 변수 
+			let keyword;
+			let searchCondition;
+			let prjtStat;
+			let prjtDt;
+			let prjtStart;
+			let prjtDue;
+			let prjtSort;
+
+			//검색버튼 이벤트 처리
+			$(".searchbtn").on("click", function(e) {
+				updateParams();
+				let page = 1;
+				showTable(page);
+			});
+
+			//페이징 링크 처리
+			$(document).on("click", ".pagebtn", function(e) {
+				e.preventDefault();
+				let page = e.target.id;
+				showTable(page);
+			});
+
+			// 검색 조건 갱신 함수
+			function updateParams() {
+				//키워드 검색 처리
+				keyword = $('.searchKey').val();
+				searchCondition = $('.searchKeySelect').val();
+
+				// 기간 검색 처리
+				prjtDt = $('.prjtDt').val();
+				prjtStart = $('.fromDt').val();
+				prjtDue = $('.toDt').val();
+
+				// 프로젝트 상황 검색 처리
+				if ($('.prjtStat').val() != 'statAll') {
+					prjtStat = $('.prjtStat').val();
+				} else {
+					prjtStat = null;
+				}
+
+				// 정렬 처리
+				prjtSort = $('.searchSelect').val();
+			}
+
+			// 검색 AJAX 함수
+			function showTable(page) {
+				$.ajax({
 					url : '/cust/viewPjList',
 					type : 'POST',
 					beforeSend : function(xhr) {
@@ -201,16 +217,15 @@
 						prjtDue : prjtDue,
 						prjtDt : prjtDt,
 						prjtStat : prjtStat,
-						keyword: keyword,
-		                searchCondition: searchCondition
+						keyword : keyword,
+						searchCondition : searchCondition
 					},
 					dataType : 'Text',
 					success : function(result) {
-							$('#prjtTable').replaceWith(result);
-				}
-			});
-		}		
-		
+						$('#prjtTable').replaceWith(result);
+					}
+				});
+			}
 		</script>
 	</th:block>
 </body>

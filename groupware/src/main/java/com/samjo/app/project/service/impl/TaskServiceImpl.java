@@ -83,9 +83,9 @@ public class TaskServiceImpl implements TaskService{
 		} else {
 			taskMapper.updateTaskEmpBefore(projectVO.getTaskNo());
 			// prjt update mapper
-			taskMapper.upPrjt(projectVO);
+			//taskMapper.upPrjt(projectVO);
 			// task update mapper
-			taskMapper.upTask(projectVO);
+			//taskMapper.upTask(projectVO);
 		}
 		
 		map.put("OUT", emps);

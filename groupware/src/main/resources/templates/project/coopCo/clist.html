@@ -10,7 +10,7 @@
 				<div class="card-body ">
 
 					<!-- 검색 -->
-					<p class="navbar-brand">검색조건</p>
+					<p class="navbar-brand"></p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
 							<button class="navbar-toggler" type="button"
@@ -60,7 +60,6 @@
 										<th>담당자</th>
 										<th>연락처</th>
 										<th>내용</th>
-										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -72,7 +71,6 @@
 											<td>[[ ${coop.pic}]]</td>
 											<td>[[ ${coop.coTel}]]</td>
 											<td>[[ ${coop.cntn}]]</td>
-											<!--  <td><input type="checkbox" name="deleteCheckbox" value="[[ ${coop.coopCoNo}]]"></td> -->
 										</tr>
 									</th:block>
 								</tbody>
@@ -281,6 +279,95 @@
 					}
 				});
 			});
+			
+			
+			// 등록 전 체크
+			function validationCheck() {
+				
+				let coTel = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$/;
+				let thisVal = $(this).val();
+				
+				if(coTel.length == 0){
+					Swal.fire({
+						title:  '프로젝트명 입력 필요!',        
+						text:  '프로젝트명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+                } else if(thisVal.length != 0 && coTel.test(thisVal) == false ){
+                	Swal.fire({
+						title:  '프로젝트명 입력 필요!',        
+						text:  "010-1234-5678 형식으로 입력해주세요."  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});"010-1234-5678 형식으로 입력해주세요.";
+                }
+
+				if($('input[name="standardNo"]').val() == 'no-data') {
+					Swal.fire({
+						title:  '프로젝트명 입력 필요!',        
+						text:  '프로젝트명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+					pname.focus();
+					return false; 
+				} 
+				
+				/* let tname = document.getElementById('taskName');
+				if(tname.value == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '업무명은 필수로 입력해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+					tname.focus();
+					return false; 
+				}
+				
+				let startdt = document.getElementById('taskStartDt');
+				if(startdt.value == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '업무시작일은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+					name.focus();
+					return false;
+				}
+				
+				let duedt = document.getElementById('taskStartDt');
+				if(duedt.value == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '업무마감일은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						location.reload(true);                  
+					});
+					name.focus();
+					return false;
+				} */
+				
+
+				return true;
+			};
+			
+
+			
 		</script>
 	</th:block>
 </body>
