@@ -32,14 +32,12 @@ public class ReqPaymentScheduler {
         scheduler.shutdown();
     }
  
-    //public void startScheduler(String customer_uid, int price, long packageId, int ctNo) {
 	public void startScheduler() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
         // 스케쥴러 시작
-        //scheduler.schedule(getRunnable(), getTrigger());
-   		//scheduler.schedule(getRunnable(customer_uid, price, packageId,ctNo), new CronTrigger("0 10 0 15 * ?"));
-        scheduler.schedule(getRunnable(), new CronTrigger("30 0/1 * * * ?"));
+        scheduler.schedule(getRunnable(), getTrigger()); //1분마다 실행 세팅
+        //scheduler.schedule(getRunnable(), new CronTrigger("0 0 12 * * ?")); //매일 정오 실행 세팅
     }
     
     public static java.sql.Date convertFromJAVADateToSQLDate(
@@ -51,24 +49,28 @@ public class ReqPaymentScheduler {
         return sqlDate;
     }
  
-    //private Runnable getRunnable(String customer_uid, int price, long packageId, int ctNo){
 	private Runnable getRunnable(){
         return () -> {
-        	System.out.println("스케줄러 실행중...");
         	//결제 예약 처리
-        	List<PayVO> payList = payMapper.selectConPay();
+        	/*
+        	List<PayVO> payList = payMapper.selectConPay(); //수정필요
         	if(payList != null){
         		for(PayVO payVO: payList) {
         			payservice.schedulePay(payVO.getCustNo(), payVO.getServAmt(), payVO.getCtNo());
         		}
-        	}
+        	} */
         	//결제대기중인 결제의 상태 조회하고 결제완료시 DB에 반영
         	List<PayVO> pList = payMapper.selectWaitPay();
         	if(pList != null) {
         		for(PayVO payVO: pList) {
-        			payservice.payCheck(payVO.getMerchantUid(), payVO.getCtNo());
-        		}
-        	}
+        			String result = payservice.payResultCheck(payVO.getMerchantUid(), payVO.getCtNo());
+        			if(result.equals("UPDATE")) {
+        				if(ctMapper.selectCtPayCheck(payVO.getCtNo()) == 1) {
+        					payservice.schedulePay(payVO.getCustNo(), payVO.getServAmt(), payVO.getCtNo());
+        				};
+        			};
+        		};
+        	};
         };
     }
  

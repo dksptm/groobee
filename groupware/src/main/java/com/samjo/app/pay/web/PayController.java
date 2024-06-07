@@ -84,8 +84,8 @@ public class PayController {
 		int ctNo = Integer.parseInt((String) map.get("ct_no"));
 		String customer_uid = (String) map.get("customer_uid");
 		int price = Integer.parseInt((String) map.get("price"));
-		long merchant_uid =  Long.parseLong((String) map.get("merchant_uid"));
-		payservice.schedulePay(customer_uid, price, ctNo);
+		//long merchant_uid = Long.parseLong((String) map.get("merchant_uid"));
+		payservice.firstPay(customer_uid, price, ctNo);
 		CtVO ctVO = new CtVO();
 		ctVO.setCtNo(ctNo);
 		ctVO.setPayCheck(1);

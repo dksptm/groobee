@@ -260,7 +260,12 @@
 				ct_stat,
 				get_codename(ct.ct_stat) as ct_stat_name,
 				ct_amt,
-				pay_check
+				pay_check,
+				ct_start_dt,
+				ct_end_dt,
+				max_emps,
+				cur_emps,
+				use_mod_cnt
 		FROM ct
 		WHERE cust_no = #{custNo}
 	</select>
@@ -273,10 +278,11 @@
 		WHERE ct_no = #{ctNo}
 	</update>
 	
-	<!-- 계약 정기결제 상태 조회 -->
-	<select id="selectCtPayCheck" parameterType="CtVO">
+	<!-- 계약중 고객사의 정기결제 상태 조회 -->
+	<select id="selectCtPayCheck">
 		SELECT pay_check
 		FROM ct
 		WHERE ct_no = #{ctNo}
+		AND ct_stat = '0A1a'
 	</select>
 </mapper>

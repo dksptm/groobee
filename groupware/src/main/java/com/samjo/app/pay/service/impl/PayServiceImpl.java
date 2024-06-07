@@ -73,25 +73,25 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	//정기결제 예약 및 DB생성
+	//최초정기결제 예약 및 DB생성
 	@Override
-	public String schedulePay(String customer_uid, int price, int ctNo) {
+	public String firstPay(String customer_uid, int price, int ctNo) {
+		PayVO fPayVO = new PayVO();
+		fPayVO.setCtNo(ctNo);
+		payMapper.payUpdate(fPayVO);
+		
 		String token = getToken();
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		if(payMapper.payDay(customer_uid) != null) {
-			payDay = payMapper.payDay(customer_uid);
-		}else{
-			cal.add(Calendar.MINUTE, +5);
-			payDay = cal.getTime();
-		};
+		cal.add(Calendar.MINUTE, +5);
+		payDay = cal.getTime();
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
 		String date = sdf.format(payDay);
 		try {
 			Date stp = sdf.parse(date);
 			timestamp = stp.getTime()/1000;
-			System.out.println(timestamp);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} 
@@ -100,7 +100,6 @@ public class PayServiceImpl implements PayService{
 		token = token.substring(0, token.length() - 1);
 		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
 		String access_token = vo.getAccess_token();
-		
 		
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
@@ -120,11 +119,66 @@ public class PayServiceImpl implements PayService{
 		reqJson.add("schedules",jsonArr);
 		String json = str.toJson(reqJson); 
 		HttpEntity<String> entity = new HttpEntity<>(json, headers);
+		
+		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
+		System.out.println("최초 결제등록 API응답 : " + response);
+
+		PayVO payVO = new PayVO();
+		payVO.setCustNo(customer_uid);
+		payVO.setCtNo(ctNo);
+		payVO.setServAmt(price);
+		payVO.setPayExpcDt(payDay);
+		payVO.setMerchantUid(timestamp);
+		int result = payMapper.payInsert(payVO);
+		/* if(result == 1) {
+			schedulePay(customer_uid, price, ctNo);
+		}*/
+		return response;
+	}
+	
+	//정기결제 예약 및 DB생성(현재 1시간단위)
+	@Override
+	public String schedulePay(String customer_uid, int price, int ctNo) {
+		String token = getToken();
+		long timestamp = 0;
+		Calendar cal = Calendar.getInstance();
+		Date payDay;
+		cal.add(Calendar.HOUR, +1);
+		payDay = cal.getTime();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
+		String date = sdf.format(payDay);
 		try {
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+			Date stp = sdf.parse(date);
+			timestamp = stp.getTime()/1000;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 
+		Gson str = new Gson(); 
+		token = token.substring(token.indexOf("response") +10); 
+		token = token.substring(0, token.length() - 1);
+		GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+		String access_token = vo.getAccess_token();
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setBearerAuth(access_token);
+		 
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("merchant_uid", timestamp);
+		jsonObject.addProperty("schedule_at", timestamp);
+		jsonObject.addProperty("amount", price);
+		
+		JsonArray jsonArr = new JsonArray();
+		 
+		jsonArr.add(jsonObject); JsonObject reqJson = new JsonObject();
+		 
+		reqJson.addProperty("customer_uid", customer_uid); 
+		reqJson.add("schedules",jsonArr);
+		String json = str.toJson(reqJson); 
+		HttpEntity<String> entity = new HttpEntity<>(json, headers);
+		
 		String response = restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/schedule", entity, String.class);
 	 	PayVO payVO = new PayVO();
 		payVO.setCustNo(customer_uid);
@@ -133,13 +187,13 @@ public class PayServiceImpl implements PayService{
 		payVO.setPayExpcDt(payDay);
 		payVO.setMerchantUid(timestamp);
 		payMapper.payInsert(payVO);
-		System.out.println("API응답 : " + response);
-		
+		System.out.println("정기결제 API응답 : " + response);
 		return response;
 	}
 
+	//예약된 결제건 입금여부 확인
 	@Override
-	public String payCheck(long merchantUid, int ctNo) {
+	public String payResultCheck(long merchantUid, int ctNo) {
 		String token = getToken();
 		System.out.println("token : " + token);
 		
@@ -170,6 +224,7 @@ public class PayServiceImpl implements PayService{
 		if(list.equals("paid")){
 			PayVO payVO = new PayVO();
 			payVO.setCtNo(ctNo);
+			payVO.setMerchantUid(merchantUid);
 			payMapper.payUpdate(payVO);
 			result = "UPDATE";
 		}
