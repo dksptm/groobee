@@ -130,16 +130,41 @@ public class WorkServiceImpl implements WorkService{
 
 	
 	// ip 관련
-	// 신청ip목록
+	
+	// outip 조회
 	@Override
 	public List<WorkVO> selectoutip(WorkVO workVO) {
 		return workMapper.selectoutip(workVO);
 	}
 
-	// 등록된 ip목록
+	// inip조회
 	@Override
 	public List<WorkVO> selectinip(WorkVO workVO) {
 		return workMapper.selectinip(workVO);
+	}
+
+	// inip 등록
+	@Override
+	public int insertinip(WorkVO workVO) {
+		return workMapper.insertinip(workVO);
+	}
+
+	// outip 등록
+	@Override
+	public int insertoutip(WorkVO workVO) {
+		return workMapper.insertoutip(workVO);
+	}
+
+	// inip 삭제
+	@Override
+	public int indelete(WorkVO workVO) {
+		return workMapper.indelete(workVO);
+	}
+
+	// outip 삭제
+	@Override
+	public int outdelete(WorkVO workVO) {
+		return workMapper.outdelete(workVO);
 	}
 
 

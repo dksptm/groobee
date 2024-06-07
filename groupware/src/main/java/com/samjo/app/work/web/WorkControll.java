@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -120,15 +120,6 @@ public class WorkControll {
 		model.addAttribute("info", work);
 		return "work/workinfo";
 	}
-	
-	/*
-	 * // worklists의 회원정보
-	 * 
-	 * @GetMapping("work/workemp") public String workemp(WorkVO workVO, Model model)
-	 * {
-	 * 
-	 * return "work/worklists"; }
-	 */
 
 	// 수정처리화면
 	@GetMapping("work/workupdate")
@@ -147,25 +138,48 @@ public class WorkControll {
 
 	
 	  // 출근 업데이트 처리(최초 한번만 업데이트)
-		  @PostMapping("work/workin")
-		  @ResponseBody
-		  public int workin(WorkVO workVO) {
-			  return workService.workin(workVO);
-		  }
+	  @PostMapping("work/workin")
+	  @ResponseBody
+	  public int workin(WorkVO workVO) {
+		  return workService.workin(workVO);
+	  }
+	  
+	  // 퇴근 업데이트(최초 이후 계속 업데이트)
+	  @PostMapping("work/workout")
+	  @ResponseBody
+	  public Map<String, Object> workout(WorkVO workVO) {
+		  return workService.workout(workVO);
+	  }
+	  
+	  // 조퇴 업데이트(최초 이후 계속 업데이트)
+	  @PostMapping("work/workstop")
+	  @ResponseBody
+	  public Map<String, Object> workstop(WorkVO workVO) {
+		  return workService.workstop(workVO);
+	  }
+	  
+	// ip 관리
+	  
+	// inip 등록
+	@PostMapping("work/workinip")
+	@ResponseBody
+	public int insertinip(WorkVO workVO) {
+		return workService.insertinip(workVO);
+	}
 		  
-		  // 퇴근 업데이트(최초 이후 계속 업데이트)
-		  @PostMapping("work/workout")
-		  @ResponseBody
-		  public Map<String, Object> workout(WorkVO workVO) {
-			  return workService.workout(workVO);
-		  }
-		  
- 		  // 조퇴 업데이트(최초 이후 계속 업데이트)
-		  @PostMapping("work/workstop")
-		  @ResponseBody
-		  public Map<String, Object> workstop(WorkVO workVO) {
-			  return workService.workstop(workVO);
-		  }
-		 
+	// inip 등록
+	@PostMapping("work/workoutip")
+	@ResponseBody
+	public int insertoutip(WorkVO workVO) {
+		return workService.insertoutip(workVO);
+	}
+	
+	@DeleteMapping("work/inipdelete")
+	@ResponseBody
+	public Map<String, Object> inipdelete(WorkVO workVO) {
+		return null;
+	}
+	
+	
 
 }

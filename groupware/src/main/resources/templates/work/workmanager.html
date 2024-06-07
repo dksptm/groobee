@@ -104,7 +104,7 @@
 							<table class="table table-striped-columns">
 							<thead>
 								<tr>
-									<td><input type="checkbox" id="allout"></td>
+									<td></td>
 									<td>ID</td>
 									<td>IP</td>
 									<td>날짜</td>
@@ -112,7 +112,7 @@
 							</thead>
 							<tbody th:each ="ipoutlists : ${ipoutlist}" id="outlist">
 								<tr>
-									<td><input type="checkbox" name="outcheck"></td>
+									<td><input type="radio" name="outcheck"></td>
 									<td>[[${ipoutlists.empId}]]</td>
 									<td>[[${ipoutlists.ip}]]</td>
 									<td>[[${#dates.format(ipoutlists.dt, "yyyy/MM/dd")}]]</td>
@@ -135,30 +135,73 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
-			// allout 체크시 모든 out테이블 체크항목 체크
+	/* 		// allout 체크시 모든 out테이블 체크항목 체크
 			$('#allout').click(function() {
 			let checked = $('#allout').is(':checked');
 		
 				if(checked)
 					$('input[name=outcheck]:checkbox').prop('checked',true);
 			});
-			
+			 */
 			$("#insert").on("click", insertBtn);
-			
-			let date = [];
+			 $("#delete").on("click", deletes);
+			 
 			//  insert버튼
 			function insertBtn() {
-				let check = $('input[name=outcheck]:checkbox');
+				let check = $('input[name=outcheck]:checked'); // 체크가된 상태
 			
-				let empid = $(check).closest().next().text();
-				let ip = $(check).closest().text();
-				let dt = $(check).text();
+				let empid = $(check).closest("tr").find('td:eq(1)').text();
+				let ip = $(check).closest("tr").find('td:eq(2)').text();
+				let dt = $(check).closest("tr").find('td:eq(3)').text();
 				
-				console.log(empid);
-				console.log(ip);
-				console.log(dt);
-			
+				// out테이블 값을 in테이블에 추가
+				$.ajax({
+					url :,
+					method :,
+		            data : {
+		            	empId : empid,
+		            	ip : ip,
+		            	dt : dt
+		            },
+		            beforeSend: function(xhr) {
+		                xhr.setRequestHeader(header, token);
+		            },
+		            success : function(result){
+		            	Swal.fire({
+		            		title: 'ip등록 했습니다.',
+		            		text: '',
+		            		icon: 'success'}).then(function() {
+		            			location.reload(true);
+		            		});
+		            }
+				})
 			}
+				// out테이블에서의 삭제
+				function deletes() {
+					let check = $('input[name=outcheck]:checked'); // 체크가된 상태
+					 
+					let ip = $(check).closest("tr").find('td:eq(2)').text();
+					console.log(ip);
+					
+				$.ajax({
+					url :"work/inipdelete",
+					method :"delete",
+		            data : {
+		            	ip : ip,
+		            },
+		            beforeSend: function(xhr) {
+		                xhr.setRequestHeader(header, token);
+		            },
+		            success : function(result){
+		            	Swal.fire({
+		            		title: 'ip정보를 삭제했습니다.',
+		            		text: '',
+		            		icon: 'success'}).then(function() {
+		            			location.reload(true);
+		            		});
+		            }
+				})
+				}
 			
 		</script>
 	</th:block>

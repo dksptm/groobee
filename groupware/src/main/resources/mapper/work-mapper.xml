@@ -4,33 +4,33 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="com.samjo.app.work.mapper.WorkMapper">
   <select id="selectlist" resultType="WorkVO" parameterType="workSearchVO">
-SELECT t.*
-FROM (SELECT rownum rn, 
-                     f.*
-      FROM (SELEsCT w.*
-            FROM (SELECT e.*
-                  FROM (SELECT
-                               i.dt,
-                               j.emp_id,
-                               j.emp_name,
-                               j.emp_no,
-                               i.wk_in,
-                               i.wk_out,
-                               get_codename(wk_yn) wk_yn,
-                               get_codename(wk_stat) wk_stat,
-                               get_codename(wk_site) wk_site
-                               FROM emp j join wk i
-                                            on j.emp_id = i.emp_id
-                               WHERE j.emp_id = #{empId}
-                         ORDER BY dt DESC) e
-                   <include refid="select"></include>
-                             ) w
-            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
-WHERE t.rn > (#{page} -1) * 5
+	SELECT t.*
+	FROM (SELECT rownum rn, 
+	                     f.*
+	      FROM (SELECT w.*
+	            FROM (SELECT e.*
+	                  FROM (SELECT
+	                               i.dt,
+	                               j.emp_id,
+	                               j.emp_name,
+	                               j.emp_no,
+	                               i.wk_in,
+	                               i.wk_out,
+	                               get_codename(wk_yn) wk_yn,
+	                               get_codename(wk_stat) wk_stat,
+	                               get_codename(wk_site) wk_site
+	                               FROM emp j join wk i
+	                                            on j.emp_id = i.emp_id
+	                               WHERE j.emp_id = #{empId}
+	                         ORDER BY dt DESC) e
+	                   <include refid="select"></include>
+	                             ) w
+	            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
+	WHERE t.rn > (#{page} -1) * 5
   </select>
   <!-- 계정 정보 조회 테이블 -->
   <select id="selectemp" resultType="WorkVO">
-    select 
+    SELECT 
            emp_id,
            emp_no,
            emp_name,
@@ -46,35 +46,38 @@ WHERE t.rn > (#{page} -1) * 5
            where wk_stat = '2B3b'and emp_id = #{empId}) tdy,
            (select count(*)
            from wk
-           where wk_stat = '2B4b'and emp_id = #{empId}) early
-	from emp
-	where emp_id = #{empId}
+           where wk_stat = '2B4b'and emp_id = #{empId}) early,
+           (select wk_yn
+           from wk
+           where emp_id = #{empId} and dt = trunc(sysdate)) wk_yn
+	FROM emp
+	WHERE emp_id = #{empId}
   </select>
   <!-- worklist 전체 조회 (부서장권한으로 접속 시 처음에는 자신꺼만 매니저를통해서 접근시 자신의 부서를 조회)-->
   <select id="selectAllList" resultType="WorkVO" parameterType="WorkSearchVO">
-SELECT t.*
-FROM (SELECT rownum rn, 
-                     f.*
-      FROM (SELECT w.*
-            FROM (SELECT e.*
-                  FROM (SELECT
-                               i.dt,
-                               j.emp_id,
-                               j.emp_name,
-                               j.emp_no,
-                               i.wk_in,
-                               i.wk_out,
-                               get_codename(wk_yn) wk_yn,
-                               get_codename(wk_stat) wk_stat,
-                               get_codename(wk_site) wk_site
-                               FROM emp j join wk i
-                                            on j.emp_id = i.emp_id
-                               WHERE j.emp_id = #{empId}
-                         ORDER BY dt DESC) e
-                   <include refid="select"></include>
-                             ) w
-            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
-WHERE t.rn > (#{page} -1) * 5
+	SELECT t.*
+	FROM (SELECT rownum rn, 
+	                     f.*
+	      FROM (SELECT w.*
+	            FROM (SELECT e.*
+	                  FROM (SELECT
+	                               i.dt,
+	                               j.emp_id,
+	                               j.emp_name,
+	                               j.emp_no,
+	                               i.wk_in,
+	                               i.wk_out,
+	                               get_codename(wk_yn) wk_yn,
+	                               get_codename(wk_stat) wk_stat,
+	                               get_codename(wk_site) wk_site
+	                               FROM emp j join wk i
+	                                            on j.emp_id = i.emp_id
+	                               WHERE j.emp_id = #{empId}
+	                         ORDER BY dt DESC) e
+	                   <include refid="select"></include>
+	                             ) w
+	            WHERE rownum <![CDATA[<=]]> (#{page} * 5)) f ) t
+	WHERE t.rn > (#{page} -1) * 5
   </select>
 	<!-- 페이징 위한 count.(조건집어넣기 제대로안되는중) -->
  	<select id="workcount">
@@ -98,21 +101,21 @@ WHERE t.rn > (#{page} -1) * 5
 	<!-- 조건문 -->
 	<sql id="select">
 	<where>
-					<if test="oneDate != null">
-							AND dt >=  #{oneDate}
-					</if>
-					<if test="twoDate != null">
-							AND dt <![CDATA[<=]]>  #{twoDate}
-					</if>
-                    <if test="wkYn != null and wkYn != ''"> 
-                              AND wk_yn   = #{wkYn}
-                    </if>
-                    <if test="wkStat != null and wkStat != ''">
-                             AND wk_stat = #{wkStat}
-                    </if>
-                    <if test="wkSite != null and wkSite != ''">  
-                             AND wk_site = #{wkSite} 
-                    </if>
+		<if test="oneDate != null">
+				AND dt >=  #{oneDate}
+		</if>
+		<if test="twoDate != null">
+				AND dt <![CDATA[<=]]>  #{twoDate}
+		</if>
+             <if test="wkYn != null and wkYn != ''"> 
+                       AND wk_yn   = #{wkYn}
+             </if>
+             <if test="wkStat != null and wkStat != ''">
+                      AND wk_stat = #{wkStat}
+             </if>
+             <if test="wkSite != null and wkSite != ''">  
+                      AND wk_site = #{wkSite} 
+             </if>
     </where>
 	</sql>
 	<!-- worklist랑 똑같이 최신화해야함-->
@@ -138,7 +141,7 @@ WHERE t.rn > (#{page} -1) * 5
                  </if>
                  ) e
             WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
-WHERE l.rn > (#{page} -1) * 5
+	WHERE l.rn > (#{page} -1) * 5
 	</select>
 	
 	<select id="managercount">
@@ -193,23 +196,23 @@ WHERE l.rn > (#{page} -1) * 5
    
    <!-- 상세페이지 확인 -->
   <select id="selectWork" resultType="WorkVO">
-select j.emp_id,
-       j.emp_no,
-       j.emp_name,
-       (SELECT dept_name
-        FROM dept
-        WHERE dept_id = j.dept_id) dept_id ,
-       i.dt,
-       i.wk_in,
-       i.wk_out,
-       i.wk_in_loc,
-       i.wk_out_loc,
-       get_codename(wk_yn) wk_yn,
-       get_codename(wk_stat) wk_stat,
-       get_codename(wk_site) wk_site
-from emp j join wk i
-             on j.emp_id = i.emp_id
-where dt = #{dt} and j.emp_id = #{empId}
+	SELECT j.emp_id,
+	       j.emp_no,
+	       j.emp_name,
+	       (SELECT dept_name
+	        FROM dept
+	        WHERE dept_id = j.dept_id) dept_id ,
+	       i.dt,
+	       i.wk_in,
+	       i.wk_out,
+	       i.wk_in_loc,
+	       i.wk_out_loc,
+	       get_codename(wk_yn) wk_yn,
+	       get_codename(wk_stat) wk_stat,
+	       get_codename(wk_site) wk_site
+	FROM emp j JOIN wk i
+	             ON j.emp_id = i.emp_id
+	WHERE dt = #{dt} AND j.emp_id = #{empId}
    </select>
    
    <!-- 상세페이지에서 작동하는 업데이트 -->
@@ -233,14 +236,14 @@ where dt = #{dt} and j.emp_id = #{empId}
    
    <!-- ip관련 -->
    
-   <!-- 신청 ip -->
+   <!-- 신청 ip 조회 -->
 	<select id="selectoutip">
 	SELECT emp_id,
 	       ip,
 	       dt
 	FROM outip
 	</select>
-	<!-- 신청된 ip -->
+	<!-- 신청된 ip 조회 -->
    <select id="selectinip">
     SELECT emp_id,
 	       ip,
@@ -248,20 +251,34 @@ where dt = #{dt} and j.emp_id = #{empId}
 	FROM inip
    </select>
    
-   <!-- 신청 ip삭제 -->
-   <delete id="outdelete">
-   delete from inip
-   where ip = #{ip}
-   </delete>
+  <!-- 신청 ip등록 -->
+  <insert id="insertinip" parameterType="WorkVO">
+  INSERT INTO inip
+  VALUES(
+  #{empId},
+  #{ip},
+  #{dt})
+   </insert>
+  
+  <insert id="insertout">
+  INSERT INTO outip
+  VALUES(
+  #{empId},
+  #{ip},
+  #{dt})
+  </insert>
    
-   <!-- 신청 ip등록 -->
-  <!-- <insert id=insertinip parameterType="WorkVO">
-   INSERT INTO outip
-   VALUES(
-   #{empId},
-   #{ip},
-   #{dt})
-   </insert>  -->
+   <!-- outip 등록위한 삭제 -->
+  <delete id="outdelete">
+  delete from outip
+  where ip = ${ip}
+  </delete>
+  
+  <!-- 신청 ip삭제 -->
+  <delete id="indelete">
+  delete from inip
+  where ip = #{ip}
+   </delete> 
    
   </mapper>
   

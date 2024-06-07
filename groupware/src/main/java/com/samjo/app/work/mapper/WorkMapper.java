@@ -44,6 +44,13 @@ public interface WorkMapper {
 	public List<WorkVO> selectoutip(WorkVO workVO);
 	public List<WorkVO> selectinip(WorkVO workVO);
 	
+	// ip 추가
+	public int insertinip(WorkVO workVO);
+	public int insertoutip(WorkVO workVO);
+	
+	// ip 삭제
+	public int indelete(WorkVO workVO);
+	public int outdelete(WorkVO workVO);
 	
 	
 
