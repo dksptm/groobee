@@ -232,8 +232,6 @@ public class DocController {
 	@PostMapping("cust/doc/update")
 	public String docUpdateProcess(DocVO docVO, MultipartFile[] filelist, String flag) {
 		
-		System.out.println("docVO 수정반영 => " + docVO);
-		
 		// (flag == YES) => 기존 첨부파일 삭제.
 		if(flag.equals("YES")) {
 			List<String> savaFileNames = docService.getDocFileSavaNames(docVO);

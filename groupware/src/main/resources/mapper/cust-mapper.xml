@@ -22,7 +22,7 @@
 	
 	<!-- 고객 전체목록 -->
 	<select id="selectCustAll" resultType="CustVO">
-		SELECT cust_no, 
+		SELECT  cust_no, 
 				brn, 
 				cust_name, 
 				rep, 
@@ -84,6 +84,72 @@
 										) g
 		                         	ON (c.cust_no = g.cust_no AND g.rn = 1)
 		WHERE 	c.cust_no = #{cno}
+	</select>
+	
+	<!-- 고객사 전체조회 -->
+	<select id="selectCusts" resultType="CustVO">
+		SELECT
+			     g.rn
+				,g.cust_no
+				,g.cust_name
+				,g.rep 
+				,g.pay_pic_tel
+				,g.last_ct_stat
+				,g.last_ct_stat_name
+				,g.last_ct_no
+		FROM
+			 	(
+					SELECT	 ROW_NUMBER() OVER (ORDER BY ${sch.sortCondition} ) rn
+			                ,c.cust_no
+			                ,c.cust_name
+			                ,c.rep 
+			                ,c.pay_pic_tel
+			                ,l.ct_stat		 as 	last_ct_stat
+			                ,NVL2(l.ct_stat, get_codename(l.ct_stat), '미계약') as last_ct_stat_name
+			                ,l.ct_no		 as		last_ct_no
+					FROM 	cust c LEFT OUTER JOIN (
+													SELECT  ROW_NUMBER() OVER (PARTITION BY cust_no ORDER BY ct_end_dt DESC) crn
+	                                                		,cust_no, ct_no, ct_stat
+	                                        		FROM   ct
+	                                        	   ) l
+	                                         	ON (c.cust_no = l.cust_no and l.crn = 1)
+					WHERE   c.cust_no <![CDATA[<>]]> '0000'
+						<if test="sch.keyword != null and !sch.keyword.equals('')">
+							AND	${sch.keywordCondition} LIKE '%${sch.keyword}%'
+						</if>
+						<if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
+							AND	l.ct_stat ${sch.searchCondition}
+						</if>
+				) g
+		WHERE  g.rn <![CDATA[<=]]> (#{sch.page} * 10)
+		AND    g.rn > (#{sch.page} - 1) * 10
+	</select>
+	
+	<select id="countCusts" parameterType="SearchVO" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		        (
+		        SELECT
+		                 ROW_NUMBER() OVER (ORDER BY c.cust_no) rn
+		                ,c.cust_no
+		                ,c.cust_name
+		                ,c.rep 
+		                ,l.ct_stat		as 	last_ct_stat
+		                ,l.ct_no		as	last_ct_no
+		        FROM 	cust c LEFT OUTER JOIN (
+		                                         SELECT  ROW_NUMBER() OVER (PARTITION BY cust_no ORDER BY ct_end_dt DESC) crn
+		                                                 ,cust_no, ct_no, ct_stat
+		                                         FROM   ct
+		                                        ) l
+		                                    ON (c.cust_no = l.cust_no and l.crn = 1)
+		        WHERE   c.cust_no <![CDATA[<>]]> '0000'
+	        		<if test="sch.keyword != null and !sch.keyword.equals('')">
+						AND	${sch.keywordCondition} LIKE '%${sch.keyword}%'
+					</if>
+					<if test="sch.searchCondition != null and !sch.searchCondition.equals('statAll')">
+						AND	l.ct_stat ${sch.searchCondition}
+					</if>
+		        ) g	
 	</select>
 
 	

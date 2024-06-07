@@ -4,74 +4,90 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 	  
 <th:block layout:fragment="Content">
+<style>
+.cust-table th{
+	font-size: 0.9rem;
+	font-weight: bold;
+	text-align: center;
+}
+</style>
+
 <div class="container container-p-y mt-3">
 	<h4>고객관리 - 등록</h4>
-	<div class="bg-light p-3 col-9">
-		<div class="card d-flex justify-content-center table-responsive m-2 p-2">
+	<div class="bg-light p-3 col-8">
+		<div class="card d-flex justify-content-center table-responsive m-2 p-4">
 			<form th:action="@{insert}" id="custInsertForm" method="post" th:object="${cust}">
-				<table class="table table-bordered border-1">
+				<table class="table table-bordered cust-table">
 					<tr>
-						<td colspan="4"><b class="text-center">고객사 정보입력</b></td>
+						<th colspan="4" class="py-3 table-primary"><h4 class="p-0 m-0">고객사 정보입력</h4></th>
 					</tr>
 					<tr>
-						<th class="col-3">상호명</th>
-						<td colspan="">
+						<th>상호명</th>
+						<td>
 							<input type="text" th:field="*{custName}" class="form-control bg-transparent" />
 						</td>
-						<td>스펠링3자(대문자)</td>
+						<th>스펠링</th>
 						<td>
-							<input type="text" size="3" th:field="*{spell}" class="form-control bg-transparent" />
+							<input type="text" size="3" th:field="*{spell}" placeholder="대문자 3글자 - 미입력시 'C'" class="form-control bg-transparent" />
 						</td>
 					</tr>
 					<tr>
-						<th class="col-3">대표자</th>
+						<th>대표자</th>
 						<td>
 							<input type="text" th:field="*{rep}" class="form-control bg-transparent" />
 						</td>
-						<th>개업일자</th>
+						<th class="col-2">개업일자</th>
 						<td>
 							<input type="date" max="9999-12-31" class="form-control bg-transparent" />
 						</td>
 					</tr>
 					<tr>
-						<th class="col-3">사업자번호</th>
+						<th>사업자번호</th>
 						<td colspan="2">
 							<input type="text" th:field="*{brn}" class="form-control bg-transparent" />
 						</td>
-						<td>
-							<button type="button" id="test">사업자번호 확인</button>
+						<td class="text-center">
+							<button type="button" class="btn btn-info" id="test">사업자번호 확인</button>
 						</td>
 					</tr>
 					<tr>
-						<th class="col-3">주소</th>
+						<th rowspan="2">주소</th>
+						<td colspan="2">
+							<input type="text" class="form-control bg-transparent" id="sample6_postcode" placeholder="우편번호">
+						</td>
+						<td class="text-center">
+							<input type="button" class="btn btn-secondary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+						</td>
+					</tr>
+					<tr>
 						<td colspan="3">
-							<input type="text" id="sample6_postcode" placeholder="우편번호">
-							<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-							<input type="text" id="sample6_address" placeholder="주소"><br>
-							<input type="text" id="sample6_detailAddress" placeholder="상세주소">
-							<input type="text" id="sample6_extraAddress" placeholder="참고항목">
-						</td>
+							<input type="text" class="form-control bg-transparent" id="sample6_address" placeholder="주소">
+							<div class="d-flex justify-content-center">
+							<input type="text" class="form-control bg-transparent" id="sample6_detailAddress" placeholder="상세주소">
+							<input type="text" class="form-control bg-transparent" id="sample6_extraAddress" placeholder="참고항목">
+							</div>
+						</td>					
 					</tr>
 					<tr>
-						<th class="col-3">전화번호</th>
+						<th>전화번호</th>
 						<td colspan="3">
 							<input type="text" th:field="*{custTel}" class="form-control bg-transparent tell-chk"
 								   placeholder="숫자만 입력하세요." />
 						</td>
 					</tr>
 					<tr>
-						<th class="col-3">결제담당자</th>
+						<th>결제담당자</th>
 						<td>
 							<input type="text" th:field="*{payPic}" class="form-control bg-transparent" />
 						</td>
-						<th class="col-3">결제담당자 전화번호</th>
+						<th>결제담당자 전화번호</th>
 						<td>
-							<input type="text" th:field="*{payPicTel}" class="form-control bg-transparent tell-chk" />
+							<input type="text" th:field="*{payPicTel}" class="form-control bg-transparent tell-chk" placeholder="숫자만 입력하세요." />
 						</td>
 					</tr>
 				</table>
-				<div class="text-den">
-					<button type="submit">고객등록</button>
+				<div class="text-end">
+					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">고객등록</button>
 				</div>
 			</form>
 		</div>
@@ -145,17 +161,25 @@ $(function() {
 	});
 	
 	$("#test").on('click', function(){
-		let bno = "";
+		let bno = $('#brn').val();
+		bno = bno.replace(/-/gi,'');
 		bnoCheck(bno);
 	});
 	
 	$('#custInsertForm').submit(function(event) {
 		event.preventDefault();
 		
+		if(dataCheck() != true) return;
+		
 		// 주소.
 		let addr1 = $('#sample6_address').val();
 		if(addr1 == '') {
-			alert('주소를 입력하세요');
+			
+			Swal.fire({
+				icon: 'error',               
+			  	title: '주소를 입력하세요',    
+			  	text: '', 
+			});
 			return;
 		}
 		let addr2 = " " + $('#sample6_detailAddress').val();
@@ -171,19 +195,34 @@ $(function() {
 }) //end.
 
 function bnoCheck(bno) {
-	var data = {
-			"b_no": [bno] // 사업자번호 "xxxxxxx" 로 조회 시,
-	}; 
+	
+	let data = {
+			"b_no" : [bno]
+	}
 	
 	$.ajax({
 	  url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=mE1CN7xzr3aXt4%2BDH2dN8SIwZlnXMkO3hHulmWVclpgFGD9DrLJvJIssH1o99H0zFgMgRBdEp86aqj%2F38zqfJw%3D%3D",  // serviceKey 값을 xxxxxx에 입력
-	  type: "POST",
+	  type: "post",
 	  data: JSON.stringify(data), // json 을 string으로 변환하여 전송
-	  dataType: "JSON",
+	  dataType: "json",
 	  contentType: "application/json",
 	  accept: "application/json",
 	  success: function(result) {
-	      console.log(result);
+	      if(result.match_cnt > 0){
+	    	  Swal.fire({
+		    	  icon: 'success',               
+				  title: '사업자번호 확인완료!',    
+				  text: result.data[0].tax_type, 
+			  });
+	    	  
+	      } else {
+	    	  Swal.fire({
+		    	  icon: 'error',               
+				  title: '사업자번호 확인안됨',    
+				  text: result.data[0].tax_type, 
+			  });
+	      }
+	      $('#brn').attr('readonly', true);
 	  },
 	  error: function(result) {
 	      console.log(result.responseText); //responseText의 에러메세지 확인
@@ -191,6 +230,71 @@ function bnoCheck(bno) {
 	});
 }
 
+function dataCheck() {
+	
+	if($('#custName').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '상호명 필수입력',
+			  text:'',
+			  confirmButtonText: '확인'
+		});
+		$('#custName').focus();
+		return false;
+	} else if($('#rep').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '대표자 필수입력',
+			  text:'',
+			  confirmButtonText: '확인'
+		});
+		$('#rep').focus();
+		return false;
+	} else if($('#brn').val() == '' || $('#brn').attr('readonly') != 'readonly') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '사업자번호 필수입력',
+			  text:'사업자번호 입력 후 사업자번호 버튼을 클릭해주세요.',
+			  confirmButtonText: '확인'
+		});
+		$('#sample6_address').focus();
+		return false;
+	} else if($('#custTel').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '전화번호 필수입력',
+			  text:'',
+			  confirmButtonText: '확인'
+		});
+		$('#custTel').focus();
+		return false;
+	} else if($('#payPic').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '결제담당 필수입력',
+			  text:'',
+			  confirmButtonText: '확인'
+		});
+		$('#payPic').focus();
+		return false;
+	} else if($('#payPicTel').val() == '') {
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '결제담당 연락처 필수입력',
+			  text:'',
+			  confirmButtonText: '확인'
+		});
+		$('#payPicTel').focus();
+		return false;
+	}
+	
+	if($('#spell').val() == '') {
+		$('#spell').val('C');
+	}
+	
+	return true;
+	
+}
 
 </script>
 

@@ -2,6 +2,8 @@ package com.samjo.app.emp.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +18,9 @@ public class EmpVO {
 	private String empNo;
 	private String pw;
 	private String empName;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date hireDt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date FireDt;
 	private String empStat;
 	private String signImg;
@@ -27,11 +31,10 @@ public class EmpVO {
 	private String empTel;
 	private String emailAddr;
 	
-	// 직급명, 부서명
+	// 직급명, 부서명, 상태명, 권한 및 권한명
 	private String jobTitle;
 	private String deptName;
-	
-	// 권한.
+	private String empStatName;
 	private String permId;
 	private String permName;
 	
@@ -43,6 +46,7 @@ public class EmpVO {
 		this.permId = permId;
 	}
 	
-	
+	//
+	private Integer rn;
 	 
 }

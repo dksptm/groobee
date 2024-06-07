@@ -27,8 +27,8 @@
 		        (
 		             #{docNo}
 		            ,#{ptoType}
-		            ,TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI')
-		            ,TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI')
+		            ,TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI:SS')
+		            ,TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI:SS')
 		            ,#{reason}
 		        )	
 	
@@ -37,8 +37,8 @@
 	<update id="updatePto" parameterType="TempVO">
 		UPDATE doc_pto
 		SET    pto_type = #{ptoType}
-			   ,pto_start_dt = TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI')
-			   ,pto_end_dt = TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI')
+			   ,pto_start_dt = TO_DATE(#{ptoStartDt}, 'YYYY-MM-DD HH24:MI:SS')
+			   ,pto_end_dt = TO_DATE(#{ptoEndDt}, 'YYYY-MM-DD HH24:MI:SS')
 			   ,reason = #{reason}
 		WHERE  doc_no = #{docNo}
 	</update>

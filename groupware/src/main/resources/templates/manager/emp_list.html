@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+	  
+<th:block layout:fragment="Content">
+<th:block sec:authorize="hasAuthority('1C2c')">
+
+<div class="container container-p-y mt-3">
+	<h4>사원관리 - 목록</h4>
+	<div>
+		<button type="button" onclick="location.href='/cust/manager/empInsert'" class="btn btn-primary me-3">사원추가</button>
+	</div>
+	<input type="hidden" id="cno" th:value="${#authentication.principal.custNo}" disabled />
+	<!-- 계정목록 -->
+	<div th:if="${#arrays.length(list)} != 0">
+		<div class="d-flex justify-content-end condition">
+		<div class="col-3 d-flex justify-content-between">
+			<select class="form-select keywordCondition">
+				<option value="all">권 한</option>
+				<option value="1C2c">관리자</option>
+				<option value="1C3c">부서장</option>
+				<option value="1C4c">사원</option>
+			</select>
+			<select class="form-select searchCondition">
+				<option value="all">계정상태</option>
+				<option value="1D1d">재직</option>
+				<option value="1D2d">퇴직</option>
+				<option value="1D3d">최초</option>
+			</select>
+		</div>
+		</div>
+		<!-- Emps Fragment -->
+		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
+	</div>
+</div>
+
+
+<script>
+$(function() { 
+	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	let cno = document.getElementById('cno').innerText;
+	
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center-center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	})
+	
+	if($('.condition') != null) {
+		//
+		pagination();
+		
+		// 셀렉트변경.
+		$('.condition').on('change', 'select', function(e) {
+			let keywordCondition = $('.keywordCondition').val();
+			let searchCondition = $('.searchCondition').val();
+			let page = 1;
+			let param = {keywordCondition, searchCondition, page};
+			showTable(param);
+		})
+
+	}
+	
+	// 페이징
+	function pagination() {
+		$('.page-item a').on('click',function(event){
+			event.preventDefault();
+			let keywordCondition = $('.keywordCondition').val();
+			let searchCondition = $('.searchCondition').val();
+	        let page = $(this).attr('href');
+	        let param = {keywordCondition, searchCondition, page};
+			showTable(param);
+		}); 
+	}
+
+	//검색 AJAX 함수
+	function showTable(param) {
+	    $.ajax({
+	        url: 'empList/sch',
+	        type: 'POST',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token);
+	        },
+	        data: param,
+	        dataType: 'Text',
+	        success: function(result) {
+	            $('#EmpListArea').replaceWith(result);
+	            pagination();
+	        }
+	    });
+	}
+	
+	
+}) //end.
+
+
+
+
+</script>
+</th:block>
+</th:block>
+</html>

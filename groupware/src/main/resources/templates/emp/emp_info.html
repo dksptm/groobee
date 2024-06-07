@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+	  
+<th:block layout:fragment="Content">
+
+<style>
+.cust-table th{
+	font-size: 0.9rem;
+	font-weight: bold;
+	text-align: center;
+}
+</style>
+
+<div class="container container-p-y mt-3">
+	<h4>사원관리 - 조회</h4>
+	<div class="bg-light p-3 col-8">
+		<div class="table-responsive">
+			<div>
+				<table class="table table-bordered border-3 cust-table">
+					<tr>
+						<th>사원번호</th>
+						<td>[[ ${emp.empNo} ]]</td>
+						<th>아이디</th>
+						<td>[[ ${emp.empId} ]]</td>
+					</tr>
+					<tr>
+						<th>이름</th>
+						<td>[[${emp.empName}]]</td>
+						<th>이메일</th>
+						<td>[[${emp.emailAddr}]]</td>
+						
+					</tr>
+					<tr>
+						<th>부서</th>
+						<td>[[${emp.deptName}]]</td>
+						<th>직급</th>
+						<td>[[${emp.jobTitle}]]</td>
+					</tr>
+					<tr>
+						<th>주소</th>
+						<td colspan="3">[[${emp.empAddr2}]] [[${emp.empAddr3}]] [[${emp.empAddr4}]] (우)[[${emp.empAddr1}]]
+					</tr>
+					<tr>
+						<th>근무현황</th>	
+						<td>[[${emp.empStatName}]]</td>
+						<th>연락처</th>	
+						<td>[[${emp.empTel}]]</td>
+					</tr>
+					<tr>
+						<th>입사일</th>
+						<td>[[${#dates.format(emp.hireDt, 'yyyy년 MM월 dd일')}]]</td>
+						<th>퇴사일</th>
+						<td>[[${#dates.format(emp.fireDt, 'yyyy년 MM월 dd일')}]]</td>
+					</tr>
+				</table>
+				<div class="text-end">
+					<button type="button" id="submit-btn" class="btn btn-primary"
+							th:onclick="|location.href='@{/cust/manager/empUpdate?eid={id}(id=${emp.empId})}'|">정보수정</button>
+					<button type="button" class="btn btn-secondary"
+							th:onclick="|location.href='@{/cust/manager/empList}'|">목록으로</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+$(function() { 
+	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center-center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	 })
+	
+}) //end.
+
+
+
+</script>
+</th:block>
+</html>

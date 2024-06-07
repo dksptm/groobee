@@ -100,6 +100,16 @@
 		WHERE  cust_no = #{emp.custNo}
 	</select>
 	
+	<!-- 한 회사의 직급전체 목록 -->
+	<select id="selectCustJobAll"  parameterType="EmpVO" resultType="JobVO">
+		SELECT   job_no
+		        ,job_title
+		        ,perm_id
+		FROM    jobs
+		WHERE   cust_no = #{emp.custNo}
+		ORDER BY job_no
+	</select>
+
 	<!-- 첫계정 등록시 부서등록해야. -->
 	<insert id="insertFirstDept" parameterType="EmpVO">
 		<selectKey keyProperty="deptId" resultType="string" order="BEFORE">

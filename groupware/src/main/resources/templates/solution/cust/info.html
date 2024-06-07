@@ -4,84 +4,105 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 	  
 <th:block layout:fragment="Content">
+<th:block sec:authorize="hasAuthority('1C1c')">
+<style>
+.cust-table th{
+	font-size: 0.9rem;
+	font-weight: bold;
+	text-align: center;
+}
+</style>
+
 <div class="container container-p-y mt-3">
 	<h4>고객관리 - 조회</h4>
-	<div class="bg-light p-3 col-9">
-		<div class="card d-flex justify-content-center table-responsive m-2 p-2">
+	<div class="bg-light p-3">
+		<div class="table-responsive">
 			<div>
-				<table class="table table-bordered border-1">
-					<tr>
-						<td id="cno">[[ ${cust.custNo} ]]</td>
-						<td colspan="3"><b class="text-center">고객사 상세정보</b></td>
+				<table class="table table-bordered cust-table">
+					<tr class="table-primary">
+						<th class="col-2">고객번호 <span id="cno">[[ ${cust.custNo} ]]</span></th>
+						<th colspan="5" class="text-start align-middle">
+							고객사 상세정보
+						</th>
 					</tr>
 					<tr>
-						<th class="col-3">상호명</th>
-						<td colspan="3">
-							[[ ${cust.custName} ]]
-						</td>
+						<th class="col-2">사업자번호</th><td class="col-3">[[ ${cust.brn} ]]</td>
+						<th class="col-1">상호명</th><td class="col-2">[[ ${cust.custName} ]]</td>
+						<th class="col-1">대표자</th><td class="col-3">[[ ${cust.rep} ]]</td>
 					</tr>
 					<tr>
-						<th class="col-3">대표자</th>
-						<td colspan="3">
-							[[ ${cust.rep} ]]
-						</td>
 					</tr>
 					<tr>
-						<th class="col-3">사업자번호</th>
-						<td colspan="3">
-							[[ ${cust.brn} ]]
-						</td>
+						<th>주소</th><td colspan="3">[[ ${cust.custAddr} ]]</td>
+						<th>전화번호</th><td>[[ ${cust.custTel} ]]</td>
 					</tr>
 					<tr>
-						<th class="col-3">주소</th>
-						<td colspan="3">
-							[[ ${cust.custAddr} ]]
-						</td>
 					</tr>
 					<tr>
-						<th class="col-3">전화번호</th>
-						<td colspan="3">
-							[[ ${cust.custTel} ]]
+						<th>계약상태</th>
+						<td>[[ ${cust.lastCtStatName} ]]
+							<span ><a href="/sol/ctInsert" th:if="${cust.lastCtStat != '0A1a'}" class="text-danger">
+							&emsp;신규계약 등록하기
+							</a></span>
 						</td>
-					</tr>
-					<tr>
-						<th class="col-3">결제담당자</th>
-						<td>
-							[[ ${cust.payPic} ]]
-						</td>
-						<th class="col-3">결제담당자 전화번호</th>
-						<td>
-							[[ ${cust.payPicTel} ]]
-						</td>
-					</tr>
-					<tr>
-						<th class="col-3">계약상태</th>
-						<td>
-							[[ ${cust.lastCtStatName} ]] 
-							<span><a href="/sol/ctInsert" th:if="${cust.lastCtStat != '0A1a'}">>>신규계약 등록하기</a></span>
-						</td>
-						<td>계약번호</td>
+						<th>계약번호</th>
 						<td th:if="${cust.lastCtNo != null}">[[ ${cust.lastCtNo} ]]</td>
 						<td th:unless="${cust.lastCtNo != null}">-</td>
+						<th>결제담당</th><td>[[ ${cust.payPic} ]] &emsp;&emsp;(TEL : <span>[[ ${cust.payPicTel} ]]</span>)</td>
+					</tr>
+					<tr>
 					</tr>
 				</table>
-				<div class="text-end">
-					<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp">최초계정생성</button>	
-				</div>
+					<button th:if="${#arrays.length(list)} != 0" type="button" class="btn btn-secondary py-1 doc-toggle-btn">등록계정 ▼</button>
 			</div>
 		</div>
 	</div>
+
+	<!-- 계정목록 -->
+	<div th:if="${#arrays.length(list)} != 0" class="collapse doc-toggle-area">
+		<div class="d-flex justify-content-end condition">
+		<div class="col-3 d-flex justify-content-between">
+			<select class="form-select keywordCondition">
+				<option value="all">권 한</option>
+				<option value="1C2c">관리자</option>
+				<option value="1C3c">부서장</option>
+				<option value="1C4c">사원</option>
+			</select>
+			<select class="form-select searchCondition">
+				<option value="all">계정상태</option>
+				<option value="1D1d">재직</option>
+				<option value="1D2d">퇴직</option>
+				<option value="1D3d">최초</option>
+			</select>
+		</div>
+		</div>
+		<!-- Emps Fragment -->
+		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
+	</div>
+	
+	<div th:unless="${#arrays.length(list)} != 0">
+		<div class="text-end">
+			<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp"
+					class="btn btn-danger">최초계정생성</button>	
+		</div>
+	</div>
+	
 </div>
 
 <script>
-$(function() { 
+document.addEventListener('DOMContentLoaded', function() {
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-	
-	document.getElementById('firstEmp').addEventListener('click', function(e) {
-		
-		let cno = document.getElementById('cno').innerText;
+	let cno = document.getElementById('cno').innerText;
+    
+    // 최초계정생성 버튼클릭이벤트.
+	if(document.getElementById('firstEmp') != null) {
+	    document.getElementById('firstEmp').addEventListener('click', firstEmp);	
+	}
+    
+	// 최초계정 생성 ajax.
+   	function firstEmp(){
 		let url = 'firstEmp';
 		let obj = {custNo : cno}
 		
@@ -96,19 +117,77 @@ $(function() {
 		.then(res => res.json())
 		.then(ret => {
 			
-			console.log(ret);
+			Swal.fire({
+				icon: 'success',
+			    title: ret.result,
+			    text: '최초 비밀번호 1111',
+			})
+			.then((ret) => {
+				if(ret.value){
+					location.reload();
+				}
+			})
 			
 		})
 		.catch(err => console.error(err))		
-		
-	})
+   	}
 	
+	// 계정공간 토글
+	if($('.doc-toggle-btn') != null) {
+		$('.doc-toggle-btn').click(function() {
+			$('.doc-toggle-area').slideToggle();
+		});
+	}
+	
+	// 
+	if($('.condition') != null) {
+		//
+		pagination();
+		
+		// 셀렉트변경.
+		$('.condition').on('change', 'select', function(e) {
+			let keywordCondition = $('.keywordCondition').val();
+			let searchCondition = $('.searchCondition').val();
+			let page = 1;
+			let param = {keywordCondition, searchCondition, page};
+			showTable(param);
+		})
+
+	}
 
 	
+// 페이징
+function pagination() {
+	$('.page-item a').on('click',function(event){
+		event.preventDefault();
+		let keywordCondition = $('.keywordCondition').val();
+		let searchCondition = $('.searchCondition').val();
+        let page = $(this).attr('href');
+        let param = {keywordCondition, searchCondition, page};
+		showTable(param);
+	}); 
+}
+
+//검색 AJAX 함수
+function showTable(param) {
+    $.ajax({
+        url: 'emps?custNo=' + cno,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        data: param,
+        dataType: 'Text',
+        success: function(result) {
+            $('#EmpListArea').replaceWith(result);
+            pagination();
+        }
+    });
+}
 	
-}) //end.
+})//end
 
 </script>
-
+</th:block>
 </th:block>
 </html>

@@ -398,14 +398,14 @@
 				console.log(type);
 				
 				if(type == '4C1c') {
-				 	$('#stime').val('09:00');
-				 	$('#etime').val('18:00');
+				 	$('#stime').val('09:00:00');
+				 	$('#etime').val('18:00:00');
 				} else if (type == '4C2c') {
-					$('#stime').val('09:00');
-				 	$('#etime').val('13:00');
+					$('#stime').val('09:00:00');
+				 	$('#etime').val('13:00:00');
 				} else if (type == '4C3c') {
-					$('#stime').val('14:00');
-				 	$('#etime').val('18:00');
+					$('#stime').val('14:00:00');
+				 	$('#etime').val('18:00:00');
 				}
 				
 			})
@@ -515,8 +515,6 @@
 							let temp = document.querySelector('#tempId').value;
 							if(temp == "public01") {
 								ptoSubmit();
-								console.log($('input[name="pto.ptoStartDt"]').val());
-								console.log($('input[name="pto.ptoEndDt"]').val());
 							}
 							
 							// 나머지 템플릿은 알아서 저장됨
