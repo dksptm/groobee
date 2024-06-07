@@ -65,13 +65,13 @@
 							</thead>
 							<tbody>
 								<th:block th:each="PayVO : ${list}">
-									<tr th:onclick="|location.href='#'|" th:id="${PayVO.payNo}">
+									<tr data-bs-toggle="modal" th:data-bs-target="|#PayModal-${PayVO.payNo}|">
 										<td>[[ ${PayVO.payNo} ]]</td>
 										<td>[[ ${PayVO.ctNo} ]]</td>
 										<td>[[ ${PayVO.payTypeName} ]]</td>
 										<td class="amt">[[ ${PayVO.servAmt} ]]</td>
 										<th:block th:if="${not #strings.isEmpty(PayVO.payExpcDt)}">
-											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")}
+											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd HH:mm:ss")}
 												]]</td>
 										</th:block>
 										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
@@ -88,7 +88,6 @@
 						<th:block th:if="${payDTO.totalCnt} != 0">
 							<nav aria-label="Page navigation">
 								<ul class="pagination justify-content-center">
-
 									<th:block th:if="${payDTO.prev}">
 										<li class="page-item prev"><a
 											th:href="|/cust/admin/payAndCt?page=${payDTO.startPage - 1 }|"
@@ -132,7 +131,7 @@
 					<div class="modal-body">
 						<table class="table table-hover text-center">
 							<thead>
-								<tr>
+								<tr class="table-secondary">
 									<th>계약번호</th>
 									<th>고객번호</th>
 									<th>계약상태</th>
@@ -148,7 +147,7 @@
 						</table>
 						<table class="table table-hover text-center">
 							<thead>
-								<tr>
+								<tr class="table-secondary">
 									<th>계약시작일</th>
 									<th>계약종료일</th>
 									<th>계약금액</th>
@@ -176,6 +175,46 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- 결제 모달화면 -->
+		<th:block th:each="PayVO : ${list}">
+			<div class="modal fade" th:id="|PayModal-${PayVO.payNo}|" tabindex="-1">
+				<div class="modal-dialog modal-xl modal-dialog-scrollable"
+					role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalScrollableTitle">결제 상세</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+								aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<table class="table table-hover">
+								<thead>
+									<tr class="table-secondary">
+										<th>결제번호</th>
+										<th>계약번호</th>
+										<th>결제상태</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>[[ ${PayVO.payNo} ]]</td>
+										<td>[[ ${PayVO.ctNo} ]]</td>
+										<td>[[ ${PayVO.payStat} ]]</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary selectCust"
+								data-bs-dismiss="modal">선택완료</button>
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">닫기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</th:block>
 
 		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -188,6 +227,8 @@
 
 			//최초 정기결제 인증
 			$('.payBtn').on('click', function kakaopay(e) {
+				e.stopPropagation();
+				
 				let merchantUid = new Date().getTime();
 				let customerUid = $(this).parent().siblings('.custNo').text();
 				let amount = e.target.id;
@@ -247,6 +288,8 @@
 			});
 			
 			$('.ctRow').on('click', function() {
+				
+				
 				let ctNo = $(this).attr('data-ctno');
 		        let custNo = $(this).attr('data-custno');
 		        let ctStatName = $(this).attr('data-ctstatname');

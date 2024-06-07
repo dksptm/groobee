@@ -32,9 +32,9 @@ public class SpringSecurityConfig {
 				.antMatchers("/assets/**", "/js/**").permitAll() // 정적 리소스 접근 허용
 //								 인가경로			인가대상
 				.antMatchers("/", "/introduce").permitAll()
-				.antMatchers("/sol/**").hasAuthority("1C1c") //ROLE_USER
-				.antMatchers("/cust/**").hasAnyAuthority("1C2c","1C3c","1C4c") // ROLE_USER
-//				.antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+				.antMatchers("/sol/**").hasAuthority("1C1c") //솔루션 계정 접근가능
+				.antMatchers("/cust/**").hasAnyAuthority("1C2c","1C3c","1C4c") //고객사 계정(전부) 접근가능
+//				.antMatchers("admin/**").hasAnyAuthority("1C2c","1C3c") //고객사 계정(관리자,부서장) 접근가능
 				.anyRequest().authenticated()
 //						모든경로대상
 				/*

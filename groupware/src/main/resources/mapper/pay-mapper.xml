@@ -104,9 +104,9 @@
 		        #{ctNo},
 		        '0B1b',
 		        SYSDATE,
-		        SYSDATE + (interval '5' minute),
+		        #{payExpcDt},
 		        <!-- GET_PAY_EXPC_DT(), -->
-		        SYSDATE + (interval '2' day) + (interval '5' minute),
+		        #{payExpcDt} + (interval '2' day),
 		        #{servAmt},
 		        '0C1c',
 		        '0D1d',
