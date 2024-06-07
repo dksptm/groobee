@@ -139,10 +139,10 @@
 		    });
 		    
 		    // 검색입력창 엔터시 이벤트 처리
-		    $(".keyword").on("change", function(e) {
+		    /* $(".keyword").on("change", function(e) {
 		    	updateParams();
 		        showTable();
-		    });
+		    }); */
 		
 		    // 페이징 링크 처리
 		    $(document).on("click", ".pagebtn", function(e) {
@@ -163,7 +163,6 @@
 		
 		    // 검색 AJAX 함수
 		    function showTable() {
-		    	console.log('아작스')
 		        $.ajax({
 		            url: 'list/sch',
 		            type: 'POST',

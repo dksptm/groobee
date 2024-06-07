@@ -280,6 +280,26 @@ public class DocController {
 		return docService.deleteDoc(docVO);
 	}
 	
+	// 기존문서 참고.
+	@GetMapping("cust/doc/rewrite")
+	public String docReInsertForm(@RequestParam Integer no, Model model) {
+		
+		DocVO docVO = new DocVO();
+		docVO.setDocNo(no);
+		DocVO findVO = docService.docInfo(docVO);
+		findVO.setDocNo(-1);
+		model.addAttribute("doc", findVO);
+		
+		List<TempVO> temps = docService.getCustTemps();
+		List<EmpVO> emps = docService.docRefs(docVO.getDocNo());
+		List<ProjectVO> tasks = docService.docTasks(docVO.getDocNo());
+		model.addAttribute("temps", temps);
+		model.addAttribute("emps", emps);
+		model.addAttribute("tasks", tasks);
+		
+		return "approval/doc/rewrite";
+	}
+	
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);
@@ -298,6 +318,7 @@ public class DocController {
 		}
 		return searchVO;
 	}
+	
 	
 	
 }

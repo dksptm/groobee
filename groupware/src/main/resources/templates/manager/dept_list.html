@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}">
+
+<th:block layout:fragment="Content">
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">부서관리 - 목록</h5>
+	<div class="card-body">
+		<div id="taskTable">
+			<div class="table-responsive">
+				<table th:if="${#arrays.length(depts)} != 0" class="table table-hover text-center">
+					<thead>
+						<tr>
+							<th class="col-2 text-white" style="background-color:#3F72AF;">부서명</th>
+							<th class="col-3 text-white" style="background-color:#3F72AF;">부서소재지</th>
+							<th class="col-3 text-white" style="background-color:#3F72AF;">부서설명</th>
+							<th class="col-3 text-white" style="background-color:#3F72AF;">부서장</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">사원수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="dept : ${depts}">
+						<tr th:attr="data-did=${dept.deptId}">
+							<td>[[ ${dept.deptName} ]]</td>
+							<td>[[ ${dept.deptLoc} ]]</td>
+							
+							<td th:if="${dept.deptInfo != null}">[[ ${dept.deptInfo} ]]</td>
+							<td th:unless="${dept.deptInfo != null}">-</td>
+							
+							<td th:if="${dept.mngrName != null}">[[ ${dept.mngrName} ]]</td>
+							<td th:unless="${dept.mngrName != null}">미정</td>
+							
+							<td th:if="${dept.cnt != null}">[[ ${dept.cnt} ]] 명</td>
+							<td th:unless="${dept.cnt != null}">없음</td>
+						</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDeptInfo">
+  Option 2
+</button>
+
+<!-- MODAL START 부서상세 -->
+<div class="modal fade" id="modalDeptInfo" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalScrollableTitle">부서관리 - 상세</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+      	<input type="text"  />
+       <!-- 부서상세 가져오는 공간 -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MODAL END 부서상세 -->
+
+<script>
+	var exampleModal = document.getElementById('modalDeptInfo')
+	exampleModal.addEventListener('show.bs.modal', function (event) {
+		
+		
+	  	// 모달 트리거 버튼.
+		var button = event.relatedTarget;
+		console.log("--1--");
+		console.log(button);
+		console.log("--2--");
+	  	// data-bs-* 속성에서 정보 추출
+	  	var recipient = button.getAttribute('data-did')
+	  	console.log(recipient);
+	  	console.log("--3--");
+		// 필요한 경우 여기에서 AJAX 요청을 시작할 수 있습니다.
+		// 그런 다음 콜백에서 업데이트를 수행합니다.
+		
+		// 모달의 콘텐츠를 업데이트합니다.
+		console.log("--4--");
+	  	var modalTitle = exampleModal.querySelector('.modal-title')
+	  	console.log("--5--");
+	  	var modalBodyInput = exampleModal.querySelector('.modal-body input')
+		console.log("--6--");
+	  	modalTitle.textContent = 'New message to ' + recipient
+	  	console.log("--7--");
+	  	modalBodyInput.value = recipient;
+	  	console.log("--8--");
+	})
+
+</script>
+
+</th:block>
+</html>

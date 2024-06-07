@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/default_layout}">
+	  layout:decorate="~{common/layouts/default_layout}"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 	  
 <th:block layout:fragment="Content">
 <th:block sec:authorize="hasAuthority('1C1c')">
@@ -53,7 +54,10 @@
 					<tr>
 					</tr>
 				</table>
+				<div class="d-flex justify-content-between">
+					<button type="button" th:onclick="|location.href='@{list}'|" class="btn btn-secondary py-1 mx-2">목록으로</button>
 					<button th:if="${#arrays.length(list)} != 0" type="button" class="btn btn-secondary py-1 doc-toggle-btn">등록계정 ▼</button>
+				</div>
 			</div>
 		</div>
 	</div>
