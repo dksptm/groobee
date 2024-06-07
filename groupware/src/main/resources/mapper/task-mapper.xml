@@ -312,6 +312,7 @@
 	<select id="selectCoop" resultType="ProjectVO">
 		SELECT coop_co_no
 						,task_no
+						,get_taskname(task_no) as task_name
 						,co_name
 						,co_tel
 						,pic
@@ -320,13 +321,9 @@
 		FROM coop_co
 		WHERE coop_co_no = #{coopCoNo}
 	</select>
-
-	
-	
-	
 	
 	<!-- 협력업체 수정 -->
-	<!--<update id="updateCoop" parameterType="ProjectVO">
+	<update id="updateCoop" parameterType="ProjectVO">
 		UPDATE coop_co
 		SET
 		<if test="coName != null and !coName.equals('')">
@@ -347,10 +344,10 @@
 		WHERE coop_co_no =#{coopCoNo}
 	</update>
 
-	협력업체 삭제
-	<delete id="deleteCoop" parameterType="int">
+	<!--협력업체 삭제 -->
+	<delete id="deleteCoop" parameterType="ProjectVO">
 		DELETE FROM coop_co
 		WHERE coop_co_no = #{coopCoNo}
-	</delete> -->
+	</delete> 
 
 </mapper>

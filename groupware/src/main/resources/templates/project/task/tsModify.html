@@ -37,14 +37,14 @@
                                     <th>부서참여인원</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                          		  <tr> 
-                                     <tr th:each="emp : ${empList}">
-									<td th:text="${emp.deptName}"  id="deptId"></td>
-									<td th:each="emp : ${empList}" th:text="${emp.empName}" id="empId"></td>
-								</tr>
-                                </tr>  
-                            </tbody>
+                           <tbody>
+								<th:block th:each="te : ${task.taskEmps}">
+									<tr>
+										<td>[[ ${te.deptName}]]</td>
+										<td>[[ ${te.empName}]]</td>
+									</tr>
+								</th:block>
+							</tbody>
                         </table>
                         <br>
                         <table class="table table-hover table-bordered">

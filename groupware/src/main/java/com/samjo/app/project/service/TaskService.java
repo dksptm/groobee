@@ -32,14 +32,10 @@ public interface TaskService {
 	// 협력업체 등록
 	public int coopInsert(ProjectVO projectVO);
 	// 협력업체 단건조회
-	public ProjectVO coopInfo(ProjectVO projectVO);
-	
-	
-
-	
-	/*
-	
+	public ProjectVO coopInfo(int coopCoNo);
 	// 협력업체 수정
-		public Map<String, Object> coopUpdate(ProjectVO projectVO);
-	 */
+	public Map<String, Object> coopUpdate(ProjectVO projectVO);
+	// 협력업체 삭제
+	public int coopDelete(ProjectVO projectVO);
+	
 }

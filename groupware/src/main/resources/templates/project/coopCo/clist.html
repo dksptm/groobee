@@ -60,20 +60,18 @@
 										<th>담당자</th>
 										<th>연락처</th>
 										<th>내용</th>
-										<th>주소</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="coop : ${clist}">
-										<tr>
+									<tr th:onclick="|location.href='@{/cust/cInfo?coopCoNo={cno}(cno=${coop.coopCoNo})}'|">
 											<td>[[ ${coop.coopCoNo}]]</td>
 											<td>[[ ${coop.coName}]]</td>
 											<td>[[ ${coop.taskName}]]</td>
 											<td>[[ ${coop.pic}]]</td>
 											<td>[[ ${coop.coTel}]]</td>
 											<td>[[ ${coop.cntn}]]</td>
-											<td>[[ ${coop.custAddr}]]</td>
 											<!--  <td><input type="checkbox" name="deleteCheckbox" value="[[ ${coop.coopCoNo}]]"></td> -->
 										</tr>
 									</th:block>

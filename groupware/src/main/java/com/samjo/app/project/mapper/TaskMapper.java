@@ -48,12 +48,11 @@ public interface TaskMapper {
 		// 협력업체 등록
 		public int insertCoop(ProjectVO projectVO);
 		// 협력업체 단건
-		public ProjectVO selectCoop(ProjectVO projectVO);
+		public ProjectVO selectCoop(int coopCoNo);
+		// 협력업체 수정 
+		public int updateCoop(ProjectVO projectVO);
+		// 협력업체 삭제 
+		public int deleteCoop(ProjectVO projectVO); 
+		//deleteCoop(@Param("coopCoNo")int coopCoNo);  
 		
-		/*	 	
-		  // 협력업체 수정 
-		  public int updateCoop(ProjectVO projectVO); 
-		  // 협력업체 삭제 public int
-		  deleteCoop(@Param("coopCoNo")int coopCoNo);
-		 */
 }
