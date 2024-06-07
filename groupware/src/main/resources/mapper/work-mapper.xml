@@ -7,7 +7,7 @@
 SELECT t.*
 FROM (SELECT rownum rn, 
                      f.*
-      FROM (SELECT w.*
+      FROM (SELEsCT w.*
             FROM (SELECT e.*
                   FROM (SELECT
                                i.dt,
