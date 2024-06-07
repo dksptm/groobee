@@ -10,20 +10,29 @@
 	<div class="card-body">
 		<div id="taskTable">
 			<div class="table-responsive">
+				<div class="text-end">
+					<button type="button" class="btn px-2 py-0 me-1 btn-danger dept-del"><b>부서삭제</b>
+						<span class="icon bx bx-message-square-minus bx-md"></span>
+					</button>
+					<button type="button" class="btn px-2 py-0 ms-1 dept-add"><b>부서추가</b>
+						<span class="icon bx bx-message-square-add bx-md"></span>
+					</button>	
+				</div>
 				<table th:if="${#arrays.length(depts)} != 0" class="table table-hover text-center">
 					<thead>
 						<tr>
 							<th class="col-2 text-white" style="background-color:#3F72AF;">부서명</th>
 							<th class="col-3 text-white" style="background-color:#3F72AF;">부서소재지</th>
 							<th class="col-3 text-white" style="background-color:#3F72AF;">부서설명</th>
-							<th class="col-3 text-white" style="background-color:#3F72AF;">부서장</th>
-							<th class="col-1 text-white" style="background-color:#3F72AF;">사원수</th>
+							<th class="col-2 text-white" style="background-color:#3F72AF;">부서장</th>
+							<th class="col-2 text-white" style="background-color:#3F72AF;">사원수</th>
 						</tr>
 					</thead>
 					<tbody>
 						<th:block th:each="dept : ${depts}">
 						<tr th:attr="data-did=${dept.deptId}">
 							<td>[[ ${dept.deptName} ]]</td>
+							
 							<td>[[ ${dept.deptLoc} ]]</td>
 							
 							<td th:if="${dept.deptInfo != null}">[[ ${dept.deptInfo} ]]</td>
@@ -36,6 +45,13 @@
 							<td th:unless="${dept.cnt != null}">없음</td>
 						</tr>
 						</th:block>
+						<tr id="insertForm" style="display:none;">
+							<td><input type="text" class="form-control" name="deptName" /></td>
+							<td><input type="text" class="form-control" name="deptLoc" /></td>
+							<td><input type="text" class="form-control" name="deptInfo" /></td>
+							<td><input type="text" class="form-control" name="mngrName" readonly /></td>
+							<td><button type="button" class="btn btn-primary">사원조회</button></td>						
+						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -44,57 +60,67 @@
 </div>
 </div>
 
-<!-- MODAL START 부서상세 -->
-<div class="modal fade" id="modalDeptInfo" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalScrollableTitle">부서관리 - 상세</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        </button>
-      </div>
-      <div class="modal-body">
-      	<input type="text"  />
-       <!-- 부서상세 가져오는 공간 -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
+<div>
+<input type="hidden" class="form-control bg-transparent" id="empAddr1">
+<input type="hidden" class="form-control bg-transparent" id="empAddr2">
+<input type="hidden" class="form-control bg-transparent" id="empAddr3">
+<input type="hidden" class="form-control bg-transparent" id="empAddr4">												
 </div>
-<!-- MODAL END 부서상세 -->
 
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-	var exampleModal = document.getElementById('modalDeptInfo')
-	exampleModal.addEventListener('show.bs.modal', function (event) {
-		
-		
-	  	// 모달 트리거 버튼.
-		var button = event.relatedTarget;
-		console.log("--1--");
-		console.log(button);
-		console.log("--2--");
-	  	// data-bs-* 속성에서 정보 추출
-	  	var recipient = button.getAttribute('data-did')
-	  	console.log(recipient);
-	  	console.log("--3--");
-		// 필요한 경우 여기에서 AJAX 요청을 시작할 수 있습니다.
-		// 그런 다음 콜백에서 업데이트를 수행합니다.
-		
-		// 모달의 콘텐츠를 업데이트합니다.
-		console.log("--4--");
-	  	var modalTitle = exampleModal.querySelector('.modal-title')
-	  	console.log("--5--");
-	  	var modalBodyInput = exampleModal.querySelector('.modal-body input')
-		console.log("--6--");
-	  	modalTitle.textContent = 'New message to ' + recipient
-	  	console.log("--7--");
-	  	modalBodyInput.value = recipient;
-	  	console.log("--8--");
-	})
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
 
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                if(data.userSelectedType === 'R'){
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    document.getElementById("empAddr4").value = extraAddr;
+                
+                } else {
+                    document.getElementById("empAddr4").value = '';
+                }
+
+                document.getElementById('empAddr1').value = data.zonecode;
+                document.getElementById("empAddr2").value = addr;
+                document.getElementById("empAddr3").focus();
+            }
+        }).open();
+    }
+</script>
+<script>
+$(function(){
+	
+	$('button.dept-add').on('click', function(e) {
+		$('#insertForm').show();
+		
+		$(this).addClass('btn-info');
+		
+	});
+	
+	$('input[name="deptLoc"]').on('click', function(e){
+		console.log('!')
+		sample6_execDaumPostcode();
+	})
+	
+	
+}) // end.
 </script>
 
 </th:block>
