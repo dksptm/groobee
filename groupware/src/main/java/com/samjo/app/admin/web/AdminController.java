@@ -47,33 +47,6 @@ public class AdminController {
 		return "admin/payAndCtList";
 	}
 	
-
-
-	
-
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	//직급관리 전체조회 
 	@GetMapping("cust/admin/jobList")
 	public String empJobList(Model model, Authentication authentication) {
