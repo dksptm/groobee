@@ -62,5 +62,10 @@ public class DeptServiceImpl implements DeptService {
 	public List<DeptVO> custDeptinfoAll(EmpVO empVO) {
 		return deptMappr.selectCustDeptinfoAll(empVO);
 	}
+	
+	@Override	// 부서이름 중복체크.
+	public int dnameCheck(String deptName, String custNo) {
+		return deptMappr.countDname(deptName, custNo);
+	}
 
 }

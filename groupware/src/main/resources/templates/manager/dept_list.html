@@ -46,10 +46,10 @@
 						</tr>
 						</th:block>
 						<tr id="insertForm" style="display:none;">
-							<td><input type="text" class="form-control" id="bname" /></td>
+							<td><input type="text" class="form-control" id="dname" /></td>
 							<td><button type="button" class="btn btn-primary btn-sm p-1" id="locBtn">주소입력</button></td>
 							<td><input type="text" class="form-control" id="dinfo" /></td>
-							<td><input type="text" class="form-control" id="dmngr" readonly /></td>
+							<td><input type="text" class="form-control" id="dmngr" value="조회 >>" readonly /></td>
 							<td><button type="button" class="btn btn-primary btn-sm p-1" id="empBtn">사원조회
 								</button>
 							</td>						
@@ -95,7 +95,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary chk-btn">선택</button>
       </div>
     </div>
   </div>
@@ -138,7 +138,7 @@
                 let creTag = document.createElement("span");
                 let locTag = document.querySelector('#locBtn');
                 
-                creTag.classList.add('juso');
+                creTag.classList.add('juso1');
                 creTag.innerText = document.getElementById("empAddr2").value;
                 
                 locTag.insertAdjacentElement('beforebegin', creTag);
@@ -154,11 +154,11 @@
                 //document.getElementById("empAddr3").focus();
 
             	$('input.juso').blur(function() {
-            		console.log('111')
             		let span = $('<span></span>').text($('input.juso').val());
-            		span.addClass('juso');
+            		span.addClass('juso2');
             		$('input.juso').after(span);
             		$('input.juso').remove();
+            		span.after($('<br>'));
             		
             	});
                 
@@ -166,16 +166,30 @@
         }).open();
     }
 </script>
+
 <script>
 $(function(){
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-	
+	let dnameFlag = false;
+		
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center-center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	 })
+ 	
 	//<span class="icon bx bx-message-square-minus bx-md"></span>
 	//<span class="icon bx bx-message-square-add bx-md"></span>
 	
-	// 버튼클릭시
+	// 부서추가 버튼클릭시
 	$('button.dept-add').on('click', function(e) {
 		$('#insertForm').show();
 		
@@ -188,26 +202,139 @@ $(function(){
 	
 	// 주소버튼
 	$('#locBtn').on('click', function(e) {
-		$('.juso').remove();
-    	
-    	sample6_execDaumPostcode();
-	});
-	
-	$('input.juso').blur(function() {
-		console.log('111')
-		let span = $('<span></span>').text($('input.juso').val());
-		span.addClass('juso');
-		$('input.juso').after(span);
-		$('input.juso').remove();
+		console.log('주소버튼 클릭')
+		
+		setTimeout(() => {
+			if(!firstCheckt()) return;
+			
+			$('.juso2').next('br').remove();
+			$('.juso1').remove();
+			$('.juso2').remove();
+	    	sample6_execDaumPostcode();
+	    }, 300);
 		
 	});
 	
-	// 사번중복체크.
-	$("#dname").blur(function(){
+	// 부서명 입력할때마다.
+	$("#dname").on('focus', function(){		
+		console.log('부서명 입력')
 		
+		setTimeout(() => {
+			$('.dnamechk').remove();
+			dnameFlag = false;
+	    },100);
+		
+	})
+	
+	// 부서명 중복체크.
+	$("#dname").on('blur', function(){
+		console.log('blur 이벤트')	
+		
+		setTimeout(() => {
+			dnameCheck(); // ajax.
+			
+	    },200);
+		
+	});
+	
+	var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+	
+	// 사원조회 버튼.
+	$('#empBtn').on('click', function(e) {
+		
+		setTimeout(() => {
+			if(!firstCheckt()) return;
+			
+			showMngrModal();// ajax.
+	    }, 300);
+	});	
+	
+	// 사원조회 모달에서 선택버튼.
+	$('.chk-btn').on('click', function(e) {
+		
+		let body = $('#exampleModal .modal-body');
+		let chk = body.find('input[name="mngr"]:checked');
+		
+		if(chk.length == 0) return;
+		
+		Swal.fire({
+			title: '',
+			text: "해당사원의 부서를 새로운 부서로 변경할까요?",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '승인',
+			cancelButtonText: '취소',
+			reverseButtons: true, // 버튼 순서 거꾸로	
+			willOpen: (popup) => { // 스윗얼럿이 모달뒤로 숨는것 방지.
+                popup.style.zIndex = '2000';
+                document.querySelectorAll('.swal2-container').forEach((el) => {
+                    el.style.zIndex = '2000';
+                });
+            }
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+				
+				$('#dmngr').val('');
+				$('#dmngr').next('span').remove();
+				
+				$('#dmngr').val(chk.val()).attr('type', 'hidden');
+				let mngr = chk.closest('label');
+				let creTag = $('<span></span>').text(mngr.text());
+				$('#dmngr').after(creTag);
+				
+				Swal.fire({
+			    	  icon: 'info',               
+					  title: '부서장 선택완료',
+					  confirmButtonText: '확인'
+				});
+				
+				myModal.hide();
+			}
+		})
+		//body.children().remove();		
+	})
+	
+	// 저장버튼.
+	$('.dept-insert').on('click', function(e) {
+		if(!validation()) {
+			console.log('체크 false')
+			return;
+		}
+		
+		let param = {};
+		let deptName = $('#dname').val();
+		let deptLoc = `${$('span.juso1').text()} ${$('span.juso2').text()} (${$('#empAddr1').val()})`;
+		let deptInfo = $('#dinfo').val();
+		let deptMngr = $('#dmngr').val();
+		param = {deptName, deptLoc, deptInfo, deptMngr}
+		console.log(param)
+		
+		
+	})
+	
+	/* -------------정의된 함수들--------------- */
+	// 부서명 입력 및 중복체크 했는지 확인하는 함수정의.
+	const firstCheckt = function() {
+		console.log('firstCheckt')
+		if(!dnameFlag) {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서명부터 확인해주세요',
+				  confirmButtonText: '확인'
+			});
+			return false;
+		}
+		return true;
+	}
+	
+	// 부서명 중복체크 함수정의.
+	const dnameCheck = function() {
+	
+		console.log('부서명 중복체크')
 		let dname = $('#dname').val();
-		let cno = $('#id').val();
-		
+		let cno = $('#cno').val();
+	
 		$.ajax({
 			type : 'GET',
 			url	 : 'dnameCheck?dname=' + dname + '&cno=' + cno,
@@ -217,25 +344,25 @@ $(function(){
 		    dataType: 'Text'
 		})
 		.done(result => {
-
+			
+			let span = $('<span></span>');
 			if(result > 0) {
-			
-				Toast.fire({
-					icon: 'error',
-				    title: '이미 있는 부서명입니다..'
-				});
-			
-				$("#dname").val('').focus();
-			
-			} 
+				span.text('중복된 부서명입니다.').css('color', 'red').addClass('dnamechk');
+				$("#dname").after(span);
+				dnameFlag = false;
+			} else if (result == 0) {
+				span.text('부서명 확인완료.').css('color', 'blue').addClass('dnamechk');
+				$("#dname").after(span);
+				dnameFlag = true;
+			}
 		})
 		.fail(err => console.error(err));
-		
-	});
+	}
 	
-	$('#empBtn').on('click', function(e) {
-		var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-        myModal.show();
+	//부서장급 사원 불러오기 모달 함수정의.
+	const showMngrModal = function() {
+		
+		myModal.show();
         
         $('#exampleModal .modal-body').html('');
         
@@ -244,12 +371,11 @@ $(function(){
         copy1.append(copy2);
         $('#exampleModal .modal-body').html(copy1);
         
-        
 		let listDiv = $('.list-copy');
-		let copyDiv = listDiv.clone();
 		let label = listDiv.find('label');
 		let input = label.find('input');
 		
+		let copyDiv = listDiv.clone();
 		let copyLabel = label.clone();
 		let copyInput = input.clone();
 		copyLabel.append(copyInput);
@@ -269,7 +395,7 @@ $(function(){
 			result.forEach((val,idx) => {
 				
 				copyLabel.text(" " + val.deptName + " " + val.empName + " " + val.jobTitle);
-				copyInput.val(val.empId);
+				copyInput.val(val.empId)
 				
 				copyLabel.prepend(copyInput);
 				copyDiv.append(copyLabel);
@@ -281,14 +407,51 @@ $(function(){
 			
 			$('#exampleModal .modal-body').html(copyDiv);
 			
-			console.log('완성?');
+			console.log('modal ajax.');
 		})
 		.fail(err => console.error(err));
 		
-		
-	});	
+	}//showMngrModal end.
+	
+	// validation check 함수정의.
+	const validation = function() {
+		if($('#dname').val() == '') {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서명 필수입력',
+				  confirmButtonText: '확인'
+			});
+			$('#dname').focus();
+			return false;
+		} else if(!dnameFlag) {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '중복된 부서명',
+				  confirmButtonText: '확인'
+			});
+			$('#dname').focus();
+			return false;
+		} else if($('span.juso1').text() == '') {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서소재지 필수',
+				  text: '주소입력 버튼을 클릭하여 주소를 입력해주세요.',
+				  confirmButtonText: '확인'
+			});
+			return false;
+		}
+		return true;
+	}
+	
 	
 }) // end.
+
+
+
+
+
+
+
 </script>
 
 </th:block>

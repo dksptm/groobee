@@ -116,6 +116,7 @@
 		     )
 	</select>
 	
+	<!-- 사번 중복 체크 -->
 	<select id="countEno" parameterType="map" resultType="int">
 		SELECT COUNT(*)
 		FROM emp

@@ -16,7 +16,7 @@ public interface EmpService {
 	// 사원등록 시 부서,직급 조회
 	public List<DeptVO> insertFormDepts(EmpVO empVO);
 	public List<JobVO> insertFormJobs(EmpVO empVO);
-	public int idCheck(String eno, String cno);
+	public int idCheck(String empId, String custNo);
 	
 	// 사원등록
 	public String insertEmp(EmpVO empVO);

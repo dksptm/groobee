@@ -68,8 +68,8 @@ public class EmpController {
 	// 사번체크.
 	@ResponseBody
 	@GetMapping("cust/manager/idCheck")
-	public int idCheck(@RequestParam("eno") String eno, @RequestParam("cno") String cno) {
-		int result = empService.idCheck(eno, cno);
+	public int idCheck(@RequestParam("eno") String empId, @RequestParam("cno") String custNo) {
+		int result = empService.idCheck(empId, custNo);
 		return result;
 	}
 	

@@ -42,6 +42,7 @@ public class DeptController {
 		return "approval/modal/modal_refs";
 	}
 	
+	// 부서관리.
 	@GetMapping("cust/manager/dept")
 	public String custDeptinfoList(Model model) {
 		EmpVO empVO = SecuUtil.getLoginEmp();
@@ -60,6 +61,7 @@ public class DeptController {
 		return "manager/dept_list";
 	}
 	
+	// 부서장급 사원가져오기 json.
 	@ResponseBody
 	@GetMapping("cust/manager/dept/mngrs")
 	public List<EmpVO> getCustMngrList() {
@@ -68,6 +70,13 @@ public class DeptController {
 		return list;
 	}
 	
+	// 부서이름체크.
+	@ResponseBody
+	@GetMapping("cust/manager/dnameCheck")
+	public int idCheck(@RequestParam("dname") String deptName, @RequestParam("cno") String custNo) {
+		int result = deptService.dnameCheck(deptName, custNo);
+		return result;
+	}
 	
 	
 	

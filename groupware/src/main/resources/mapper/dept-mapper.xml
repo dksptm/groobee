@@ -175,5 +175,13 @@
 		ORDER BY d.dept_id
 	</select>
 	
+	<!-- 같은 부서명 체크 -->
+	<select id="countDname" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM dept
+		WHERE cust_no = #{cno}
+		AND  dept_name = #{dname}
+	</select>
+	
 </mapper>
   

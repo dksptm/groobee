@@ -89,8 +89,8 @@ public class EmpServiceImpl implements EmpService {
 	}
 	// 사원등록 위한 사번중복체크
 	@Override
-	public int idCheck(String eno, String cno) {
-		return empMapper.countEno(eno, cno);
+	public int idCheck(String empId, String custNo) {
+		return empMapper.countEno(empId, custNo);
 	}
 	
 	// 사원등록.

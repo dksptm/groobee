@@ -22,5 +22,8 @@ public interface DeptService {
 	
 	// 한 회사의 부서전체 상세목록.
 	public List<DeptVO> custDeptinfoAll(EmpVO empVO);
+	
+	// 부서이름 체크
+	public int dnameCheck(String deptName, String custNo);
 
 }
