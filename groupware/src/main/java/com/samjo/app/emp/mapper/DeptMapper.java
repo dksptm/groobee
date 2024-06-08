@@ -41,5 +41,15 @@ public interface DeptMapper {
 	
 	// 부서등록.
 	public int insertDeptInfo(DeptVO dept);
+	// 부서장 null.
+	public int updateDeptMngr(DeptVO dept);
+	
+	// 부서수정
+	public int updateDeptInfo(DeptVO dept);
+	
+	// 부서삭제
+	public int deleteDeptInfo(@Param("did") String deptId, @Param("cno") String custNo);
+	
+	
 	
 }

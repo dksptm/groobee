@@ -218,5 +218,38 @@
 					)
 	</insert>
 	
+	<!-- 부서장 null -->
+	<update id="updateDeptMngr" parameterType="DeptVO">
+		UPDATE	dept
+		SET 	dept_mngr = null
+		WHERE	dept_mngr = #{deptMngr}
+		AND		dept_id <![CDATA[<>]]> #{deptId}	
+	</update>
+	
+	<!-- 부서수정 -->
+	<update id="updateDeptInfo" parameterType="DeptVO">
+		UPDATE  dept
+		SET		cust_no = cust_no
+			   <if test="deptName != null and !deptName.equals('')">
+		       ,dept_name = #{deptName}
+		       </if>
+			   <if test="deptLoc != null and !deptLoc.equals('')">
+		       ,dept_loc  = #{deptLoc}
+		       </if>
+			   <if test="deptInfo != null and !deptInfo.equals('')">
+		       ,dept_info = #{deptInfo}
+		       </if>
+			   <if test="deptMngr != null and !deptMngr.equals('')">
+		       ,dept_mngr = #{deptMngr}
+		       </if>
+		WHERE   dept_id = #{deptId}		
+	</update>
+	
+	<delete id="deleteDeptInfo" parameterType="map">
+		DELETE FROM dept
+		WHERE		dept_id = #{did}
+		AND			cust_no = #{cno}
+	</delete>
+	
 </mapper>
   

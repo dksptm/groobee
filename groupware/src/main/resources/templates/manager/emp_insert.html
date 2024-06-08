@@ -20,6 +20,8 @@
 	<div class="bg-light p-3 col-8">
 		<div class="card d-flex justify-content-center table-responsive m-2 p-4">
 			<form th:action="@{empInsert}" id="empInsertForm" method="post" th:object="${emp}">
+				<span><b>등록가능 사원 수 : [[${cust.maxEmps}]]</b></span>&emsp;
+				<span><b>현재 사원 수 : [[${cust.curEmps}]]</b></span>
 				<table class="table table-bordered border-3 cust-table">
 					<tr>
 						<th colspan="4" class="py-3 table-primary">
@@ -96,14 +98,18 @@
 						</td>
 					</tr>
 				</table>
-				<div class="text-end">
+				<div class="text-end" th:if="${cust.maxEmps} > ${cust.curEmps}">
 					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">사원등록</button>
 					<button type="reset" th:onclick="|location.href='@{empList}'|" class="btn btn-secondary mt-3">등록취소</button>
+				</div>
+				<div class="d-flex align-items-center justify-content-end mt-3" th:unless="${cust.maxEmps} > ${cust.curEmps}">
+			        <span class="text-danger"><b>등록가능한 사원수를 초과했습니다.</b></span>&emsp;
+			        <button type="reset" th:onclick="|location.href='@{empList}'|" class="btn btn-warning">목록으로 돌아가기</button>
 				</div>
 			</form>
 		</div>
 	</div>
-</div>
+</div>s
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>

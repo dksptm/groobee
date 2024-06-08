@@ -116,6 +116,14 @@
 		     )
 	</select>
 	
+	<!-- 최대/현재 계정수 -->
+	<select id="selectEmpMaxCur" resultType="CustVO">
+		SELECT  cur_emps
+				, max_emps
+		FROM 	ct
+		WHERE   cust_no = #{cno}
+	</select>
+	
 	<!-- 사번 중복 체크 -->
 	<select id="countEno" parameterType="map" resultType="int">
 		SELECT COUNT(*)

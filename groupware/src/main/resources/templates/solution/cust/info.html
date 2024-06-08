@@ -64,6 +64,9 @@
 
 	<!-- 계정목록 -->
 	<div th:if="${#arrays.length(list)} != 0" class="collapse doc-toggle-area">
+		<span>계약 계정 수 : [[${cust.maxEmps}]]</span>
+		<span>현재 계정 수1 : [[${pageDTO.totalCnt}]]</span>
+		<span>현재 계정 수2 : [[${cust.curEmps}]]</span>
 		<div class="d-flex justify-content-end condition">
 		<div class="col-3 d-flex justify-content-between">
 			<select class="form-select keywordCondition">
@@ -181,7 +184,7 @@ function showTable(param) {
             xhr.setRequestHeader(header, token);
         },
         data: param,
-        dataType: 'Text',
+        dataType: 'text',
         success: function(result) {
             $('#EmpListArea').replaceWith(result);
             pagination();

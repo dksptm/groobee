@@ -27,4 +27,8 @@ public interface DeptService {
 
 	// 부서등록.
 	public String insertDeptInfo(DeptVO dept);
+	// 부서수정
+	public String updateDeptInfo(DeptVO dept);
+	// 부서삭제
+	public int deleteDeptInfo(String[] deptIdList, String custNo);
 }

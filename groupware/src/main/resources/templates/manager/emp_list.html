@@ -10,26 +10,30 @@
 <div class="container container-p-y mt-3">
 	<h4>사원관리 - 목록</h4>
 	<div>
-		<button type="button" onclick="location.href='/cust/manager/empInsert'" class="btn btn-primary me-3">사원추가</button>
+		<button type="button" class="btn btn-primary me-3 emp-insert-btn">사원추가</button>
 	</div>
 	<input type="hidden" id="cno" th:value="${#authentication.principal.custNo}" disabled />
 	<!-- 계정목록 -->
 	<div th:if="${#arrays.length(list)} != 0">
-		<div class="d-flex justify-content-end condition">
-		<div class="col-3 d-flex justify-content-between">
-			<select class="form-select keywordCondition">
-				<option value="all">권 한</option>
-				<option value="1C2c">관리자</option>
-				<option value="1C3c">부서장</option>
-				<option value="1C4c">사원</option>
-			</select>
-			<select class="form-select searchCondition">
-				<option value="all">계정상태</option>
-				<option value="1D1d">재직</option>
-				<option value="1D2d">퇴직</option>
-				<option value="1D3d">최초</option>
-			</select>
-		</div>
+		<div class="d-flex justify-content-between condition">
+			<div class="col-3 d-flex mt-3 justify-content-start">
+				<span><b>등록가능 사원 수 : [[${cust.maxEmps}]]</b></span>&emsp;
+				<span><b>현재 사원 수 : [[${cust.curEmps}]]</b></span>
+			</div>
+			<div class="col-3 d-flex justify-content-end">
+				<select class="form-select keywordCondition">
+					<option value="all">권 한</option>
+					<option value="1C2c">관리자</option>
+					<option value="1C3c">부서장</option>
+					<option value="1C4c">사원</option>
+				</select>
+				<select class="form-select searchCondition">
+					<option value="all">계정상태</option>
+					<option value="1D1d">재직</option>
+					<option value="1D2d">퇴직</option>
+					<option value="1D3d">최초</option>
+				</select>
+			</div>
 		</div>
 		<!-- Emps Fragment -->
 		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
@@ -37,7 +41,7 @@
 </div>
 
 
-<script>
+<script th:inline="javascript">
 $(function() { 
 	
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -54,6 +58,23 @@ $(function() {
 	        toast.addEventListener('mouseenter', Swal.stopTimer)
 	        toast.addEventListener('mouseleave', Swal.resumeTimer)
 	      }
+	})
+	
+	let max = [[${cust.maxEmps}]];
+	let cur = [[${cust.curEmps}]];
+	
+	$('button.emp-insert-btn').on('click', function(e){
+		if(max <= cur) {
+			Swal.fire({
+				position: "center",
+				icon: 'warning',
+			    title: "등록가능 사원수를 초과했습니다."
+			})	
+			return;
+		} else {
+			location.href='/cust/admin/empInsert'
+		}
+		
 	})
 	
 	if($('.condition') != null) {
