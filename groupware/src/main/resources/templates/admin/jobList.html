@@ -24,7 +24,8 @@
                             </thead>
                             <tbody>
                                 <th:block th:each="jobVO : ${getJobList}">
-                                    <tr class="toJobInfo" data-job-no="[[${jobVO.jobNo}]]" 
+                                    <tr class="toJobInfo" 
+                                    data-job-no="[[${jobVO.jobNo}]]"
                                     data-job-title="[[${jobVO.jobTitle}]]" 
                                     data-perm-id="[[${jobVO.permId}]]"
                                     data-bs-toggle="modal" data-bs-target="#JobInfoModal">
@@ -58,7 +59,6 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>직급번호</th>
                                 <th>직급명</th>
                                 <th>권한</th>
                             </tr>
@@ -66,9 +66,6 @@
                         <tbody>
                             <th:block>
                                 <tr>
-                                    <td>
-                                        <input id="jobNo" placeholder="직급번호 입력(3자리 숫자)" required>
-                                    </td>
                                     <td>
                                         <input id="jobTitle" placeholder="직급명 입력" required>
                                     </td>
@@ -111,7 +108,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input id="updateJobNo" placeholder="직급번호 입력(3자리 숫자)"></td>
+                                <td><input id="updateJobNo" placeholder="직급번호 입력" readonly></td>
                                 <td><input id="updateJobTitle" placeholder="직급명 입력"></td>
                                 <td>
                                     <select id="updatePermId">
@@ -125,9 +122,9 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="updateBtn" data-bs-dismiss="modal">등록</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn" data-bs-dismiss="modal">수정</button>
                     <button type="button" class="btn btn-danger" id="deleteBtn" data-bs-dismiss="modal">삭제</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 </div>
             </div>
         </div>
@@ -136,8 +133,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
 $(document).ready(function() {
-    // 마우스 갖다대면 색깔 바뀌게. 클릭유도?..
+    // 마우스 갖다대면 색깔 바뀌게
     $('.toJobInfo').hover(
         function() {
             $(this).css('background-color', '#f5f5f5');
@@ -145,80 +143,93 @@ $(document).ready(function() {
         function() {
             $(this).css('background-color', '');
         }
-    )
+    );
+}
+	
+// 등록 버튼 클릭 이벤트
+$('#insertBtn').click(function(e) {
+    //let jobNo = $('#jobNo').val(); 셀렉키로 자동생성될것
+    let jobTitle = $('#jobTitle').val();
+    let permId = $('#permId').val();
+
+    if (!jobTitle || !permId) {
+    	Swal.fire({
+			icon : 'error',	
+			title : '잠깐!',
+			text : '모든 값을 입력하세요.',
+		});
+		return;
+    }
+
+    $.ajax({
+        url: '/cust/admin/jobInsert',
+        type: 'POST',
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader(header, token);
+		},
+        contentType: 'application/json',
+		dataType : 'text',
+        data: JSON.stringify({
+            jobTitle: jobTitle,
+            permId: permId
+        }),
+		success : function(result) {
+			Swal.fire ({
+				icon : 'success',
+				title : '성공!',
+				text : '등록되었습니다.',
+			})
+			.then((result) => {
+				if(result.value){
+					location.href = "/cust/admin/jobList";
+				}
+			});
+		},
+		error : function(xhr, status, error) {
+			console.error(error);
+			Swal.fire({
+				icon : 'error',
+				title : '실패',
+				text : '등록 중 오류가 발생했습니다.',
+			})
+			.then((result) => {
+				if(result.value){
+					location.href = "/cust/admin/jobList";
+				}
+			});
+		}
+    });
+});
+
+    // 행 클릭 이벤트 - 모달에 정보 전달
+    $('.toJobInfo').click(function(e) {
+        let jobNo = $(this).data('job-no');
+        let jobTitle = $(this).data('job-title');
+        let permId = $(this).data('perm-id');
+
+        $('#updateJobNo').val(jobNo);
+        $('#updateJobTitle').val(jobTitle);
+        $('#updatePermId').val(permId);
     });
 
-    // 등록 버튼 클릭 이벤트
-    $('#insertBtn').click(function(e) {
-        let jobNo = $('#jobNo').val();
-        let jobTitle = $('#jobTitle').val();
-        let permId = $('#permId').val();
-
-        if (!jobNo || !jobTitle || !permId) {
-        	Swal.fire({
-				icon : 'error',	
-				title : '잠깐!',
-				text : '모든 값을 입력하세요.',
-			})
-			return;
-        }
-
-        $.ajax({
-            url: '/cust/admin/jobInsert',
-            type: 'POST',
-			beforeSend : function(xhr) {
-				xhr.setRequestHeader(header, token);
-			},
-            contentType: 'application/json',
-			dataType : 'text',
-            data: JSON.stringify({
-                jobNo: jobNo,
-                jobTitle: jobTitle,
-                permId: permId
-            }),
-			success : function(result) {
-				Swal.fire ({
-					icon : 'success',
-					title : '성공!',
-					text : '등록되었습니다.',
-				})
-				.then((result) => {
-					if(result.value){
-						location.href = "/cust/admin/jobList";
-					}
-				})
-			},
-			error : function(xhr, status, error) {
-				console.error(error);
-				Swal.fire({
-					icon : 'error',
-					title : '실패',
-					text : '등록 중 오류가 발생했습니다.',
-				})
-				.then((result) => {
-					if(result.value){
-						location.href = "/cust/admin/jobList";
-					}
-				})
-			}
-        });
-    }
-    
-    
-    // 수정 버튼 클릭 이벤트. 지금생각해보니 jobNo는 수정 불가하게 해야됨!
+    // 수정 버튼 클릭 이벤트
     $('#updateBtn').click(function(e) {
         let jobNo = $('#updateJobNo').val();
         let jobTitle = $('#updateJobTitle').val();
         let permId = $('#updatePermId').val();
 
         if (!jobNo || !jobTitle || !permId) {
-            alert('모든 값을 입력하세요.');
-            return;
+            Swal.fire({
+				icon : 'error',	
+				title : '잠깐!',
+				text : '모든 값을 입력하세요.',
+			});
+			return;
         }
 
         $.ajax({
             url: '/cust/admin/jobUpdate',
-            type: 'POST',
+            type: 'PUT', 
 			beforeSend : function(xhr) {
 				xhr.setRequestHeader(header, token);
 			},
@@ -239,7 +250,7 @@ $(document).ready(function() {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				})
+				});
 			},
 			error : function(xhr, status, error) {
 				console.error(error);
@@ -252,12 +263,14 @@ $(document).ready(function() {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				})
+				});
 			}
+        });
+    });
 
     // 삭제 버튼 클릭 이벤트
     $('#deleteBtn').click(function(e) {
-        var jobNo = $('#updateJobNo').val();
+        let jobNo = $('#updateJobNo').val();
 
         if (!confirm('정말 삭제하시겠습니까?')) {
             return;
@@ -265,16 +278,14 @@ $(document).ready(function() {
 
         $.ajax({
             url: '/cust/admin/jobDelete',
-            type: 'POST',
+            type: 'DELETE', 
 			beforeSend : function(xhr) {
 				xhr.setRequestHeader(header, token);
 			},
             contentType: 'application/json',
 			dataType : 'text',
             data: JSON.stringify({
-                jobNo: jobNo,
-                jobTitle: jobTitle,
-                permId: permId
+                jobNo: jobNo
             }),
 			success : function(result) {
 				Swal.fire ({
@@ -286,7 +297,7 @@ $(document).ready(function() {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				})
+				});
 			},
 			error : function(xhr, status, error) {
 				console.error(error);
@@ -299,9 +310,11 @@ $(document).ready(function() {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				})
+				});
 			}
-});
-</script>
+        });  
+    });
 
+
+</script>
 </html>

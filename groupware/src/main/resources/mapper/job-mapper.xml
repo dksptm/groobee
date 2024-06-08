@@ -44,6 +44,7 @@
 		   job_title = #{jobTitle},
 		   cust_no = #{custNo})
 	</update>
+	
 	<!-- 직급 삭제, doc-mapper -->
 	<delete id="jobDelete" parameterType="jobVO">
 	DELETE jobs
