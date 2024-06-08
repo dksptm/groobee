@@ -17,5 +17,8 @@ public class DeptVO {
 	private String mngrName;
 	private Integer cnt;
 	
+	// 등록시 필요.
+	private boolean mngrFlag;
+	
 	private List<EmpVO> emps;
 }

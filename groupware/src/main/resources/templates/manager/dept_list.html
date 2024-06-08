@@ -38,7 +38,10 @@
 							<td th:if="${dept.deptInfo != null}">[[ ${dept.deptInfo} ]]</td>
 							<td th:unless="${dept.deptInfo != null}">-</td>
 							
-							<td th:if="${dept.mngrName != null}">[[ ${dept.mngrName} ]]</td>
+							<td th:if="${dept.mngrName != null}">
+							<input type="hidden" th:value="${dept.deptMngr}" class="mngrlist" />
+							[[ ${dept.mngrName} ]]
+							</td>
 							<td th:unless="${dept.mngrName != null}">미정</td>
 							
 							<td th:if="${dept.cnt != null}">[[ ${dept.cnt} ]] 명</td>
@@ -173,7 +176,9 @@ $(function(){
 	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	let dnameFlag = false;
-		
+	let mngrlist = [];
+	let mngrFlag = false;
+	
 	const Toast = Swal.mixin({
 	      toast: true,
 	      position: 'center-center',
@@ -252,14 +257,26 @@ $(function(){
 	// 사원조회 모달에서 선택버튼.
 	$('.chk-btn').on('click', function(e) {
 		
+		let mngrs = $('.mngrlist');
+		mngrs.each(function(idx,mngr) {
+			mngrlist.push(mngr.value)			
+		});
+		
 		let body = $('#exampleModal .modal-body');
 		let chk = body.find('input[name="mngr"]:checked');
 		
 		if(chk.length == 0) return;
 		
-		Swal.fire({
+		let swalMsg = '해당사원의 부서를 새로운 부서로 변경할까요?';
+		let index = mngrlist.indexOf(chk.val());
+		if(index != -1) {
+			swalMsg = '해당사원은 이미 부서장입니다.<br>부서장을 변경할까요?';
+			mngrFlag = true;
+		}
+			
+	 	Swal.fire({
 			title: '',
-			text: "해당사원의 부서를 새로운 부서로 변경할까요?",
+			html: swalMsg,
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonText: '승인',
@@ -297,19 +314,25 @@ $(function(){
 	
 	// 저장버튼.
 	$('.dept-insert').on('click', function(e) {
-		if(!validation()) {
-			console.log('체크 false')
-			return;
-		}
 		
-		let param = {};
-		let deptName = $('#dname').val();
-		let deptLoc = `${$('span.juso1').text()} ${$('span.juso2').text()} (${$('#empAddr1').val()})`;
-		let deptInfo = $('#dinfo').val();
-		let deptMngr = $('#dmngr').val();
-		param = {deptName, deptLoc, deptInfo, deptMngr}
-		console.log(param)
-		
+		setTimeout(() => {
+			if(!validation()) return;	// 유효성확인.
+			
+			Swal.fire({
+				title: '부서를 새롭게 등록할까요?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '등록',
+				cancelButtonText: '취소',
+				reverseButtons: true, // 버튼 순서 거꾸로	
+			})
+			.then((result) => {
+				if (result.isConfirmed) {
+					insertAjax();// ajax.
+				}
+			})
+			
+	    }, 300);
 		
 	})
 	
@@ -330,14 +353,16 @@ $(function(){
 	
 	// 부서명 중복체크 함수정의.
 	const dnameCheck = function() {
-	
-		console.log('부서명 중복체크')
+		console.log('dnameCheck')	
 		let dname = $('#dname').val();
 		let cno = $('#cno').val();
-	
+
+		if(dname == '') return;
+		
+		console.log('ajax - dname 중복체크')
 		$.ajax({
 			type : 'GET',
-			url	 : 'dnameCheck?dname=' + dname + '&cno=' + cno,
+			url	 : 'dnameCheck?dname=' + dname,
 			beforeSend: function(xhr) {
 		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
 		    },
@@ -415,6 +440,7 @@ $(function(){
 	
 	// validation check 함수정의.
 	const validation = function() {
+		console.log('validation')
 		if($('#dname').val() == '') {
 			Swal.fire({
 		    	  icon: 'info',               
@@ -443,6 +469,54 @@ $(function(){
 		return true;
 	}
 	
+	// 부서 insert ajax 함수정의
+	const insertAjax = function() {
+		console.log('insertAjax')
+		
+		// 데이터담기.
+		let param = {};
+		let deptName = $('#dname').val();
+		let deptLoc = `${$('span.juso1').text()}${$('span.juso2').text()} (${$('#empAddr1').val()})`;
+		let deptInfo = $('#dinfo').val();
+		let deptMngr = $('#dmngr').val();
+		if(deptMngr == '조회 >>') deptMngr = '';
+		param = {deptName, deptLoc, deptInfo, deptMngr, mngrFlag}
+			
+		// 아작스전송
+		$.ajax('dept', {
+			type: 'post',
+			data : JSON.stringify(param),
+			contentType : 'application/json',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+			dataType : 'Text'
+		})
+		.done(insertResult => {
+			
+			if(insertResult == 'OK') {
+				Swal.fire({
+					position: "center",
+					icon: 'success',
+				    title: "부서 등록 완료!"
+				})
+				.then((ret) => {
+					if(ret.value){
+						location.reload();
+					}
+				})				
+			} else {
+				Swal.fire({
+					position: "center-center",
+		    		icon: "error",
+		    		title: "부서 등록 실패!"
+		    	})				
+			}
+			
+		})
+		.fail(err => console.error(err));
+		
+	}// insertAjax end.
 	
 }) // end.
 

@@ -39,4 +39,7 @@ public interface DeptMapper {
 	// 부서이름 중복체크
 	public int countDname(@Param("dname") String deptName, @Param("cno") String custNo);
 	
+	// 부서등록.
+	public int insertDeptInfo(DeptVO dept);
+	
 }

@@ -183,5 +183,40 @@
 		AND  dept_name = #{dname}
 	</select>
 	
+	<!-- 부서등록. -->
+	<insert id="insertDeptInfo" parameterType="DeptVO">
+		<selectKey keyProperty="deptId" resultType="string" order="BEFORE">
+			SELECT 'D'||LPAD((NVL((MAX(TO_NUMBER(SUBSTR(dept_id, -3)))),0) + 1), 3, '0')
+         	FROM   dept
+          	WHERE  dept_id LIKE 'D%'
+		</selectKey>
+		INSERT INTO dept
+					(
+							dept_id
+							,cust_no
+							,dept_name
+		                 	,dept_loc
+		                 	<if test="deptInfo != null and !deptInfo.equals('')">
+		                 	,dept_info
+		                 	</if>
+		                 	<if test="deptMngr != null and !deptMngr.equals('')">
+		                 	,dept_mngr
+		                 	</if>
+		             )
+			VALUES
+					(
+						#{deptId}
+						,#{custNo}
+						,#{deptName}
+						,#{deptLoc}
+						<if test="deptInfo != null and !deptInfo.equals('')">
+						,#{deptInfo}
+						</if>
+						<if test="deptMngr != null and !deptMngr.equals('')">
+						,#{deptMngr}
+						</if>
+					)
+	</insert>
+	
 </mapper>
   

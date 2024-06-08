@@ -1,12 +1,13 @@
 package com.samjo.app.emp.web;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,7 +43,7 @@ public class DeptController {
 		return "approval/modal/modal_refs";
 	}
 	
-	// 부서관리.
+	// 부서관리 - 전체조회.
 	@GetMapping("cust/manager/dept")
 	public String custDeptinfoList(Model model) {
 		EmpVO empVO = SecuUtil.getLoginEmp();
@@ -61,23 +62,35 @@ public class DeptController {
 		return "manager/dept_list";
 	}
 	
-	// 부서장급 사원가져오기 json.
+	// 부서장급 사원가져오기 ajax.
 	@ResponseBody
 	@GetMapping("cust/manager/dept/mngrs")
 	public List<EmpVO> getCustMngrList() {
 		EmpVO empVO = SecuUtil.getLoginEmp();
+		
 		List<EmpVO> list = deptService.myDeptMngrs(empVO);
 		return list;
 	}
 	
-	// 부서이름체크.
+	// 부서이름 중복체크 ajax.
 	@ResponseBody
 	@GetMapping("cust/manager/dnameCheck")
-	public int idCheck(@RequestParam("dname") String deptName, @RequestParam("cno") String custNo) {
-		int result = deptService.dnameCheck(deptName, custNo);
+	public int idCheck(@RequestParam("dname") String deptName) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		int result = deptService.dnameCheck(deptName, empVO.getCustNo());
 		return result;
 	}
 	
+	// 부서저장 ajax json.
+	@ResponseBody
+	@PostMapping("cust/manager/dept")
+	public String custDeptinfoInsert(@RequestBody DeptVO dept) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		dept.setCustNo(empVO.getCustNo());
+		
+		return deptService.insertDeptInfo(dept);
+	}
 	
 	
 

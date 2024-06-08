@@ -8,7 +8,6 @@ public interface DeptService {
 	// 로그인한 직원 회사의 모든직원들.
 	public List<EmpVO> myCustEmps(String custNo);
 	
-	
 	// 부서 전체 목록
 	public List<DeptVO> deptAllList();
 	// 총책임자 목록
@@ -26,4 +25,6 @@ public interface DeptService {
 	// 부서이름 체크
 	public int dnameCheck(String deptName, String custNo);
 
+	// 부서등록.
+	public String insertDeptInfo(DeptVO dept);
 }
