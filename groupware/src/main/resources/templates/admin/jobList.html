@@ -1,140 +1,146 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/default_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+		<div class="container-xxl flex-grow-1">
+			<div class="flex-xl-nowrap row">
+				<div class="row">
+					<div class="row mt-3 pt-3">
+						<h2 class="ms-3">직급 목록</h2>
+					</div>
+					<hr>
 
-<th:block layout:fragment="Content">
-    <div class="container-xxl flex-grow-1">
-        <div class="flex-xl-nowrap row">
-            <div class="row">
-                <div class="row mt-3 pt-3">
-                    <h2 class="ms-3">직급 목록</h2>
-                </div>
-                <hr>
-                
-                <div class="mt-3 pt-3">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center bg-white">
-                            <thead>
-                                <tr class="table-dark">
-                                    <th class="text-white">직급번호</th>
-                                    <th class="text-white">직급명</th>
-                                    <th class="text-white">권한</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <th:block th:each="jobVO : ${getJobList}">
-                                    <tr class="toJobInfo" 
-                                    data-job-no="[[${jobVO.jobNo}]]"
-                                    data-job-title="[[${jobVO.jobTitle}]]" 
-                                    data-perm-id="[[${jobVO.permId}]]"
-                                    data-bs-toggle="modal" data-bs-target="#JobInfoModal">
-                                        <td th:text ="${jobVO.jobNo}"></td>
-                                        <td th:text ="${jobVO.jobTitle}"></td>
-                                        <td th:text ="${jobVO.permId}"></td>
-                                    </tr>
-                                </th:block>
-                            </tbody>
-                        </table>
-                        <div>
-                            <button type="button" class="btn btn-primary w-100"
-                                    data-bs-toggle="modal" data-bs-target="#insertJobModal">등록</button>
-                        </div>
-                    </div>          
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="mt-3 pt-3">
+						<div class="table-responsive">
+							<table
+								class="table table-bordered table-hover text-center bg-white">
+								<thead>
+									<tr class="table-dark">
+										<th class="text-white">직급번호</th>
+										<th class="text-white">직급명</th>
+										<th class="text-white">권한</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="jobVO : ${getJobList}">
+										<tr class="toJobInfo" data-job-no="[[${jobVO.jobNo}]]"
+											data-job-title="[[${jobVO.jobTitle}]]"
+											data-perm-id="[[${jobVO.permId}]]">
+											<!--/* data-bs-toggle="modal" data-bs-target="#JobInfoModal"> */-->
+											<td th:text="${jobVO.jobNo}"></td>
+											<td th:text="${jobVO.jobTitle}"></td>
+											<td th:text="${jobVO.permId}"></td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+							<div>
+								<button type="button" class="btn btn-primary w-100"
+									data-bs-toggle="modal" data-bs-target="#insertJobModal">등록</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <!-- 모달들 -->
-    <!-- 직급 등록 모달화면 -->
-    <div class="modal fade" id="insertJobModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalScrollableTitle">직급 등록</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>직급명</th>
-                                <th>권한</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <th:block>
-                                <tr>
-                                    <td>
-                                        <input id="jobTitle" placeholder="직급명 입력" required>
-                                    </td>
-                                    <td>
-                                        <select id="permId" required>
-                                            <option value="1C4c">사원</option>
-                                            <option value="1C3c">부서장</option>
-                                            <option value="1C2c">관리자</option>
-                                        </select>                                        
-                                    </td>
-                                </tr>
-                            </th:block>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="insertBtn" data-bs-dismiss="modal">등록</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- 모달들 -->
+		<!-- 직급 등록 모달화면 -->
+		<div class="modal fade" id="insertJobModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">직급 등록</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>직급명</th>
+									<th>권한</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block>
+									<tr>
+										<td><input id="jobTitle" placeholder="직급명 입력" required>
+										</td>
+										<td><select id="permId" required>
+												<option value="1C4c">사원</option>
+												<option value="1C3c">부서장</option>
+												<option value="1C2c">관리자</option>
+										</select></td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="insertBtn"
+							data-bs-dismiss="modal">등록</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <!-- 직급 상세/수정/삭제 모달화면, 개별 행을 클릭할 시 출력됨 -->
-    <div class="modal fade" id="JobInfoModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">직급 수정/삭제</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>직급번호</th>
-                                <th>직급명</th>
-                                <th>권한</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input id="updateJobNo" placeholder="직급번호 입력" readonly></td>
-                                <td><input id="updateJobTitle" placeholder="직급명 입력"></td>
-                                <td>
-                                    <select id="updatePermId">
-                                        <option value="1C4c">사원</option>
-                                        <option value="1C3c">부서장</option>
-                                        <option value="1C2c">관리자</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="updateBtn" data-bs-dismiss="modal">수정</button>
-                    <button type="button" class="btn btn-danger" id="deleteBtn" data-bs-dismiss="modal">삭제</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</th:block>
+		<!-- 직급 상세/수정/삭제 모달화면, 개별 행을 클릭할 시 출력됨 -->
+		<div class="modal fade" id="JobInfoModal" tabindex="-1">
+			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+				role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalScrollableTitle">직급 수정/삭제</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<table class="table table-hover">
+							<thead>
+								<tr class="table-secondary">
+									<th></th>
+									<th>직급명</th>
+									<th>권한</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="hidden" id="updateJobNo">
+									<td><input id="updateJobTitle"></td>
+									<td><select id="updatePermId">
+											<option value="1C4c">사원</option>
+											<option value="1C3c">부서장</option>
+											<option value="1C2c">관리자</option>
+									</select></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="updateBtn"
+							data-bs-dismiss="modal">수정</button>
+						<button type="button" class="btn btn-danger" id="deleteBtn"
+							data-bs-dismiss="modal">삭제</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+//CSRF
+let header = $("meta[name='_csrf_header']").attr('content');
+let token = $("meta[name='_csrf']").attr('content');
 
-$(document).ready(function() {
+//$(document).ready(function() {
     // 마우스 갖다대면 색깔 바뀌게
     $('.toJobInfo').hover(
         function() {
@@ -144,7 +150,29 @@ $(document).ready(function() {
             $(this).css('background-color', '');
         }
     );
-}
+
+    // 행 클릭 이벤트 - 모달에 정보 전달
+    $('.toJobInfo').on('click', function() {
+    	
+    	//여기가 문제다. 값이 안 들어오고 있다. attr, text, val, data 다 이상함
+    	//data로 하면 undefined가 콘솔에 출력된다. jobVO가 안 넘어왔다면 리스트도 출력이 안됐을 거임
+    	//이해도가 너무 부족하다 아효..
+    	let jobNo = $(this).data('data-job-no');
+        let jobTitle = $(this).data('data-job-title');
+        let permId = $(this).data('data-perm-id');
+		
+        console.log("Job No:", jobNo);
+        console.log("Job Title:", jobTitle);
+        console.log("Perm ID:", permId);
+        
+        $('#updateJobNo').val(jobNo);
+        $('#updateJobTitle').val(jobTitle);
+        $('#updatePermId').val(permId);
+        
+		let myModal = new bootstrap.Modal(document.getElementById('JobInfoModal'));
+		myModal.show();        
+    });
+
 	
 // 등록 버튼 클릭 이벤트
 $('#insertBtn').click(function(e) {
@@ -201,24 +229,14 @@ $('#insertBtn').click(function(e) {
     });
 });
 
-    // 행 클릭 이벤트 - 모달에 정보 전달
-    $('.toJobInfo').click(function(e) {
-        let jobNo = $(this).data('job-no');
-        let jobTitle = $(this).data('job-title');
-        let permId = $(this).data('perm-id');
-
-        $('#updateJobNo').val(jobNo);
-        $('#updateJobTitle').val(jobTitle);
-        $('#updatePermId').val(permId);
-    });
 
     // 수정 버튼 클릭 이벤트
     $('#updateBtn').click(function(e) {
-        let jobNo = $('#updateJobNo').val();
+    	let jobNo = $('#updateJobNo').val();
         let jobTitle = $('#updateJobTitle').val();
         let permId = $('#updatePermId').val();
 
-        if (!jobNo || !jobTitle || !permId) {
+        if (!jobTitle || !permId) {
             Swal.fire({
 				icon : 'error',	
 				title : '잠깐!',
@@ -237,7 +255,7 @@ $('#insertBtn').click(function(e) {
 			dataType : 'text',
             data: JSON.stringify({
                 jobNo: jobNo,
-                jobTitle: jobTitle,
+            	jobTitle: jobTitle,
                 permId: permId
             }),
 			success : function(result) {
@@ -314,7 +332,7 @@ $('#insertBtn').click(function(e) {
 			}
         });  
     });
-
-
 </script>
+	</th:block>
+</body>
 </html>

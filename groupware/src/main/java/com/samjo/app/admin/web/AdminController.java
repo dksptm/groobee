@@ -75,7 +75,7 @@ public class AdminController {
 	
 	//직급관리 등록
 	@ResponseBody
-	@PostMapping("cust/admin/JobInsert")
+	@PostMapping("cust/admin/jobInsert")
 	public String JobInsert(@RequestBody JobVO jobVO, Authentication authentication) {
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
@@ -87,7 +87,7 @@ public class AdminController {
 		int jNo = jobService.jobInsert(jobVO);
 		String uri = "";
 		if (jNo > -1) {
-			uri = "admin/JobList";
+			uri = "admin/jobList";
 		} else {
 			uri = "/";
 		}
