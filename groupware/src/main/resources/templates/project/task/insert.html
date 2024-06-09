@@ -257,6 +257,26 @@
 			});
 			
 			
+			// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 함
+			$('#taskDueDt').on('change', function() {
+				let startDate = $('#taskStartDt').val();
+				let dueDate = $(this).val();
+
+			    let startDateObj = new Date(startDate);
+			    let dueDateObj = new Date(dueDate);
+
+
+			    if (dueDateObj < startDateObj) {
+			        Swal.fire({
+			            title: '날짜 선택 오류',
+			            text: '마감일은 시작일 이후로 선택해주세요.',
+			            icon: 'error'
+			        });
+			        // 마감일을 초기화
+			        $(this).val('');
+			    }
+			
+	
 			// 등록 전 체크
 			function validationCheck() {
 				
@@ -297,18 +317,16 @@
 					return false; 
 				}
 				
-				/* let demp = document.getElementById('deptEmpList');
-				if(demp.value == '') {
-					Swal.fire({
-						title:  '입력확인',        
-						text:  '참여인원은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						demp.focus();           
-					});
-					return false;
-				} */
+				let deptEmpTr = $("#deptEmpList tr");
+
+				if (deptEmpTr.length === 0) {
+				    Swal.fire({
+				        title: '부서원을 선택하세요.',
+				        text: '부서원을 선택해야합니다.',
+				        icon: 'error'
+				    });
+				    return; 
+				} 
 				
 				let startdt = document.getElementById('taskStartDt');
 				if(startdt.value == '') {

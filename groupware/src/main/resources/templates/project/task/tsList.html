@@ -41,7 +41,7 @@
 										</select></td>
 										<td>
 											<div class="text-end">
-												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+												<button type="button" class="btn btn-info" id="searchbtn">검&emsp;색</button>
 											</div>
 										</td>
 									</tr>
@@ -175,7 +175,7 @@
 			let taskSort;
 
 			//검색버튼 이벤트 처리
-			$(".searchbtn").on("click", function(e) {
+			$("#searchbtn").on("click", function(e) {
 				//e.preventDefault(); 
 				updateParams();
 				let page = 1;
