@@ -101,7 +101,7 @@ public class PayServiceImpl implements PayService{
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.MINUTE, +5);
+		cal.add(Calendar.MINUTE, +1);
 		payDay = cal.getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
@@ -163,7 +163,7 @@ public class PayServiceImpl implements PayService{
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.HOUR, +1);
+		cal.add(Calendar.MONTH, +1);
 		payDay = cal.getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
@@ -293,6 +293,7 @@ public class PayServiceImpl implements PayService{
 	public int custCount(String custNo) {
 		return payMapper.custPayCount(custNo);
 	}
+	
 	//이하 삭제예정 ========================================================================================================================
 	//dateStamp처리
 	@Override

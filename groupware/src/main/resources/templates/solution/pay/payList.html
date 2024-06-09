@@ -4,13 +4,17 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div style="min-width:880px" class="card my-4 col-10">
-				<h5 class="card-header">결제 내역</h5>
-				<div class="card-body ">
+		<div class="container-xxl flex-grow-1">
+		<div class="flex-xl-nowrap row">
+		<div class="row">
+			<div class="row mt-3 pt-3">
+				<h2 class="ms-3">결제 내역</h2>
+			</div>
+		
+			<div style="min-width:880px" class="card my-2">
+				<div class="card-body">
 
 					<!-- 검색 -->
-					<p class="navbar-brand">검색조건</p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
 							<div class="" id="navbarSupportedContent">
@@ -32,8 +36,8 @@
 												<option value="0D4d">최초결제인증</option>
 										</select></td>
 										<td>
-										<button class="btn btn-outline-success searchbtn"
-										type="submit">검색</button>
+										<button class="btn btn-info searchbtn"
+										type="submit">검&emsp;색</button>
 										</td>
 									</tr>
 									<tr>
@@ -45,35 +49,31 @@
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
 										<td class="text-white">_</td>
-										<!-- <td class="form-control">결제분류</td>
-										<td><select class="form-select searchSelect">
-												<option value="typeAll">전체</option>
-												<option value="0A1a">정기결제</option>
-												<option value="0A2a">단기결제</option>
-										</select></td> -->
+										<td></td>
+										<td></td>
+										<td>
+										<button class="btn btn-secondary"
+										type="reset" th:onclick="|location.href='@{/sol/payList}'|">초기화</button>
+										</td>
 									</tr>
 								</table>
-								<!-- <span class="position-absolute top-50 end-0 translate-middle-y">
-									<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
-								</span> -->
 							</div>
 						</div>
 					</nav>
 					<div id="payTable">
 						<!-- 결제 목록 출력 -->
 						<div class="table-responsive">
-							<table class="table table-hover">
+							<table class="table table-hover text-center">
 								<thead>
-									<tr class="table-secondary">
-										<th>결제번호</th>
-										<th>계약번호</th>
-										<th>상호명</th>
-										<th>금액</th>
-										<th>분류</th>
-										<th>상태</th>
-										<th>예정일</th>
-										<th>결제일</th>
+									<tr style="background-color:#3F72AF;">
+										<th class="text-white">결제번호</th>
+										<th class="text-white">계약번호</th>
+										<th class="text-white">상호명</th>
+										<th class="text-white">금액</th>
+										<th class="text-white">분류</th>
+										<th class="text-white">예정일</th>
+										<th class="text-white">결제일</th>
+										<th class="text-white">상태</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -84,7 +84,6 @@
 											<td>[[ ${PayVO.custName} ]]</td>
 											<td>[[ ${PayVO.servAmt} ]]</td>
 											<td>[[ ${PayVO.payTypeName} ]]</td>
-											<td>[[ ${PayVO.payStatName} ]]</td>
 											<th:block th:if="${PayVO.payExpcDt == null}" >
 												<td>결제대기중</td>											
 											</th:block>
@@ -97,6 +96,7 @@
 											<th:block th:unless="${PayVO.payCmpltDt == null}" >
 												<td>[[ ${PayVO.payCmpltDt} ]]</td>
 											</th:block>
+											<td>[[ ${PayVO.payStatName} ]]</td>
 										</tr>
 									</th:block>
 								</tbody>
@@ -136,6 +136,8 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		</div>
 		</div>
 
 		<script>

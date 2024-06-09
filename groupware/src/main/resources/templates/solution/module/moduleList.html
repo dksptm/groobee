@@ -4,19 +4,24 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-10">
-				<h5 class="card-header">모듈 전체조회</h5>
+		<div class="container-xxl flex-grow-1">
+		<div class="flex-xl-nowrap row">
+		<div class="row">
+			<div class="row mt-3 pt-3">
+				<h2 class="ms-3">모듈 전체조회</h2>
+			</div>
+				
+			<div class="card my-2">
 				<div class="card-body">
 					<!-- 모듈 목록 출력 -->
 					<div class="table-responsive">
-						<table class="table table-hover">
+						<table class="table table-hover text-center">
 							<thead>
-								<tr>
-									<th>모듈번호</th>
-									<th>모듈명</th>
-									<th>모듈상태</th>
-									<th>모듈상세설명</th>
+								<tr style="background-color:#3F72AF;">
+									<th class="text-white">모듈번호</th>
+									<th class="text-white">모듈명</th>
+									<th class="text-white">모듈상태</th>
+									<th class="text-white">모듈상세설명</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -38,6 +43,8 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		</div>
 		</div>
 	</th:block>
 </body>
