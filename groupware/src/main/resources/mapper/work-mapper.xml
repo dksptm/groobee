@@ -236,6 +236,12 @@
    
    <!-- ip관련 -->
    
+   <!-- ip 필터 -->
+   <select id="inipcheck">
+    SELECT ip
+	FROM inip
+   </select>
+   
    <!-- 신청 ip 조회 -->
 	<select id="selectoutip">
 	SELECT emp_id,
@@ -251,32 +257,32 @@
 	FROM inip
    </select>
    
-  <!-- 신청 ip등록 -->
+  <!-- 신청한 ip를 등록 -->
   <insert id="insertinip" parameterType="WorkVO">
   INSERT INTO inip
   VALUES(
   #{empId},
   #{ip},
-  #{dt})
+  sysdate)
    </insert>
-  
-  <insert id="insertout">
+  <!-- 신청ip 등록 -->
+  <insert id="insertoutip" parameterType="WorkVO">
   INSERT INTO outip
   VALUES(
   #{empId},
   #{ip},
-  #{dt})
+  sysdate)
   </insert>
    
    <!-- outip 등록위한 삭제 -->
   <delete id="outdelete">
-  delete from outip
-  where ip = ${ip}
+  delete outip
+  where ip = #{ip}
   </delete>
   
   <!-- 신청 ip삭제 -->
   <delete id="indelete">
-  delete from inip
+  delete inip
   where ip = #{ip}
    </delete> 
    

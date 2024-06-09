@@ -168,6 +168,12 @@ public class WorkServiceImpl implements WorkService{
 	}
 
 
+	@Override
+	public List<WorkVO> inipcheck(WorkVO workVO) {
+		return workMapper.inipcheck(workVO);
+	}
+
+
 	
 	
 

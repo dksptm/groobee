@@ -83,12 +83,13 @@
 					<div>근태관리</div>
 			</a>
 				<ul class="menu-sub">
-					<li class="menu-item"><a th:href="@{/work/worklist(empId=${#authentication.principal.empId})}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/work/worklist(empId=${#authentication.principal.empId})}" class="menu-link">
 							<div>출퇴근 기록</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/work/workmanager}" class="menu-link">
+					<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
+					<li class="menu-item"><a th:href="@{/cust/work/workmanager}" class="menu-link">
 							<div>사원목록</div>
-					</a></li>
+					</a></li></th:block>
 				</ul></li>
 			</th:block>
 

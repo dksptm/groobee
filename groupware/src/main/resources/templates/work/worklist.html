@@ -5,26 +5,47 @@
 
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
+		<div class="container-xxl flex-grow-1">
+		<div class="row mt-3 pt-3">
+					<h2 class="ms-3">근태 관리</h2>
+				</div>
 			<div class="card my-4 col-11">
+			<div class="row">
 				<div>
 					<input type="hidden" th:value="${#authentication.principal.empId}"
 						id="id"> <input type="hidden"
 						th:value="${#authentication.name}" id="name">
+						<button type="button" class="mt-3 btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" id="inip" style="float: right;">ip등록신청</button>
 				</div>
 				<div>
+				<th:block id="ipcheck">
+					<th:block th:if="${emp.wkYn} != '2A2a'">
+						<button type="button" class="mt-3 btn rounded-pill btn-info" id="wkIn"
+							value="1" style="float: left;">출근</button>
+						<button type="button" class="mt-3 btn rounded-pill btn-success" id="wkStop"
+							style="float: right;">조퇴</button>
+						<button type="button" class="mt-3 btn rounded-pill btn-danger doc-delete" id="wkOut"
+							style="float: right;">퇴근</button>
+					</th:block>
+				</th:block>
+					<th:block th:unless="${emp.wkYn} != '2A2a'">
+						<h4 class="mt-3 text-center">금일 휴가중</h4>
+					</th:block>
 
-					<table class=" mt-3 table table-striped-columns">
+				</div>
+
+				<div>
+					<table class="mt-3 table table-bordered">
 						<tr>
-							<td>사원ID</td>
-							<td>사원번호</td>
-							<td>사원명</td>
-							<td>근속연수</td>
-							<td>근속월수</td>
-							<td>근무일수</td>
-							<td>연차사용</td>
-							<td>지각</td>
-							<td>조퇴</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">사원ID</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">사원번호</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">사원명</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">근속연수</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">근속월수</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">근무일수</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">연차사용</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">지각</td>
+							<td class="col-1 text-white" style="background-color:#3F72AF;">조퇴</td>
 						</tr>
 						<tr>
 							<td>[[${emp.empId}]]</td>
@@ -37,27 +58,16 @@
 							<td>[[${emp.tdy}]]</td>
 							<td>[[${emp.early}]]</td>
 						</tr>
-
 					</table>
-					<div>
-					<th:block th:if="${emp.wkYn} != '2A2a'">
-						<button type="button" class="btn btn-primary" id="wkIn" value="1"
-							style="float: left;">출근</button>
-						<button type="button" class="btn btn-primary" id="wkStop"
-							style="float: right;">조퇴</button>
-						<button type="button" class="btn btn-primary" id="wkOut"
-							style="float: right;">퇴근</button>
-					</th:block>
-					<th:block th:unless="${emp.wkYn} != '2A2a'">
-						<h4 class="mt-3 text-center">금일 휴가중</h4>
-					</th:block>
-					</div>
+
+					<br> <br>
 
 				</div>
 
-				<div class="container-fluid">
+				<div class="mt-3 container-fluid">
 					<table>
 						<tr>
+							<td><input type="text" readonly value="날짜검색"></td>
 							<td><input id="oneDate" type="Date">~<input
 								id="twoDate" type="Date"></td>
 						</tr>
@@ -80,10 +90,8 @@
 									<option value="" selected>전체</option>
 									<option value="내근">내근</option>
 									<option value="외근">외근</option>
-							</select>
-							<td>
-								<button type="submit" class="btn btn-primary" id="filter">검색</button>
-							</td>
+							</select></td>
+							<td><button type="submit" class="mt-3 btn btn-primary" id="filter">검색</button></td>
 						</tr>
 					</table>
 				</div>
@@ -91,34 +99,23 @@
 				<!-- 
 					사원계정 접속시 사원번호 사원명 가리기
 					<th:block sec:authorize="hasAuthority('1D4d')">
-					얼럿창 -> 스윗얼럿
-					
-					doc_pto 테이블에서 휴가여부 구분 후 오라클 프로시저 수정
-					apr테이블aprYN(결재상태유무), doc_pto테이블doc_stat
-					doc테이블docNo(문서번호)
-					문서, 전자결제 테이블 두개 조인 후 
-					
-					 -->
+					얼럿창 -> 스윗얼럿-->
 				<div id="workTable">
-					<table class=" mt-3 table table-striped-columns">
+					<table class=" p-3 table table-bordered">
 						<thead>
 							<tr>
-								<th>날짜</th>
-								<th>사원명</th>
-								<th>사원번호</th>
-								<th>출근시간</th>
-								<th>퇴근시간</th>
-								<th>근무지</th>
-								<th>근무상태</th>
-								<th>근무여부</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">날짜</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">출근시간</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">퇴근시간</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무지</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무상태</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무여부</th>
 							</tr>
 						</thead>
 						<tbody th:each="info : ${list}" id="infos">
 							<tr
-								th:onclick="|location.href='@{/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
+								th:onclick="|location.href='@{/cust/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
 								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
-								<td>[[${info.empName}]]</td>
-								<td id="empNo">[[${info.empNo}]]</td>
 								<td>[[${#dates.format(info.wkIn, "HH:mm")}]]</td>
 								<td>[[${#dates.format(info.wkOut, "HH:mm")}]]</td>
 								<td th:if="${info.wkYn == '근무일'}">[[${info.wkYn}]]</td>
@@ -136,7 +133,7 @@
 					</table>
 
 					<br>
-
+					
 					<div class="paging mt-2">
 						<th:block th:if="${filter.totalCnt} != 0">
 							<nav aria-label="Page navigation">
@@ -149,12 +146,9 @@
 												<i class="bx bx-chevron-left"></i>
 										</a></li>
 									</th:block>
-									<th:block
-										th:each="num : ${#numbers.sequence(1, filter.endPage)}">
-										<li class="page-item"
-											th:attrappend="class=${num == filter.page?'active':' '}">
-											<a
-											th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
+									<th:block th:each="num : ${#numbers.sequence(filter.startPage, filter.endPage)}">
+										<li class="page-item" th:attrappend="class=${num == filter.page ? 'active' : ' '}">
+											<a th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
 											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 										</li>
 									</th:block>
@@ -173,19 +167,68 @@
 					</div>
 				</div>
 			</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">IP신청</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">지금 접속한 IP를 등록 신청 하시겠습니까?</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="outipinsert">신청</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<input type="hidden" id="ips">
 		<input type="hidden" id="city">
+		<div th:each="inip : ${iplist}">
+		<input type="hidden" th:value="*{inip.ip}" readOnly class="iplist">
+		</div>
 		
-		<script>
+		<script th:inline="javascript">
 		// CSRF
 		let header = $("meta[name='_csrf_header']").attr('content');
 	    let token = $("meta[name='_csrf']").attr('content');
 	    
-	    // 현재(컴퓨터) 날짜, 시간
+	     // 현재(컴퓨터) 날짜, 시간
 		let {date,time} = today();
 		
+		// ipcheck
+		//let client = $('#ips').val();
+		//let ipcheck = false;
 		
+		//let test = $('.iplist').val();
+		
+       /*  function test() {
+            // jQuery를 사용하여 클래스가 'iplist'인 모든 입력 요소 선택
+            let ipbox = [];
+            $('.iplist').each(function() {
+                ipbox.push($(this).val());
+            });
+
+            // 배열 내용을 콘솔에 출력
+            console.log(ipbox);
+        } */
+		
+		/* 	for(let i = 0; i< ipbox.length; i++) {
+				if(ipbox[i] == client){
+					ipcheck = true;
+				}
+			}
+		if (ipcheck == true) {
+			
+		} 
+		 */
+		 
 		// 클라이언트 ip 확인
 		// HTML의 <script> 요소를 생성한다
 		  const se = document.createElement('script');
@@ -249,7 +292,7 @@
 				
 		function filterTable(page) {
 				$.ajax({
-					url : '/work/worklistfilter',
+					url : '/cust/work/worklistfilter',
 					method : 'POST',
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
@@ -269,7 +312,6 @@
 					}
 					});
 		        }
-			let ipcheck = false;
 			
 			// 출근
 			 $('#wkIn').on('click', wkins);
@@ -277,11 +319,6 @@
 			$('#wkOut').on('click', wkouts);
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
-			$('#test').on('click', test);
-			function test() {
-			
-			}
-			console.log(ipcheck);
 				
 		
 			// 출근
@@ -292,19 +329,9 @@
 				let days = date;
 				let ip = $('#ips').val();
 				let city = $('#city').val();
-				// ipcheck
-				let ipbox = ['58.238.119.80', '58.238.119.20', '58.238.119.08', '58.238.119.17'];
-				let client = $('#ips').val();
-				let ipcheck = false;
-					for(let i = 0; i< ipbox.length; i++) {
-						if(ipbox[i] == client){
-							ipcheck = true;
-						}
-					}
-				if (ipcheck == true) {
 				
 				$.ajax({
-					url : 'workin',
+					url : '/cust/work/workin',
 					method :'POST',
 					data :{
 				           dt: days,
@@ -332,7 +359,7 @@
 				    	}
 				    }
 				});
-				}
+				
 				Swal.fire({
 			    	title: '회사 IP가 아닙니다.', 
 			    	text: '문의는 관리자에게',
@@ -349,7 +376,7 @@
 				let city = $('#city').val();
 				
 				$.ajax({
-					url : 'workout',
+					url : '/cust/work/workout',
 					method :'POST',
 					data :{
 				           dt: days,
@@ -400,6 +427,34 @@
 				    }
 				})
 			};
+		$("#outipinsert").on("click",function() {
+			let empId = $('#id').val();
+			let ip = $('#ips').val();
+			
+			$.ajax({
+				url : "workoutip",
+				method :"POST",
+				data :{
+			           empId: empId,
+			           ip: ip
+				},
+				beforeSend: function(xhr) {
+	                xhr.setRequestHeader(header, token);
+	            },
+			    success : function(result){
+			    	Swal.fire({
+			    		title: "등록에 성공했습니다.", 
+			    		text: '',
+			    		icon: 'success'});
+			    },
+			    error : function(){
+			    	Swal.fire({
+			    		title: "이미 등록된 ip입니다.", 
+			    		text: '',
+			    		icon: "error"});
+			    }
+			})
+		});
 		
 		</script>
 	</th:block>

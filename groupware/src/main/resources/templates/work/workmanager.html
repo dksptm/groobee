@@ -5,28 +5,32 @@
 
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-10">
-
-				<h4 style="text-align: center">사원 목록</h4>
+		<div class="container-xxl flex-grow-1">
+			<div class="row mt-3 pt-3">
+				<h4 class="ms-3">사원 목록</h4>
+			</div>
+			<div class="card my-4 col-11">
+			<div class="row">
 				<div>
 					<!-- ip insert 모달 -->
-				<button type="button" class="btn btn-primary" data-bs-toggle="modal"data-bs-target="#staticBackdrop">IP설정</button>
+					<button type="button" class="mt-3 btn rounded-pill btn-info"
+						data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="float: right;">IP설정</button>
 				</div>
-				<table class="table table-striped-columns">
+				<div>
+				<table class="mt-3 table table-bordered">
 					<thead>
 						<tr>
-							<th>부서명</th>
-							<th>사원번호</th>
-							<th>사원명</th>
-							<th>직급</th>
-							<th>입사일</th>
-							<th>연락처</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">부서명</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">사원번호</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">사원명</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">직급</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">입사일</th>
+							<th class="col-1 text-white" style="background-color:#3F72AF;">연락처</th>
 						</tr>
 					</thead>
 					<tbody th:each="list : ${list}" id="infos">
 						<tr
-							th:onclick="|location.href='@{/work/worklists(empId=${list.empId})}'|">
+							th:onclick="|location.href='@{/cust/work/worklists(empId=${list.empId})}'|">
 							<td>[[${list.deptId}]]</td>
 							<td>[[${list.empNo}]]</td>
 							<td>[[${list.empName}]]</td>
@@ -36,36 +40,39 @@
 						</tr>
 					</tbody>
 				</table>
-
-				<div class="paging mt-2">
-					<nav aria-label="Page navigation">
-						<ul class="pagination">
-							<th:block th:if="${filter.prev}">
-								<li class="page-item prev disabled"><a
-									class="page-link pagebtn"
-									th:href="|workmanager?page=${filter.startPage - 1 }|"> <i
-										class="bx bx-chevron-left"></i>
-								</a></li>
-							</th:block>
-							<th:block th:each="num : ${#numbers.sequence(1, filter.endPage)}">
-								<li class="page-item"
-									th:attrappend="class=${num == filter.page?'active':' '}">
-									<a th:href="|workmanager?page=${num}|" th:id="${num}"
-									class="page-link pagebtn">[[${num}]]</a>
-								</li>
-							</th:block>
-							<th:block th:if="${filter.next}">
-								<li class="page-item next"><a class="page-link pagebtn"
-									th:href="|workmanager?page=${filter.endPage + 1 }|"> <i
-										class="bx bx-chevron-right"></i>
-								</a></li>
-							</th:block>
-							<th:block th:unless="${filter.totalCnt} != 0">
-								<p class="text-center mt-4">현재 등록된 기록이 없습니다.</p>
-							</th:block>
-						</ul>
-					</nav>
 				</div>
+				
+				<div class="paging mt-2">
+						<th:block th:if="${filter.totalCnt} != 0">
+							<nav aria-label="Page navigation">
+								<ul class="pagination">
+
+									<th:block th:if="${filter.prev}">
+										<li class="page-item prev disabled"><a
+											class="page-link pagebtn"
+											th:href="|workmanager?page=${filter.startPage - 1 }|">
+												<i class="bx bx-chevron-left"></i>
+										</a></li>
+									</th:block>
+									<th:block th:each="num : ${#numbers.sequence(filter.startPage, filter.endPage)}">
+										<li class="page-item" th:attrappend="class=${num == filter.page ? 'active' : ' '}">
+											<a th:href="|workmanager?page=${num}|"
+											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+										</li>
+									</th:block>
+									<th:block th:if="${filter.next}">
+										<li class="page-item next"><a class="page-link pagebtn"
+											th:href="|workmanager?page=${filter.endPage + 1 }|">
+												<i class="bx bx-chevron-right"></i>
+										</a></li>
+									</th:block>
+									<th:block th:unless="${filter.totalCnt} != 0">
+										<p class="text-center mt-4">현재 등록된 기록이 없습니다.</p>
+									</th:block>
+								</ul>
+							</nav>
+						</th:block>
+					</div>
 
 				<!-- Modal -->
 				<div class="modal fade" id="staticBackdrop"
@@ -74,77 +81,79 @@
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h3 class="modal-title fs-5" id="staticBackdropLabel">IP 관리 목록</h3>
+								<h3 class="modal-title fs-5" id="staticBackdropLabel">IP 관리
+									목록</h3>
 								<br>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
 							</div>
-							<div class="modal-body" >
-							
-							<h6>적용완료 ip</h6>
-							<table class="table table-striped-columns">
-							<thead>
-								<tr>
-									<td></td>
-									<td>ID</td>
-									<td>IP</td>
-									<td>날짜</td>
-								</tr>
-							</thead>
-							<tbody th:each ="ipinlists : ${iplist}" id="inlist">
-								<tr>
-									<td><input type="checkbox" th:id="'in' + ${ipinlistsStat.count}"></td>
-									<td>[[${ipinlists.empId}]]</td>
-									<td>[[${ipinlists.ip}]]</td>
-									<td>[[${#dates.format(ipinlists.dt, "yyyy/MM/dd")}]]</td>
-								</tr>
-							</tbody>
-							</table>
-							<button type="button" class="btn btn-danger" id="delete" style="float:right;">삭제</button>
-							<h6>신청 ip</h6>
-							<table class="table table-striped-columns">
-							<thead>
-								<tr>
-									<td></td>
-									<td>ID</td>
-									<td>IP</td>
-									<td>날짜</td>
-								</tr>
-							</thead>
-							<tbody th:each ="ipoutlists : ${ipoutlist}" id="outlist">
-								<tr>
-									<td><input type="radio" name="outcheck"></td>
-									<td>[[${ipoutlists.empId}]]</td>
-									<td>[[${ipoutlists.ip}]]</td>
-									<td>[[${#dates.format(ipoutlists.dt, "yyyy/MM/dd")}]]</td>
-								</tr>
-							</tbody>
-							</table>
+							<div class="modal-body">
+								<h6>적용완료 ip</h6>
+								<div>
+									<table class="mt-3 table table-bordered">
+										<thead>
+											<tr>
+												<td class="col-1 text-white" style="background-color:#3F72AF;"></td>
+												<td class="col-1 text-white" style="background-color:#3F72AF;">ID</td>
+												<td class="col-1 text-white" style="background-color:#3F72AF;">IP</td>
+												<td class="col-1 text-white" style="background-color:#3F72AF;">날짜</td>
+											</tr>
+										</thead>
+										<tbody th:each="ipinlists : ${iplist}" id="inlist">
+											<tr>
+												<td><input type="radio" name="incheck"></td>
+												<td>[[${ipinlists.empId}]]</td>
+												<td>[[${ipinlists.ip}]]</td>
+												<td>[[${#dates.format(ipinlists.dt, "yyyy/MM/dd")}]]</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<button type="button" class="mt-3 btn btn-danger" id="indelete"
+									style="float: right;">삭제</button>
+								<br>
+								<h6 class="mt-3">신청 ip</h6>
+								<table class="mt-3 table table-bordered">
+									<thead>
+										<tr>
+											<td class="col-1 text-white" style="background-color:#3F72AF;"></td>
+											<td class="col-1 text-white" style="background-color:#3F72AF;">ID</td>
+											<td class="col-1 text-white" style="background-color:#3F72AF;">IP</td>
+											<td class="col-1 text-white" style="background-color:#3F72AF;">날짜</td>
+										</tr>
+									</thead>
+									<tbody th:each="ipoutlists : ${ipoutlist}" id="outlist">
+										<tr>
+											<td><input type="radio" name="outcheck"></td>
+											<td>[[${ipoutlists.empId}]]</td>
+											<td>[[${ipoutlists.ip}]]</td>
+											<td>[[${#dates.format(ipoutlists.dt, "yyyy/MM/dd")}]]</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-danger" id="delete">삭제</button>
+								<button type="button" class="btn btn-danger" id="outdelete">삭제</button>
 								<button type="button" class="btn btn-primary" id="insert">등록</button>
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+								<button type="button" class="btn btn-secondary"
+									data-bs-dismiss="modal">취소</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		</div>
 		<script>
 			// CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
-	/* 		// allout 체크시 모든 out테이블 체크항목 체크
-			$('#allout').click(function() {
-			let checked = $('#allout').is(':checked');
-		
-				if(checked)
-					$('input[name=outcheck]:checkbox').prop('checked',true);
-			});
-			 */
-			$("#insert").on("click", insertBtn);
-			 $("#delete").on("click", deletes);
+			 $("#insert").on("click", insertBtn);
+			 
+			 $("#outdelete").on("click", outdeleteBtn);
+			 
+			 $("#indelete").on("click", indeleteBtn);
 			 
 			//  insert버튼
 			function insertBtn() {
@@ -153,56 +162,74 @@
 				let empid = $(check).closest("tr").find('td:eq(1)').text();
 				let ip = $(check).closest("tr").find('td:eq(2)').text();
 				let dt = $(check).closest("tr").find('td:eq(3)').text();
-				
-				// out테이블 값을 in테이블에 추가
 				$.ajax({
-					url :,
-					method :,
+					url :"workinip",
+					method :"POST",
 		            data : {
 		            	empId : empid,
 		            	ip : ip,
-		            	dt : dt
 		            },
 		            beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);
 		            },
 		            success : function(result){
-		            	Swal.fire({
-		            		title: 'ip등록 했습니다.',
-		            		text: '',
-		            		icon: 'success'}).then(function() {
-		            			location.reload(true);
-		            		});
-		            }
-				})
+					$.ajax({
+							url :"outipdelete",
+							method :"DELETE",
+				            data : {
+				            	ip : ip,
+				            },
+				            beforeSend: function(xhr) {
+				                xhr.setRequestHeader(header, token);
+				            },
+				            success : function(result){
+				            $('#inlist').append("<tr><td><input type='radio'></td><td>" + empid + "</td><td>" + ip + "</td><td>" + dt + "</td></tr>");
+				            	$(check).closest("tr").remove();
+			            	}
+						});
+				      }
+					});
 			}
+			
 				// out테이블에서의 삭제
-				function deletes() {
-					let check = $('input[name=outcheck]:checked'); // 체크가된 상태
-					 
-					let ip = $(check).closest("tr").find('td:eq(2)').text();
-					console.log(ip);
+				function outdeleteBtn() {
+					var check = $('input[name=outcheck]:checked'); // 체크가된 상태
+					var ip = $(check).closest("tr").find('td:eq(2)').text();
 					
-				$.ajax({
-					url :"work/inipdelete",
-					method :"delete",
-		            data : {
-		            	ip : ip,
-		            },
-		            beforeSend: function(xhr) {
-		                xhr.setRequestHeader(header, token);
-		            },
-		            success : function(result){
-		            	Swal.fire({
-		            		title: 'ip정보를 삭제했습니다.',
-		            		text: '',
-		            		icon: 'success'}).then(function() {
-		            			location.reload(true);
-		            		});
-		            }
-				})
+					$.ajax({
+						url :"outipdelete",
+						method :"DELETE",
+			            data : {
+			            	ip : ip,
+			            },
+			            beforeSend: function(xhr) {
+			                xhr.setRequestHeader(header, token);
+			            },
+			            success : function(result){
+			            	$(check).closest("tr").remove();
+			            }
+					});
 				}
 			
+				// in테이블에서의 삭제
+				function indeleteBtn() {
+					var check = $('input[name=incheck]:checked'); // 체크가된 상태
+					var ip = $(check).closest("tr").find('td:eq(2)').text();
+					
+					$.ajax({
+						url :"inipdelete",
+						method :"DELETE",
+			            data : {
+			            	ip : ip,
+			            },
+			            beforeSend: function(xhr) {
+			                xhr.setRequestHeader(header, token);
+			            },
+			            success : function(result){
+			            	$(check).closest("tr").remove();
+			            }
+					});
+				}
 		</script>
 	</th:block>
 </body>

@@ -42,6 +42,9 @@ public interface WorkService {
 	public List<WorkVO> selectoutip(WorkVO workVO);
 	public List<WorkVO> selectinip(WorkVO workVO);
 	
+	// ip 체크
+	public List<WorkVO> inipcheck(WorkVO workVO);
+	
 	// ip 추가
 	public int insertinip(WorkVO workVO);
 	public int insertoutip(WorkVO workVO);
