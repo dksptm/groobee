@@ -3,13 +3,18 @@
 
 <th:block th:fragment="Search">
 
-<button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button>
-<div class="collapse bg-light pt-2 sch-toggle-area">
+
+<button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색 ▽</button>
+
+<div class="collapse pt-2 sch-toggle-area">
 <div class="table-responsive">
-	<table class="table table-borderless table-sm text-end d-flex justify-content-center">
+	<nav class="navbar navbar-expand-lg navbar-light">
+	<div class="container-fluid">
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	<table>
 		<tbody>
 			<tr>
-				<td>부서별</td>
+				<td class="form-control bg-transparent">부서별</td>
 				<td><select name="dept" class="form-select">
 						<option value="all" class="form-control">전체</option>
 						<th:block th:each="dept : ${depts}">
@@ -17,20 +22,20 @@
 						</th:block>
 					</select>
 				</td>
-				<td>생성유형</td>
+				<td class="form-control bg-transparent">생성유형</td>
 				<td><select name="searchCondition" class="form-select">
 						<option value="all" class="form-control">전체</option>
 						<option value="5C1c" class="form-control">매일</option>
 						<option value="5C2c" class="form-control">매주</option>
 						<option value="5C3c" class="form-control">매월</option>
 					</select></td>
-				<td>활성화</td>
+				<td class="form-control bg-transparent">활성화</td>
 				<td><select name="aprStatCondition" class="form-select">
 						<option value="all" class="form-control">전체</option>
 						<option value="5D1d" class="form-control">활성화 상태</option>
 						<option value="5D2d" class="form-control">비활성화 상태</option>
 					</select></td>
-				<td> </td>
+				<td> <button type="button" class="btn btn-info" id="schBtn">검&emsp;색</button></td>
 			</tr>
 			<tr>
 				<td><select name="keywordCondition" class="form-select">
@@ -38,7 +43,7 @@
 						<option value="rs.regu_id" class="form-control">업무ID</option>
 					</select></td>
 				<td colspan="3"><input name="keyword" type="text" class="form-control" /></td>
-				<td>정렬기준</td>
+				<td class="form-control bg-transparent">정렬기준</td>
 				<td><select name="sortCondition" class="form-select">
 						<option value="rs.regu_id">업무ID ↓</option>
 						<option value="rs.regu_id DESC" selected >업무ID ↑</option>
@@ -47,16 +52,15 @@
 						<option value="rs.regu_dt">등록일자 ↓</option>
 						<option value="rs.regu_dt DESC">등록일자 ↑</option>
 					</select></td>
-				<td colspan="5">
-					<div class="text-end">
-						<button type="button" class="btn btn-info" id="schBtn">검&emsp;색</button>
-						<button class="btn btn-secondary ms-2" type="reset"
-								th:onclick="|location.href='@{{urlVar}(urlVar=${path})}'|">초기화</button>
-					</div>						
+				<td><button class="btn btn-secondary" type="reset"
+					th:onclick="|location.href='@{{urlVar}(urlVar=${path})}'|">초기화</button>
 				</td>
 			</tr>
 		</tbody>
 	</table>
+	</div>
+	</div>
+	</nav>
 </div>
 </div>
 <script th:inline="javascript">

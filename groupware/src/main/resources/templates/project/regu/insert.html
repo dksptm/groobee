@@ -21,23 +21,25 @@
 }
 </style>
 
-<div class="container container-p-y mt-3">
-	<h4>상시업무 관리 - 등록</h4>
+<div class="d-flex justify-content-center">
+<div class="my-4 col-10">
+<div class="card col-8">
+	<h5 class="card-header">상시업무관리 - 등록</h5>
 		
-		<div class="bg-light p-3 col-8">
-		<div class="card d-flex justify-content-center table-responsive bg-light row m-2 p-2 shadow-lg">
+	<div class="card-body pt-0">
+		<div class="table-responsive">
 		<form id="reguInsertForm" th:action="@{/cust/regu/insert}" method="post" th:object="${taskRegu}">
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
-			<div class="text-end m-3">	
-				<input type="text" value="NO" name="flag" readonly />
-				<button type="button" class="btn rounded-pill btn-outline-info" 
+			<div class="text-end mb-3">	
+				<input type="hidden" value="NO" name="flag" readonly />
+				<button type="button" class="btn rounded-pill btn-outline-primary" 
 						data-bs-toggle="offcanvas" data-bs-target="#chk-regus" 
 						aria-controls="offcanvasScroll">
 						업무 불러오기</button>
 				<button type="reset" class="btn rounded-pill btn-outline-secondary ms-2 chk-regus-reset-btn">
 						입력 초기화</button>
 			</div>
-			<table class="table table-bordered border-2 col-12 regu-table">
+			<table class="table table-bordered border-2 regu-table">
 				<tr>
 					<th class="col-3">업무명</th>
 					<td colspan="5">
@@ -59,7 +61,7 @@
 				<tr>
 					<th>책임자</th>
 					<td><input type="hidden" class="form-control" th:field="*{respEmpId}" readonly /></td>
-					<td class="col-1" style="border-left:hidden;"><button type="button" class="btn btn-icon btn-info me-1" 
+					<td class="col-1" style="border-left:hidden;"><button type="button" class="btn btn-icon btn-primary" 
 								data-bs-toggle="offcanvas" data-bs-target="#chk-reps" aria-controls="offcanvasScroll">
 							<span class="tf-icons bx bx-user-circle"></span>
 						</button></td>
@@ -93,7 +95,8 @@
 						<option value="-1">유형을 선택하세요</option></select>
 					</td>
 					<td class="col-1" style="border-left:hidden;">
-						<button type="button" id="crepBtn" class="btn btn-icon btn-success">+</button>
+						<button type="button" id="crepBtn" class="btn btn-icon btn-primary">
+						<span class="icon bx bx-message-square-add"></span></button>
 					</td>
 				</tr>
 				<tr>
@@ -117,13 +120,15 @@
 					<td  style="border-left:hidden;"></td>
 				</tr>
 			</table>
-			<div class="text-end m-3">	
-				<button type="submit" class="btn btn-primary text-end">등&emsp;록</button>
+			<div class="text-end mt-3">	
+				<button type="submit" class="btn btn-info text-end">등&emsp;록</button>
 			</div>
 		</form>
 		</div>
-		</div>
-	</div>		
+	</div>
+</div>
+</div>
+</div>		
 		<!-- Enable Body scrolling 책임자 선택-->
 		<div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="chk-reps" aria-labelledby="offcanvasScrollLabel">
 		  <div class="offcanvas-header">
@@ -243,6 +248,18 @@
 <script>
 	$(function(){
 		
+		const Toast = Swal.mixin({
+		      toast: true,
+		      position: 'center-center',
+		      showConfirmButton: false,
+		      timer: 1000,
+		      timerProgressBar: true,
+		      didOpen: (toast) => {
+		        toast.addEventListener('mouseenter', Swal.stopTimer)
+		        toast.addEventListener('mouseleave', Swal.resumeTimer)
+		      }
+		 })
+		
 		// 기존상시업무 세팅
 		let crets = $('td[data-cret]');
 		
@@ -262,6 +279,19 @@
 			
 		})
 		
+		function creTypeSet(creType, crePerd) {
+			let week = ["일","월","화","수","목","금","토"];
+			
+			if(creType == '5C1c') {
+				$('#crePerd').find('option').text(crePerd + '시');
+			} else if(creType == '5C2c') {
+				$('#crePerd').find('option').text(week[crePerd]);
+				
+			} else if (creType == '5C3c') {
+				$('#crePerd').find('option').text(crePerd + '일');
+			}
+		}
+			
 		// 기존상시업무 불러와서 선택할경우
 		$('.chk-regus-btn').on('click', function(e){
 			
@@ -299,6 +329,7 @@
 			let cperd = tbody.find('tr').eq(4).find('th').eq(1).data('crep');
 			$('#crePerd').find('option').val(cperd).text(cperd).attr('selected',true);
 			$('#crePerd').prop('disabled', true);
+			creTypeSet(ctype, cperd)
 			
 			let act = tbody.find('input[name=ac]').val();
 			let acts = $('input[name=active]')
@@ -446,13 +477,11 @@
 			    }).then((result) => {
 			    	
 			    	if(result.value){
-				    	Swal.fire({
-				    		  position: "center-center",
-				    		  icon: "success",
-				    		  title: "업무등록이 완료!",
-				    		  showConfirmButton: false,
-				    		  timer: 1500
-				    	});
+			    		Toast.fire({
+							icon: 'success',
+						    title: '상시업무 등록중입니다...',
+						    timer: 1500
+						})
 				    	
 				    	this.submit();
 			    	}
@@ -539,7 +568,6 @@
 			ePerd = perd -1;
 		}
 		
-		
 		let start;
 		let end;
 		if(date.getDate() <= perd) {
@@ -581,6 +609,8 @@
 		$('#creType').prop('disabled', false);
 		
 		$('#crePerd').find('input').prop('readonly', false);
+		$('#crePerd').prop('disabled', false);
+		$('#crePerd').find('option').val('-1').text('유형을 선택하세요.')
 		
 		$('input[name="flag"]').val('NO');
 		

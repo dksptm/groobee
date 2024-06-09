@@ -32,9 +32,9 @@
 			<!-- ------------------------- 작성완료/취소 버튼 START ------------------------- -->
 			<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
 			<div class="text-end mx-4">
-				<button type="submit" class="btn btn-success">수정완료</button>
-				<button type="reset" th:onclick="|location.href='@{mydoc}'|" 
-						class="btn btn-secondary">수정취소</button>
+				<button type="submit" class="btn rounded-pill btn-outline-success">수정완료</button>
+				<button type="reset" th:onclick="|location.href='@{info?docNo={dno}(dno=${doc.docNo})}'|" 
+						class="btn rounded-pill btn-outline-secondary">수정취소</button>
 			</div>
 			</th:block>
 			<!-- ------------------------- 작성완료/취소 버튼 END ------------------------- -->

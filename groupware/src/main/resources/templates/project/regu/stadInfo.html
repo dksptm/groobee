@@ -6,67 +6,69 @@
 
 <th:block layout:fragment="Content">
 <th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
-<div class="container container-p-y mt-3">
-	<h4>상시업무관리 - 상세</h4>
-<div class="bg-light p-3">
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">상시업무관리 - 상세</h5>
+<div class="card-body">
 <div class="table-responsive">
 	
 	<table class="table table-bordered text-center">
 		<tr>
-			<td class="fw-bold col-2">업무명</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무명</th>
 				<td>[[ ${regu.taskName} ]]</td>
-			<td class="fw-bold col-2">업무ID</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무ID</th>
 				<td>[[ ${regu.reguId} ]]</td>
-			<td class="fw-bold col-2">생성건수</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">생성건수</th>
 				<td>[[ ${regu.taskCnt} ]] 건</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">개요</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">개요</th>
 				<td colspan="5">[[ ${regu.taskPurpose} ]]</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">목적</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">목적</th>
 				<td colspan="5">[[ ${regu.taskCntn} ]]</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">부서명</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">부서명</th>
 				<td>[[ ${regu.deptName} ]]</td>
-			<td class="fw-bold">책임자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">책임자</th>
 				<td>[[ ${regu.respEmpName} ]]</td>
-			<td class="fw-bold">등록일자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">등록일자</th>
 				<td>[[ ${#dates.format(regu.reguDt, 'yyyy-MM-dd')} ]]</td>	
 		</tr>
 		<tr>
-			<td class="fw-bold" th:attr="data-cret=${regu.creType}">생성유형</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;"
+				th:attr="data-cret=${regu.creType}">생성유형</th>
 				<td>[[ ${regu.codeName} ]]</td>
-			<td class="fw-bold">생성주기</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">생성주기</th>
 				<td><span class="cre-perd">[[ ${regu.crePerd} ]]</span>[[ ${regu.perdType} ]]</td>
-			<td class="fw-bold">활성화 상태</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">활성화 상태</th>
 				<td>[[ ${regu.matName} ]]</td>	
 		</tr>
 	</table>
 	
 	<!-- 하위 tasks -->
-	<div class="d-flex justify-content-between">
+	<div class="d-flex justify-content-between mt-3">
 		<div>
 		<button type="button" class="btn btn-primary mb-3" 
 				th:onclick="|location.href='@{/cust/regu/stadList}'|">목록으로</button>
-		<button type="button" class="btn btn-warning mb-3" 
+		<button type="button" class="btn btn-success mb-3" 
 				th:onclick="|location.href='@{/cust/regu/update?reguId={rid}(rid=${regu.reguId})}'|">업무수정</button>
 		</div>	
 		<button type="button" class="btn btn-secondary mb-3 task-toggle-btn">생성된 업무목록 ▽</button>
 	</div>
-	<div class="collapse bg-light pt-2 task-toggle-area">
+	<div class="collapse pt-2 task-toggle-area">
 		<table class="table table-hover text-center">
-			<thead class="table-dark">
+			<thead style="background-color:#3F72AF;">
 				<tr>
-					<td>업무번호</td>
-					<td>업무명</td>
-					<td>시작</td>
-					<td>마감</td>
-					<td>참여인원</td>
-					<td>진행도</td>
-					<td>완료여부</td>
+					<th class="text-white">업무번호</th>
+					<th class="text-white">업무명</th>
+					<th class="text-white">시작</th>
+					<th class="text-white">마감</th>
+					<th class="text-white">참여인원</th>
+					<th class="text-white">진행도</th>
+					<th class="text-white">완료여부</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -78,27 +80,38 @@
 					<td>[[ ${#dates.format(task.taskStartDt, 'yy-MM-dd hh:mm a')} ]]</td>
 					<td>[[ ${#dates.format(task.taskDueDt, 'yy-MM-dd hh:mm a')} ]]</td>
 					<td>[[ ${task.participantsCnt} ]] 명</td>
-					<td th:class="${task.progress == 100 ? 'table-success' : 'table-primary'}" >
-						[[ ${task.progress} ]] %</td>
-					<td th:if="${task.prjtMat == '5B1b'}" class="table-primary">
-						[[ ${task.matName} ]]</td>
-					<td th:if="${task.prjtMat == '5B2b'}" class="table-success">
-						[[ ${task.matName} ]]</td>
-					<td th:if="${task.prjtMat == '5B3b'}" class="table-secondary">
-						[[ ${task.matName} ]]</td>
-					<td th:if="${task.prjtMat == '5B4b'}" class="table-danger">
-						[[ ${task.matName} ]]</td>
+					<th:block th:switch="${task.prjtMat}">
+						<td th:case="5B1b" class="table-primary">
+							[[ ${task.progress} ]] %</td>
+						<td th:case="5B2b" class="table-success">
+							[[ ${task.progress} ]] %</td>
+						<td th:case="5B3b" class="table-secondary">
+							[[ ${task.progress} ]] %</td>
+						<td th:case="5B4b" class="table-danger">
+							[[ ${task.progress} ]] %</td>
+					</th:block>
+					<th:block th:switch="${task.prjtMat}">
+						<td th:case="5B1b" class="table-primary">
+							[[ ${task.matName} ]]</td>
+						<td th:case="5B2b" class="table-success">
+							[[ ${task.matName} ]]</td>
+						<td th:case="5B3b" class="table-secondary">
+							[[ ${task.matName} ]]</td>
+						<td th:case="5B4b" class="table-danger">
+							[[ ${task.matName} ]]</td>
+					</th:block>
 				</tr>
 				</th:block>
 			</tbody>
 		</table>	
 		<div>
-			<div id="pageArea">
+			<div id="pageArea" class="mt-3">
 				<th:block th:replace="project/regu/page :: Page"></th:block>
 			</div>	
 		</div>
 	</div>		
 		
+</div>
 </div>
 </div>
 </div>
@@ -112,7 +125,7 @@
 		
 		// 요일
 		let week = ["일","월","화","수","목","금","토"];
-	    let td = $('td[data-cret]');
+	    let td = $('th[data-cret]');
 	    if(td.data('cret') == '5C2c'){
 		    let data = $('span.cre-perd').text();
 		    $('span.cre-perd').text(week[data]);

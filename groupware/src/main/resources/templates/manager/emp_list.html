@@ -6,15 +6,16 @@
 	  
 <th:block layout:fragment="Content">
 <th:block sec:authorize="hasAuthority('1C2c')">
-
-<div class="container container-p-y mt-3">
-	<h4>사원관리 - 목록</h4>
-	<div>
-		<button type="button" class="btn btn-primary me-3 emp-insert-btn">사원추가</button>
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">사원관리 - 목록</h5>
+	<div class="ms-4">
+		<button type="button" class="btn btn-info emp-insert-btn">사원추가</button>
 	</div>
 	<input type="hidden" id="cno" th:value="${#authentication.principal.custNo}" disabled />
+	
 	<!-- 계정목록 -->
-	<div th:if="${#arrays.length(list)} != 0">
+	<div th:if="${#arrays.length(list)} != 0" class="card-body pt-0">
 		<div class="d-flex justify-content-between condition">
 			<div class="col-3 d-flex mt-3 justify-content-start">
 				<span><b>등록가능 사원 수 : [[${cust.maxEmps}]]</b></span>&emsp;
@@ -38,6 +39,7 @@
 		<!-- Emps Fragment -->
 		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
 	</div>
+</div>
 </div>
 
 

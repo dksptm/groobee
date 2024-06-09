@@ -50,7 +50,7 @@ public class EmpController {
 	}
 	
 	// 관리자 - 사원등록 - form
-	@GetMapping("cust/amdin/empInsert")
+	@GetMapping("cust/admin/empInsert")
 	public String insertEmpForm(Model model) {
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();

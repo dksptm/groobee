@@ -5,14 +5,9 @@
 
 <th:block layout:fragment="Content">
 
-	<div class="container-xxl flex-grow-1">
-	<div class="flex-xl-nowrap row">
-	<div class="row">
-		<div class="row mt-3 pt-3">
-			<h2 class="ms-3">문서함</h2><p> [[${#authentication.name}]]님이 작성한 모든 문서 조회합니다.</p>
-		</div>
-		<hr>
-		
+	<div class="d-flex justify-content-center">
+	<div class="card my-4 col-10">
+		<h5 class="card-header">[[${#authentication.name}]]님의 문서함</h5>
 		<div>
 			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
@@ -20,69 +15,71 @@
 			<input type="hidden" th:value="${#authentication.name}" name="draptName" readonly />
 		</div>
 		
-		<!-- 검색공간 -->
+		<div class="card-body pt-0">
 			<!-- 검색공간 -->				
 			<div id="searchArea">
 				<th:block th:replace="approval/list/search :: Search"></th:block>
 			</div>
-		
-		<div class="mt-3 pt-3">
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover text-center bg-white">
-					<thead >
-						<tr class="table-dark">
-							<th class="text-white">문서번호</th>
-							<th class="text-white">업무명</th>
-							<th class="text-white col-3">제목</th>
-							<th class="text-white">작성상태</th>
-							<th class="text-white">문서상태</th>
-							<th class="text-white">결재상황</th>
-							<th class="text-white">작성일자</th>
-							<th class="text-white">완료일자</th>
-						</tr>
-					</thead>
-					<tbody>
-						<th:block th:each="doc : ${list}">
-						<tr th:attr="data-dno=${doc.docNo}" class="go-doc-info">
-							<td>[[ ${doc.docNo} ]]</td>
-							<td>
-							<span th:if="${#arrays.length(doc.taskList)} != 0">
-									[[ ${doc.taskList[0].taskName} ]]</span>
-							<span th:unless="${#arrays.length(doc.taskList)} != 0">
-									-</span>
-							<span th:if="${doc.taskCount} > 1">외 </span>
-							</td>
-							<td>[[ ${doc.title} ]]</td>
-							<th:block th:switch="${doc.draftStat}">
-								<td th:case="4A1a" class="table-secondary">[[ ${doc.draftStatName} ]]</td>
-								<td th:case="4A2a" class="table-info">[[ ${doc.draftStatName} ]]</td>
-							</th:block>
-							<th:block th:switch="${doc.docStat}">
-								<td th:case="4B1b" class="table-secondary">[[ ${doc.docStatName} ]]</td>
-								<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
-								<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
-								<td th:case="4B4b" class="table-warning">[[ ${doc.docStatName} ]]</td>
-							</th:block>
-							<td th:if="${doc.draftStat == '4A1a'}">상신전</td>
-							<td th:unless="${doc.draftStat == '4A1a'}"> [[ ${doc.curApr} ]]</td>
-							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
-							<td th:if="${doc.cmpltDt == null}">-</td>
-			                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
-						</tr>
-						</th:block>
-					</tbody>
-				</table>
-			</div>
+			<br>
 			<div>
-				<!-- 페이징공간 -->
-				<div id="pageArea">
-					<th:block th:replace="approval/list/page :: Page"></th:block>
+				<div class="table-responsive">
+					<table class="table table-hover text-center">
+						<thead >
+							<tr style="background-color:#3F72AF;">
+								<th class="text-white col-1">문서번호</th>
+								<th class="text-white">업무명</th>
+								<th class="text-white col-3">제목</th>
+								<th class="text-white">작성일자</th>
+								<th class="text-white">완료일자</th>
+								<th class="text-white">상신상태</th>
+								<th class="text-white">진행상황</th>
+								<th class="text-white">결재상황</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="doc : ${list}">
+							<tr th:attr="data-dno=${doc.docNo}" class="go-doc-info">
+								<td>[[ ${doc.docNo} ]]</td>
+								<td>
+								<span th:if="${#arrays.length(doc.taskList)} != 0">
+										[[ ${doc.taskList[0].taskName} ]]</span>
+								<span th:unless="${#arrays.length(doc.taskList)} != 0">
+										-</span>
+								<span th:if="${doc.taskCount} > 1">외 </span>
+								</td>
+								<td>[[ ${doc.title} ]]</td>
+								<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
+								<td th:if="${doc.cmpltDt == null}">-</td>
+				                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+								<th:block th:switch="${doc.draftStat}">
+									<td th:case="4A1a" class="table-secondary">[[ ${doc.draftStatName} ]]</td>
+									<td th:case="4A2a" class="table-info">[[ ${doc.draftStatName} ]]</td>
+								</th:block>
+								<th:block th:switch="${doc.docStat}">
+									<td th:case="4B1b" class="table-secondary">상신전</td>
+									<td th:case="4B2b" class="table-info">[[ ${doc.curApr} ]]</td>
+									<td th:case="4B3b" class="table-success">[[ ${doc.curApr} ]]</td>
+									<td th:case="4B4b" class="table-danger">[[ ${doc.curApr} ]]</td>
+								</th:block>
+								<th:block th:switch="${doc.docStat}">
+									<td th:case="4B1b" class="table-secondary">[[ ${doc.docStatName} ]]</td>
+									<td th:case="4B2b" class="table-info">[[ ${doc.docStatName} ]]</td>
+									<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
+									<td th:case="4B4b" class="table-danger">[[ ${doc.docStatName} ]]</td>
+								</th:block>
+							</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+				<div>
+					<!-- 페이징공간 -->
+					<div id="pageArea">
+						<th:block th:replace="approval/list/page :: Page"></th:block>
+					</div>
 				</div>
 			</div>
-			
 		</div>
-		
-	</div>
 	</div>
 	</div>
 	

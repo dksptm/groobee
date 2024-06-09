@@ -5,15 +5,15 @@
 <body>
 	<th:block layout:fragment="Content">
 		<div class="d-flex justify-content-center">
-			<div style="min-width:880px" class="card my-4 col-10">
-				<h5 class="card-header">고객 목록</h5>
-				<div class="card-body ">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">고객관리 - 목록</h5>
+				<div class="card-body">
 
 					<!-- 검색 -->
 					<p class="navbar-brand"></p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
-							<div class="" id="navbarSupportedContent">
+							<div class="collapse navbar-collapse" id="navbarSupportedContent">
 								<table class="">
 									<tr>
 										<td><select class="form-select keywordCondition">
@@ -43,32 +43,35 @@
 										</select></td>
 										<td class="text-white">___</td>
 										<td>
-											<button class="btn btn-outline-success searchbtn"
-													type="button">검&emsp;색</button>
+											<button class="btn btn-info searchbtn" type="button">검&emsp;색</button>
+										</td>						
+										<td>
+											<button class="btn btn-secondary" type="button" th:onclick="|location.href='@{list}'|">초기화</button>
 										</td>						
 									</tr>
 								</table>
 							</div>
 						</div>
 					</nav>
+					<br>
 					<div id="CustListArea">
-						<!-- 계약 목록 출력 -->
+						<!-- 고객 목록 출력 -->
 						<div class="table-responsive">
 							<table class="table table-hover text-center">
-								<thead>
-									<tr class="table-secondary">
-										<th class="col-1">고객번호</th>
-										<th class="col-2">상호명</th>
-										<th class="col-2">대표자</th>
-										<th class="col-2">담당자번호</th>
-										<th class="col-1">계약번호</th>
-										<th class="col-1">계약상태</th>
+								<thead style="background-color:#3F72AF;">
+									<tr>
+										<th class="col-1 text-white">고객번호</th>
+										<th class="col-2 text-white">상호명</th>
+										<th class="col-2 text-white">대표자</th>
+										<th class="col-2 text-white">담당자번호</th>
+										<th class="col-1 text-white">계약번호</th>
+										<th class="col-1 text-white">계약상태</th>
 									</tr>
 								</thead>
 								<tbody>
 									<th:block th:each="cust : ${list}">
 										<tr th:onclick="|location.href='@{info?custNo={cno}(cno=${cust.custNo})}'|">
-											<th class="table-secondary text-start">&emsp;[[ ${cust.custNo} ]]</th>
+											<th class="text-start" style="background-color:#F9F7F7;">&emsp;&emsp;[[ ${cust.custNo} ]]</th>
 											<td>[[ ${cust.custName} ]]</td>
 											<td>[[ ${cust.rep} ]]</td>
 											<td>[[ ${cust.payPicTel} ]]</td>

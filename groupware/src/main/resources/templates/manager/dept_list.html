@@ -8,10 +8,10 @@
 <div class="card my-4 col-10">
 	<h5 class="card-header">부서관리 - 목록</h5>
 	<input type="hidden" th:value="${#authentication.principal.custNo}" id="cno" readonly />
-	<div class="card-body">
+	<div class="card-body pt-0">
 		<div id="taskTable">
 			<div class="table-responsive">
-				<div class="text-end">
+				<div class="text-end mt-0 pt-0">
 					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-danger dept-delete">삭제</button>
 					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-info dept-insert">저장</button>
 					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn btn-outline-success dept-update">수정</button>

@@ -8,63 +8,67 @@
 
 <style>
 .cust-table th{
-	font-size: 0.9rem;
-	font-weight: bold;
 	text-align: center;
 }
 </style>
 
-<div class="container container-p-y mt-3">
-	<h4>사원관리 - 조회</h4>
-	<div class="bg-light p-3 col-8">
+<div class="d-flex justify-content-center">
+<div class="my-4 col-10">
+<div class="card col-8">
+	<h5 class="card-header">사원관리 - 상세</h5>
+	
+	<div class="card-body pt-0">
 		<div class="table-responsive">
 			<div>
-				<table class="table table-bordered border-3 cust-table">
+				<table class="table table-bordered cust-table">
 					<tr>
-						<th>사원번호</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">사원번호</th>
 						<td>[[ ${emp.empNo} ]]</td>
-						<th>아이디</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">아이디</th>
 						<td>[[ ${emp.empId} ]]</td>
 					</tr>
 					<tr>
-						<th>이름</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">이름</th>
 						<td>[[${emp.empName}]]</td>
-						<th>이메일</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">이메일</th>
 						<td>[[${emp.emailAddr}]]</td>
 						
 					</tr>
 					<tr>
-						<th>부서</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">부서</th>
 						<td>[[${emp.deptName}]]</td>
-						<th>직급</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">직급</th>
 						<td>[[${emp.jobTitle}]]</td>
 					</tr>
 					<tr>
-						<th>주소</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">주소</th>
 						<td colspan="3">[[${emp.empAddr2}]] [[${emp.empAddr3}]] [[${emp.empAddr4}]] (우)[[${emp.empAddr1}]]
 					</tr>
 					<tr>
-						<th>근무현황</th>	
-						<td>[[${emp.empStatName}]]</td>
-						<th>연락처</th>	
+						<th class="col-2 text-white" style="background-color:#3F72AF;">근무현황</th>	
+						<td th:class="${emp.empStat == '1D1d' ? 'table-primary text-primary fw-bold	' : 'table-secondary text-danger'}">[[${emp.empStatName}]]</td>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">연락처</th>	
 						<td>[[${emp.empTel}]]</td>
 					</tr>
 					<tr>
-						<th>입사일</th>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">입사일</th>
 						<td>[[${#dates.format(emp.hireDt, 'yyyy년 MM월 dd일')}]]</td>
-						<th>퇴사일</th>
-						<td>[[${#dates.format(emp.fireDt, 'yyyy년 MM월 dd일')}]]</td>
+						<th class="col-2 text-white" style="background-color:#3F72AF;">퇴사일</th>
+						<td th:if="${emp.empStat} == '1D2d'" class="text-danger">[[${#dates.format(emp.fireDt, 'yyyy년 MM월 dd일')}]]</td>
+						<td th:unless="${emp.empStat} == '1D2d'">-</td>
 					</tr>
 				</table>
-				<div class="text-end">
-					<button type="button" id="submit-btn" class="btn btn-primary"
+				<div class="text-end mt-3">
+					<button type="button" id="submit-btn" class="btn btn-success"
 							th:onclick="|location.href='@{/cust/admin/empUpdate?eid={id}(id=${emp.empId})}'|">정보수정</button>
-					<button type="button" class="btn btn-secondary"
+					<button type="button" class="btn btn-primary"
 							th:onclick="|location.href='@{/cust/admin/empList}'|">목록으로</button>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
+</div>
 </div>
 
 
