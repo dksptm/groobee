@@ -14,13 +14,13 @@
 	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 	crossorigin="anonymous"></script>
 </head>
-<body style="background-color: black;">
+<body style="background-color: white;">
 	<div>
 		<img
-			style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; width: 1300px; height: 100%; display: block;"
-			th:src="@{/assets/img/login/main.jpg}" alt="My Image">
+			style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; width: 90%; height: 90%; display: block;"
+			th:src="@{/assets/img/main/main.jpg}" alt="My Image">
 		<div
-			style="width: 700px; height: 300px; margin: 300px auto; background-color: #868E96; text-align: center;">
+			style="width: 700px; height: 300px; margin: 300px auto; background-color: rgb(255,255,255,0.7); text-align: center;">
 			<form name="f" th:action="@{/login}" method="POST">
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" /> 
@@ -41,14 +41,14 @@
 							<td class="form-control-plaintext">아이디 :</td>
 							<td><input class="form-control" type="text" name="username"
 								value=""></td>
-							<td><button class="btn btn-light w-100" name="submit"
+							<td><button class="btn btn-primary w-100" name="submit"
 									type="submit" value="Login">로그인</button></td>
 						</tr>
 						<tr>
 							<td class="form-control-plaintext">비밀번호 :</td>
 							<td><input class="form-control" type="password"
 								name="password"></td>
-							<td><button class="btn btn-light w-100" name="cancel"
+							<td><button class="btn btn-secondary w-100" name="cancel"
 									type="button" th:onclick="|location.href='@{/}'|"
 									value="Cancel">취소</button></td>
 						</tr>
