@@ -4,13 +4,11 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-	<div class="container-xxl flex-grow-1">
-	<div class="flex-xl-nowrap row">
-	<div class="row">
-		<div class="row mt-3 pt-3">
-			<h2 class="ms-3">문서조회</h2>
-		</div>
-		<div class="row m-3 p-3 d-flex justify-content-center" style="background-color:#DEEDF0;">
+	<div class="d-flex justify-content-center">
+	<div class="card my-4 col-10" style="background-color:#DEEDF0;">
+	<div >
+		<h5 class="card-header">문서조회</h5>
+		<div class="row px-3 d-flex justify-content-center">
 			
 			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
@@ -20,7 +18,7 @@
 			
 			<div class="d-flex justify-content-between pb-3">
 			<!-- ------------------------- 목록버튼( + 검색 ) ------------------------- -->
-			<div class="text-start">
+			<div class="text-start ms-4" th:if="${search.path != null}">
 				<form th:action="@{{urlVar}(urlVar=${search.path})}" method="get" th:object="${search}">
 					<!-- 목록 버튼 -->
 					<button type="submit" class="btn btn-primary">목록으로</button>
@@ -37,8 +35,11 @@
 					<input th:field="*{path}" type="hidden" readonly  />
 				</form>			
 			</div>
+			<div class="text-start ms-4" th:unless="${search.path != null}">
+				<button type="button" th:onclick="|location.href='@{mydoc}'|" class="btn btn-primary">목록으로</button>
+			</div>
 			<!-- ------------------------- 상신/수정/삭제 버튼 START ------------------------- -->
-			<div class="text-end">
+			<div class="text-end mx-4">
 				<!-- 상신전 상태 & 작성자=로그인한사람 -->
 				<th:block th:if="${doc.draftStat == '4A1a' and doc.draft == #authentication.principal.empId}">
 					<button type="button" class="btn rounded-pill btn-info" id="gotoapr">상&emsp;신</button>
@@ -82,11 +83,11 @@
 				        <li class="nav-item">
 				            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" 
 				            		data-bs-target="#navs-top-others"
-				                	aria-controls="navs-top-others" aria-selected="false">관련 업무</button>
+				                	aria-controls="navs-top-others" aria-selected="false">반려 사유</button>
 				        </li>
 				        </th:block>
 					</ul>
-					<div class="tab-content text-center">
+					<div class="tab-content text-center table-responsive">
 						<!-- 문서 -->
 						<div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
 			                <table class="table table-bordered">
@@ -123,9 +124,9 @@
 									<table class="table table-bordered">
 										<th:block th:each="emp,stat : ${emps}">
 										<tr th:if="${stat.odd}">
-											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">부서</th>
 												<td>[[ ${emp.deptName} ]]</td>
-											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">이름</th>
 												<td th:attr="data-ref=${emp.empId}">[[ ${emp.empName} ]]</td>
 										</tr>
 										</th:block>
@@ -135,9 +136,9 @@
 									<table class="table table-bordered">
 										<th:block th:each="emp,stat : ${emps}">
 										<tr th:if="${stat.even}">
-											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">부서</th>
 												<td>[[ ${emp.deptName} ]]</td>
-											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">이름</th>
 												<td c>[[ ${emp.empName} ]]</td>
 										</tr>
 										</th:block>
@@ -152,9 +153,9 @@
 									<table class="table table-bordered">
 										<th:block th:each="task,stat : ${tasks}">
 										<tr th:if="${stat.odd}">
-											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">부서</th>
 												<td class="col-3">[[ ${task.deptName} ]]</td>
-											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">이름</th>
 												<td>[[ ${task.taskName} ]]</td>
 										</tr>
 										</th:block>
@@ -164,9 +165,9 @@
 									<table class="table table-bordered">
 										<th:block th:each="task,stat : ${tasks}">
 										<tr th:if="${stat.even}">
-											<th class="col-2" style="background-color:#F8E8EE;">부서</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">부서</th>
 												<td>[[ ${task.deptName} ]]</td>
-											<th class="col-2" style="background-color:#F8E8EE;">이름</th>
+											<th class="col-2 text-white" style="background-color:#3F72AF;">이름</th>
 												<td>[[ ${task.taskName} ]]</td>
 										</tr>
 										</th:block>
@@ -180,9 +181,9 @@
 							<table class="table table-bordered">
 								<th:block th:each="apr,aprStat : ${doc.aprs}">
 									<tr th:if="${apr.aprYn == '4D4d'}">
-										<th class="col-1">반려자명</th>
-											<td class="col-3">[[${apr.aprName}]]</td>
-										<th class="col-1">반려사유</th>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">반려자명</th>
+											<td class="col-2">[[${apr.aprName}]]</td>
+										<th class="col-1 text-white" style="background-color:#3F72AF;">반려사유</th>
 											<td class="text-start">[[${apr.reCmt}]]</td>
 									</tr>
 								</th:block>
@@ -194,23 +195,21 @@
 				<!-- ------------------------- 문서정보 나오는 탭 END ------------------------- -->
 				
 				<!-- ------------------------- 결재라인 START --------------------------->
-				<div class="mt-3">
-	                <div class="d-flex justify-content-end mt-3 row" th:attr="data-fl=${doc.finalLine}">
+				<div class="my-3">
+	                <div class="d-flex justify-content-end mt-3 me-0 row" th:attr="data-fl=${doc.finalLine}">
 						<th:block th:each="apr,aprStat : ${doc.aprs}">
 							<th:block th:if="${apr.aprSq == doc.nowLine}">
 							<div class="card col-1" 
-								 th:classappend="${doc.docStat == '4B4b' ? 'bg-secondary text-white' : 'bg-success'}"
-								 style="width: 10rem;">
+								 th:classappend="${doc.docStat == '4B4b' ? 'bg-secondary' : ''}"
+								 style="width: 10rem;background-color:#03AED2;">
 				  				<ul class="list-group list-group-flush"
 				  					th:attr="data-apr=${apr.aprEmp}">
-				    				<li class="list-group-item"
-				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
+				    				<li class="list-group-item  text-white">
 				    						[[ ${#strings.setSplit(apr.aprName, ' ')[1]} ]]</li>
-				    				<li class="list-group-item"
-				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
+				    				<li class="list-group-item text-white">
 				    						[[ ${apr.aprCode} ]]
 				    						<br>[[ ${#dates.format(apr.aprDt, 'MM/dd HH:mm')} ]]</li>
-				    				<li class="list-group-item"
+				    				<li class="list-group-item text-white"
 				    					th:classappend="${doc.docStat == '4B4b' ? 'text-white' : ''}">
 				    						[[ ${#strings.setSplit(apr.aprName, ' ')[0]} ]]</li>
 				  				</ul>
@@ -243,7 +242,8 @@
 				</div> -->
 				
 				<!-- ------------------------- 제목-템플릿-첨부파일 영역 START ------------------------- -->
-				<table class="table table-bordered border-secondary border-3 bg-white mt-3">
+				<div class="ms-0 me-4 mt-3">
+				<table class="table table-bordered border-secondary border-3 bg-white">
 					<thead>
 						<tr>
 							<td class="col-1 text-center align-middle"><b>제&emsp;&emsp;목</b></td>
@@ -285,6 +285,7 @@
 						</tr>
 					</tbody>
 				</table>
+				</div>
 				<!-- ------------------------- 제목-템플릿-첨부파일-내용 영역 END ------------------------- -->
 			</div>
 		</div> 
@@ -412,43 +413,59 @@
 						return;
 					}
 					
-					let url = `/cust/aprGo/${obj.docNo}`;
-					console.log(url);
-					
-					fetch(url, {
-						method : 'PUT',
-						body : JSON.stringify(obj),
-						headers : {
-							'Content-type' : 'application/json',
-							[header]: token // [헤더네임]:토큰번호로 CSRF 토큰을 헤더에 포함
-						}
+					Swal.fire({
+					      title: '문서를 상신하시겠습니까?',
+					      text: "상신하면 결재자에게 전달됩니다.",
+					      icon: 'warning',
+					      showCancelButton: true,
+					      confirmButtonColor: '#3085d6',
+					      cancelButtonColor: '#d33',
+					      confirmButtonText: '승인',
+					      cancelButtonText: '취소',
+					      reverseButtons: true, // 버튼 순서 거꾸로
 					})
-					.then(res => res.json())
-					.then(ret => {
-						if(ret.OUT == 'Y'){
+					.then((result) => {
+					    if (result.isConfirmed) {
+							let url = `/cust/aprGo/${obj.docNo}`;
+							console.log(url);
 							
-							Swal.fire({
-								icon: 'success',               
-							  	title: '상신완료!',    
-							  	text: '문서가 상신되었습니다.', 
-							})
-							.then((result) => {
-								if(result.value){
-									location.href = "/cust/doc/info?docNo=" + obj.docNo;
+							fetch(url, {
+								method : 'PUT',
+								body : JSON.stringify(obj),
+								headers : {
+									'Content-type' : 'application/json',
+									[header]: token // [헤더네임]:토큰번호로 CSRF 토큰을 헤더에 포함
 								}
 							})
-							
-						} else {
-							Swal.fire({
-								icon: 'error',               
-							  	title: '상신실패!',    
-							  	text: '-', 
-							});
-							//location.href = "/docList";
-							console.log(ret);
+							.then(res => res.json())
+							.then(ret => {
+								if(ret.OUT == 'Y'){
+									
+									Swal.fire({
+										icon: 'success',               
+									  	title: '상신완료!',    
+									  	text: '문서가 상신되었습니다.', 
+									})
+									.then((result) => {
+										if(result.value){
+											location.href = "/cust/doc/info?docNo=" + obj.docNo;
+										}
+									})
+									
+								} else {
+									Swal.fire({
+										icon: 'error',               
+									  	title: '상신실패!',    
+									  	text: '-', 
+									});
+									//location.href = "/docList";
+									console.log(ret);
+								}
+							})
+							.catch(err => console.error(err))				
 						}
-					})
-					.catch(err => console.error(err))				
+					    
+					})//Swal.fire
 				});
 			} // goApr
 			

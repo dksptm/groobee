@@ -7,15 +7,16 @@
 <th:block layout:fragment="Content">
 
 <div sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
-<div class="container container-p-y mt-3">
-	<h4>상시업무 관리 - 목록</h4>
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">상시업무관리 - 목록</h5>
 	
-	<!-- 검색공간 -->				
-	<div id="searchArea">
-		<th:block th:replace="project/regu/search :: Search"></th:block>
-	</div>
+	<div class="card-body pt-0">
+		<!-- 검색공간 -->				
+		<div id="searchArea">
+			<th:block th:replace="project/regu/search :: Search"></th:block>
+		</div>
 	
-	<div class="bg-light p-3">
 	<div id="stadListArea">
 	<div class="row">
 		<th:block th:each="regu,stat : ${list}">
@@ -50,6 +51,7 @@
 	</div>	
 	</div>
 	</div>
+</div>
 </div>
 </div>
 

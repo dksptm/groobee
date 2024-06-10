@@ -14,14 +14,15 @@
 	text-align: center;
 }
 </style>
-
-<div class="container container-p-y mt-3">
-	<h4>사원관리 - 수정</h4>
-	<div class="bg-light p-3 col-8">
+<div class="d-flex justify-content-center">
+<div class="my-4 col-10">
+<div class="card col-8">
+	<h5 class="card-header">사원관리 - 수정</h5>
+	<div class="card-body pt-0">
 		<div class="table-responsive">
 			<form th:action="@{empUpdate}" id="empUpdateForm" method="post" th:object="${emp}">
 				<input type="hidden" th:value="${emp.empId}" name="empId">
-				<table class="table table-bordered border-3 cust-table">
+				<table class="table table-bordered border-2 cust-table">
 					<tr>
 						<th>아이디</th>
 						<td>[[ ${emp.empId} ]]</td>
@@ -54,15 +55,15 @@
 						<td colspan="2">
 							<input type="text" class="form-control" th:value="${emp.empAddr1}" id="empAddr1" name="empAddr1" placeholder="우편번호">
 						</td>
-						<td class="text-center">
-							<input type="button" class="btn btn-secondary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+						<td class="text-start"  style="border-left:hidden;">
+							<input type="button" class="btn btn-primary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="3" style="border-top:hidden;">
 							<input type="text" class="form-control" th:value="${emp.empAddr2}" id="empAddr2" name="empAddr2" placeholder="주소">
-							<div class="d-flex justify-content-center">
-							<input type="text" class="form-control" th:value="${emp.empAddr3}" id="empAddr3" name="empAddr3" placeholder="상세주소">
+							<div class="d-flex justify-content-center mt-1">
+							<input type="text" class="form-control me-1" th:value="${emp.empAddr3}" id="empAddr3" name="empAddr3" placeholder="상세주소">
 							<input type="text" class="form-control" th:value="${emp.empAddr4}" id="empAddr4" name="empAddr4" placeholder="참고항목">
 							</div>
 						</td>	
@@ -109,13 +110,17 @@
 						</td>
 					</tr>
 				</table>
-				<div class="text-end">
-					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">수정완료</button>
+				<div class="text-end mt-3">
+					<button type="submit" id="submit-btn" class="btn btn-outline-success">수정완료</button>
+					<button type="reset" th:onclick="|location.href='@{/cust/emp/info?eid={id}(id=${emp.empId})}'|" class="btn btn-outline-secondary">등록취소</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+</div>
+</div>
+
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     function sample6_execDaumPostcode() {

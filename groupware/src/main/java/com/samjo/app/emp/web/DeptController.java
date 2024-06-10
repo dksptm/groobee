@@ -5,8 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.samjo.app.common.util.SecuUtil;
 import com.samjo.app.emp.service.DeptService;
@@ -40,7 +46,8 @@ public class DeptController {
 		return "approval/modal/modal_refs";
 	}
 	
-	@GetMapping("cust/manager/dept")
+	// 부서관리 - 전체조회.
+	@GetMapping("cust/admin/dept")
 	public String custDeptinfoList(Model model) {
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		
@@ -56,6 +63,50 @@ public class DeptController {
 		model.addAttribute("depts", depts);
 		
 		return "manager/dept_list";
+	}
+	
+	// 부서장급 사원가져오기 ajax.
+	@ResponseBody
+	@GetMapping("cust/admin/dept/mngrs")
+	public List<EmpVO> getCustMngrList() {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		List<EmpVO> list = deptService.myDeptMngrs(empVO);
+		return list;
+	}
+	
+	// 부서이름 중복체크 ajax.
+	@ResponseBody
+	@GetMapping("cust/admin/dnameCheck")
+	public int idCheck(@RequestParam("dname") String deptName) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		
+		int result = deptService.dnameCheck(deptName, empVO.getCustNo());
+		return result;
+	}
+	
+	// 부서저장 ajax json.
+	@ResponseBody
+	@PostMapping("cust/admin/dept")
+	public String custDeptinfoInsert(@RequestBody DeptVO dept) {
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		dept.setCustNo(empVO.getCustNo());
+		
+		return deptService.insertDeptInfo(dept);
+	}
+	
+	// 부서수정 ajax json.
+	@ResponseBody
+	@PutMapping("cust/admin/dept/{did}")
+	public String custDeptinfoUpdate(@RequestBody DeptVO dept, @PathVariable String did) {
+		return deptService.updateDeptInfo(dept);
+	}
+	
+	//
+	@ResponseBody
+	@DeleteMapping("cust/admin/dept/{cno}")
+	public int custDeptinfoDelete(@RequestBody String[] deptIdList, @PathVariable(name="cno") String custNo) {
+		return deptService.deleteDeptInfo(deptIdList, custNo);
 	}
 	
 	

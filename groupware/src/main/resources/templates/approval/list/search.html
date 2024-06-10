@@ -2,13 +2,12 @@
 <html xmlns:th="https://www.thymeleaf.org/">
 
 <th:block th:fragment="Search">
-<button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button>
-<div class="collapse bg-light pt-2 sch-toggle-area">
-<div class="d-flex justify-content-center table-responsive">
+<!-- <button type="button" class="btn btn-secondary mb-3 sch-toggle-btn">조건별 검색</button> -->
+<!-- <div class="sch-toggle-area"> -->
 	<form id="searchForm" th:action="@{{urlVar}(urlVar=${path})}"  method="get" th:object="${search}">
 		<input name="path" th:value="${path}" type="hidden" readonly />
-		<div>
-		<nav class="navbar navbar-expand navbar-light">
+		<p class="navbar-brand"></p>
+		<nav class="navbar navbar-expand-lg navbar-light">
 			<div class="container-fluid">
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<table>
@@ -51,6 +50,9 @@
 									<option value="4D1d">대기</option>
 							</select></td>
 							</th:block>
+							<td>
+								<button class="btn btn-info" type="button" id="schBtn">검&emsp;색</button>
+							</td>
 						</tr>
 						<tr>
 							<td><select class="form-select" th:field="*{dateCondition}">
@@ -89,41 +91,32 @@
 										<option value="d.cmplt_dt">완료일자순</option>
 										<option value="d.cmplt_dt DESC">완료일자순(역순)</option>
 									</th:block>
-							</select></td>
-						</tr>
-						<tr class="text-end">
-							<td colspan="6">
+								</select>
 							</td>
-							<td colspan="2">
-								<button class="btn btn-info" type="button" id="schBtn">검&emsp;색</button>
-								<button class="btn btn-secondary ms-2"
+							<td>
+								<button class="btn btn-secondary "
 								type="reset"
-								th:onclick="|location.href='@{{urlVar}(urlVar=${path})}'|">초기화</button>
+								th:onclick="|location.href='@{{urlVar}(urlVar=${path})}'|">초기화</button>							
 							</td>
 						</tr>
 					</table>
 					<!-- 검색 버튼 -->
-					<div class="d-flex justify-content-between text-end">
-						
-						
-					</div>
 				</div>
 			</div>
 		</nav>
-		</div>
-		<p><input type="hidden" th:field="*{page}" readonly /></p>
+		<input type="hidden" th:field="*{page}" readonly />
 	</form>
-</div>
-</div>
+
+<!-- </div> -->
 
 <!-- <script th:src="@{/js/doclist.js}"></script> -->
 <script>
 	$(function(){
 		
 		// 검색공간 토글
-		$('.sch-toggle-btn').click(function() {
+		/* $('.sch-toggle-btn').click(function() {
 			$('.sch-toggle-area').slideToggle();
-		});
+		}); */
 		
 		//기간 검색 범위처리
 		$('.sdt').on('change', function(e){

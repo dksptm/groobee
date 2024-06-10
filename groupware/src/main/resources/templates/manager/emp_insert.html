@@ -15,15 +15,20 @@
 }
 </style>
 
-<div class="container container-p-y mt-3">
-	<h4>사원관리 - 등록</h4>
-	<div class="bg-light p-3 col-8">
-		<div class="card d-flex justify-content-center table-responsive m-2 p-4">
+<div class="d-flex justify-content-center">
+<div class="my-4 col-10">
+<div class="card col-8">
+	<h5 class="card-header">사원관리 - 등록</h5>
+	
+	<div class="card-body pt-0">
+		<div class="table-responsive">
 			<form th:action="@{empInsert}" id="empInsertForm" method="post" th:object="${emp}">
-				<table class="table table-bordered border-3 cust-table">
+				<span><b>등록가능 사원 수 : [[${cust.maxEmps}]]</b></span>&emsp;
+				<span><b>현재 사원 수 : [[${cust.curEmps}]]</b></span>
+				<table class="table table-bordered border-2  cust-table">
 					<tr>
-						<th colspan="4" class="py-3 table-primary">
-							<h4 class="p-0 m-0">사원정보 입력</h4>
+						<th colspan="4" class="py-3 " style="background-color:#F9F7F7;">
+							<h6 class="p-0 m-0"><b>사원정보 입력</b></h6>
 							<input type="hidden" th:value="${#authentication.principal.ctNo}" name="ctNo" readonly />
 							<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
 						</th>
@@ -71,15 +76,15 @@
 						<td colspan="2">
 							<input type="text" class="form-control bg-transparent" th:field="*{empAddr1}" placeholder="우편번호">
 						</td>
-						<td class="text-center">
-							<input type="button" class="btn btn-secondary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+						<td class="text-start"  style="border-left:hidden;">
+							<input type="button" class="btn btn-primary" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="3" style="border-top:hidden;">
 							<input type="text" class="form-control bg-transparent" th:field="*{empAddr2}" placeholder="주소">
-							<div class="d-flex justify-content-center">
-							<input type="text" class="form-control bg-transparent" th:field="*{empAddr3}" placeholder="상세주소">
+							<div class="d-flex justify-content-center mt-1">
+							<input type="text" class="form-control bg-transparent me-1" th:field="*{empAddr3}" placeholder="상세주소">
 							<input type="text" class="form-control bg-transparent" th:field="*{empAddr4}" placeholder="참고항목">
 							</div>
 						</td>					
@@ -96,13 +101,19 @@
 						</td>
 					</tr>
 				</table>
-				<div class="text-end">
-					<button type="submit" id="submit-btn" class="btn btn-primary mt-3">사원등록</button>
+				<div class="text-end" th:if="${cust.maxEmps} > ${cust.curEmps}">
+					<button type="submit" id="submit-btn" class="btn btn-info mt-3">사원등록</button>
 					<button type="reset" th:onclick="|location.href='@{empList}'|" class="btn btn-secondary mt-3">등록취소</button>
+				</div>
+				<div class="d-flex align-items-center justify-content-end mt-3" th:unless="${cust.maxEmps} > ${cust.curEmps}">
+			        <span class="text-danger"><b>등록가능한 사원수를 초과했습니다.</b></span>&emsp;
+			        <button type="reset" th:onclick="|location.href='@{empList}'|" class="btn btn-warning">목록으로 돌아가기</button>
 				</div>
 			</form>
 		</div>
 	</div>
+</div>
+</div>
 </div>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
