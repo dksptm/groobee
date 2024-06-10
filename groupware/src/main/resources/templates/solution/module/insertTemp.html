@@ -32,8 +32,10 @@
 											class="col-md-2 col-form-label text-white text-center fs-6"
 											style="background-color: #3F72AF;">사용고객사</label>
 										<div class="col-md-3">
-											<input class="form-control custName" th:field="*{custNo}"
+											<input class="form-control custRealName"
 												type="text" readOnly />
+											<input class="form-control custName" th:field="*{custNo}"
+												type="hidden" readOnly />
 										</div>
 
 										<!-- 고객사 선택 모달버튼 -->
@@ -67,11 +69,11 @@
 															</thead>
 															<tbody>
 																<th:block th:each="CustVO : ${custlist}">
-																	<tr id="custTr">
+																	<tr class="custTr">
 																		<td>[[ ${CustVO.custName} ]]</td>
 																		<td>[[ ${CustVO.custNo} ]]</td>
 																		<td>[[ ${CustVO.rep} ]]</td>
-																		<td><input type="radio" name="check"
+																		<td><input type="radio" name="check" th:class="${CustVO.custName}"
 																			th:value="${CustVO.custNo}"></td>
 																	</tr>
 																</th:block>
@@ -120,7 +122,7 @@
 							<!--  작성완료 버튼 -->
 							<div class="d-flex justify-content-end px-3 mt-2">
 								<div class="text-end px-2">
-									<button type="button" class="btn btn-primary commitbtn">등록완료</button>
+									<button type="button" class="btn btn-info commitbtn">등록완료</button>
 								</div>
 								<div class="text-end">
 									<button type="button"
@@ -146,13 +148,18 @@
 			//모달창에서 선택한 고객사번호를 input창에 입력.
 			$(".selectCust").on("click", function(e){
 				$(".custName").val($('input:radio:checked').val());
+				$(".custRealName").val($('input:radio:checked').attr('class'));
 			});
 			
 			//고객사 행 클릭시 라디오버튼 선택
-			$("#custTr").click(function(){
+			$(document).on('click', '.custTr', function(){
 				let radio = $(this).find('td :radio');
 				radio.attr('checked', !radio.is(':checked'));
 			});
+			/* $('#custTr').on('click', function(){
+				let radio = $(this).find('td :radio');
+				radio.attr('checked', !radio.is(':checked'));
+			}); */
 					
 			//업로드or직접입력 선택
 			//직접입력 Tag
@@ -180,7 +187,7 @@
 					class="upload-sample p-3" ></div>
 			`;
 			
-			//업로드/직접입력 템플릿 반영
+			//업로드,직접입력 템플릿 반영
 			$(".inserttype").on("change", function(e) {
 				if ($(".inserttype").val() == "input") {
 					$(".tempdiv").html(templateA);
@@ -224,6 +231,9 @@
 			                return false;
 			            }
 			        } else if ($('.inserttype').val() === 'option'){
+			        	veilcheck = false;
+			            return false;
+			        } else if ($('#content').val() === '' || $('#filename').val() === '' || $('#uploadFiles2').val() === ''){
 			        	veilcheck = false;
 			            return false;
 			        } else if ($(this).val().trim() === '' && !$(this).closest('.tempdiv').length) {

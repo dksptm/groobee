@@ -71,8 +71,8 @@
 										<th class="text-white">상호명</th>
 										<th class="text-white">금액</th>
 										<th class="text-white">분류</th>
+										<th class="text-white">등록일</th>
 										<th class="text-white">예정일</th>
-										<th class="text-white">결제일</th>
 										<th class="text-white">상태</th>
 									</tr>
 								</thead>
@@ -84,17 +84,12 @@
 											<td>[[ ${PayVO.custName} ]]</td>
 											<td>[[ ${PayVO.servAmt} ]]</td>
 											<td>[[ ${PayVO.payTypeName} ]]</td>
+											<td>[[ ${#dates.format(PayVO.payCreDt, "yyyy-MM-dd")} ]]</td>
 											<th:block th:if="${PayVO.payExpcDt == null}" >
-												<td>결제대기중</td>											
+												<td>인증대기중</td>											
 											</th:block>
 											<th:block th:unless="${PayVO.payExpcDt == null}" >
 												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
-											</th:block>
-											<th:block th:if="${PayVO.payCmpltDt == null}" >
-												<td>미입금</td>											
-											</th:block>
-											<th:block th:unless="${PayVO.payCmpltDt == null}" >
-												<td>[[ ${PayVO.payCmpltDt} ]]</td>
 											</th:block>
 											<td>[[ ${PayVO.payStatName} ]]</td>
 										</tr>

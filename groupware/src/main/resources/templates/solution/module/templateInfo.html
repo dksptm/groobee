@@ -44,8 +44,11 @@
 									<td>[[ ${tempVO.uplName} ]]</td>
 								</tr>
 							</table>
-							<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a><br>
-							<button type="button" th:onclick="|location.href='@{/sol/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
+							<div class="mt-2 mb-2">
+								<a th:href="|@{/download/}${tempVO.saveName}|" id="downloadLink">템플릿 다운로드</a><br>
+							</div>
+							<button type="button" th:onclick="|location.href='@{/sol/tempList}'|" class="btn btn-primary">목록</button>
+							<button type="button" th:onclick="|location.href='@{/sol/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-success">수정</button>
 							<button type="button" class="btn btn-danger delBtn" th:value="${tempVO.tempNo}">삭제</button>
 						</div>
 					</div>
@@ -57,6 +60,23 @@
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
+			$('#downloadLink').on('click', function(e){
+				e.preventDefault();
+				$.ajax({
+			        type: 'HEAD',
+			        url: '/files/' + [[${tempVO.saveName}]],
+			        success: function() {
+			        	$('#downloadLink').unbind('click').get(0).click();
+			        },
+			        error: function() {
+			        	Swal.fire({
+							icon: 'error',               
+						  	title: '템플릿 파일이\n존재하지 않습니다.',    
+						  	text: '', 
+						});
+			        }
+			    });
+			});
 			$('.delBtn').on('click', function(e){
 				e.preventDefault();
 				
@@ -65,8 +85,8 @@
 					  text: "삭제하시면 다시 복구시킬 수 없습니다.",
 					  icon: 'warning',
 					  showCancelButton: true,
-					  confirmButtonColor: '#3085d6',
-					  cancelButtonColor: '#d33',
+					  confirmButtonColor: '#d33',
+					  cancelButtonColor: '#3085d6',
 					  confirmButtonText: '삭제',
 					  cancelButtonText: '취소'
 					}).then((result) => {

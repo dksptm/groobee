@@ -60,6 +60,7 @@
 				<div class="card-body">
 					<h5 class="card-header">결제 목록</h5>
 					<!-- 결제 목록 출력 -->
+					<p class="text-danger">결제내역은 매일 오전 5시에 갱신됩니다</p>
 					<div class="table-responsive mb-2">
 						<table class="table table-hover text-center">
 							<thead>
@@ -92,7 +93,6 @@
 							</tbody>
 						</table>
 					</div>
-					<p class="text-danger">결제내역은 매일 오전 5시에 갱신됩니다</p>
 					<!-- 페이징 -->
 					<div>
 						<th:block th:if="${payDTO.totalCnt} != 0">
@@ -237,8 +237,8 @@
 							success : function(result) {
 								Swal.fire({
 									icon: 'success',               
-								  	title: '정기 결제 예약 완료\n약 1분후 첫결제가 완료됩니다.\n첫결제 완료이후 재로그인시 기능이 활성화됩니다.',    
-								  	text: '', 
+								  	title: '정기 결제 예약 완료',    
+								  	text: '재로그인시 기능이 활성화됩니다.', 
 								}).then((result) => {
 									location.reload(true);
 								});
@@ -271,8 +271,13 @@
 						"ctNo" : ctNo
 					},
 					success : function(result) {
-						alert('정기 결제 중지');
-						location.reload(true);
+						Swal.fire({
+							icon: 'success',               
+						  	title: '정기 결제가 중지되었습니다.',    
+						  	text: '', 
+						}).then((result) => {
+							location.reload(true);
+						});
 					}
 				});
 			});
