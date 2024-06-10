@@ -40,10 +40,10 @@
 	<!-- 직급 수정, jobId는 수정대상 아니다. -->
 	<update id="jobUpdate" parameterType="jobVO">
 	UPDATE jobs
-	SET   (job_no = #{jobNo},
-		   perm_id = #{permId},
+	SET    perm_id = #{permId},
 		   job_title = #{jobTitle},
-		   cust_no = #{custNo})
+		   cust_no = #{custNo}
+	WHERE job_no =#{jobNo}
 	</update>
 	
 	<!-- 직급 삭제, doc-mapper -->

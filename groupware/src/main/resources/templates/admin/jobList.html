@@ -4,48 +4,43 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="container-xxl flex-grow-1">
-			<div class="flex-xl-nowrap row">
-				<div class="row">
-					<div class="row mt-3 pt-3">
-						<h2 class="ms-3">직급 목록</h2>
-					</div>
-					<hr>
-
-					<div class="mt-3 pt-3">
-						<div class="table-responsive">
-							<table
-								class="table table-bordered table-hover text-center bg-white">
-								<thead>
-									<tr class="table-dark">
-										<th class="text-white">직급번호</th>
-										<th class="text-white">직급명</th>
-										<th class="text-white">권한</th>
-									</tr>
-								</thead>
-								<tbody>
-									<th:block th:each="jobVO : ${getJobList}">
-										<tr class="toJobInfo" data-job-no="[[${jobVO.jobNo}]]"
-											data-job-title="[[${jobVO.jobTitle}]]"
-											data-perm-id="[[${jobVO.permId}]]">
-											<!--/* data-bs-toggle="modal" data-bs-target="#JobInfoModal"> */-->
-											<td th:text="${jobVO.jobNo}"></td>
-											<td th:text="${jobVO.jobTitle}"></td>
-											<td th:text="${jobVO.permId}"></td>
-										</tr>
-									</th:block>
-								</tbody>
-							</table>
-							<div>
-								<button type="button" class="btn btn-primary w-100"
-									data-bs-toggle="modal" data-bs-target="#insertJobModal">등록</button>
-							</div>
-						</div>
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+				<h5 class="card-header">직급관리 - 목록</h5>
+				<div class="card-body ">
+				
+					<table
+						class="table table-bordered table-hover text-center bg-white">
+						<thead>
+							<tr style="background-color: #3F72AF;">
+								<th hidden="hidden" class="text-white">직급번호</th>
+								<th class="text-white">직급명</th>
+								<th class="text-white">권한</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="jobVO : ${getJobList}">
+								<tr
+									th:attr="data-job-no=${jobVO.jobNo}, data-job-title=${jobVO.jobTitle}, data-perm-id=${jobVO.permId}"
+									class="toJobInfo">
+									<!-- */th:attr="" /*-->
+									<!-- */th:attr=""> /*-->
+									<!--/* data-bs-toggle="modal" data-bs-target="#JobInfoModal"> */-->
+									<!--/*<td th:text="${jobVO.jobNo}"></td>*/-->
+									<td th:text="${jobVO.jobTitle}"></td>
+									<td th:text="${jobVO.permId}"></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+					<br>
+					<div class="text-end">
+						<button type="button" class="btn btn-primary w-10"
+							data-bs-toggle="modal" data-bs-target="#insertJobModal">등록</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
 		<!-- 모달들 -->
 		<!-- 직급 등록 모달화면 -->
 		<div class="modal fade" id="insertJobModal" tabindex="-1">
@@ -152,23 +147,24 @@ let token = $("meta[name='_csrf']").attr('content');
     );
 
     // 행 클릭 이벤트 - 모달에 정보 전달
-    $('.toJobInfo').on('click', function() {
-    	
-    	//여기가 문제다. 값이 안 들어오고 있다. attr, text, val, data 다 이상함
-    	//data로 하면 undefined가 콘솔에 출력된다. jobVO가 안 넘어왔다면 리스트도 출력이 안됐을 거임
-    	//이해도가 너무 부족하다 아효..
-    	let jobNo = $(this).data('data-job-no');
-        let jobTitle = $(this).data('data-job-title');
-        let permId = $(this).data('data-perm-id');
-		
-        console.log("Job No:", jobNo);
-        console.log("Job Title:", jobTitle);
-        console.log("Perm ID:", permId);
+    $('.toJobInfo').on('click', function() {   	
+    	let jobNo = $(this).data('job-no');
+        let jobTitle = $(this).data('job-title');
+        let permId = $(this).data('perm-id');
         
         $('#updateJobNo').val(jobNo);
         $('#updateJobTitle').val(jobTitle);
-        $('#updatePermId').val(permId);
+        $('#updatePermId option').each(function(index, item){
+        	if(item.innerText == permId) {
+        		item.selected = true;
+        	}
+        })
         
+        //셀렉트 태그 밑에 있는 옵션의 값이랑 비교해서 일치하는것을 해당 옵션의 selected 라는 속성을 추가.
+        //1. 셀렉트 태그 밑에 있는 옵션 찾기
+        //2. 옵션의 텍스트와 VO에 있던 permId와 비교
+        //2-1. 옵션 for로 돌리며 3개와 VO의 permId 비교.
+        //3. 값이 일치한 옵션의 셀렉티드 속성을 추가. 
 		let myModal = new bootstrap.Modal(document.getElementById('JobInfoModal'));
 		myModal.show();        
     });
@@ -234,7 +230,8 @@ $('#insertBtn').click(function(e) {
     $('#updateBtn').click(function(e) {
     	let jobNo = $('#updateJobNo').val();
         let jobTitle = $('#updateJobTitle').val();
-        let permId = $('#updatePermId').val();
+        let permId = $('#updatePermId option:selected').val();
+        console.log(permId);
 
         if (!jobTitle || !permId) {
             Swal.fire({
@@ -268,7 +265,7 @@ $('#insertBtn').click(function(e) {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				});
+				})
 			},
 			error : function(xhr, status, error) {
 				console.error(error);
@@ -281,18 +278,32 @@ $('#insertBtn').click(function(e) {
 					if(result.value){
 						location.href = "/cust/admin/jobList";
 					}
-				});
+				})
 			}
         });
-    });
-
+});
+    
     // 삭제 버튼 클릭 이벤트
     $('#deleteBtn').click(function(e) {
         let jobNo = $('#updateJobNo').val();
-
-        if (!confirm('정말 삭제하시겠습니까?')) {
-            return;
-        }
+        
+		//
+		//Swal.fire({
+        //title: '삭제 확인',
+        //text: "정말 삭제할까요?",
+        //icon: 'warning',
+        //showCancelButton: true,
+        //confirmButtonColor: '#3085d6',
+        //cancelButtonColor: '#d33',
+        //confirmButtonText: '확인',
+        //cancelButtonText: '취소'
+    	//}).then((result) => {
+    	//	return;
+    	//}
+		//
+        //if (!confirm('정말 삭제하시겠습니까?')) {
+          //  return;
+        //}
 
         $.ajax({
             url: '/cust/admin/jobDelete',
@@ -321,8 +332,8 @@ $('#insertBtn').click(function(e) {
 				console.error(error);
 				Swal.fire({
 					icon : 'error',
-					title : '실패',
-					text : '삭제 중 오류가 발생했습니다.',
+					title : '삭제 불가',
+					text : '해당 직급을 사용중인 직원이 있습니다.',
 				})
 				.then((result) => {
 					if(result.value){

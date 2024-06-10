@@ -96,7 +96,7 @@ public class AdminController {
 	
 	//직급관리 수정
 	@ResponseBody
-	@PutMapping("cust/admin/JobUpdate")
+	@PutMapping("cust/admin/jobUpdate")
 	public String JobUpdate(@RequestBody JobVO jobVO, Authentication authentication) {
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
@@ -108,7 +108,7 @@ public class AdminController {
 		int jNo = jobService.jobUpdate(jobVO);
 		String uri = "";
 		if (jNo > -1) {
-			uri = "admin/JobList";
+			uri = "admin/jobList";
 		} else {
 			uri = "/";
 		}
@@ -117,7 +117,7 @@ public class AdminController {
 	
 	//직급관리 삭제
 	@ResponseBody
-	@DeleteMapping("cust/admin/JobDelete")
+	@DeleteMapping("cust/admin/jobDelete")
 	public String JobDelete(@RequestBody JobVO jobVO, Authentication authentication) {
 		Object principal = authentication.getPrincipal();
 		if (principal instanceof LoginUserVO) {
@@ -129,7 +129,7 @@ public class AdminController {
 		int jNo = jobService.jobDelete(jobVO);
 		String uri = "";
 		if (jNo > -1) {
-			uri = "admin/JobList";
+			uri = "admin/jobList";
 		} else {
 			uri = "/";
 		}
