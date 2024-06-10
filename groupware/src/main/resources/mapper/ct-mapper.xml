@@ -98,6 +98,7 @@
 		           JOIN perm p
 		            ON(j.perm_id = p.perm_id)
 		WHERE e.cust_no = #{custNo}
+		ORDER BY e.emp_id
 	</select>	
 	
 	<!-- 계약등록 모듈목록조회 -->
@@ -192,7 +193,7 @@
 		SELECT *
 		FROM ct_hist
 		WHERE ct_no = #{CtNo}
-		ORDER BY ct_hist_no
+		ORDER BY ct_hist_no DESC
 	</select>
 	
 	<!-- 계약변경이력(모듈) -->

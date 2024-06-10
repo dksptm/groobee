@@ -46,17 +46,41 @@
 							</table>
 							<a th:href="|@{/download/}${tempVO.saveName}|">템플릿 다운로드</a><br>
 							<button type="button" th:onclick="|location.href='@{/sol/updateSolTemp(tempNo=${tempVO.tempNo})}'|" class="btn btn-primary">수정</button>
-							<button type="button" th:onclick="|location.href='@{/sol/tempDelete/{tempNo}(tempNo=${tempVO.tempNo})}'|" class="btn btn-danger">삭제</button>
+							<button type="button" class="btn btn-danger delBtn" th:value="${tempVO.tempNo}">삭제</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<script>
+		<script th:inline="javascript">
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
 			
+			$('.delBtn').on('click', function(e){
+				e.preventDefault();
+				
+				Swal.fire({
+					  title: '템플릿을 삭제하시겠습니까?',
+					  text: "삭제하시면 다시 복구시킬 수 없습니다.",
+					  icon: 'warning',
+					  showCancelButton: true,
+					  confirmButtonColor: '#3085d6',
+					  cancelButtonColor: '#d33',
+					  confirmButtonText: '삭제',
+					  cancelButtonText: '취소'
+					}).then((result) => {
+					  if (result.value) {
+						  Swal.fire({
+								icon: 'success',               
+							  	title: '삭제 완료.',    
+							  	text: '', 
+							}).then((result) => {
+						  		location.href='/sol/tempDelete/'+$(this).val();
+							});
+					  }
+				})
+			})
 			
 		</script>
 	</th:block>

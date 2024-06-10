@@ -37,7 +37,7 @@ public class ReqPaymentScheduler {
         scheduler.initialize();
         // 스케쥴러 시작
         scheduler.schedule(getRunnable(), getTrigger()); //1분마다 실행 세팅
-        //scheduler.schedule(getRunnable(), new CronTrigger("0 0 12 * * ?")); //매일 정오 실행 세팅
+        //scheduler.schedule(getRunnable(), new CronTrigger("0 0 5 * * ?")); //매일 5시 실행 세팅
     }
     
     public static java.sql.Date convertFromJAVADateToSQLDate(

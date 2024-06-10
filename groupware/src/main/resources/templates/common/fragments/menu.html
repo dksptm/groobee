@@ -16,7 +16,7 @@
 	<ul class="menu-inner py-1 overflow-auto">
 
 		<!-- 고객사 메뉴 -->
-		<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c','1C4c')">
+		<th:block sec:authorize="hasAuthority('ABLE') and hasAnyAuthority('1C2c','1C3c','1C4c')">
 			<!-- 메인화면 메뉴 -->
 			<li class="menu-item"><a href="/home" class="menu-link"> <i
 					class="menu-icon tf-icons bx bx-home-circle"></i>
@@ -178,16 +178,18 @@
 					</a></li>
 				</ul></li>
 			</th:block>
+		</th:block>
 
-			<!-- 관리자 기능 -->
-			<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
-			<li class="menu-item"><a href="javascript:void(0);"
-				class="menu-link menu-toggle"> <i
-					class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-					<div>관리자기능</div>
-			</a>
-				<ul class="menu-sub">
-					<li class="menu-item"><a href="/cust/admin/empList" class="menu-link">
+		<!-- 관리자 기능 -->
+		<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
+		<li class="menu-item"><a href="javascript:void(0);"
+			class="menu-link menu-toggle"> <i
+				class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+				<div>관리자기능</div>
+		</a>
+			<ul class="menu-sub">
+				<th:block sec:authorize="hasAuthority('ABLE')">
+					<li class="menu-item"><a href="/cust/manager/empList" class="menu-link">
 							<div>사원계정 관리</div>
 					</a></li>
 					<li class="menu-item"><a href="/cust/admin/dept" class="menu-link">
@@ -196,14 +198,14 @@
 					<li class="menu-item"><a th:href="@{/cust/admin/jobList}" class="menu-link">
 							<div>직급 관리</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/cust/admin/payAndCt}" class="menu-link">
-							<div>결제/계약 관리</div>
-					</a></li>
-					<!-- <li class="menu-item"><a href="#" class="menu-link">
-							<div>유지보수 관리</div>
-					</a></li> -->
-				</ul></li>
-		</th:block>
+				</th:block>
+				<li class="menu-item"><a th:href="@{/cust/admin/payAndCt}" class="menu-link">
+						<div>결제/계약 관리</div>
+				</a></li>
+				<!-- <li class="menu-item"><a href="#" class="menu-link">
+						<div>유지보수 관리</div>
+				</a></li> -->
+			</ul></li>
 		</th:block>
 
 		<!-- 솔루션 기능 -->
@@ -252,9 +254,6 @@
 				<ul class="menu-sub">
 					<li class="menu-item"><a th:href="@{/sol/payList}" class="menu-link">
 							<div>결제 내역</div>
-					</a></li>
-					<li class="menu-item"><a th:href="@{/sol/payTest}" class="menu-link">
-							<div>결제 테스트</div>
 					</a></li>
 				</ul></li>
 

@@ -55,7 +55,7 @@ public class PayServiceImpl implements PayService{
 		return payMapper.payCount(searchVO);
 	}
 
-	/*결제처리 테스트*/
+	//결제처리
 	@Override
 	public String getToken() {
 		
@@ -77,8 +77,6 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	
-	
 	//최초정기결제 예약 및 DB생성
 	@Override
 	public String firstPay(String customer_uid, int ctNo, long merchant_uid) {
@@ -101,7 +99,7 @@ public class PayServiceImpl implements PayService{
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.MINUTE, +5);
+		cal.add(Calendar.MINUTE, +1);
 		payDay = cal.getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
@@ -153,7 +151,7 @@ public class PayServiceImpl implements PayService{
 		return response;
 	}
 	
-	//정기결제 예약 및 DB생성(현재 1시간단위)
+	//정기결제 예약 및 DB생성
 	@Override
 	public String schedulePay(String customer_uid, int ctNo) {
 		CtVO pCtVO = ctMapper.ctInfo(ctNo);
@@ -163,7 +161,7 @@ public class PayServiceImpl implements PayService{
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.HOUR, +1);
+		cal.add(Calendar.MONTH, +1);
 		payDay = cal.getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
@@ -293,6 +291,7 @@ public class PayServiceImpl implements PayService{
 	public int custCount(String custNo) {
 		return payMapper.custPayCount(custNo);
 	}
+	
 	//이하 삭제예정 ========================================================================================================================
 	//dateStamp처리
 	@Override

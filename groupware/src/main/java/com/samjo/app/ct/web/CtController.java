@@ -78,11 +78,10 @@ public class CtController {
 	
 	//계약 등록 처리
 	@PostMapping("sol/ctInsertProcess")
+	@ResponseBody
 	public String ctInsertProcces(CtVO ctVO, String[] modIds) {
 		ctservice.ctInsert(ctVO, modIds);
-		//System.out.println("ctVO : "+ ctVO);
-		//System.out.println("mod : "+ Arrays.toString(modIds));
-		return "redirect:/sol/ctList";
+		return "Success";
 	}
 	
 	// 계약 수정 화면
