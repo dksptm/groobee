@@ -8,13 +8,14 @@
 		<div class="flex-xl-nowrap row">
 		<div class="row">
 			<div class="row mt-3 pt-3">
-				<h2 class="ms-3">계약 목록</h2>
+				<h2 class="ms-3">계약/결제 관리</h2>
 			</div>
 		
 			<div class="card my-2">
 				<div class="card-body d-flex justify-content-center">
 					<!-- 계약 목록 출력 -->
 					<div class="table-responsive w-45">
+					<h5 class="card-header">계약 목록</h5>
 						<table class="table table-hover text-center">
 							<thead>
 								<tr class="ctRow" style="background-color:#3F72AF;">
@@ -53,7 +54,7 @@
 								</th:block>
 							</tbody>
 						</table>
-						<p>결제인증 완료시 정기결제가 시작됩니다.</p>
+						<p class="text-danger">결제인증 완료시 정기결제가 시작됩니다.</p>
 					</div>
 				</div>
 				<div class="card-body">
@@ -91,6 +92,7 @@
 							</tbody>
 						</table>
 					</div>
+					<p class="text-danger">결제내역은 매일 오전 5시에 갱신됩니다</p>
 					<!-- 페이징 -->
 					<div>
 						<th:block th:if="${payDTO.totalCnt} != 0">

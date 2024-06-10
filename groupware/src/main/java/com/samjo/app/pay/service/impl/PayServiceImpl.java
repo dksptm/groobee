@@ -55,7 +55,7 @@ public class PayServiceImpl implements PayService{
 		return payMapper.payCount(searchVO);
 	}
 
-	/*결제처리 테스트*/
+	//결제처리
 	@Override
 	public String getToken() {
 		
@@ -77,8 +77,6 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	
-	
 	//최초정기결제 예약 및 DB생성
 	@Override
 	public String firstPay(String customer_uid, int ctNo, long merchant_uid) {
@@ -153,7 +151,7 @@ public class PayServiceImpl implements PayService{
 		return response;
 	}
 	
-	//정기결제 예약 및 DB생성(현재 1시간단위)
+	//정기결제 예약 및 DB생성
 	@Override
 	public String schedulePay(String customer_uid, int ctNo) {
 		CtVO pCtVO = ctMapper.ctInfo(ctNo);
