@@ -151,6 +151,24 @@
 				});
 			}
 			
+			function testOK() {
+				
+				let checkEmps = $(".task-emp-ok:checked").not(':disabled').next('input.task-emp-id');
+				let uncheckEmps = $(".task-emp-ok").not(':checked').not(':disabled').next('input.task-emp-id');
+				
+				let emps = [];
+				for(emp of checkEmps) {
+					let obj = {taskNo: taskNo, taskEmpId:emp.value, flag: 'Y'}
+					emps.push(obj);
+				}
+				for(emp of uncheckEmps) {
+					let obj = {taskNo: taskNo, taskEmpId:emp.value, flag: 'N'}
+					emps.push(obj);
+				}
+				let data = {taskEmps : emps}
+				
+			}
+			
 		</script>
 
 	</th:block>
