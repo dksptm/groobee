@@ -53,4 +53,10 @@ public class HomeController {
 		}
 		return "test/test";
 	}
+	
+	// 에러페이지
+	@GetMapping("/error2")
+	public String ErrorPage(Model model) {
+		return "common/error";
+	}
 }
