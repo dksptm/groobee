@@ -23,6 +23,7 @@ public class WorkServiceImpl implements WorkService{
 	// 로그인 전체 데이터 수
 	@Override
 	public List<WorkVO> selectlist(WorkSearchVO worksearchVO) {
+		
 		return workMapper.selectlist(worksearchVO);
 	}
 	
@@ -78,8 +79,8 @@ public class WorkServiceImpl implements WorkService{
 	}
 
 	@Override
-	public int managercount() {
-		return workMapper.managercount();
+	public int managercount(WorkManagerSearchVO workmanagersearchVO) {
+		return workMapper.managercount(workmanagersearchVO);
 	}
 	
 	// 관리자요청 전체 리스트

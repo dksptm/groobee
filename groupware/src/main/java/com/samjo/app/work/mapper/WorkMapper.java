@@ -14,7 +14,7 @@ public interface WorkMapper {
 	
 	// 전체 페이지 수
 	public int workcount(WorkSearchVO worksearchVO);
-	public int managercount();
+	public int managercount(WorkManagerSearchVO workmanagersearchVO);
 	
 	// 로그인 계정 근태관리 전체출퇴근조회
 	public List<WorkVO> selectAllList(WorkSearchVO worksearchVO);
