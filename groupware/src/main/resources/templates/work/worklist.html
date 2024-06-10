@@ -147,7 +147,7 @@
 										</a></li>
 									</th:block>
 									<th:block th:each="num : ${#numbers.sequence(filter.startPage, filter.endPage)}">
-										<li class="page-item" th:attrappend="class=${num == filter.page ? 'active' : ' '}">
+										<li class="page-item" th:classappend="${num == filter.page ? 'active' : ' '}">
 											<a th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
 											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 										</li>

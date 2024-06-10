@@ -57,7 +57,7 @@
 												<option value="t.task_no">업무번호순</option>
 												<option value="t.task_no DESC">업무번호역순</option>
 												<option value="t.task_start_dt">업무시작일순</option>
-												<option value="t.task_start_dt DESC">업무시작일순</option>
+												<option value="t.task_start_dt DESC">업무시작일역순</option>
 												<option value="t.task_due_dt">업무마감일</option>
 												<option value="t.task_due_dt DESC">업무마감일역순</option>
 												<option value="participants_cnt">참여인원적은순</option>
@@ -102,7 +102,7 @@
 											<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${task.participantsCnt} ]] 명</td>
 											<td th:class="${task.progress == 100 ? 'table-success' : ''}">[[
-												${task.progress} ]] % %</td>
+												${task.progress} ]] %</td>
 											<td th:if="${task.prjtMat == '업무진행중'}"
 												class="table-secondary">[[${task.prjtMat}]]</td>
 											<td th:if="${task.prjtMat == '업무완료'}" class="table-success">[[${task.prjtMat}]]</td>

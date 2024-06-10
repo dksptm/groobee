@@ -11,14 +11,14 @@ import com.samjo.app.project.service.ProjectVO;
 public interface ProjectMapper {
 	
 	// 프로젝트 조회
-	public List<ProjectVO> selectPrjtAllList(SearchVO searchVO);
+	public List<ProjectVO> selectPrjtAllList(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 	// 프로젝트 페이징
-	public int prjtCount(SearchVO searchVO);
+	public int prjtCount(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 	// 프로젝트 단순조회 taskinsert용
 	public List<ProjectVO> prjtList(SearchVO searchVO);
 	
 	// 프로젝트 단건조회
-	public ProjectVO selectPrjt(String prjtId);
+	public ProjectVO selectPrjt(String prjtId,  @Param("cno")String custNo);
 	// 프로젝트 등록
 	public int insertPrjt(ProjectVO projectVO);
 	// 프로젝트 수정 - 단건 상위

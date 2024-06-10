@@ -70,10 +70,12 @@
 						</table>
 						<br>
 						<div style="text-align: center">
+						<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
 							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
 							<button type="button" class="btn btn-success mt-2"
 								th:onclick="|location.href='@{/cust/tsModify(taskNo=${task.taskNo})}'|">
 								수정</button>
+								</th:block>
 						</div>
 					</div>
 				</div>

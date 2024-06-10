@@ -110,10 +110,8 @@
 							<div>프로젝트 업무조회</div>
 					</a></li>
 					<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
-					<li class="menu-item" 
-					sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
-					<a th:href="@{/cust/prjtInsert}"
-						class="menu-link">
+					<li class="menu-item"> 
+					<a th:href="@{/cust/prjtInsert}"class="menu-link">
 							<div>프로젝트 등록</div>
 					</a></li>
 					</th:block>
