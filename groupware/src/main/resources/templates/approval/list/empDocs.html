@@ -47,7 +47,7 @@
 										-</span>
 								<span th:if="${doc.taskCount} > 1">외 </span>
 								</td>
-								<td>[[ ${doc.title} ]]</td>
+								<td  class="text-truncate" style="max-width: 10px;">[[ ${doc.title} ]]</td>
 								<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 								<td th:if="${doc.cmpltDt == null}">-</td>
 				                <td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>

@@ -51,7 +51,7 @@
 											-</span>
 									<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
 								</td>
-								<td>[[ ${doc.title} ]]</td>
+								<td class="text-truncate" style="max-width: 10px;">[[ ${doc.title} ]]</td>
 								<td>[[ ${doc.draftName} ]]</td>
 								<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 								<td>[[ ${doc.curApr} ]]</td>

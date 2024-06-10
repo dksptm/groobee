@@ -35,7 +35,7 @@
 					</thead>
 					<tbody>
 						<tr id="insertForm" style="display:none;">
-							<td><input type="text" class="form-control" id="dname" /></td>
+							<td><input type="text" maxlength='10' class="form-control" id="dname" /></td>
 							<td><button type="button" class="btn btn-primary btn-sm p-2" id="locBtn">주소입력</button></td>
 							<td><input type="text" class="form-control" id="dinfo" /></td>
 							<td><input type="text" class="form-control" id="dmngr" placeholder="사원조회 클릭" readonly /></td>
@@ -49,7 +49,8 @@
 							
 							<td>[[ ${dept.deptLoc} ]]</td>
 							
-							<td th:if="${dept.deptInfo != null}">[[ ${dept.deptInfo} ]]</td>
+							<td th:if="${dept.deptInfo != null}" 
+								class="text-truncate" style="max-width: 10px;">[[ ${dept.deptInfo} ]]</td>
 							<td th:unless="${dept.deptInfo != null}">-</td>
 							
 							<td th:if="${dept.mngrName != null}">
@@ -239,7 +240,6 @@ $(function(){
 			  confirmButtonText: '확인'
 		})
 
-		console.log(';;;')
 		$('.del-end').show();	
 		$(this).hide();
 		$('button.dept-mod').hide();
@@ -395,7 +395,7 @@ $(function(){
 	// 주소버튼
 	$('#locBtn').on('click', async function(e) {
 		console.log('주소버튼 클릭')
-		
+		console.log(dnameFlag)
 		if(blurEvent) {
 			console.log('기다림')
 			await blurEvent;
@@ -420,7 +420,7 @@ $(function(){
 		if(firstDname == $("#dname").val()){
 			return;
 		}
-
+		
 		$('.dnamechk').remove();
 		dnameFlag = false;
 	})
@@ -428,7 +428,7 @@ $(function(){
 	// 부서명 중복체크.
 	$("#dname").on('blur', async function(e){
 		console.log('부서명 blur start')	
-
+		
 		let dname = $('#dname').val();
 		if(dname == '') {
 			dnameFlag = false;
@@ -436,26 +436,31 @@ $(function(){
 			return;
 		}
 		if(firstDname == $("#dname").val()) {
-			console.log('부서명 blur stop');
+			console.log('부서명 blur stop dnameFlage true처리');
+			dnameFlag = true;
 			return;
 		}
-			
+		
 		blurEvent = await dnameCheck(dname); // ajax.
+		
+		await timeout(100, blurEvent);
 
-		setTimeout(() => {
+		/* setTimeout(() => {
 			let span = $('<span></span>');
 			if(blurEvent == 0) {
 				span.text('부서명 확인완료.').css('color', 'blue').addClass('dnamechk');
 				$("#dname").after(span);
 				dnameFlag = true;
+				console.log('결과 true')
 			} else if (blurEvent > 0) {
 				span.text('중복된 부서명입니다.').css('color', 'red').addClass('dnamechk');
 				$("#dname").after(span);
 				dnameFlag = false;
+				console.log('결과 false')
 			} 
 			
-	    }, 100);
-
+	    }, 100); */
+	    
 		console.log('부서명 blur end')		
 	});
 	
@@ -791,6 +796,24 @@ $(function(){
 		
 	}// insertAjax end.
 	
+	const timeout = (timeToDelay, blurEvent) => {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				let span = $('<span></span>');
+				if(blurEvent == 0) {
+					span.text('부서명 확인완료.').css('color', 'blue').addClass('dnamechk');
+					$("#dname").after(span);
+					dnameFlag = true;
+				} else if (blurEvent > 0) {
+					span.text('중복된 부서명입니다.').css('color', 'red').addClass('dnamechk');
+					$("#dname").after(span);
+					dnameFlag = false;
+				} 
+				resolve('cmplt');
+		    }, timeToDelay)
+		}) 
+	} 
+		
 	
 	
 }) // end.
