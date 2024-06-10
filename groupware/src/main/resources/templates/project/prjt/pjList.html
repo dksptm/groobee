@@ -38,7 +38,7 @@
 												<option value="5E2e">프로젝트완료</option>
 										</select></td>
 										<td><div class="text-end">
-												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
+												<button type="submit" class="btn btn-info" id="searchbtn">검&emsp;색</button>
 											</div></td>
 									</tr>
 									<tr>
@@ -63,7 +63,6 @@
 													th:onclick="|location.href='@{/cust/prjtAllList}'|">초기화</button>
 											</div>
 										</td>
-
 									</tr>
 								</table>
 
@@ -167,12 +166,19 @@
 			let prjtSort;
 
 			//검색버튼 이벤트 처리
-			$(".searchbtn").on("click", function(e) {
+			$("#searchbtn").on("click", function(e) {
 				updateParams();
 				let page = 1;
 				showTable(page);
 			});
 
+			//검색버튼 이벤트 처리
+			$("#searchbtn").on("click", function(e) {
+			    updateParams();
+			    let page = 1;
+			    showTable(page);
+			});
+			
 			//페이징 링크 처리
 			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();

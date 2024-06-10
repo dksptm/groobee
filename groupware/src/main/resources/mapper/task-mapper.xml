@@ -31,6 +31,7 @@
 								FROM task_common t JOIN prjt p 
 											ON (p.prjt_id = t.standard_no)
 				<where>
+				
 					<if test="keyword != null and keyword != ''">
 						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
 					</if>
@@ -108,6 +109,7 @@
 		FROM task_common t JOIN prjt p
 							ON p.prjt_id = t.standard_no
 		WHERE t.task_no =  #{taskNo}
+
 	</select>
 	
 	<!-- 프로젝트 참여자 조회 -->

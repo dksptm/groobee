@@ -11,54 +11,55 @@
 				<div class="card-body">
 					<input type="hidden" th:value="${task.taskNo}" name="taskNo" />
 					<div class="table-responsive">
-						<table class="table table-hover table-bordered">
+						<table class="table table-hover table-bordered text-center">
 							<tr>
-								<th>프로젝트ID</th>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">프로젝트ID</td>
 								<td id="pid">[[ ${task.prjtId}]]</td>
-								<th>프로젝트명</th>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">프로젝트명</td>
 								<td>[[ ${task.prjtName}]]</td>
-								<th>업무명</th>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무명</td>
 								<td>[[ ${task.taskName}]]</td>
-								<th>진행도</th>
-								<td>[[ ${task.progress}]] %</td>
-								<th>진행상황</th>
-								<td>[[ ${task.prjtMat}]]</td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">진행도</td>
+								<td>[[ ${task.progress}]] %</td> 
 							</tr>
-						</table>
-						<br>
-						<table class="table table-hover table-bordered">
 							<tr>
-								<th>시작일</th>
+								<td class="fw-bold  text-white"
+									style="background-color: #3F72AF">시작일</td>
 								<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
-								<th>마감일</th>
+								<td class="fw-bold text-white"
+									style="background-color: #3F72AF">마감일</td>
 								<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")}]]</td>
+								<td class="fw-bold text-white"
+									style="background-color: #3F72AF">진행상황</td>
+								<td colspan="3">[[ ${task.prjtMat}]]</td>
+							</tr>
+							<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무목적</td>
+								<td colspan="3">[[ ${task.taskPurpose}]]</td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무내용</td>
+								<td colspan="3">[[ ${task.taskCntn}]]</td>
 							</tr>
 						</table>
 						<br>
 						<table class="table table-hover table-bordered">
 							<thead>
 								<tr>
-									<th>업무목적</th>
-									<td>[[ ${task.taskPurpose}]]</td>
-									<th>업무내용</th>
-									<td>[[ ${task.taskCntn}]]</td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<table class="table table-hover table-bordered">
-							<thead>
-								<tr>
-									<th>부서명</th>
-									<th>부서내 참여인원</th>
-								</tr>
+									<td class="fw-bold col-2 text-white"
+										style="background-color: #3F72AF">부서명</td>
+									<td class="fw-bold col-2 text-white"
+										style="background-color: #3F72AF">부서내 참여인원</td>
 							</thead>
 							<tbody>
 								<th:block th:each="te : ${task.taskEmps}">
 									<tr>
 										<td>[[ ${te.deptName}]]</td>
-										<td>[[ ${te.empName}]]&ensp; 
-										<input type="checkbox"
+										<td>[[ ${te.empName}]]&ensp; <input type="checkbox"
 											class="btn btn-primary mt-2 task-emp-ok"
 											th:checked="${te.cmplt  == '5F1f'}" name="chk" /> <input
 											type="hidden" th:value="${te.taskEmpId}" class="task-emp-id" />
@@ -70,9 +71,9 @@
 						<br>
 						<div style="text-align: center">
 							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
-							<button type="button" class="btn btn-success mt-2" 
-							 th:onclick="|location.href='@{/cust/tsModify(taskNo=${task.taskNo})}'|"> 
-						  수정</button>
+							<button type="button" class="btn btn-success mt-2"
+								th:onclick="|location.href='@{/cust/tsModify(taskNo=${task.taskNo})}'|">
+								수정</button>
 						</div>
 					</div>
 				</div>

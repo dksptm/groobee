@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}">
+	layout:decorate="~{common/layouts/default_layout}"
+	 xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
+	
 <body>
 	<th:block layout:fragment="Content">
-<style>
-.form-item input:focus{
-    border-color:#0982f0;
-    outline: none;
-}
-</style>	
+<div sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
 				<h3 class="card-header">프로젝트 등록</h3>
@@ -22,41 +19,42 @@
 						<div style="text-align: center;">
 							<button type="button"
 								th:onclick="|location.href='@{/cust/prjtInsert}'|"
-								class="btn btn-primary">프로젝트 등록</button>
+								class="btn btn-secondary">프로젝트 등록</button>
 							<button type="button"
 								th:onclick="|location.href='@{/cust/taskInsert}'|"
-								class="btn btn-primary">프로젝트 업무등록</button>
+								class="btn btn-secondary">프로젝트 업무등록</button>
 						</div>
 						<br>
 						<br>
 						<br>
-						<input type="hidden" th:field="*{prjtId}" style="width: 100px  height: 100px" readonly>
-						<table id="form" class="table table-bordered border-2 col-12">
+
+						<input type="hidden" th:field="*{prjtId}"  readonly>
+						<table id="form" class="table table-bordered border-1">
 							<tr>
-								<th style="font-size:15px">프로젝트명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트명</th>
 								<td><input type="text" th:field="*{prjtName}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">시작일</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
 								<td><input type="date" th:field="*{prjtStartDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">마감일</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</th>
 								<td><input type="date" th:field="*{prjtDueDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">책임자</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</th>
 								<td><input type="hidden" th:field="*{respMngrId}" style="width: 230px">
 									<input type="text" id="respMngrName" placeholder="버튼을 눌러 선택하세요">&ensp;
 									<button type="button" class="btn btn-primary" id="respMngrId"
 										data-bs-toggle="modal" data-bs-target="#respModal">선택</button></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">개요</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">개요</th>
 								<td><input type="text" th:field="*{smry}"style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">목적</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">목적</th>
 								<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
 							</tr>
 						</table>
@@ -100,7 +98,7 @@
 									<td>[[ ${mngr.empName} ]]</td>
 									<td>[[ ${mngr.empId} ]]</td>
 									<td><input class="form-radio-input" type="radio"
-										name="mngrCheck" th:value="${mngr.empId}"></td>
+										id="mngrCheck" name="mngrCheck" th:value="${mngr.empId}"></td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -114,14 +112,37 @@
 				</div>
 			</div>
 		</div>
+		</div>
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
+			
+		// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 
+		$('#prjtDueDt').on('change', function() {
+		    let startDate = $('#prjtStartDt').val();
+		    let dueDate = $(this).val();
+
+	
+		    let startDateObj = new Date(startDate);
+		    let dueDateObj = new Date(dueDate);
+
+
+		    if (dueDateObj < startDateObj) {
+		        Swal.fire({
+		            title: '날짜 선택 오류',
+		            text: '마감일은 시작일 이후로 선택해주세요.',
+		            icon: 'error'
+		        });
+
+		        $(this).val('');
+		    }
+		});
+			
+		
 			$(function() {
+				
 				// 책임자이름 선택 등록  
-				$('#respInBtn').on(
-						'click',
-						function() {
+				$('#respInBtn').on('click',function() {
 							let chkMngr = $("input[name=mngrCheck]:checked");
 
 							if (chkMngr.val().length > 0) {
@@ -135,13 +156,19 @@
 								$('#respMngrId').val(mngrId);
 							}
 						}); //
-
+			});
 				
 				// 등록
 				$('#prjtInsertBtn').on('click', function() {
+					
 					let formData = $('#prjtForm').serialize();
-					console.log(formData);
-					$.ajax({
+					//console.log(formData);
+					
+					let result = validationCheck();
+					
+					if (result){
+					
+						$.ajax({
 						type : 'POST',
 						url : '/cust/prjtInsert',
 						data : formData,
@@ -168,9 +195,74 @@
 
 						}
 					});
+					} else {
+						
+					}
+				
 				});
+				
+				// 등록 전 체크
+				function validationCheck() {
+					
+					if($('input[name="prjtName"]').val() == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트명은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							prjtName.focus();               
+						});
+						return false; 
+					} 
+					
+					let startdt = document.getElementById('prjtStartDt');
+					if(startdt.value == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트시작일은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							startdt.focus();              
+						});
+						return false;
+					}
+					
+					let duedt = document.getElementById('prjtDueDt');
+					if(duedt.value == '') {
+						Swal.fire({
+							title:  '입력확인',        
+							text:  '프로젝트마감일은 필수로 선택해야합니다.',  
+							icon:  'error' 
+						})
+						.then(function(){
+							duedt.focus();                
+						});
+						return false;
+					}
+					
+			
+					    let chkMngr = $("input[name=mngrCheck]:checked");
 
-			});
+					    if (chkMngr.length > 0) {
+					        let mngrName = $(chkMngr).closest('tr').find('td:eq(2)').text();
+					        let mngrId = $(chkMngr).closest('tr').find('td:eq(3)').text();
+
+					        $('#respMngrName').val(mngrName);
+					        $('#respMngrId').val(mngrId);
+					    } else {
+					        Swal.fire({
+					            title: '책임자 선택',
+					            text: '책임자를 선택해주세요.',
+					            icon: 'error'
+					        });
+					        return; 
+					    }
+					
+					return true;
+				};
+			
 		</script>
 	</th:block>
 </body>
