@@ -30,13 +30,19 @@
 										</select></td>
 										<td colspan='3'><input class="form-control searchKey"
 											type="text"></td>
+										<td>
+											<button class="searchBtn btn btn-info" type="submit">검색</button>
+										</td>
+										<td>		
+											<button class="btn btn-secondary" type="reset"
+											th:onclick="|location.href='@{/cust/emailList}'|">초기화</button>
+										</td>	
 									</tr>
 									<tr>
 										<td class="form-select sentDt">발신날짜</td>
 										<td><input class="form-select fromDt" type="date"></td>
 										<td>~</td>
 										<td><input class="form-select toDt" type="date"></td>
-										<td class="text-white">_</td>
 										<td class="form-control">정렬조건</td>
 										<td><select class="form-select searchSelect">
 												<option value="s.sent_dt DESC">최근순</option>
@@ -44,10 +50,6 @@
 										</select></td>
 									</tr>
 								</table>
-								<span class="position-absolute top-50 end-0 translate-middle-y">
-									<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
-								</span>
 							</div>
 						</div>
 					</nav>
@@ -58,10 +60,10 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th>수신자명</th>
-									<th>제목</th>
-									<th>발신날짜</th>
-									<th>선택</th>
+									<th class="text-white" style="background-color:#3F72AF;">수신자명</th>
+									<th class="text-white" style="background-color:#3F72AF;">제목</th>
+									<th class="text-white" style="background-color:#3F72AF;">발신날짜</th>
+									<th class="text-white" style="background-color:#3F72AF;">선택</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -109,7 +111,9 @@
 									</ul>
 								</nav>
 							</th:block>
-							<button class="btn btn-info" type="button" id="wasteBtn">휴지통으로</button>
+							<div class="text-end">
+								<button class="btn btn-danger" type="button" id="wasteBtn">휴지통으로</button>
+							</div>
 							<th:block th:unless="${EmailDTO.totalCnt} != 0">
 								<p class="text-center mt-4">보낸 메일이 없습니다.</p>
 							</th:block>
@@ -150,7 +154,7 @@
 			let emSort;
 
 			//검색버튼 이벤트 처리
-			$(".searchbtn").on("click", function(e) {
+			$(".searchBtn").on("click", function(e) {
 				updateParams();
 				let page = 1;
 				showTable(page);
