@@ -72,11 +72,10 @@
 										th:onclick="|location.href='@{/cust/emailInfo/}@{${emailVO.senEmailNo}}'|">
 										<td>[[ ${emailVO.recpName} ]]</td>
 										<td>[[ ${emailVO.title} ]]</td>
-										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-										<td>
+										<td onclick="event.stopPropagation()">[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
+										<td onclick="event.stopPropagation()">
 										<input type="checkbox" name="check" class="checks"
-											th:value="${emailVO.senEmailNo}"
-											onclick="event.stopPropagation()">
+											th:value="${emailVO.senEmailNo}">
 										</td>
 									</tr>
 								</th:block>
