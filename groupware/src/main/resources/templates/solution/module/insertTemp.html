@@ -139,6 +139,7 @@
 		</div>
 		<!-- <script src="/js/html2canvas.js"></script> -->
 		<script src="http://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+		<script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
 		<script>
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
@@ -206,8 +207,9 @@
 				tVal = $("#content").val()
 				fileName = $("#filename").val();
 				$(".template").html(tVal);
-				
+				autosize($("#content"));
 			});
+			
 
 			//직접입력값 초기화
 			$(".tempdiv").on("click", "#htmlreset", function(e) {

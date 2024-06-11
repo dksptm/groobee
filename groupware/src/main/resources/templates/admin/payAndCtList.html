@@ -43,12 +43,14 @@
 										<td><th:block th:if="${CtVO.payCheck} == 0">
 												<button type="button" class="btn btn-primary payBtn"
 													th:id="${CtVO.ctAmt}">정기결제인증</button>
-											</th:block> <th:block th:if="${CtVO.payCheck} == 1">
+											</th:block> 
+											<th:block th:if="${CtVO.payCheck} == 1">
 												<button type="button" class="btn btn-danger cancelBtn"
 													th:id="${CtVO.ctNo}">정기결제중지</button>
-											</th:block><th:block th:if="${CtVO.payCheck} == 3">
-												<button type="button" class="btn btn-primary payBtn"
-													th:id="${CtVO.ctNo}" disabled>정기결제인증</button>
+											</th:block>
+											<th:block th:if="${CtVO.payCheck} == 3">
+												<button type="button" class="btn btn-secondary"
+													th:id="${CtVO.ctNo}" disabled>종료된 계약</button>
 											</th:block></td>
 									</tr>
 								</th:block>
@@ -87,7 +89,7 @@
 										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
 											<td>결제인증</td>
 										</th:block>
-										<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
+										<td th:class="'payStat '+${PayVO.payStatName == '결제취소' ? 'table-danger' : ''}" th:classappend="${PayVO.payStatName == '결제완료' ? 'table-success' : ''}">[[ ${PayVO.payStatName} ]]</td>
 									</tr>
 								</th:block>
 							</tbody>
