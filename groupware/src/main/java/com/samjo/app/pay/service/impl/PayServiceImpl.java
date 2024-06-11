@@ -156,13 +156,18 @@ public class PayServiceImpl implements PayService{
 	public String schedulePay(String customer_uid, int ctNo) {
 		CtVO pCtVO = ctMapper.ctInfo(ctNo);
 		int price = pCtVO.getCtAmt();
+		Date ctPayDay = pCtVO.getCtPayDt(); 
 		
 		String token = getToken();
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
 		cal.add(Calendar.MONTH, +1);
-		payDay = cal.getTime();
+		if(ctPayDay != null) {
+			payDay = ctPayDay;
+		}else {
+			payDay = cal.getTime();
+		}
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
 		String date = sdf.format(payDay);

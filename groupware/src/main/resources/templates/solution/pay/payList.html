@@ -13,7 +13,6 @@
 		
 			<div style="min-width:880px" class="card my-2">
 				<div class="card-body">
-				<button type="button" class="btn btn-primary" onclick="Scheduler()">스케줄러 실행</button>
 					<!-- 검색 -->
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
@@ -223,17 +222,6 @@
 		            }
 		        });
 		    }
-		    
-		  	//스케줄러
-			function Scheduler() {
-				$.ajax({
-					url : '/sol/startScheduler',
-					type : 'GET',
-					success : function(result) {
-						alert(result);
-					}
-				});
-			}
 		</script>
 	</th:block>
 </body>

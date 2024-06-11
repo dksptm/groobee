@@ -68,7 +68,8 @@
 		       ct.ct_amt,
 		       ct.use_mod_cnt,
 		       ct.max_emps,
-		       ct.cur_emps
+		       ct.cur_emps,
+		       ct.ct_pay_dt
 		FROM   ct ct JOIN cust c 
 		             ON(ct.cust_no = c.cust_no)
 		WHERE  ct.ct_no = #{ctNo}
