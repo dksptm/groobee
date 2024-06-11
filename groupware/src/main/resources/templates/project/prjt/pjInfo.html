@@ -19,16 +19,17 @@
 								<td id="pid">[[ ${prjt.prjtId}]]</td>
 								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트명</td>
 								<td>[[ ${prjt.prjtName}]]</td>
-								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</td>
-								<td>[[ ${prjt.empName}]]</td>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">진행상황</td>
+								<td th:if="${prjt.prjtStat == '프로젝트진행중'}"class="table-secondary">[[${prjt.prjtStat}]]</td>
+								<td th:if="${prjt.prjtStat == '프로젝트완료'}" class="table-success">[[${prjt.prjtStat}]]</td>
 							</tr>
 							<tr>
-								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">진행상황</td>
-								<td>[[ ${prjt.prjtStat}]]</td>
 								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</td>
 								<td>[[ ${#dates.format(prjt.prjtStartDt, "yyyy-MM-dd")}]]</td>
 								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</td>
 								<td>[[ ${#dates.format(prjt.prjtDueDt, "yyyy-MM-dd")}]]</td>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</td>
+								<td>[[ ${prjt.empName}]]</td>
 							</tr>
 							<tr>
 								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">목적</td>
@@ -77,7 +78,8 @@
 									<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
 									<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
 									<td>[[ ${task.participantsCnt} ]] 명</td>
-									<td>[[ ${task.progress} ]] %</td>
+									<td th:if="${task.progress == 100}" class="table-success">[[${task.progress}]]%</td>
+									<td th:if="${task.progress != 100}" class="table-secondary">[[${task.progress}]]%</td>
 								</tr>
 							</th:block>
 						</tbody>

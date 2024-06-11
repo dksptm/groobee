@@ -82,7 +82,7 @@
 											<div class="card-header p-2">[[ ${pjlist.prjtId} ]]</div>
 											<div class="card-body pt-2 pb-1 col-12 text-truncate"
 												style="background-color: #FFEFEF;">
-												<h5 class="card-title">[[ ${pjlist.prjtName} ]]</h5>
+												<h5 class="card-title col-12 text-truncate">[[ ${pjlist.prjtName} ]]</h5>
 											</div>
 											<div>
 												<ul class="list-group list-group-flush text-start">
@@ -98,8 +98,9 @@
 													class="btn rounded-pill me-2 btn-outline-info">상세보기</a>
 											</div>
 											<div class="card-footer p-2"
-												th:classappend="${pjlist.prjtStat} == '5E2e' ? 'text-warning' : 'text-secondary'">
+												th:classappend="${pjlist.prjtStat} == '프로젝트완료' ? 'text-warning' : 'text-secondary'">
 												[[ ${pjlist.prjtStat} ]]</div>
+												
 										</div>
 									</div>
 								</th:block>

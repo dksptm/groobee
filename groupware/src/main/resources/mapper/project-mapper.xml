@@ -36,7 +36,7 @@
 						AND prjt_due_dt <![CDATA[<=]]> #{sch.prjtDue}
 					</when>
 				</choose>
-				ORDER BY  ${sch.prjtSort} , prjt_id ) t 
+				ORDER BY  ${sch.prjtSort}) t 
 			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
 		WHERE r.rn > (#{sch.page} -1) * 10 
 	</select>

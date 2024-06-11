@@ -28,7 +28,8 @@
 									th:field="*{standardNo}" id="prjtName" >
 										<option value="">프로젝트명</option>
 										<option th:each=" plist : ${pjlist}"
-											th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
+											th:value="${plist.prjtId}" th:text="${plist.prjtName}" 
+											th:if="${plist.prjtStat} != '프로젝트완료'"></option>
 								</select></td>
 							</tr>
 							<tr>
@@ -55,11 +56,11 @@
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
-								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt"></td>
+								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt" class="form-control" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">마감일</th>
-								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" ></td>
+								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" class="form-control" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">업무목적</th>
@@ -91,15 +92,16 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
 							aria-label="Close"></button>
 					</div>
+					<br>
 					<table class="table table-light table-sm">
 						<thead>
 							<tr>
-								<th>부서번호</th>
-								<th>부서명</th>
-								<th>직급명</th>
-								<th>사원이름</th>
-								<th>사원번호</th>
-								<th>선택</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서번호</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">직급명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">사원이름</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">사원번호</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">선택</th>
 							</tr>
 						</thead>
 						<tbody id="empList">
