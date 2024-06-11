@@ -33,7 +33,7 @@
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">업무명</th>
-								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName"></td>
+								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName" class="form-control"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서명</th>
@@ -55,19 +55,19 @@
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
-								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt" class="form-control"></td>
+								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt"></td>
 							</tr>
 							<tr>
-								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</th>
-								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" class="form-control"></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">마감일</th>
+								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" ></td>
 							</tr>
 							<tr>
-								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">업무목적</th>
-								<td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">업무목적</th>
+								<td><textarea cols="50" th:field="*{taskPurpose}" class="form-control" ></textarea></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">내용</th>
-								<td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
+								<td><textarea cols="50" th:field="*{taskCntn}" class="form-control"></textarea></td>
 							</tr>
 						</table>
 						<br>
