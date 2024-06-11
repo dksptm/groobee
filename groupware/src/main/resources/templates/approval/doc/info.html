@@ -188,10 +188,12 @@
 									</tr>
 								</th:block>
 							</table>
+							<th:block th:if="${doc.docStat == '4B4b' and doc.draft == #authentication.principal.empId}">
 							<div class="text-end mt-3">
 								<button type="button" class="btn rounded-pill btn-warning"
 									th:onclick="|location.href='@{rewrite?no={dno}(dno=${doc.docNo})}'|">재작성</button>
 							</div>	
+							</th:block>
 						</div>
 						</th:block>
 					</div>
@@ -462,8 +464,7 @@
 									  	title: '상신실패!',    
 									  	text: '-', 
 									});
-									//location.href = "/docList";
-									console.log(ret);
+									location.href = "/docList";
 								}
 							})
 							.catch(err => console.error(err))				
@@ -591,8 +592,7 @@
 							  	title: '결재실패!',    
 							  	text: '-', 
 							});
-							console.log(ret);
-							//location.href = "/docList";
+							location.href = "/ing";
 						} else {
 							Swal.fire({
 								icon: 'error',               

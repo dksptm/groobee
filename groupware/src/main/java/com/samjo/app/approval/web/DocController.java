@@ -187,23 +187,20 @@ public class DocController {
 	@PostMapping("cust/doc/insert")
 	public String docInsertProcess(DocVO docVO, MultipartFile[] filelist) {
 		
-		//System.out.println(docVO);
-		System.out.println("filelist---"+filelist);
-		
 		// 첨부파일 디렉토리 저장부터.
 		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
 		if(!filelist[0].isEmpty()) {
 			fileInfoList = fileUploadService.uploadFileInfo(filelist);			
 		}
 		
-		// 파일저장 트랜잭션으로.
+		// 문서등록 트랜잭션으로.
 		int result = docService.docInfoInsert(docVO, fileInfoList);
 		
 		if(result == -1) {
-			return "test/test";
+			return "common/error500";
 			
 		} else if (result == 0) {
-			return "test/test";
+			return "common/error500";
 			
 		} else {
 			
