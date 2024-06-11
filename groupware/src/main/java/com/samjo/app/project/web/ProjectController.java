@@ -57,7 +57,7 @@ public class ProjectController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
-				searchVO.setPrjtSort("prjt_id");
+				searchVO.setPrjtSort("prjt_id DESC");
 		}
 			EmpVO empVO = SecuUtil.getLoginEmp();
 			List<ProjectVO> list = projectService.PrjtAllList(searchVO, empVO.getCustNo());

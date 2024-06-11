@@ -65,7 +65,7 @@ public class TaskController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
-			searchVO.setTaskSort("task_no");
+			searchVO.setTaskSort("task_no DESC");
 		}
 		EmpVO empVO = SecuUtil.getLoginEmp();
 		List<ProjectVO> list = taskService.taskAllList(searchVO, empVO.getCustNo());

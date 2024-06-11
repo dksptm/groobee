@@ -28,7 +28,8 @@
 									th:field="*{standardNo}" id="prjtName" >
 										<option value="">프로젝트명</option>
 										<option th:each=" plist : ${pjlist}"
-											th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
+											th:value="${plist.prjtId}" th:text="${plist.prjtName}" 
+											th:if="${plist.prjtStat} != '프로젝트완료'"></option>
 								</select></td>
 							</tr>
 							<tr>

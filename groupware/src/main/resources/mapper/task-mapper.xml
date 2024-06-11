@@ -51,7 +51,7 @@
 						AND t.task_due_dt <![CDATA[<=]]> #{sch.taskDue}
 					</when>
 				</choose>
-				ORDER BY ${sch.taskSort}  ,task_no ) t 
+				ORDER BY ${sch.taskSort} ) t 
 			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
 		WHERE r.rn > (#{sch.page} -1) * 10
   	</select>
@@ -217,6 +217,8 @@
        		task_name
 	FROM task_common
 	WHERE prjt_mat = '5B1b'
+	AND	cust_no = #{custNo}
+	AND task_type = '5A1a'
 	</select>
 	
 	<!-- 업무 전체 수정 -->
@@ -263,7 +265,6 @@
 					<if test="sch.keyword != null and sch.keyword != ''">
 						AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 					</if>
-				
 				ORDER BY  ${sch.coSort} , c.coop_co_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
 		WHERE r.rn > (#{sch.page} -1) * 10 
