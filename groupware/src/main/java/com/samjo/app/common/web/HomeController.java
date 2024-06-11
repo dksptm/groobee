@@ -55,8 +55,18 @@ public class HomeController {
 	}
 	
 	// 에러페이지
-	@GetMapping("/error2")
+	@GetMapping("/error403")
+	public String ErrorPage403(Model model) {
+		return "common/error403";
+	}
+	// 에러페이지
+	@GetMapping("/error404")
+	public String ErrorPage404(Model model) {
+		return "common/error404";
+	}
+	// 에러페이지
+	@GetMapping("/error500")
 	public String ErrorPage(Model model) {
-		return "common/error";
+		return "common/error500";
 	}
 }
