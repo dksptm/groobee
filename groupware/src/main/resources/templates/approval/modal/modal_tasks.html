@@ -35,15 +35,14 @@ $(function(){
 		let checkbox = $(this);
 		checkbox.prop('checked', !checkbox.prop('checked'));
 	});
-
-	if($('#getTasks').is('table')) {
-		$('#getTasks').children().remove();
+	
+	if($('#getTasks').find('div.col-md-6').length != 0){
+		$('#getTasks').find('div.col-md-6').remove();
 	}
 	
 	// 이미 추가되어있으면, 모달에도 체크상태로.
 	let finds = $('#getTasks').find('input').not('input.aleadyInputs');
-	let ary = []
-	console.log(finds);
+	let ary = [];
 	finds.each(function(i,e){
 		ary.push(e.value);
 	})

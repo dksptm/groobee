@@ -187,7 +187,11 @@
 											<td class="text-start">[[${apr.reCmt}]]</td>
 									</tr>
 								</th:block>
-							</table>	
+							</table>
+							<div class="text-end mt-3">
+								<button type="button" class="btn rounded-pill btn-warning"
+									th:onclick="|location.href='@{rewrite?no={dno}(dno=${doc.docNo})}'|">재작성</button>
+							</div>	
 						</div>
 						</th:block>
 					</div>
