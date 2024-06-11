@@ -82,7 +82,7 @@
 										<td>[[ ${emailVO.senderName} ]]</td>
 										<td>[[ ${emailVO.title} ]]</td>
 										<td>[[ ${#dates.format(emailVO.sentDt, "yyyy-MM-dd")} ]]</td>
-										<td>	
+										<td onclick="event.stopPropagation()">	
 											 <th:block th:if="${emailVO.sender == searchVO.recp}">
 											 (셀프)
 											 </th:block>											
@@ -93,9 +93,10 @@
 											 참조
 											 </th:block>
 										</td>
-										<td><input type="checkbox" name="check" class="checks"
-											th:value="${emailVO.recEmailNo}"
-											onclick="event.stopPropagation()"></td>
+										<td onclick="event.stopPropagation()">
+											<input type="checkbox" name="check" class="checks"
+											th:value="${emailVO.recEmailNo}">
+										</td>
 									</tr>
 								</th:block>
 							</tbody>
