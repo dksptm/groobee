@@ -35,7 +35,6 @@ public class AdminController {
 	@Autowired
 	JobService jobService;
 
-	
 	//결제·계약조회
 	@GetMapping("cust/admin/payAndCt")
 	public String payCtPage(SearchVO searchVO, Model model) {
