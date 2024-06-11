@@ -107,8 +107,7 @@
 								</tr>
 							</thead>
 							<tbody th:each="info : ${list}" id="infos">
-								<tr
-									th:onclick="|location.href='@{/cust/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
+								<tr	th:onclick="|location.href='@{/cust/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
 									<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
 									<td>[[${#dates.format(info.wkIn, "HH:mm")}]]</td>
 									<td>[[${#dates.format(info.wkOut, "HH:mm")}]]</td>
@@ -213,12 +212,7 @@
 			  $('#city').attr('value', data.city);
 		  }
 		
-			let rowIps = [[${iplist}]];
-			let ipbox = [];
 			
-			rowIps.forEach(function(item){
-				ipbox.push(item.ip);
-			})
 		  
 		// 기간 검색 범위처리
 	    $('#oneDate').on('change', function(e) {
@@ -293,6 +287,13 @@
 			// 조퇴
 			$('#wkStop').on('click', wkstops);
 				
+			
+			let rowIps = [[${iplist}]];
+			let ipbox = [];
+			
+			rowIps.forEach(function(item){
+				ipbox.push(item.ip);
+			})
 			
 			// 출근
 			function wkins() {
@@ -462,14 +463,12 @@
 	                xhr.setRequestHeader(header, token);
 	            },
 			    success : function(result){
-			    	//$('#exampleModal').modal('off');
 			    	Swal.fire({
 			    		title: "등록에 성공했습니다.", 
 			    		text: '',
 			    		icon: 'success'});
 			    },
 			    error : function(){
-			    	//$('#exampleModal').modal('off');
 			    	Swal.fire({
 			    		title: "이미 등록된 ip입니다.", 
 			    		text: '',
