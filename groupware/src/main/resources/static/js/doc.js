@@ -67,7 +67,7 @@ const tempChange = function() {
         ClassicEditor
             .create(document.querySelector('#cntn'), {
 	            toolbar: {
-	            	items : ['bold', 'italic', 'link', 'insertTable'] 
+	            	items : ['heading', '|', 'fontSize','|','bold', 'italic', 'link', 'insertTable'] 
 	            }
             })
             .then(newEditor => {

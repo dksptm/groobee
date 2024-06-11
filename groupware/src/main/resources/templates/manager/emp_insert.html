@@ -36,7 +36,7 @@
 					<tr>
 						<th>사원번호</th>
 						<td>
-							<input type="text" th:field="*{empNo}" maxlength="5" class="form-control bg-transparent" />
+							<input type="text" th:field="*{empNo}" maxlength="5" placeholder="영문 또는 숫자" class="form-control bg-transparent" />
 						</td>
 						<th>아이디</th>
 						<td>
@@ -187,6 +187,10 @@ $(function() {
 	
 	$(".tell-chk").keyup(function(){
 		$(this).val($(this).val().replace(/[^0-9]/gi, "").replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`));
+	});
+	
+	$("#empNo").keyup(function(){
+		$(this).val($(this).val().replace(/[^a-zA-Z0-9]/gi, ""))
 	});
 	
 	// 사번중복체크.
