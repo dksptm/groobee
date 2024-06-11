@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,9 +147,27 @@ public class PayServiceImpl implements PayService{
 		payVO.setPayExpcDt(payDay);
 		payVO.setMerchantUid(timestamp);
 		int result = payMapper.payInsert(payVO);
-		/* if(result == 1) {
-			schedulePay(customer_uid, price, ctNo);
-		}*/
+		
+		if(result == 1) {
+			Timer m_timer = new Timer();
+			TimerTask m_task = new TimerTask() {
+				@Override
+				public void run() {
+					List<PayVO> pList = payMapper.selectWaitPay();
+			    	if(pList != null) {
+			    		for(PayVO payVO: pList) {
+			    			String result = payResultCheck(payVO.getMerchantUid(), payVO.getCtNo());
+			    			if(result.equals("UPDATE")) {
+			    				if(ctMapper.selectCtPayCheck(payVO.getCtNo()) == 1) {
+			    					schedulePay(payVO.getCustNo(), payVO.getCtNo());
+			    				};
+			    			};
+			    		};
+			    	};
+				}
+			};
+			m_timer.schedule(m_task, 61000);
+		}
 		return response;
 	}
 	
