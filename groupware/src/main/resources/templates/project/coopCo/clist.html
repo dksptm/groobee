@@ -177,11 +177,33 @@
 		</div>
 
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
-		<script>
+		<script th:inline="javascript">
 			//CSRF
 			let header = $("meta[name='_csrf_header']").attr('content');
 			let token = $("meta[name='_csrf']").attr('content');
-
+			
+			
+			//	
+			$.fn.serializeObject = function() {
+				"use strict"
+				var result = {}
+				var extend = function(i, element) {
+					var node = result[element.name]
+					if ("undefined" !== typeof node && node !== null) {
+						if ($.isArray(node)) {
+							node.push(element.value)
+						} else {
+							result[element.name] = [ node, element.value ]
+						}
+					} else {
+						result[element.name] = element.value
+					}
+				}
+				$.each(this.serializeArray(), extend)
+				return result
+			};//
+			
+			
 			// 검색 조건 변수 
 			let keyword;
 			let searchCondition;
@@ -231,32 +253,17 @@
 				});
 			}
 
-			//	
-			$.fn.serializeObject = function() {
-				"use strict"
-				var result = {}
-				var extend = function(i, element) {
-					var node = result[element.name]
-					if ("undefined" !== typeof node && node !== null) {
-						if ($.isArray(node)) {
-							node.push(element.value)
-						} else {
-							result[element.name] = [ node, element.value ]
-						}
-					} else {
-						result[element.name] = element.value
-					}
-				}
-				$.each(this.serializeArray(), extend)
-				return result
-			}
+		
 
 			// 등록모달
 			$('#modalInsertBtn').on('click', function() {
 				let formData = $('#coopForm').serializeObject();
 				//console.log(formData);
-
-					
+				
+				let result = validationCheck();
+				console.log(result)
+				if (result){
+					console.log("ajax")
 					$.ajax({
 						type : 'POST',
 						url : '/cust/coopInsert',
@@ -286,9 +293,10 @@
 							})
 						}
 					});
-		
+				} else {
 				
-			});
+				}
+			});//
 			
 			
 			// 등록 전 체크
@@ -301,27 +309,39 @@
 						icon:  'error' 
 					})
 					.then(function(){
+						coName.focus();                 
+					});
+					coName.focus();
+					return false; 
+				} 
+				
+				if($('input[name="pic"]').val() == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '담당자명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
 						location.reload(true);                  
 					});
 					coName.focus();
 					return false; 
 				} 
 				
-				
 				let coTel = $('input[name="coTel"]').val();
 				let coTelPattern = /^(?:[0-9]{3}-[0-9]{3}-[0-9]{4}|[0-9]{3}-[0-9]{4}-[0-9]{4})$/; 
 				
 				if (!coTelPattern.test(coTel)) {
 	                Swal.fire({
-	                    title: '전화번호 입력 필요!',
-	                    text: '유효한 전화번호 형식이 아닙니다. 예시: 053-xxx-xxxx 또는 010-xxxx-xxxx',
+	                    title: '입력확인',
+	                    text: '유효한 전화번호 형식이 아닙니다.예시: 053-xxx-xxxx 또는 010-xxxx-xxxx',
 	                    icon: 'error'
 	                }).then(function() {
 	                    $('input[name="coTel"]').focus();
 	                });
 	                return false;
 	            }
-
+				return true;
 			};
 			
 		</script>

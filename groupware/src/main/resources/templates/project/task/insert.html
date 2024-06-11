@@ -15,15 +15,15 @@
 						<div style="text-align: center;">
 							<button type="button"
 								th:onclick="|location.href='@{/cust/prjtInsert}'|"
-								class="btn btn-light">프로젝트 등록</button>
+								class="btn btn-secondary">프로젝트 등록</button>
 							<button type="button"
 								th:onclick="|location.href='@{/cust/taskInsert}'|"
-								class="btn btn-light">프로젝트 업무등록</button>
+								class="btn btn-secondary">프로젝트 업무등록</button>
 						</div>
 						<br><br>
-						<table id="taskForm" class="table table-bordered border-2 col-12 table">
+						<table id="taskForm" class="table table-bordered col-12 table">
 							<tr>
-								<th style="font-size:15px">프로젝트</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트</th>
 								<td><select class="form-select" style="width: 200px"
 									th:field="*{standardNo}" id="prjtName" >
 										<option value="">프로젝트명</option>
@@ -32,20 +32,20 @@
 								</select></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">업무명</th>
-								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName"></td>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">업무명</th>
+								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName" class="form-control"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">부서명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서명</th>
 								<td><select class="form-select" style="width: 200px"
-									th:field="*{deptId}" id="deptId">
+									th:field="*{deptId}" id="deptId" >
 										<option value="">부서명</option>
 										<option th:each=" dept : ${dept}" th:value="${dept.deptId}"
 											th:text="${dept.deptName}"></option>
 								</select></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">부서참여인원</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서참여인원</th>
 								<td><button type="button" class="btn btn-primary"
 										id="deptEmpBtn" data-bs-toggle="modal"
 										data-bs-target="#deptEmpModal">선택</button>
@@ -54,20 +54,20 @@
 									</table>
 							</tr>
 							<tr>
-								<th style="font-size:15px">시작일</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
 								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">마감일</th>
-								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt"></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">마감일</th>
+								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" ></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">업무목적</th>
-								<td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">업무목적</th>
+								<td><textarea cols="50" th:field="*{taskPurpose}" class="form-control" ></textarea></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">내용</th>
-								<td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">내용</th>
+								<td><textarea cols="50" th:field="*{taskCntn}" class="form-control"></textarea></td>
 							</tr>
 						</table>
 						<br>
@@ -129,6 +129,7 @@
 
 
 		<script th:inline="javascript">
+		
 		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	
@@ -158,6 +159,7 @@
 				  $.each(this.serializeArray(), extend)
 				  return result
 				}
+			
 			
 			let deptEmp = [];
 			
@@ -257,6 +259,7 @@
 			});
 			
 			
+			
 			// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 함
 			$('#taskDueDt').on('change', function() {
 				let startDate = $('#taskStartDt').val();
@@ -272,10 +275,9 @@
 			            text: '마감일은 시작일 이후로 선택해주세요.',
 			            icon: 'error'
 			        });
-			        // 마감일을 초기화
 			        $(this).val('');
 			    }
-			
+			 });
 	
 			// 등록 전 체크
 			function validationCheck() {
@@ -317,7 +319,7 @@
 					return false; 
 				}
 				
-				let deptEmpTr = $("#deptEmpList tr");
+		/* 		let deptEmpTr = $("#deptEmpList tr");
 
 				if (deptEmpTr.length === 0) {
 				    Swal.fire({
@@ -327,7 +329,7 @@
 				    });
 				    return; 
 				} 
-				
+				 */
 				let startdt = document.getElementById('taskStartDt');
 				if(startdt.value == '') {
 					Swal.fire({
@@ -353,6 +355,7 @@
 					});
 					return false;
 				}
+				
 				
 				return true;
 			};

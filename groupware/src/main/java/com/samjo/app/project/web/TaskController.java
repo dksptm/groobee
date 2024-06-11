@@ -48,10 +48,10 @@ public class TaskController {
 		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
 			searchVO.setTaskSort("task_no DESC");
 		}
-		// System.out.println(searchVO);
-		List<ProjectVO> list = taskService.taskAllList(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<ProjectVO> list = taskService.taskAllList(searchVO, empVO.getCustNo());
 		model.addAttribute("list", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO, empVO.getCustNo()));
 		model.addAttribute("TaskDTO", taskDTO);
 		return "project/task/tsList";
 	}
@@ -67,9 +67,10 @@ public class TaskController {
 		if (searchVO.getTaskSort() == null || searchVO.getTaskSort().trim().isEmpty()) {
 			searchVO.setTaskSort("task_no");
 		}
-		List<ProjectVO> list = taskService.taskAllList(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<ProjectVO> list = taskService.taskAllList(searchVO, empVO.getCustNo());
 		model.addAttribute("list", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO));
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.count(searchVO, empVO.getCustNo()));
 		model.addAttribute("TaskDTO", taskDTO);
 		return "project/task/tsList :: #taskTable";
 	}
@@ -81,10 +82,12 @@ public class TaskController {
 		 * EmpVO empVO = SecuUtil.getLoginEmp(); List<DeptVO> list =
 		 * deptService.selectCustDeptAll(empVO); model.addAttribute("dept", list);
 		 */
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		searchVO.setCustNo(empVO.getCustNo());
 		List<ProjectVO> pjlist = projectService.prjtList(searchVO);
 		model.addAttribute("pjlist", pjlist);
 
-		EmpVO empVO = SecuUtil.getLoginEmp();
+		
 		List<DeptVO> list = deptService.myCustDepts(empVO);
 		model.addAttribute("dept", list);
 		List<EmpVO> elist = deptService.myCustEmps(empVO.getCustNo());
@@ -169,15 +172,14 @@ public class TaskController {
 		if (searchVO.getCoSort() == null || searchVO.getCoSort().trim().isEmpty()) {
 			searchVO.setCoSort("coop_co_no DESC");
 		}
-
-		List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<ProjectVO> list = taskService.CoopCoAllList(searchVO, empVO.getCustNo());
 		model.addAttribute("clist", list);
 
-		EmpVO empVO = SecuUtil.getLoginEmp();
 		List<ProjectVO> tlist = taskService.taskList(empVO);
 		model.addAttribute("tlist", tlist);
-
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.coCount(searchVO));
+	
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.coCount(searchVO, empVO.getCustNo()));
 		model.addAttribute("TaskDTO", taskDTO);
 		return "project/coopCo/clist";
 	}
@@ -192,10 +194,12 @@ public class TaskController {
 		if (searchVO.getCoSort() == null || searchVO.getCoSort().trim().isEmpty()) {
 			searchVO.setCoSort("coop_co_no");
 		}
-		List<ProjectVO> list = taskService.CoopCoAllList(searchVO);
+		
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<ProjectVO> list = taskService.CoopCoAllList(searchVO, empVO.getCustNo());
 		model.addAttribute("clist", list);
 
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.coCount(searchVO));
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), taskService.coCount(searchVO, empVO.getCustNo()));
 		model.addAttribute("TaskDTO", taskDTO);
 		return "project/coopCo/clist :: #coTable";
 	}

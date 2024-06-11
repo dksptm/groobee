@@ -6,7 +6,6 @@
 	
 <body>
 	<th:block layout:fragment="Content">
-<div sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
 		<div class="d-flex justify-content-center">
 			<div class="card my-4 col-10">
 				<h3 class="card-header">프로젝트 등록</h3>
@@ -32,15 +31,15 @@
 						<table id="form" class="table table-bordered border-1">
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트명</th>
-								<td><input type="text" th:field="*{prjtName}" style="width: 200px"></td>
+								<td><input class="form-control" type="text" th:field="*{prjtName}" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
-								<td><input type="date" th:field="*{prjtStartDt}" style="width: 200px"></td>
+								<td><input class="form-control" type="date" th:field="*{prjtStartDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</th>
-								<td><input type="date" th:field="*{prjtDueDt}" style="width: 200px"></td>
+								<td><input class="form-control" type="date" th:field="*{prjtDueDt}" style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</th>
@@ -51,11 +50,11 @@
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">개요</th>
-								<td><input type="text" th:field="*{smry}"style="width: 200px"></td>
+								<td><input class="form-control" type="text" th:field="*{smry}"style="width: 200px"></td>
 							</tr>
 							<tr>
 								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">목적</th>
-								<td><textarea cols="50" th:field="*{purpose}"></textarea></td>
+								<td><textarea class="form-control" cols="50" th:field="*{purpose}"></textarea></td>
 							</tr>
 						</table>
 						<br>
@@ -112,31 +111,10 @@
 				</div>
 			</div>
 		</div>
-		</div>
+	
 		<!------------------------------------------------ 모달 끝-------------------------------------------------->
 
 		<script>
-			
-		// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 
-		$('#prjtDueDt').on('change', function() {
-		    let startDate = $('#prjtStartDt').val();
-		    let dueDate = $(this).val();
-
-	
-		    let startDateObj = new Date(startDate);
-		    let dueDateObj = new Date(dueDate);
-
-
-		    if (dueDateObj < startDateObj) {
-		        Swal.fire({
-		            title: '날짜 선택 오류',
-		            text: '마감일은 시작일 이후로 선택해주세요.',
-		            icon: 'error'
-		        });
-
-		        $(this).val('');
-		    }
-		});
 			
 		
 			$(function() {
@@ -179,9 +157,10 @@
 								text : '프로젝트 업무 등록이 성공했습니다.',
 								icon : 'success'
 							}).then(function() {
-								 let prjtId = data.prjtId;
-								 console.log(prjtId)
-									 location.href='/cust/pj/Info?prjtId=' + prjtId;
+								 /* let prjtId = data.prjtId;
+								 console.log(prjtId) */
+									// location.href='/cust/pj/info?prjtId=' + prjtId;
+									 location.href=data;
 							})
 						},
 						error : function(err) {
@@ -199,6 +178,24 @@
 						
 					}
 				
+				});
+				
+				// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 
+				$('#prjtDueDt').on('change', function() {
+				    let startDate = $('#prjtStartDt').val();
+				    let dueDate = $(this).val();
+			
+				    let startDateObj = new Date(startDate);
+				    let dueDateObj = new Date(dueDate);
+
+				    if (dueDateObj < startDateObj) {
+				        Swal.fire({
+				            title: '날짜 선택 오류',
+				            text: '마감일은 시작일 이후로 선택해주세요.',
+				            icon: 'error'
+				        });
+				        $(this).val('');
+				    }
 				});
 				
 				// 등록 전 체크

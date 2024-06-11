@@ -6,7 +6,7 @@
 	<!-- 프로젝트(상위),업무공통(효주) // 프로젝트(하위), 협력업체 task-mapper.xml에 -->
 	
 	<!-- 프로젝트(상위) 전체 조회 -->
-	<select id="selectPrjtAllList" resultType="ProjectVO" parameterType="SearchVO">
+	<select id="selectPrjtAllList" resultType="ProjectVO" parameterType="map">
 		SELECT r.*
 			FROM (SELECT rownum rn,
 						t.*
@@ -18,54 +18,52 @@
 								      ,smry
 								      ,get_codename(prjt_stat) as prjt_stat
 				 FROM prjt
-			<where>
-					<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+				 WHERE cust_no = #{cno}
+					<if test="sch.keyword != null and sch.keyword != ''">
+						AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 					</if>
-					<if test="prjtStat != null and prjtStat != ''">
-						AND prjt_stat LIKE #{prjtStat}
+					<if test="sch.prjtStat != null and sch.prjtStat != ''">
+						AND prjt_stat LIKE #{sch.prjtStat}
 					</if>
 				<choose>
-					<when test="prjtStart != null and prjtDue != null">
-						AND prjt_start_dt <![CDATA[>=]]> #{prjtStart}  AND prjt_due_dt <![CDATA[<=]]> #{prjtDue}
+					<when test="sch.prjtStart != null and sch.prjtDue != null">
+						AND prjt_start_dt <![CDATA[>=]]> #{sch.prjtStart}  AND prjt_due_dt <![CDATA[<=]]> #{sch.prjtDue}
 					</when>
-					<when test="(prjtStart != null) and (prjtDue == null)">
-						AND prjt_start_dt >= #{prjtStart}
+					<when test="(sch.prjtStart != null) and (sch.prjtDue == null)">
+						AND prjt_start_dt >= #{sch.prjtStart}
 					</when>
-					<when test="(prjtDue != null) and (prjtStart == null)">
-						AND prjt_due_dt <![CDATA[<=]]> #{prjtDue}
+					<when test="(sch.prjtDue != null) and (sch.prjtStart == null)">
+						AND prjt_due_dt <![CDATA[<=]]> #{sch.prjtDue}
 					</when>
 				</choose>
-				</where>
-				ORDER BY  ${prjtSort} , prjt_id ) t 
-			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
-		WHERE r.rn > (#{page} -1) * 10 
+				ORDER BY  ${sch.prjtSort} , prjt_id ) t 
+			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
+		WHERE r.rn > (#{sch.page} -1) * 10 
 	</select>
 	
 	<!-- 프로젝트 페이징 -->
-	<select id="prjtCount" parameterType="SearchVO">
+	<select id="prjtCount" parameterType="map">
 		SELECT COUNT(*)
-		FROM prjt 
-		<where>
+		FROM prjt
+		WHERE cust_no = #{cno}
 			<!-- 각 검색 조건에 대한 동적 추가 -->
-			<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+			<if test="sch.keyword != null and sch.keyword != ''">
+						AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 					</if>
-					<if test="prjtStat != null and prjtStat != ''">
-						AND prjt_stat LIKE #{prjtStat}
+					<if test="sch.prjtStat != null and sch.prjtStat != ''">
+						AND prjt_stat LIKE #{sch.prjtStat}
 					</if>
 				<choose>
-					<when test="prjtStart != null and prjtDue != null">
-						AND prjt_start_dt <![CDATA[>=]]> #{prjtStart}  AND prjt_due_dt <![CDATA[<=]]> #{prjtDue}
+					<when test="sch.prjtStart != null and sch.prjtDue != null">
+						AND prjt_start_dt <![CDATA[>=]]> #{sch.prjtStart}  AND prjt_due_dt <![CDATA[<=]]> #{sch.prjtDue}
 					</when>
-					<when test="(prjtStart != null) and (prjtDue == null)">
-						AND prjt_start_dt >= #{prjtStart}
+					<when test="(sch.prjtStart != null) and (sch.prjtDue == null)">
+						AND prjt_start_dt >= #{sch.prjtStart}
 					</when>
-					<when test="(prjtDue != null) and (prjtStart == null)">
-						AND prjt_due_dt <![CDATA[<=]]> #{prjtDue}
+					<when test="(sch.prjtDue != null) and (sch.prjtStart == null)">
+						AND prjt_due_dt <![CDATA[<=]]> #{sch.prjtDue}
 					</when>
 				</choose>
-		</where>
 	</select>
 	
 	<!-- 단순 프로젝트 조회 -->
@@ -78,7 +76,8 @@
 	        ,prjt_start_dt
 	        ,prjt_due_dt 
 		FROM prjt 
-		-- WHERE prjt_stat = '5E1e' 
+		WHERE cust_no = #{custNo}
+		<!-- WHERE prjt_stat = '5E1e'  --> 
 	</select>
 	
 	<!-- 프로젝트(상위) 단건 -->
@@ -93,6 +92,7 @@
 						 ,smry
 			FROM prjt 
 			WHERE prjt_id = #{prjtId}
+			AND cust_no = #{cno}
 	</select>
 	
 	<!-- 공통업무 List -->

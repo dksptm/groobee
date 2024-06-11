@@ -43,9 +43,11 @@
 						<div style="text-align: end">
 							<button type="button" class="btn btn-light  mt-2"
 								onclick="goToList()">프로젝트목록</button>
+							<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
 							<button type="button"
 								th:onclick="|location.href='@{/cust/prjtModify(prjtId=${prjt.prjtId})}'|"
 								class="btn btn-success">수정</button>
+							</th:block>
 						</div>
 					</div>
 				</div>
