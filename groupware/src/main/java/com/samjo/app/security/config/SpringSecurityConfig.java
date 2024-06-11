@@ -29,7 +29,7 @@ public class SpringSecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests()
-				.antMatchers("/assets/**", "/js/**").permitAll() // 정적 리소스 접근 허용
+				.antMatchers("/assets/**", "/js/**", "/error403").permitAll() // 정적 리소스 접근 허용
 //								 인가경로			인가대상
 				.antMatchers("/", "/introduce").permitAll()
 				.antMatchers("/sol/**").hasAuthority("1C1c") //솔루션 계정 접근가능
@@ -53,6 +53,7 @@ public class SpringSecurityConfig {
 			.logoutSuccessUrl("/");
 		http.csrf();
 		http.headers().frameOptions().sameOrigin();
+		http.exceptionHandling().accessDeniedPage("/error403");
 		//.addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "ALLOW-FROM https://permitted-site.example.com"));
 
 		//http.exceptionHandling()
