@@ -93,7 +93,7 @@ public class WorkControll {
 		}
 		List<WorkManagerVO> list = workService.managerWorkList(workmanagersearchVO);
 		model.addAttribute("list", list);
-		WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount());
+		WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount(workmanagersearchVO));
 		model.addAttribute("filter", workpageDTO);
 		List<WorkVO> ipinlist = workService.selectinip(workVO);
 		model.addAttribute("iplist", ipinlist);
@@ -110,7 +110,7 @@ public class WorkControll {
 			}
 			List<WorkManagerVO> list = workService.managerWorkList(workmanagersearchVO);
 			model.addAttribute("list", list);
-			WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount());
+			WorkPageDTO workpageDTO = new WorkPageDTO(workmanagersearchVO.getPage(), workService.managercount(workmanagersearchVO));
 			model.addAttribute("filter", workpageDTO);
 			return "work/workmanager :: #sortingTable";
 		}
@@ -128,7 +128,7 @@ public class WorkControll {
 	public String updatework(WorkVO workVO, Model model) {
 		WorkVO work = workService.selectWork(workVO);
 		model.addAttribute("info", work);
-		return "work/Workupdate";
+		return "work/workupdate";
 	}
 	
 	// 수정 처리

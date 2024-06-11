@@ -9,7 +9,7 @@
 			<div class="row mt-3 pt-3">
 				<h4 class="ms-3">사원 목록</h4>
 			</div>
-			<div class="card my-4 col-11">
+			<div class="card my-4 col-11 p-3">
 			<div class="row">
 				<div>
 					<!-- ip insert 모달 -->
@@ -17,7 +17,7 @@
 						data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="float: right;">IP설정</button>
 				</div>
 				<div>
-				<table class="mt-3 table table-bordered">
+				<table class="mt-3 table table-bordered text-center border-dark" style="width:95%; margin-left: auto; margin-right: auto;">
 					<thead>
 						<tr>
 							<th class="col-1 text-white" style="background-color:#3F72AF;">부서명</th>
@@ -29,8 +29,7 @@
 						</tr>
 					</thead>
 					<tbody th:each="list : ${list}" id="infos">
-						<tr
-							th:onclick="|location.href='@{/cust/work/worklists(empId=${list.empId})}'|">
+						<tr	th:onclick="|location.href='@{/cust/work/worklists(empId=${list.empId})}'|">
 							<td>[[${list.deptId}]]</td>
 							<td>[[${list.empNo}]]</td>
 							<td>[[${list.empName}]]</td>
@@ -42,27 +41,32 @@
 				</table>
 				</div>
 				
-				<div class="paging mt-2">
+				<div class="paging mt-2" style="margin-left: auto; margin-right: auto;">
 						<th:block th:if="${filter.totalCnt} != 0">
 							<nav aria-label="Page navigation">
-								<ul class="pagination">
+								<ul class="pagination justify-content-center">
 
 									<th:block th:if="${filter.prev}">
 										<li class="page-item prev disabled"><a
 											class="page-link pagebtn"
-											th:href="|workmanager?page=${filter.startPage - 1 }|">
+											th:href="|workmanager?custNo=${#authentication.principal.custNo}&
+														permId=${#authentication.principal.permId}&
+														deptId=${#authentication.principal.deptId}&page=${filter.startPage - 1 }|">
 												<i class="bx bx-chevron-left"></i>
 										</a></li>
 									</th:block>
 									<th:block th:each="num : ${#numbers.sequence(filter.startPage, filter.endPage)}">
-										<li class="page-item" th:attrappend="class=${num == filter.page ? 'active' : ' '}">
-											<a th:href="|workmanager?page=${num}|"
-											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
+										<li class="page-item" th:classappend="${num == filter.page ? 'active' : ' '}">
+											<a th:href="|workmanager?custNo=${#authentication.principal.custNo}&
+														permId=${#authentication.principal.permId}&
+														deptId=${#authentication.principal.deptId}&page=${num}|" th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 										</li>
 									</th:block>
 									<th:block th:if="${filter.next}">
 										<li class="page-item next"><a class="page-link pagebtn"
-											th:href="|workmanager?page=${filter.endPage + 1 }|">
+											th:href="|workmanager?custNo=${#authentication.principal.custNo}&
+														permId=${#authentication.principal.permId}&
+														deptId=${#authentication.principal.deptId}&page=${filter.endPage + 1 }|">
 												<i class="bx bx-chevron-right"></i>
 										</a></li>
 									</th:block>
@@ -90,7 +94,7 @@
 							<div class="modal-body">
 								<h6>적용완료 ip</h6>
 								<div>
-									<table class="mt-3 table table-bordered">
+									<table class="mt-3 table table-bordered text-center border-dark">
 										<thead>
 											<tr>
 												<td class="col-1 text-white" style="background-color:#3F72AF;"></td>
@@ -113,7 +117,7 @@
 									style="float: right;">삭제</button>
 								<br>
 								<h6 class="mt-3">신청 ip</h6>
-								<table class="mt-3 table table-bordered">
+								<table class="mt-3 table table-bordered text-center border-dark">
 									<thead>
 										<tr>
 											<td class="col-1 text-white" style="background-color:#3F72AF;"></td>

@@ -8,7 +8,7 @@ public interface WorkService {
 
 	// 전체 페이지 수
 	public int workcount(WorkSearchVO worksearchVO);
-	public int managercount();
+	public int managercount(WorkManagerSearchVO workmanagersearchVO);
 
 	// 근태 전체기록
 	public List<WorkVO> selectlist(WorkSearchVO worksearchVO);
