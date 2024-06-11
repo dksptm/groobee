@@ -15,7 +15,7 @@
 						<input type="hidden" th:value="${#authentication.principal.empId}"
 							id="id"> <input type="hidden"
 							th:value="${#authentication.name}" id="name">
-						<button type="button" class="mx-2 mt-2 my-2 btn btn-info"
+						<button type="button" class="mx-3 mt-3 my-3 btn btn-info"
 							data-bs-toggle="modal" data-bs-target="#exampleModal" id="inip"
 							style="float: right;">ip등록신청</button>
 					</div>
@@ -96,12 +96,8 @@
 						</table>
 					</div>
 					<br>
-					<!-- 
-					사원계정 접속시 사원번호 사원명 가리기
-					<th:block sec:authorize="hasAuthority('1D4d')">
-					얼럿창 -> 스윗얼럿-->
 					<div id="workTable">
-						<table class=" p-3 table table-bordered text-center">
+						<table class="mx-1 my-2 table table-bordered text-center" style="margin-left: auto; margin-right: auto;">
 							<thead>
 								<tr>
 									<th class="col-1 text-white" style="background-color: #3F72AF;">날짜</th>
@@ -343,7 +339,6 @@
 				    		text: '화이팅!!',
 				    		icon: 'success'
 				    		}).then(function() {
-				    			location.reload(true);
 				    		});
 				    	
 				    	}
