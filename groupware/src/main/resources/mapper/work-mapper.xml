@@ -40,7 +40,7 @@
            hire_dt,
            (select count(*)
            from wk
-           where wk_yn = '2A1a'and emp_id = #{empId}) au,
+           where wk_yn = '2A2a'and emp_id = #{empId}) au,
            (select count(*)
            from wk
            where wk_stat = '2B3b'and emp_id = #{empId}) tdy,

@@ -15,7 +15,7 @@
 						
 						<form th:action="@{/cust/work/workupdate}" method="post" th:object="${info}" id="forms">
 						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-						<table id="up" class="mt-3 p-3 table table-bordered">
+						<table id="up" class="mt-3 p-3 table table-bordered text-center">
 								<tr>
 									<th class="col-1 text-white" style="background-color:#3F72AF;">사원Id</th>
 									<th class="col-1 text-white" style="background-color:#3F72AF;">사원번호</th>
@@ -24,12 +24,12 @@
 									<th class="col-1 text-white" style="background-color:#3F72AF;">근무여부</th>
 								</tr>
 								<tr>
-									<td><input th:field="*{empId}" readOnly></td>
+									<td><input class="text-center" th:field="*{empId}" size="10" readOnly></td>
 									<td>[[*{empNo}]]</td>
 									<td>[[*{deptId}]]</td>
 									<td>[[*{empName}]]</td>
 									<td>
-									<select th:field="*{wkYn}" class="form-select">
+									<select th:field="*{wkYn}" class="form-select text-center">
 									<option th:value="2A1a">근무일</option>
 									<option th:value="2A2a">연차</option>
 									<option th:value="2A3a">오전반차</option>
@@ -39,7 +39,7 @@
 								</tr>
 							</table>
 							<br>
-							<table class="mt-3 p-3 table table-bordered">
+							<table class="mt-3 p-3 table table-bordered text-center">
 								<tr>
 									<th class="col-1 text-white" style="background-color:#3F72AF;">날짜</th>
 									<th class="col-1 text-white" style="background-color:#3F72AF;">출근시간</th>
@@ -49,10 +49,10 @@
 									<th class="col-1 text-white" style="background-color:#3F72AF;">근무상태</th>
 									<th class="col-1 text-white" style="background-color:#3F72AF;">근무지</th>
 								</tr>
-								<tr>
-									<td><input th:value="${#dates.format(info.dt, 'yyyy-MM-dd')}" name="dt" readOnly></td>
-									<td><input type="time" id="wkIn" name="wkIn" th:value="${#dates.format(info.wkIn, 'HH:mm')}"></td>
-									<td><input type="time" id="wkOut" name="wkOut" th:value="${#dates.format(info.wkOut, 'HH:mm')}"></td>									<td>
+								<tr >
+									<td><input class="text-center" size="10" th:value="${#dates.format(info.dt, 'yyyy-MM-dd')}" name="dt" readOnly></td>
+									<td><input class="text-center" type="time" id="wkIn" name="wkIn" th:value="${#dates.format(info.wkIn, 'HH:mm')}"></td>
+									<td><input class="text-center" type="time" id="wkOut" name="wkOut" th:value="${#dates.format(info.wkOut, 'HH:mm')}"></td>									<td>
 									<select th:field="*{wkInLoc}" class="form-select" >
 									<option value="Daegu">Daegu</option>
 									<option value="Busan">Busan</option>
