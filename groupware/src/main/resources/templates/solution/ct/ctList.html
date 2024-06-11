@@ -102,7 +102,7 @@
 											<td>[[ ${#dates.format(CtVO.ctStartDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctEndDt, "yyyy-MM-dd")} ]]</td>
 											<td
-												th:class="${CtVO.ctStat == '0A2a' ? 'table-secondary' : 'table-primary'}">
+												th:class="${CtVO.ctStat == '0A2a' ? 'table-danger' : 'table-success'}">
 												[[ ${CtVO.ctStatName} ]]</td>
 										</tr>
 									</th:block>

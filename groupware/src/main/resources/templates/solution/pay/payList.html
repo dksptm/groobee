@@ -90,7 +90,7 @@
 											<th:block th:unless="${PayVO.payExpcDt == null}" >
 												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>
 											</th:block>
-											<td>[[ ${PayVO.payStatName} ]]</td>
+											<td th:class="${PayVO.payStatName == '결제취소' ? 'table-danger' : ''}" th:classappend="${PayVO.payStatName == '결제완료' ? 'table-success' : ''}">[[ ${PayVO.payStatName} ]]</td>
 										</tr>
 									</th:block>
 								</tbody>

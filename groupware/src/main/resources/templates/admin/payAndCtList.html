@@ -89,7 +89,7 @@
 										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
 											<td>결제인증</td>
 										</th:block>
-										<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
+										<td th:class="'payStat '+${PayVO.payStatName == '결제취소' ? 'table-danger' : ''}" th:classappend="${PayVO.payStatName == '결제완료' ? 'table-success' : ''}">[[ ${PayVO.payStatName} ]]</td>
 									</tr>
 								</th:block>
 							</tbody>
