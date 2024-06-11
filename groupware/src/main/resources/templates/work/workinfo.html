@@ -56,8 +56,10 @@
 					<p>
 						<button type="button" class="my-2 mx-2 btn rounded-pill btn-danger doc-delete"  style="float: right;"
 						th:onclick="|location.href='@{/cust/work/worklist(empId=${info.empId})}'|">목록</button>
+						<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
 						<button type="button" class="my-2 mx-2 btn rounded-pill btn-info"  style="float: right;"
 						th:onclick="|location.href='@{/cust/work/workupdate(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">수정</button>
+						</th:block>
 					</p>
 					</div>
 				</div>
