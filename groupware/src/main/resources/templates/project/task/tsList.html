@@ -101,10 +101,10 @@
 												"yyyy-MM-dd")}]]</td>
 											<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${task.participantsCnt} ]] 명</td>
-											<td th:class="${task.progress == 100 ? 'table-success' : ''}">[[
-												${task.progress} ]] %</td>
-											<td th:if="${task.prjtMat == '업무진행중'}"
-												class="table-secondary">[[${task.prjtMat}]]</td>
+											<td th:if="${task.progress == 100}" class="table-success">[[${task.progress}]]%</td>
+											<td th:if="${task.progress != 100}" class="table-secondary">[[${task.progress}]]%</td>
+											
+											<td th:if="${task.prjtMat == '업무진행중'}"class="table-secondary">[[${task.prjtMat}]]</td>
 											<td th:if="${task.prjtMat == '업무완료'}" class="table-success">[[${task.prjtMat}]]</td>
 											<td th:if="${task.prjtMat == '업무취소'}" class="table-danger">[[${task.prjtMat}]]</td>
 											<!-- <td

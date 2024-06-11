@@ -24,18 +24,24 @@
 								<td>[[ ${task.taskName}]]</td>
 								<td class="fw-bold col-2 text-white"
 									style="background-color: #3F72AF">진행도</td>
-								<td>[[ ${task.progress}]] %</td> 
+								<td colspan="2" th:if="${task.progress == 100}"
+									class="table-success">[[ ${task.progress}]] %</td>
+								<td colspan="2" th:if="${task.progress != 100}"
+									class="table-secondary">[[ ${task.progress}]] %</td>
 							</tr>
 							<tr>
 								<td class="fw-bold  text-white"
 									style="background-color: #3F72AF">시작일</td>
 								<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
-								<td class="fw-bold text-white"
-									style="background-color: #3F72AF">마감일</td>
+								<td class="fw-bold text-white" style="background-color: #3F72AF">마감일</td>
 								<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")}]]</td>
-								<td class="fw-bold text-white"
-									style="background-color: #3F72AF">진행상황</td>
-								<td colspan="3">[[ ${task.prjtMat}]]</td>
+								<td class="fw-bold text-white" style="background-color: #3F72AF">진행상황</td>
+								<td colspan="3" th:if="${task.prjtMat == '업무진행중'}"
+									class="table-secondary">[[${task.prjtMat}]]</td>
+								<td colspan="3" th:if="${task.prjtMat == '업무완료'}"
+									class="table-success">[[${task.prjtMat}]]</td>
+								<td colspan="3" th:if="${task.prjtMat == '업무취소'}"
+									class="table-danger">[[${task.prjtMat}]]</td>
 							</tr>
 							<tr>
 								<td class="fw-bold col-2 text-white"
@@ -70,12 +76,12 @@
 						</table>
 						<br>
 						<div style="text-align: center">
-						<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
-							<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
-							<button type="button" class="btn btn-success mt-2"
-								th:onclick="|location.href='@{/cust/tsModify(taskNo=${task.taskNo})}'|">
-								수정</button>
-								</th:block>
+							<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
+								<button type="button" class="btn btn-primary mt-2" id="taskok">개별업무완료</button>
+								<button type="button" class="btn btn-success mt-2"
+									th:onclick="|location.href='@{/cust/tsModify(taskNo=${task.taskNo})}'|">
+									수정</button>
+							</th:block>
 						</div>
 					</div>
 				</div>
