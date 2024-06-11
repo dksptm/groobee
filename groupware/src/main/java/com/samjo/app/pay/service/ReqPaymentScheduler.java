@@ -26,8 +26,10 @@ public class ReqPaymentScheduler {
 	@Autowired
 	CtMapper ctMapper;
 	
+	//@Scheduled(cron = "0 0/1 * * * ?") // 매분 실행 세팅
 	@Scheduled(cron = "0 0 5 * * ?") // 매일 5시 실행 세팅
 	public void run() {
+		System.out.println("스케줄러 실행");
 		//결제대기중인 결제의 상태 조회하고 결제완료시 DB에 반영
     	List<PayVO> pList = payMapper.selectWaitPay();
     	if(pList != null) {
