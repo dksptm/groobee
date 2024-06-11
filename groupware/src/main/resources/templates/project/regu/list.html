@@ -206,57 +206,56 @@
 			})
 		}
 		
+		// 페이징
+		function pagination(param) {
+			$('.page-item a').on('click',function(event){
+				event.preventDefault();
+				console.log($(this).attr('href'),'페이지.')
+				param['page'] = $(this).attr('href');
+				showTable(param);
+			}); 
+		}
 		
+		// tr클릭시 info이동
+		function trClick(param) {	
+			$('.go-regu-info').on('click', function(e) {
+				let tno = $(this).data('tno');
+				let queryString = stringifyQueryString(param);
+				
+				location.href = "info?taskNo=" + tno + queryString;
+				
+			});
+		}
 		
+		// 검색조건 업데이트.
+		const searchUpdate = () => {
+			param = {}
+			param = {
+					keywordCondition : $('#keywordCondition').val(),
+					keyword : $('#keyword').val(),
+					prjtMat : $('#prjtMat').val(),
+					searchCondition : $('#searchCondition').val(),
+					dtStart : $('#dtStart').val(),
+					dtEnd : $('#dtEnd').val(),
+					sortCondition : $('#sortCondition').val(),
+					page : 1
+			}
+			return param;
+		}
+		
+		// 쿼리스트링 만들기.
+		const stringifyQueryString = (param) => {
+			const result = Object.entries(param)
+							   .map((e) => {
+								   const [key, value] = e.map(encodeURIComponent)
+								   return `${key}=${value}`
+								})
+								.join('&');
+			
+			return `&${result}`;
+		}
 	})//end.
 	
-	// 페이징
-	function pagination(param) {
-		$('.page-item a').on('click',function(event){
-			event.preventDefault();
-			param['page'] = $(this).attr('href');
-			showTable(param);
-		}); 
-	}
-	
-	// tr클릭시 info이동
-	function trClick(param) {	
-		$('.go-regu-info').on('click', function(e) {
-			let tno = $(this).data('tno');
-			let queryString = stringifyQueryString(param);
-			
-			location.href = "info?taskNo=" + tno + queryString;
-			
-		});
-	}
-	
-	// 검색조건 업데이트.
-	const searchUpdate = () => {
-		param = {}
-		param = {
-				keywordCondition : $('#keywordCondition').val(),
-				keyword : $('#keyword').val(),
-				prjtMat : $('#prjtMat').val(),
-				searchCondition : $('#searchCondition').val(),
-				dtStart : $('#dtStart').val(),
-				dtEnd : $('#dtEnd').val(),
-				sortCondition : $('#sortCondition').val(),
-				page : 1
-		}
-		return param;
-	}
-	
-	// 쿼리스트링 만들기.
-	const stringifyQueryString = (param) => {
-		const result = Object.entries(param)
-						   .map((e) => {
-							   const [key, value] = e.map(encodeURIComponent)
-							   return `${key}=${value}`
-							})
-							.join('&');
-		
-		return `&${result}`;
-	}
 	
 	</script>
 

@@ -34,7 +34,7 @@
 		           , '1D1d'
 		           , SUBSTR(cust_addr, -6, 5)
 		           , cust_tel
-		           , cust_no||'000@'||cust_no||'yedam'
+		           , cust_no||'000@'||cust_no||'.yedam'
 		    FROM  cust
 		    where cust_no = #{custNo}
 	</insert>
