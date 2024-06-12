@@ -87,7 +87,7 @@
 						<p>
 							<a type="button" th:href="@{/cust/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}" class="my-2 mx-2 btn rounded-pill btn-danger doc-delete"  style="float: right;">취소</a>
 							<button type="submit" class="my-2 mx-2 btn rounded-pill btn-info" id="up"  style="float: right;">수정</button>
-							<button type="button" class="my-2 mx-2 btn rounded-pill btn-info" id="back" style="float: right;">초기화</button>
+							<button type="button" class="my-2 mx-2 btn rounded-pill btn-primary" id="back" style="float: right;">시간 초기화</button>
 						</p>
 					</div>
 					</form>
@@ -97,8 +97,8 @@
 			</div>
 		<script>
 		$('#back').on('click', function(){
-			$('#wkin').val("");
-			$('#wkout').val("");
+			$('#wkIn').val("");
+			$('#wkOut').val("");
 		})
 		</script>
 	</th:block>
