@@ -194,7 +194,6 @@ public class PayServiceImpl implements PayService{
 		}else {
 			date = sdf.format(payDay);
 		}
-		System.out.println("DATE : "+ date);
 		
 		try {
 			Date stp = sdf.parse(date);
@@ -235,7 +234,6 @@ public class PayServiceImpl implements PayService{
 		payVO.setPayExpcDt(payDay);
 		payVO.setMerchantUid(timestamp);
 		payMapper.payInsert(payVO);
-		System.out.println("정기결제 API응답 : " + response);
 		return response;
 	}
 
