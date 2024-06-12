@@ -234,7 +234,7 @@
 			   #{ctAmt},
 			   #{useModCnt},
 			   #{maxEmps},
-			   1)
+			   0)
 	</insert>
 	
 	<!-- 고객 전체목록 -->

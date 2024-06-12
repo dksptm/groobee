@@ -85,7 +85,7 @@
 											<td>[[ ${PayVO.payTypeName} ]]</td>
 											<td>[[ ${#dates.format(PayVO.payCreDt, "yyyy-MM-dd")} ]]</td>
 											<th:block th:if="${PayVO.payExpcDt == null}" >
-												<td>인증대기중</td>											
+												<td>결제인증</td>											
 											</th:block>
 											<th:block th:unless="${PayVO.payExpcDt == null}" >
 												<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")} ]]</td>

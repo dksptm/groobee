@@ -256,7 +256,12 @@
 			        totalChecked -= 1;
 		        }
 			    if (totalChecked > maxChecked) {
-			        alert ("최대 "+maxChecked+"개 까지만 가능합니다. 계약모듈 갯수를 확인해주세요");
+			        $('.selectCust').click();
+			        Swal.fire({
+						icon: 'error',               
+					  	title: "최대 "+maxChecked+"개 까지만 선택가능합니다. 계약모듈 갯수를 확인해주세요",    
+					  	text: '', 
+					});
 			    field.checked = false;
 			    totalChecked -= 1;
 		    	}
