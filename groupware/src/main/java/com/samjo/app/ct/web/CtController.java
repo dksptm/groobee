@@ -31,7 +31,7 @@ public class CtController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getCtSort() == null || searchVO.getCtSort().trim().isEmpty()) {
-			searchVO.setCtSort("ct_no");
+			searchVO.setCtSort("ct_no DESC");
 		}
 		List<CtVO> list = ctservice.ctList(searchVO);
 		model.addAttribute("list", list);
