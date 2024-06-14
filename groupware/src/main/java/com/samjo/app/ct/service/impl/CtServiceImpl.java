@@ -134,11 +134,13 @@ public class CtServiceImpl implements CtService{
 			ctMapper.useModInsert(modVO);
 		}
 		//계약 결제 등록
+		/*
 		PayVO payVO = new PayVO();
 		payVO.setCustNo(ctVO.getCustNo());
 		payVO.setCtNo(ctVO.getCtNo());
 		payVO.setServAmt(ctVO.getCtAmt());
 		payMapper.fstPayInsert(payVO);
+		*/
 		
 		return null;
 	}
