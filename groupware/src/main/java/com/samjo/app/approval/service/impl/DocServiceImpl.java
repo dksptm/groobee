@@ -38,9 +38,6 @@ public class DocServiceImpl implements DocService {
 	@Override
 	public List<DocVO> getMyDocList(String empId, SearchVO searchVO) {
 		List<DocVO> list = docMapper.selectEmpDocs(empId, searchVO);
-		for(DocVO doc : list) {
-			System.out.println(doc.getTaskList());
-		}
 		return list;
 	}
 	@Override
@@ -187,14 +184,12 @@ public class DocServiceImpl implements DocService {
 			tempMapper.deletePto(docVO.getDocNo());
 		}
 		
-		System.out.println("문서수정서비스 docVO.getRefs() => " + docVO.getRefs());
 		// 3.기존 참조자 삭제 후 재등록
 		aprMapper.deleteRef(docVO.getDocNo());
 		if(docVO.getRefs() != null) {
 			aprMapper.insertRef(docVO);
 		}
 		
-		System.out.println("문서수정서비스 docVO.getTasks() => " + docVO.getTasks());
 		// 4.기존 연결업무 삭제 후 재등록
 		docMapper.deleteTaskDoc(docVO.getDocNo());
 		if(docVO.getTasks() != null) {

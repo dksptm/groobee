@@ -14,6 +14,7 @@
 		<result property="jobNo" column="job_no" />
 		<result property="permId" column="perm_id" />
 		<result property="empStat" column="emp_stat" />
+		<result property="ableCheck" column="able_check" />
 		<collection property="roleMod" javaType="java.util.List" ofType="String" >
 			<result column="mod_id" />
 		</collection>
@@ -29,7 +30,8 @@
 		       e.job_no,
 		       e.emp_stat,
 		       j.perm_id,
-		       m.mod_id		       
+		       m.mod_id,
+		       get_availability(e.ct_no) AS able_check       
 		FROM emp e JOIN jobs j  ON (e.job_no = j.job_no)
 		           JOIN use_mod m ON (e.cust_no = m.cust_no)
 		WHERE m.mod_use_stat = '1B1b'

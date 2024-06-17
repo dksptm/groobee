@@ -76,8 +76,12 @@
 		        ,g.ct_stat		as 	last_ct_stat
 		        ,NVL2(g.ct_stat, get_codename(g.ct_stat), '미계약') as last_ct_stat_name
 		        ,g.ct_no		as	last_ct_no
+		        ,g.cur_emps
+		        ,g.max_emps
 		FROM 	cust c FULL OUTER JOIN (
-										 SELECT rownum rn, cust_no, ct_no, ct_stat, ct_end_dt
+										 SELECT ROW_NUMBER() OVER(PARTITION BY cust_no ORDER BY ct_end_dt desc) rn
+										 	    , cust_no, ct_no, ct_stat, ct_end_dt
+										 	    , cur_emps ,max_emps
 										 FROM   ct
 										 WHERE  cust_no = #{cno}
 										 ORDER BY ct_end_dt DESC

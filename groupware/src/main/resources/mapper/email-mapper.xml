@@ -28,8 +28,14 @@
 				    WHERE  r.email_stat = '3B1b' 
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  (r.recp = #{recp} OR r.refer = #{recp})
-				    <if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					<if test="keyword != null and searchCondition == 's.title'">
+						AND s.title LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="keyword != null and searchCondition == 's.cntn'">
+						AND s.cntn LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="keyword != null and searchCondition == 's.sender'">
+						AND id_to_the_name(s.sender) LIKE '%' || #{keyword} || '%'
 					</if>
 					<if test ="recpType != null and recpType !='' ">
 						AND r.recp_Type LIKE #{recpType}
@@ -178,8 +184,14 @@
 				    WHERE s.email_stat = '3B1b'
 				    AND  r.cust_no = #{custNo, jdbcType=VARCHAR}
 				    AND  s.sender = #{sender}
-				    <if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					<if test="keyword != null and searchCondition == 's.title'">
+						AND s.title LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="keyword != null and searchCondition == 's.cntn'">
+						AND s.cntn LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="keyword != null and searchCondition == 'r.recp'">
+						AND id_to_the_name(r.recp) LIKE '%' || #{keyword} || '%'
 					</if>
 					<if test="sdStart != null">
 						AND s.sent_Dt >= #{sdStart}

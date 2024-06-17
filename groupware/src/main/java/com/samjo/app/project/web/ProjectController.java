@@ -41,10 +41,10 @@ public class ProjectController {
 		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
 			searchVO.setPrjtSort("prjt_id DESC");
 		}
-		
-		List<ProjectVO> list = projectService.PrjtAllList(searchVO);
+		EmpVO empVO = SecuUtil.getLoginEmp();
+		List<ProjectVO> list = projectService.PrjtAllList(searchVO, empVO.getCustNo());
 		model.addAttribute("pjlist", list);
-		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+		TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO, empVO.getCustNo()));
 		model.addAttribute("TaskDTO", taskDTO);
 		return "project/prjt/pjList";
 	}
@@ -57,11 +57,12 @@ public class ProjectController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getPrjtSort() == null || searchVO.getPrjtSort().trim().isEmpty()) {
-				searchVO.setPrjtSort("prjt_id");
+				searchVO.setPrjtSort("prjt_id DESC");
 		}
-			List<ProjectVO> list = projectService.PrjtAllList(searchVO);
+			EmpVO empVO = SecuUtil.getLoginEmp();
+			List<ProjectVO> list = projectService.PrjtAllList(searchVO, empVO.getCustNo());
 			model.addAttribute("pjlist", list);
-			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO));
+			TaskDTO taskDTO = new TaskDTO(searchVO.getPage(), projectService.count(searchVO, empVO.getCustNo()));
 			model.addAttribute("TaskDTO", taskDTO);
 			return "project/prjt/pjList :: #prjtTable";
 	}
@@ -74,7 +75,7 @@ public class ProjectController {
 		
 		if(empVO != null) {
 			
-			ProjectVO pj = projectService.prjtInfo(prjtId);
+			ProjectVO pj = projectService.prjtInfo(prjtId, empVO.getCustNo());
 			model.addAttribute("prjt", pj);
 			
 			List<ProjectVO> list = projectService.taskList(prjtId, empVO.getCustNo());
@@ -112,14 +113,16 @@ public class ProjectController {
 		projectVO.setPrjtStat("5E1e");
 		
 		int pId = projectService.prjtInsert(projectVO);
-		//System.out.println("pId---->" + pId);	
-	
-		if (pId > -1) {
-			 return "redirect:/cust/pj/info?prjtId=" + projectVO.getPrjtId();
-			
-		} else {
-			return "test/test";
-		}
+		//projectService.prjtInsert(projectVO);
+		System.out.println("pId---->" + pId);	
+		System.out.println(" projectVO.getPrjtId()----"+ projectVO.getPrjtId());
+		return "/cust/pj/info?prjtId=" + projectVO.getPrjtId();
+		/*
+		 * if (pId > -1) { return "redirect:/cust/pj/info?prjtId=" +
+		 * projectVO.getPrjtId();
+		 * 
+		 * } else { return "test/test"; }
+		 */
 	}
 
 	// 프로젝트 수정 - 페이지
@@ -128,12 +131,13 @@ public class ProjectController {
 		ProjectVO projectVO = new ProjectVO();
 		projectVO.setPrjtId(prjtId);
 		
-		ProjectVO pj = projectService.prjtInfo(prjtId);
-		model.addAttribute("prjt", pj);
 		
 		EmpVO empVO = SecuUtil.getLoginEmp();
-		
 		if (empVO != null) {
+			
+				ProjectVO pj = projectService.prjtInfo(prjtId, empVO.getCustNo());
+				model.addAttribute("prjt", pj);
+				
 				List<EmpVO> list = deptService.respMngrList(empVO.getCustNo());
 				model.addAttribute("mngr", list);
 				model.addAttribute("projects", new ProjectVO());

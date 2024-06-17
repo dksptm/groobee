@@ -37,9 +37,11 @@
 												<option value="5E1e">프로젝트진행중</option>
 												<option value="5E2e">프로젝트완료</option>
 										</select></td>
-										<td><div class="text-end">
-												<button type="submit" class="btn btn-info" id="schBtn">검&emsp;색</button>
-											</div></td>
+										<td>
+										<div class="text-end">
+												<button type="button" class="btn btn-info" id="searchbtn">검&emsp;색</button>
+											</div>
+										</td>
 									</tr>
 									<tr>
 										<td class="form-control">기간</td>
@@ -63,7 +65,6 @@
 													th:onclick="|location.href='@{/cust/prjtAllList}'|">초기화</button>
 											</div>
 										</td>
-
 									</tr>
 								</table>
 
@@ -72,17 +73,16 @@
 					</nav>
 					<!-- 검색 끝 -->
 
-
-					<div class="bg-light p-3">
+					<div class="bg-light p-3" id="prjtTable">
 						<div id="prjtListArea">
 							<div class="row">
 								<th:block th:each="pjlist : ${pjlist}">
 									<div class="w-20 p-3">
 										<div class="card text-center">
 											<div class="card-header p-2">[[ ${pjlist.prjtId} ]]</div>
-											<div class="card-body pt-2 pb-1"
+											<div class="card-body pt-2 pb-1 col-12 text-truncate"
 												style="background-color: #FFEFEF;">
-												<h5 class="card-title">[[ ${pjlist.prjtName} ]]</h5>
+												<h5 class="card-title col-12 text-truncate">[[ ${pjlist.prjtName} ]]</h5>
 											</div>
 											<div>
 												<ul class="list-group list-group-flush text-start">
@@ -98,14 +98,13 @@
 													class="btn rounded-pill me-2 btn-outline-info">상세보기</a>
 											</div>
 											<div class="card-footer p-2"
-												th:classappend="${pjlist.prjtStat} == '5E2e' ? 'text-warning' : 'text-secondary'">
+												th:classappend="${pjlist.prjtStat} == '프로젝트완료' ? 'text-warning' : 'text-secondary'">
 												[[ ${pjlist.prjtStat} ]]</div>
+												
 										</div>
 									</div>
 								</th:block>
 							</div>
-
-
 
 							<!-- 페이징 -->
 							<div class="paging mt-2">
@@ -167,12 +166,13 @@
 			let prjtSort;
 
 			//검색버튼 이벤트 처리
-			$(".searchbtn").on("click", function(e) {
+			$("#searchbtn").on("click", function(e) {
+				//e.preventDefault(); 
 				updateParams();
 				let page = 1;
 				showTable(page);
 			});
-
+			
 			//페이징 링크 처리
 			$(document).on("click", ".pagebtn", function(e) {
 				e.preventDefault();
@@ -222,6 +222,7 @@
 					},
 					dataType : 'Text',
 					success : function(result) {
+						//console.log(result);
 						$('#prjtTable').replaceWith(result);
 					}
 				});

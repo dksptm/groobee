@@ -16,7 +16,7 @@
 	<ul class="menu-inner py-1 overflow-auto">
 
 		<!-- 고객사 메뉴 -->
-		<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c','1C4c')">
+		<th:block sec:authorize="hasAuthority('ABLE') and hasAnyAuthority('1C2c','1C3c','1C4c')">
 			<!-- 메인화면 메뉴 -->
 			<li class="menu-item"><a href="/home" class="menu-link"> <i
 					class="menu-icon tf-icons bx bx-home-circle"></i>
@@ -38,9 +38,6 @@
 					</a></li>
 					<li class="menu-item"><a th:href="@{/cust/emailList}" class="menu-link">
 							<div>보낸메일</div>
-					</a></li>
-					<li class="menu-item"><a href="#" class="menu-link">
-							<div>주소록관리</div>
 					</a></li>
 					<li class="menu-item"><a th:href="@{/cust/wastedList}" class="menu-link">
 							<div>휴지통</div>
@@ -83,12 +80,15 @@
 					<div>근태관리</div>
 			</a>
 				<ul class="menu-sub">
-					<li class="menu-item"><a th:href="@{/work/worklist(empId=${#authentication.principal.empId})}" class="menu-link">
+					<li class="menu-item"><a th:href="@{/cust/work/worklist(empId=${#authentication.principal.empId})}" class="menu-link">
 							<div>출퇴근 기록</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/work/workmanager}" class="menu-link">
+					<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
+					<li class="menu-item"><a th:href="@{/cust/work/workmanager(custNo=${#authentication.principal.custNo},
+														permId=${#authentication.principal.permId},
+														deptId=${#authentication.principal.deptId})}" class="menu-link">
 							<div>사원목록</div>
-					</a></li>
+					</a></li></th:block>
 				</ul></li>
 			</th:block>
 
@@ -108,10 +108,12 @@
 						class="menu-link">
 							<div>프로젝트 업무조회</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/cust/prjtInsert}"
-						class="menu-link">
+					<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
+					<li class="menu-item"> 
+					<a th:href="@{/cust/prjtInsert}"class="menu-link">
 							<div>프로젝트 등록</div>
 					</a></li>
+					</th:block>
 					<li class="menu-item"><a th:href="@{/cust/regu/list}"
 						class="menu-link">
 							<div>상시업무 조회</div>
@@ -120,7 +122,7 @@
 					<li class="menu-item"
 						sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
 						<a th:href="@{/cust/regu/stadList}" class="menu-link">
-							<div>상시업무 관리</div>
+							<div>상시업무 목록</div>
 					</a></li>
 					<li class="menu-item"><a th:href="@{/cust/regu/insert}"
 						class="menu-link">
@@ -173,32 +175,34 @@
 					</a></li>
 				</ul></li>
 			</th:block>
+		</th:block>
 
-			<!-- 관리자 기능 -->
-			<th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
-			<li class="menu-item"><a href="javascript:void(0);"
-				class="menu-link menu-toggle"> <i
-					class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-					<div>관리자기능</div>
-			</a>
-				<ul class="menu-sub">
-					<li class="menu-item"><a href="/cust/manager/empList" class="menu-link">
+		<!-- 관리자 기능 -->
+		<th:block sec:authorize="hasAuthority('1C2c')">
+		<li class="menu-item"><a href="javascript:void(0);"
+			class="menu-link menu-toggle"> <i
+				class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+				<div>관리자기능</div>
+		</a>
+			<ul class="menu-sub">
+				<th:block sec:authorize="hasAuthority('ABLE')">
+					<li class="menu-item"><a href="/cust/admin/empList" class="menu-link">
 							<div>사원계정 관리</div>
 					</a></li>
-					<li class="menu-item"><a href="/cust/manager/dept" class="menu-link">
+					<li class="menu-item"><a href="/cust/admin/dept" class="menu-link">
 							<div>부서 관리</div>
 					</a></li>
 					<li class="menu-item"><a th:href="@{/cust/admin/jobList}" class="menu-link">
 							<div>직급 관리</div>
 					</a></li>
-					<li class="menu-item"><a th:href="@{/cust/admin/payAndCt}" class="menu-link">
-							<div>결제/계약 관리</div>
-					</a></li>
-					<!-- <li class="menu-item"><a href="#" class="menu-link">
-							<div>유지보수 관리</div>
-					</a></li> -->
-				</ul></li>
-		</th:block>
+				</th:block>
+				<li class="menu-item"><a th:href="@{/cust/admin/payAndCt}" class="menu-link">
+						<div>결제/계약 관리</div>
+				</a></li>
+				<!-- <li class="menu-item"><a href="#" class="menu-link">
+						<div>유지보수 관리</div>
+				</a></li> -->
+			</ul></li>
 		</th:block>
 
 		<!-- 솔루션 기능 -->
@@ -247,9 +251,6 @@
 				<ul class="menu-sub">
 					<li class="menu-item"><a th:href="@{/sol/payList}" class="menu-link">
 							<div>결제 내역</div>
-					</a></li>
-					<li class="menu-item"><a th:href="@{/sol/payTest}" class="menu-link">
-							<div>결제 테스트</div>
 					</a></li>
 				</ul></li>
 

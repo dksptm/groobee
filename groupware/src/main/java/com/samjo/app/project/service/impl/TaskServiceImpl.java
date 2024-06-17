@@ -28,13 +28,13 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override // 업무 전체조회
-	public List<ProjectVO> taskAllList(SearchVO searchVO) {
-		return taskMapper.selectTaskAllList(searchVO);
+	public List<ProjectVO> taskAllList(SearchVO searchVO, String custNo) {
+		return taskMapper.selectTaskAllList(searchVO,custNo);
 	}
 	
 	@Override // 업무 페이징
-	public int count(SearchVO searchVO) {
-		return taskMapper.taskCount(searchVO);
+	public int count(SearchVO searchVO, String custNo) {
+		return taskMapper.taskCount(searchVO,custNo);
 	}
 	
 	@Override // 업무 단건조회
@@ -48,6 +48,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override // 업무 등록
 	public int taskInsert(ProjectVO projectVO) {
 		int result = taskMapper.insertTask(projectVO);
+		System.out.println(projectVO);
 		if(result > 0) {
 			return projectVO.getTaskNo();			
 		}
@@ -109,12 +110,12 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 	@Override // 협력업체 조회
-	public List<ProjectVO> CoopCoAllList(SearchVO searchVO) {
-		return taskMapper.selectCoopCoAllList(searchVO);
+	public List<ProjectVO> CoopCoAllList(SearchVO searchVO, String custNo) {
+		return taskMapper.selectCoopCoAllList(searchVO,custNo);
 	}
 	@Override // 협력업체 페이징
-	public int coCount(SearchVO searchVO) {
-		return taskMapper.coCount(searchVO);
+	public int coCount(SearchVO searchVO, String custNo) {
+		return taskMapper.coCount(searchVO,custNo);
 	}
 	@Override // 협력업체 등록
 	public int coopInsert(ProjectVO projectVO) {

@@ -12,9 +12,9 @@ public class EmailDTO {
 	public EmailDTO (int page, int totalCnt) {
 		this.page = page;
 		this.totalCnt = totalCnt;
-		int realEnd = (int) Math.ceil(totalCnt/15.0);
+		int realEnd = (int) Math.ceil(totalCnt/10.0);
 		
-		this.endPage = (int) Math.ceil(page/15.0) * 5;
+		this.endPage = (int) Math.ceil(page/10.0) * 10;
 		this.startPage = this.endPage - 4;
 		
 		this.endPage = this.endPage > realEnd ? realEnd : this.endPage;

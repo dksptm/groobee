@@ -6,50 +6,51 @@
 
 <th:block layout:fragment="Content">
 <th:block sec:authorize="hasAnyAuthority('1C2c','1C3c')">
-<div class="container container-p-y mt-3">
-	<h4>상시업무관리 - 수정</h4>
-<div class="bg-light p-3">
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">상시업무관리 - 수정</h5>
+<div class="card-body">
 <div class="table-responsive">
 	
 	<table class="table table-bordered text-center">
 		<tr>
-			<td class="fw-bold col-2">업무명</td>
-				<td class="col-2">[[ ${regu.taskName} ]]</td>
-			<td class="fw-bold col-2">업무ID</td>
-				<td class="col-2">[[ ${regu.reguId} ]]</td>
-			<td class="fw-bold col-2">생성건수</td>
-				<td class="col-2">[[ ${regu.taskCnt} ]] 건</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무명</th>
+				<td >[[ ${regu.taskName} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무ID</th>
+				<td>[[ ${regu.reguId} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">생성건수</th>
+				<td >[[ ${regu.taskCnt} ]] 건</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">개요</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">개요</th>
 				<td colspan="5"><input type="text" th:value="${regu.taskPurpose}" name="taskPurpose"  class="form-control" /></td>
 		</tr>
 		<tr>
-			<td class="fw-bold">목적</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">목적</th>
 				<td colspan="5"><textarea name="taskCntn" class="form-control" >[[ ${regu.taskCntn} ]]</textarea></td>
 		</tr>
 		<tr>
-			<td class="fw-bold">부서명</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">부서명</th>
 				<td>[[ ${regu.deptName} ]]</td>
-			<td class="fw-bold">책임자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">책임자</th>
 				<td>[[ ${regu.respEmpName} ]]</td>
-			<td class="fw-bold">등록일자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">등록일자</th>
 				<td>[[ ${#dates.format(regu.reguDt, 'yyyy-MM-dd')} ]]</td>	
 		</tr>
 		<tr>
-			<td class="fw-bold">생성유형</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">생성유형</th>
 			<td><select class="form-select" name="creType" id="creType">
 				    <option value="5C1c">매일</option>
 				    <option value="5C2c">매주</option>
 				    <option value="5C3c">매월</option>
 			  	</select>
 			</td>
-			<td class="fw-bold">생성주기</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">생성주기</th>
 			<td id="creOpt">
 				<select class="form-select" name="crePerd">
 				<option value="-1"> </option></select>
 			</td>
-			<td class="fw-bold">활성화 상태</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">활성화 상태</th>
 			<td><select class="form-select" name="active" id="active">
 				    <option value="5D1d">활성화</option>
 				    <option value="5D2d">비활성화</option>
@@ -57,12 +58,13 @@
 		</tr>
 	</table>
 	
-	<div class="d-flex justify-content-end">
-		<button type="button" class="btn btn-info mb-3 rugu-up-btn">수정완료</button>
-		<button type="button" class="btn btn-secondary ms-3 mb-3"
+	<div class="d-flex justify-content-end mt-3">
+		<button type="button" class="btn btn-outline-success mb-3 rugu-up-btn">수정완료</button>
+		<button type="button" class="btn btn-outline-secondary ms-3 mb-3"
 				th:onclick="|location.href='@{/cust/regu/stadInfo?reguId={rid}(rid=${regu.reguId})}'|">수정취소</button>
 	</div>
 			
+</div>
 </div>
 </div>
 </div>
@@ -75,6 +77,19 @@
 	let type = [[${regu.creType}]];
 	let perd = [[${regu.crePerd}]];
 	let act = [[${regu.active}]]; 
+	
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center-center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	 })
+	
 	
 	$(function(){
 		
@@ -146,13 +161,11 @@
 					})
 					.done(response => {
 						if(response.success == 'OK' || response.success == 'NG') {
-							Swal.fire({
-					    		  position: "center-center",
-					    		  icon: "success",
-					    		  title: response.msg,
-					    		  showConfirmButton: false,
-					    		  timer: 1500
-					    	})
+							Toast.fire({
+								icon: 'success',
+							    title: '상시업무 수정중입니다...',
+							    timer: 1500
+							})
 					    	location.href='stadInfo?reguId=' + reguId;
 	
 						} else {

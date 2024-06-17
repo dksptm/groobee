@@ -4,46 +4,34 @@
 	  layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-
-	<div class="container-xxl flex-grow-1">
-	<div class="flex-xl-nowrap row">
-	<div class="row">
-		<div class="row mt-3 pt-3">
-			<h2 class="ms-3">완료문서<span style="font-size:1.2rem;"> 최종결재완료문서/반려문서</span></h2>
-			<p> 관리자: 회사의 모든문서</p>
-			<p> 부서장: 부서의 모든문서 또는 본인이 참조/결재자인 문서</p>
-			<p> 사원 : 본인이 참조/결재자인 문서</p>
-		</div>
-		<hr>
-		
-		<div class="mt-3 pt-3">
+	<div class="d-flex justify-content-center">
+	<div class="card my-4 col-10">
+		<h5 class="card-header">완료문서</h5>
 			<input type="hidden" th:value="${#authentication.principal.empId}" name="draft" readonly />
 			<input type="hidden" th:value="${#authentication.principal.deptId}" name="deptId" readonly />
 			<input type="hidden" th:value="${#authentication.principal.custNo}" name="custNo" readonly />
 			<input type="hidden" th:value="${#authentication.name}" name="draptName" readonly />
-			
-		</div>
 		
-		<!-- 검색 -->
+		<div class="card-body pt-0">
 			<!-- 검색공간 -->				
 			<div id="searchArea">
 				<th:block th:replace="approval/list/search :: Search"></th:block>
 			</div>
-		
-		<div class="mt-3 pt-3">
+		<br>
+		<div>
 			<div class="table-responsive">
-				<table class="table table-bordered table-hover text-center bg-white">
+				<table class="table table-hover text-center">
 					<thead>
-						<tr class="table-dark">
-							<th class="text-white">문서번호</th>
+						<tr style="background-color:#3F72AF;">
+							<th class="text-white col-1" >문서번호</th>
 							<th class="text-white">부서명</th>
 							<th class="text-white">문서종류</th>
 							<th class="text-white">업무명</th>
 							<th class="text-white col-3">제목</th>
 							<th class="text-white">기안자</th>
-							<th class="text-white">문서상태</th>
 							<th class="text-white">작성일자</th>
 							<th class="text-white">완료일자</th>
+							<th class="text-white">문서상태</th>
 						</tr>
 					</thead>
 					<tbody class="resultList">
@@ -53,31 +41,28 @@
 							<td>[[ ${doc.deptName} ]]</td>
 							<td>[[ ${doc.tempName} ]]</td>
 							<td>
-							<span th:if="${#arrays.length(doc.taskList)} != 0">
-									[[ ${doc.taskList[0].taskName} ]]</span>
-							<span th:unless="${#arrays.length(doc.taskList)} != 0">
-									-</span>
-							<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
+								<span th:if="${#arrays.length(doc.taskList)} != 0">
+										[[ ${doc.taskList[0].taskName} ]]</span>
+								<span th:unless="${#arrays.length(doc.taskList)} != 0">
+										-</span>
+								<span th:if="${doc.taskCount} > 0">등 [[ ${doc.taskCount} ]]건</span>
 							</td>
-							<td>[[ ${doc.title} ]]</td>
+							<td class="text-truncate"  style="max-width: 10px;">[[ ${doc.title} ]]</td>
 							<td>[[ ${doc.draftName} ]]</td>
-							<td th:class="${doc.docStat == '4B4b' ? 'table-active' : 'table-success'}">[[ ${doc.docStatName} ]]</td>
 							<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 							<td>[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+							<td th:class="${doc.docStat == '4B4b' ? 'table-danger' : 'table-success'}">[[ ${doc.docStatName} ]]</td>
 						</tr>
 						</th:block>
 					</tbody>
 				</table>
 			</div>
-			<div>
-				<!-- 페이징공간 -->
-				<div id="pageArea">
-					<th:block th:replace="approval/list/page :: Page"></th:block>
-				</div>
+			<!-- 페이징공간 -->
+			<div id="pageArea" class="paging mt-2">
+				<th:block th:replace="approval/list/page :: Page"></th:block>
 			</div>
 		</div>
-		
-	</div>
+		</div>
 	</div>
 	</div>
 	

@@ -68,7 +68,8 @@
 		       ct.ct_amt,
 		       ct.use_mod_cnt,
 		       ct.max_emps,
-		       ct.cur_emps
+		       ct.cur_emps,
+		       ct.ct_pay_dt
 		FROM   ct ct JOIN cust c 
 		             ON(ct.cust_no = c.cust_no)
 		WHERE  ct.ct_no = #{ctNo}
@@ -98,6 +99,7 @@
 		           JOIN perm p
 		            ON(j.perm_id = p.perm_id)
 		WHERE e.cust_no = #{custNo}
+		ORDER BY e.emp_id
 	</select>	
 	
 	<!-- 계약등록 모듈목록조회 -->
@@ -192,7 +194,7 @@
 		SELECT *
 		FROM ct_hist
 		WHERE ct_no = #{CtNo}
-		ORDER BY ct_hist_no
+		ORDER BY ct_hist_no DESC
 	</select>
 	
 	<!-- 계약변경이력(모듈) -->
@@ -232,7 +234,7 @@
 			   #{ctAmt},
 			   #{useModCnt},
 			   #{maxEmps},
-			   1)
+			   0)
 	</insert>
 	
 	<!-- 고객 전체목록 -->

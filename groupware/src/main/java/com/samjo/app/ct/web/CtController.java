@@ -31,7 +31,7 @@ public class CtController {
 			searchVO.setPage(1);
 		}
 		if (searchVO.getCtSort() == null || searchVO.getCtSort().trim().isEmpty()) {
-			searchVO.setCtSort("ct_no");
+			searchVO.setCtSort("ct_no DESC");
 		}
 		List<CtVO> list = ctservice.ctList(searchVO);
 		model.addAttribute("list", list);
@@ -78,11 +78,10 @@ public class CtController {
 	
 	//계약 등록 처리
 	@PostMapping("sol/ctInsertProcess")
+	@ResponseBody
 	public String ctInsertProcces(CtVO ctVO, String[] modIds) {
 		ctservice.ctInsert(ctVO, modIds);
-		//System.out.println("ctVO : "+ ctVO);
-		//System.out.println("mod : "+ Arrays.toString(modIds));
-		return "redirect:/sol/ctList";
+		return "Success";
 	}
 	
 	// 계약 수정 화면

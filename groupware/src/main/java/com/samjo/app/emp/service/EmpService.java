@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.cust.service.CustVO;
 
 public interface EmpService {
 	
@@ -12,11 +13,12 @@ public interface EmpService {
 	// 고객사 소속 계정 전체조회
 	public List<EmpVO> selectEmpAll(String custNo, SearchVO search);
 	public int countEmpAll(String custNo, SearchVO search);
+	public CustVO empMaxCur(String custNo);
 	
 	// 사원등록 시 부서,직급 조회
 	public List<DeptVO> insertFormDepts(EmpVO empVO);
 	public List<JobVO> insertFormJobs(EmpVO empVO);
-	public int idCheck(String eno, String cno);
+	public int idCheck(String empId, String custNo);
 	
 	// 사원등록
 	public String insertEmp(EmpVO empVO);

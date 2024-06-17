@@ -8,7 +8,7 @@ public interface WorkService {
 
 	// 전체 페이지 수
 	public int workcount(WorkSearchVO worksearchVO);
-	public int managercount();
+	public int managercount(WorkManagerSearchVO workmanagersearchVO);
 
 	// 근태 전체기록
 	public List<WorkVO> selectlist(WorkSearchVO worksearchVO);
@@ -41,6 +41,9 @@ public interface WorkService {
 	// ip 조회
 	public List<WorkVO> selectoutip(WorkVO workVO);
 	public List<WorkVO> selectinip(WorkVO workVO);
+	
+	// ip 체크
+	public List<WorkVO> inipcheck(WorkVO workVO);
 	
 	// ip 추가
 	public int insertinip(WorkVO workVO);

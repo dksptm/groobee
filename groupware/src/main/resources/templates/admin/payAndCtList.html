@@ -4,19 +4,25 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-10">
+		<div class="container-xxl flex-grow-1">
+		<div class="flex-xl-nowrap row">
+		<div class="row">
+			<div class="row mt-3 pt-3">
+				<h2 class="ms-3">계약/결제 관리</h2>
+			</div>
+		
+			<div class="card my-2">
 				<div class="card-body d-flex justify-content-center">
 					<!-- 계약 목록 출력 -->
-					<div class="table-responsive w-50">
-						<h5 class="card-header">계약 목록</h5>
-						<table class="table table-hover">
+					<div class="table-responsive w-45">
+					<h5 class="card-header">계약 목록</h5>
+						<table class="table table-hover text-center">
 							<thead>
-								<tr class="table-secondary">
-									<th>계약번호</th>
-									<th>고객번호</th>
-									<th>계약상태</th>
-									<th>정기결제</th>
+								<tr class="ctRow" style="background-color:#3F72AF;">
+									<th class="text-white">계약번호</th>
+									<th class="text-white">고객번호</th>
+									<th class="text-white">계약상태</th>
+									<th class="text-white">정기결제</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -37,47 +43,53 @@
 										<td><th:block th:if="${CtVO.payCheck} == 0">
 												<button type="button" class="btn btn-primary payBtn"
 													th:id="${CtVO.ctAmt}">정기결제인증</button>
-											</th:block> <th:block th:if="${CtVO.payCheck} == 1">
+											</th:block> 
+											<th:block th:if="${CtVO.payCheck} == 1">
 												<button type="button" class="btn btn-danger cancelBtn"
 													th:id="${CtVO.ctNo}">정기결제중지</button>
+											</th:block>
+											<th:block th:if="${CtVO.payCheck} == 3">
+												<button type="button" class="btn btn-secondary"
+													th:id="${CtVO.ctNo}" disabled>종료된 계약</button>
 											</th:block></td>
 									</tr>
 								</th:block>
 							</tbody>
 						</table>
-						<p>결제인증 완료시 정기결제가 시작됩니다.</p>
+						<p class="text-danger">결제인증 완료시 정기결제가 시작됩니다.</p>
 					</div>
 				</div>
 				<div class="card-body">
 					<h5 class="card-header">결제 목록</h5>
 					<!-- 결제 목록 출력 -->
+					<p class="text-danger">결제내역은 매일 오전 5시에 갱신됩니다</p>
 					<div class="table-responsive mb-2">
-						<table class="table table-hover">
+						<table class="table table-hover text-center">
 							<thead>
-								<tr class="table-secondary">
-									<th>결제번호</th>
-									<th>계약번호</th>
-									<th>결제분류</th>
-									<th>서비스금액</th>
-									<th>결제예정일</th>
-									<th>결제상태</th>
+								<tr style="background-color:#3F72AF;">
+									<th class="text-white">결제번호</th>
+									<th class="text-white">계약번호</th>
+									<th class="text-white">결제분류</th>
+									<th class="text-white">서비스금액</th>
+									<th class="text-white">결제예정일</th>
+									<th class="text-white">결제상태</th>
 								</tr>
 							</thead>
 							<tbody>
 								<th:block th:each="PayVO : ${list}">
-									<tr data-bs-toggle="modal" th:data-bs-target="|#PayModal-${PayVO.payNo}|">
+									<tr>
 										<td>[[ ${PayVO.payNo} ]]</td>
 										<td>[[ ${PayVO.ctNo} ]]</td>
 										<td>[[ ${PayVO.payTypeName} ]]</td>
 										<td class="amt">[[ ${PayVO.servAmt} ]]</td>
 										<th:block th:if="${not #strings.isEmpty(PayVO.payExpcDt)}">
-											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd HH:mm:ss")}
+											<td>[[ ${#dates.format(PayVO.payExpcDt, "yyyy-MM-dd")}
 												]]</td>
 										</th:block>
 										<th:block th:unless="${not #strings.isEmpty(PayVO.payExpcDt)}">
 											<td>결제인증</td>
 										</th:block>
-										<td class="payStat">[[ ${PayVO.payStatName} ]]</td>
+										<td th:class="'payStat '+${PayVO.payStatName == '결제취소' ? 'table-danger' : ''}" th:classappend="${PayVO.payStatName == '결제완료' ? 'table-success' : ''}">[[ ${PayVO.payStatName} ]]</td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -110,7 +122,7 @@
 							</nav>
 						</th:block>
 						<th:block th:unless="${payDTO.totalCnt} != 0">
-							<p>조회가능한 결제내역이 없습니다.</p>
+							<p class="text-center mt-3">조회가능한 결제내역이 없습니다.</p>
 						</th:block>
 					</div>
 					<!-- /페이징 -->
@@ -120,7 +132,7 @@
 
 		<!-- 계약정보 모달화면 -->
 		<div class="modal fade" id="CtModal" tabindex="-1">
-			<div class="modal-dialog modal-xl modal-dialog-scrollable"
+			<div class="modal-dialog modal-xl modal-dialog-scrollable w-50"
 				role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -131,10 +143,10 @@
 					<div class="modal-body">
 						<table class="table table-hover text-center">
 							<thead>
-								<tr class="table-secondary">
-									<th>계약번호</th>
-									<th>고객번호</th>
-									<th>계약상태</th>
+								<tr style="background-color:#3F72AF;">
+									<th class="text-white">계약번호</th>
+									<th class="text-white">고객번호</th>
+									<th class="text-white">계약상태</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -147,13 +159,13 @@
 						</table>
 						<table class="table table-hover text-center">
 							<thead>
-								<tr class="table-secondary">
-									<th>계약시작일</th>
-									<th>계약종료일</th>
-									<th>계약금액</th>
-									<th>최대사용가능인원</th>
-									<th>현재사용중인인원</th>
-									<th>사용중인모듈갯수</th>
+								<tr style="background-color:#3F72AF;">
+									<th class="text-white">계약시작일</th>
+									<th class="text-white">계약종료일</th>
+									<th class="text-white">계약금액</th>
+									<th class="text-white">최대사용가능인원</th>
+									<th class="text-white">현재사용중인인원</th>
+									<th class="text-white">사용중인모듈갯수</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -175,46 +187,8 @@
 				</div>
 			</div>
 		</div>
-		
-		<!-- 결제 모달화면 -->
-		<th:block th:each="PayVO : ${list}">
-			<div class="modal fade" th:id="|PayModal-${PayVO.payNo}|" tabindex="-1">
-				<div class="modal-dialog modal-xl modal-dialog-scrollable"
-					role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="modalScrollableTitle">결제 상세</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							<table class="table table-hover">
-								<thead>
-									<tr class="table-secondary">
-										<th>결제번호</th>
-										<th>계약번호</th>
-										<th>결제상태</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>[[ ${PayVO.payNo} ]]</td>
-										<td>[[ ${PayVO.ctNo} ]]</td>
-										<td>[[ ${PayVO.payStat} ]]</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary selectCust"
-								data-bs-dismiss="modal">선택완료</button>
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">닫기</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</th:block>
+		</div>
+		</div>
 
 		<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
 		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
@@ -247,8 +221,6 @@
 					buyer_tel : ''
 				}, function(rsp) {
 					if (rsp.success) {
-						//최초결제 내역 등록
-						
 						//정기결제 등록
 						$.ajax({
 							url : '/payment',
@@ -263,12 +235,21 @@
 								"ct_no" : ctNo
 							},
 							success : function(result) {
-								alert('정기 결제 예약 완료');
-								location.reload(true);
+								Swal.fire({
+									icon: 'success',               
+								  	title: '정기 결제 예약 완료',    
+								  	text: '재로그인시 기능이 활성화됩니다.', 
+								}).then((result) => {
+									location.reload(true);
+								});
 							}
 						});
 					} else {
-						alert('결제 취소');
+						Swal.fire({
+							icon: 'error',               
+						  	title: '결제가 취소되었습니다.',    
+						  	text: '', 
+						});
 					}
 				});
 			});
@@ -290,8 +271,13 @@
 						"ctNo" : ctNo
 					},
 					success : function(result) {
-						alert('정기 결제 중지');
-						location.reload(true);
+						Swal.fire({
+							icon: 'success',               
+						  	title: '정기 결제가 중지되었습니다.',    
+						  	text: '', 
+						}).then((result) => {
+							location.reload(true);
+						});
 					}
 				});
 			});

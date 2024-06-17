@@ -31,6 +31,7 @@ public class LoginUserVO implements UserDetails {
 		auth.add(new SimpleGrantedAuthority(getJobNo()));
 		auth.add(new SimpleGrantedAuthority(getPermId()));
 		auth.add(new SimpleGrantedAuthority(getEmpStat()));
+		auth.add(new SimpleGrantedAuthority(getAbleCheck()));
 		return auth;
 	}
 	
@@ -97,5 +98,9 @@ public class LoginUserVO implements UserDetails {
 
 	public String getEmpStat() {
 		return loginVO.getEmpStat();
+	}
+	
+	public String getAbleCheck() {
+		return loginVO.getAbleCheck();
 	}
 }
