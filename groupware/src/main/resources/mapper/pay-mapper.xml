@@ -25,7 +25,7 @@
 				FROM pay p JOIN cust c
 				            ON(p.cust_no = c.cust_no)
 				<include refid="listSql" />
-				ORDER BY p.pay_no, p.cust_no ) t 
+				ORDER BY p.pay_no DESC, p.cust_no ) t 
 			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
 		WHERE r.rn > (#{page} -1) * 10
 	</select>

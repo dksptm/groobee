@@ -8,62 +8,70 @@
 			<h2>협력업체 상세</h2>
 			<div class="bg-light p-3 m-5">
 				<div class="table-responsive">
-					<input type="hidden" th:value="${coop.coopCoNo}" id="coopCoNo" readonly />
-					<div class="table-responsive">
-						<table class="table table-hover table-bordered">
-							<tr>
-								<th>업체번호</th>
-								<td id="coopCoNo" >[[ ${coop.coopCoNo}]]</td>
-								<th>업체명</th>
-								<td>[[ ${coop.coName}]]</td>
-								<th>업무명</th>
-								<td  th:field="*{taskName}"> [[ ${coop.taskName}]]</td>
-								<th>책임자</th>
-								<td>[[ ${coop.pic}]]</td>
-							</tr>
-						</table>
-						<br>
-						<table class="table table-hover table-bordered">
-							<thead>
-								<tr>
-									<th>연락처</th>
-									<td>[[ ${coop.coTel}]]</td>
-									<th>내용</th>
-									<td>[[ ${coop.cntn}]]</td>
-									<th>주소</th>
-									<td>[[ ${coop.custAddr}]]</td>
-								</tr>
-							</tbody>
-						</table>
-						<br>
-						<div style="text-align: end">
-							<button type="button" class="btn btn-light  mt-2" onclick="goToList()">협력업체목록</button>
-							<button type="button" 
-							  th:onclick="|location.href='@{/cust/coopUpdate(coopCoNo=${coop.coopCoNo})}'|" class="btn btn-success  mt-2">수정</button>
-								<button type="button" class="btn btn-danger mt-2" id="delBtn">삭제</button>
-						</div>
+
+					<input type="hidden" th:value="${coop.coopCoNo}" id="coopCoNo"
+						readonly />
+
+					<table class="table table-bordered text-center">
+						<tr>
+							<td class="col-1 text-white"
+								style="width: 20%; background-color: #3F72AF">업체번호</td>
+							<td id="coopCoNo">[[ ${coop.coopCoNo}]]</td>
+							<td class="col-1 text-white"
+								style="width: 20%; background-color: #3F72AF;">업체명</td>
+							<td>[[ ${coop.coName}]]</td>
+						</tr>
+						<tr>
+							<td class="col-1 text-white"
+								style="width: 20%; background-color: #3F72AF;">업무명</td>
+							<td th:field="*{taskName}">[[ ${coop.taskName}]]</td>
+							<td class="col-1 text-white"
+								style="width: 20%; background-color: #3F72AF;">담당자</td>
+							<td>[[ ${coop.pic}]]</td>
+						</tr>
+						<tr>
+							<td class="col-1 text-white" style="background-color: #3F72AF;">내용</td>
+							<td>[[ ${coop.cntn}]]</td>
+							<td class="col-1 text-white" style="background-color: #3F72AF;">연락처</td>
+							<td>[[ ${coop.coTel}]]</td>
+						</tr>
+						<tr>
+							<td class=" text-white" style="background-color: #3F72AF;">주소</td>
+							<td colspan="8">[[ ${coop.custAddr}]]</td>
+						</tr>
+						</tbody>
+					</table>
+					<br>
+					<div style="text-align: end">
+						<button type="button" class="btn btn-light  mt-2"
+							onclick="goToList()">협력업체목록</button>
+						<button type="button"
+							th:onclick="|location.href='@{/cust/coopUpdate(coopCoNo=${coop.coopCoNo})}'|"
+							class="btn btn-success  mt-2">수정</button>
+						<button type="button" class="btn btn-danger mt-2" id="delBtn">삭제</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
+
 		<script>
-		
-			const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-			const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-			
+			const token = document.querySelector('meta[name="_csrf"]')
+					.getAttribute('content');
+			const header = document.querySelector('meta[name="_csrf_header"]')
+					.getAttribute('content');
+
 			// 업무목록으로
 			function goToList() {
 				window.location.href = '/cust/coopAllList';
 			};
-			
-			
+
 			$(function() {
-				
+
 				// 삭제 버튼
 				$('#delBtn').on('click', function() {
 					let coopCoNo = $('#coopCoNo').val();
-	
+
 					//console.log(coopCoNo); // 값을 제대로 가져왔는지 확인
 
 					$.ajax({
@@ -71,24 +79,22 @@
 						url : '/cust/coopDelete?coopCoNo=' + coopCoNo,
 						dataType : 'json',
 						success : function(result) {
-							
-							if(result == 1) {
+
+							if (result == 1) {
 								Swal.fire({
-									title: '완료!',        
-									text:  '협력업체 삭제가 완료되었습니다.',  
-									icon:  'success' 
-								})
-								.then(function(){
-									window.location.href = '/cust/coopAllList';                
+									title : '완료!',
+									text : '협력업체 삭제가 완료되었습니다.',
+									icon : 'success'
+								}).then(function() {
+									window.location.href = '/cust/coopAllList';
 								})
 							} else {
 								Swal.fire({
-									title: '실패',        
-									text:  '협력업체 삭제를 실패하였습니다.',  
-									icon:  'error' 
-								})
-								.then(function(){
-									window.location.href = '/cust/coopAllList';                 
+									title : '실패',
+									text : '협력업체 삭제를 실패하였습니다.',
+									icon : 'error'
+								}).then(function() {
+									window.location.href = '/cust/coopAllList';
 								})
 							}
 						},
@@ -99,7 +105,6 @@
 					});
 				});
 			});
-			
 		</script>
 	</th:block>
 </body>

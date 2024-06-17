@@ -5,21 +5,26 @@
 
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div class="card my-4 col-11">
-				<div class="container-fluid">
-				
-				<table class="table table-striped-columns">
+		<div class="container-xxl flex-grow-1">
+			<div class="row mt-3 pt-3">
+			<h2 class="ms-3">사원 조회</h2>
+				</div>
+				<div class="card my-4 col-11 p-3">
+				<div class="row">
+				<div>
+				<input type="hidden" th:value="${emp.empId}" id="id"> <input type="hidden"
+						th:value="${#authentication.name}" id="name">
+				<table class="mt-3 table table-bordered">
 					<tr>
-						<td>사원ID</td>
-						<td>사원번호</td>
-						<td>사원명</td>
-						<td>근속연수</td>
-						<td>근속월수</td>
-						<td>근무일수</td>
-						<td>연차사용</td>
-						<td>지각</td>
-						<td>조퇴</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">사원ID</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">사원번호</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">사원명</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">근속연수</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">근속월수</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">근무일수</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">연차사용</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">지각</td>
+						<td class="col-1 text-white" style="background-color:#3F72AF;">조퇴</td>
 					</tr>
 					<tr>
 						<td>[[${emp.empId}]]</td>
@@ -32,12 +37,12 @@
 						<td>[[${emp.tdy}]]</td>
 						<td>[[${emp.early}]]</td>
 					</tr>
-					
 				</table>
-				
-				
-					<table>
+				</div>
+				<div>
+					<table class="mt-3">
 						<tr>
+						<td><input type="text" value="날짜검색" readonly></td>
 							<td><input id="oneDate" type="Date">~<input
 								id="twoDate" type="Date"></td>
 						</tr>
@@ -66,24 +71,25 @@
 							</td>
 						</tr>
 					</table>
+					</div>
 				</div>
 
 				<br>
 
 				<div id="workTable">
-					<table class="table table-striped-columns">
+					<table class="mt-3 table table-bordered">
 						<thead>
 							<tr>
-								<th>날짜</th>
-								<th>출근시간</th>
-								<th>퇴근시간</th>
-								<th>근무지</th>
-								<th>근무상태</th>
-								<th>근무여부</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">날짜</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">출근시간</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">퇴근시간</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무지</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무상태</th>
+								<th class="col-1 text-white" style="background-color:#3F72AF;">근무여부</th>
 							</tr>
 						</thead>
 						<tbody th:each="info : ${list}" id="infos">
-							<tr th:onclick="|location.href='@{/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
+							<tr th:onclick="|location.href='@{/cust/work/workinfo(dt=${#dates.format(info.dt, 'yyyy-MM-dd')}, empId=${info.empId})}'|">
 								<td>[[${#dates.format(info.dt, "yyyy/MM/dd")}]]</td>
 								<td>[[${#dates.format(info.wkIn, "HH:mm")}]]</td>
 								<td>[[${#dates.format(info.wkOut, "HH:mm")}]]</td>
@@ -103,30 +109,27 @@
 
 					<br>
 
-					<div class="paging mt-2">
+					<div class="paging mt-2" style="margin-left: auto; margin-right: auto;">
 						<th:block th:if="${filter.totalCnt} != 0">
 							<nav aria-label="Page navigation">
-								<ul class="pagination">
+								<ul class="pagination justify-content-center">
 
 									<th:block th:if="${filter.prev}">
 										<li class="page-item prev disabled"><a
 											class="page-link pagebtn"
-											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.startPage - 1 }|">
+											th:href="|worklists?empId=${#authentication.principal.empId}&page=${filter.startPage - 1 }|">
 												<i class="bx bx-chevron-left"></i>
 										</a></li>
 									</th:block>
-									<th:block
-										th:each="num : ${#numbers.sequence(1, filter.endPage)}">
-										<li class="page-item"
-											th:attrappend="class=${num == filter.page?'active':' '}">
-											<a
-											th:href="|worklist?empId=${#authentication.principal.empId}&page=${num}|"
+									<th:block th:each="num : ${#numbers.sequence(filter.startPage, filter.endPage)}">
+										<li class="page-item" th:classappend="${num == filter.page ? 'active' : ' '}">
+											<a th:href="|worklists?empId=${#authentication.principal.empId}&page=${num}|"
 											th:id="${num}" class="page-link pagebtn">[[${num}]]</a>
 										</li>
 									</th:block>
 									<th:block th:if="${filter.next}">
 										<li class="page-item next"><a class="page-link pagebtn"
-											th:href="|worklist?empId=${#authentication.principal.empId}&page=${filter.endPage + 1 }|">
+											th:href="|worklists?empId=${#authentication.principal.empId}&page=${filter.endPage + 1 }|">
 												<i class="bx bx-chevron-right"></i>
 										</a></li>
 									</th:block>
@@ -139,7 +142,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+			</div>
 		<script>
 		// CSRF
 		let header = $("meta[name='_csrf_header']").attr('content');
@@ -163,7 +166,7 @@
 			let wkYn;
 			let wkStat;
 			let wkSite;
-			let empId;
+			let empId = $('#id').val();
 			let page;
 		// 필터 클릭 이벤트.
 		    $("#filter").on("click", function(e) {
@@ -187,12 +190,11 @@
 				wkYn = $('#wkYn').val();
 				wkStat = $('#wkStat').val();
 				wkSite = $('#wkSite').val();
-				empId = $('')
 		}	
 				
 		function filterTable(page) {
 				$.ajax({
-					url : '/work/worklistfilter',
+					url : '/cust/work/worklistfilters',
 					method : 'POST',
 					beforeSend: function(xhr) {
 		                xhr.setRequestHeader(header, token);

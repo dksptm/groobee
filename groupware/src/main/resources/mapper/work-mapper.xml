@@ -40,7 +40,7 @@
            hire_dt,
            (select count(*)
            from wk
-           where wk_yn = '2A1a'and emp_id = #{empId}) au,
+           where wk_yn = '2A2a'and emp_id = #{empId}) au,
            (select count(*)
            from wk
            where wk_stat = '2B3b'and emp_id = #{empId}) tdy,
@@ -136,9 +136,10 @@
                        hire_dt,
                        emp_tel
                  FROM emp
-                 <if test="filter != null and filter != ''">  
-                 ORDER BY #{filter} DESC
-                 </if>
+                 WHERE cust_no = #{custNo}
+					<if test="permId.equals('1C3c')">
+                 		AND dept_id = #{deptId}
+					</if>
                  ) e
             WHERE ROWNUM <![CDATA[<=]]> (#{page} * 5)) t) l
 	WHERE l.rn > (#{page} -1) * 5
@@ -158,14 +159,19 @@
                        WHERE job_no = emp.job_no) job_no ,
                        hire_dt,
                        emp_tel
-                 FROM emp)
+                 FROM emp
+                 WHERE cust_no = #{custNo}
+                 <if test="permId.equals('1C3c')">
+                 		AND dept_id = #{deptId}
+					</if>
+                 )
 	</select>
 	
 	<!-- 출근을 입력하기위해... 중복이되면 안됨. (조건 = empID, Dt)-->
 	<update id="workin">
 	UPDATE wk
 	SET wk_in = sysdate,
-	    wk_stat = '2B1b',
+	    wk_stat = GET_wkTIME(),
 	    wk_in_loc = #{wkInLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
@@ -180,7 +186,6 @@
 	<update id="workout">
 	UPDATE wk
 	SET wk_out = sysdate,
-		wk_stat = '2B1b',
 	    wk_out_loc = #{wkOutLoc}
 	where emp_id = #{empId} AND dt = #{dt}
 	</update>
@@ -236,6 +241,12 @@
    
    <!-- ip관련 -->
    
+   <!-- ip 필터 -->
+   <select id="inipcheck">
+    SELECT ip
+	FROM inip
+   </select>
+   
    <!-- 신청 ip 조회 -->
 	<select id="selectoutip">
 	SELECT emp_id,
@@ -251,32 +262,32 @@
 	FROM inip
    </select>
    
-  <!-- 신청 ip등록 -->
+  <!-- 신청한 ip를 등록 -->
   <insert id="insertinip" parameterType="WorkVO">
   INSERT INTO inip
   VALUES(
   #{empId},
   #{ip},
-  #{dt})
+  sysdate)
    </insert>
-  
-  <insert id="insertout">
+  <!-- 신청ip 등록 -->
+  <insert id="insertoutip" parameterType="WorkVO">
   INSERT INTO outip
   VALUES(
   #{empId},
   #{ip},
-  #{dt})
+  sysdate)
   </insert>
    
    <!-- outip 등록위한 삭제 -->
   <delete id="outdelete">
-  delete from outip
-  where ip = ${ip}
+  delete outip
+  where ip = #{ip}
   </delete>
   
   <!-- 신청 ip삭제 -->
   <delete id="indelete">
-  delete from inip
+  delete inip
   where ip = #{ip}
    </delete> 
    

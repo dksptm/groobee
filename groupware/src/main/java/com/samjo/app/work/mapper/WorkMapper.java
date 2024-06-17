@@ -1,6 +1,7 @@
 package com.samjo.app.work.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,7 @@ public interface WorkMapper {
 	
 	// 전체 페이지 수
 	public int workcount(WorkSearchVO worksearchVO);
-	public int managercount();
+	public int managercount(WorkManagerSearchVO workmanagersearchVO);
 	
 	// 로그인 계정 근태관리 전체출퇴근조회
 	public List<WorkVO> selectAllList(WorkSearchVO worksearchVO);
@@ -43,6 +44,8 @@ public interface WorkMapper {
 	// ip 조회
 	public List<WorkVO> selectoutip(WorkVO workVO);
 	public List<WorkVO> selectinip(WorkVO workVO);
+	// ip 체크
+	public List<WorkVO> inipcheck(WorkVO workVO);
 	
 	// ip 추가
 	public int insertinip(WorkVO workVO);

@@ -7,7 +7,7 @@
 
 	<!-- 프로젝트(하위) 업무 전체 조회 -->
 	<select id="selectTaskAllList" resultType="ProjectVO"
-		parameterType="SearchVO">
+		parameterType="map">
 		SELECT r.*
 				FROM (SELECT rownum rn,
 						t.*
@@ -30,61 +30,59 @@
 									WHERE te.task_no = t.task_no) AS progress
 								FROM task_common t JOIN prjt p 
 											ON (p.prjt_id = t.standard_no)
-				<where>
-					<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					 WHERE t.cust_no = #{cno}
+					<if test="sch.keyword != null and sch.keyword != ''">
+						AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 					</if>
-					<if test="taskType != null and taskType != ''">
-						AND t.task_type LIKE #{taskType}
+					<if test="sch.taskType != null and sch.taskType != ''">
+						AND t.task_type LIKE #{sch.taskType}
 					</if>
-					<if test="prjtMat != null and prjtMat != ''">
-						AND t.prjt_mat LIKE #{prjtMat}
+					<if test="sch.prjtMat != null and sch.prjtMat != ''">
+						AND t.prjt_mat LIKE #{sch.prjtMat}
 					</if>
 				<choose>
-					<when test="taskStart != null and taskDue != null">
-						AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+					<when test="sch.taskStart != null and sch.taskDue != null">
+						AND t.task_start_dt <![CDATA[>=]]> #{sch.taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{sch.taskDue}
 					</when>
-					<when test="(taskStart != null) and (taskDue == null)">
-						AND t.task_start_dt >= #{taskStart}
+					<when test="(sch.taskStart != null) and (sch.taskDue == null)">
+						AND t.task_start_dt >= #{sch.taskStart}
 					</when>
-					<when test="(taskDue != null) and (taskStart == null)">
-						AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+					<when test="(sch.taskDue != null) and (sch.taskStart == null)">
+						AND t.task_due_dt <![CDATA[<=]]> #{sch.taskDue}
 					</when>
 				</choose>
-				</where>
-				ORDER BY ${taskSort}  ,task_no ) t 
-			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
-		WHERE r.rn > (#{page} -1) * 10
+				ORDER BY ${sch.taskSort} ) t 
+			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
+		WHERE r.rn > (#{sch.page} -1) * 10
   	</select>
 
 	<!-- 프로젝트(하위) 업무 페이징 -->
-	<select id="taskCount" parameterType="SearchVO">
+	<select id="taskCount" parameterType="map">
 		SELECT COUNT(*)
 		FROM task_common t JOIN prjt p
 							 ON (p.prjt_id = t.standard_no)
-		<where>
+		WHERE t.cust_no = #{cno}
 			<!-- 각 검색 조건에 대한 동적 추가 -->
-			<if test="keyword != null and keyword != ''">
-				AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+			<if test="sch.keyword != null and sch.keyword != ''">
+				AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 			</if>
-			<if test="taskType != null and taskType != ''">
-				AND t.task_type LIKE #{taskType}
+			<if test="sch.taskType != null and sch.taskType != ''">
+				AND t.task_type LIKE #{sch.taskType}
 			</if>
-			<if test="prjtMat != null and prjtMat != ''">
-				AND t.prjt_mat LIKE #{prjtMat}
+			<if test="sch.prjtMat != null and sch.prjtMat != ''">
+				AND t.prjt_mat LIKE #{sch.prjtMat}
 		</if>
 		<choose>
-				<when test="taskStart != null and taskDue != null">
-					AND t.task_start_dt <![CDATA[>=]]> #{taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				<when test="sch.taskStart != null and sch.taskDue != null">
+					AND t.task_start_dt <![CDATA[>=]]> #{sch.taskStart}  AND t.task_due_dt <![CDATA[<=]]> #{sch.taskDue}
 				</when>
-				<when test="(taskStart != null) and (taskDue == null)">
-					AND t.task_start_dt >= #{taskStart}
+				<when test="(sch.taskStart != null) and (sch.taskDue == null)">
+					AND t.task_start_dt >= #{sch.taskStart}
 				</when>
-				<when test="(taskDue != null) and (taskStart == null)">
-					AND t.task_due_dt <![CDATA[<=]]> #{taskDue}
+				<when test="(sch.taskDue != null) and (sch.taskStart == null)">
+					AND t.task_due_dt <![CDATA[<=]]> #{sch.taskDue}
 				</when>
 		</choose>
-		</where>
 	</select>
 
 	<!-- 프로젝트(하위) 단건 -->
@@ -108,6 +106,7 @@
 		FROM task_common t JOIN prjt p
 							ON p.prjt_id = t.standard_no
 		WHERE t.task_no =  #{taskNo}
+
 	</select>
 	
 	<!-- 프로젝트 참여자 조회 -->
@@ -218,37 +217,37 @@
        		task_name
 	FROM task_common
 	WHERE prjt_mat = '5B1b'
-	AND cust_no = #{custNo}
+	AND	cust_no = #{custNo}
+	AND task_type = '5A1a'
 	</select>
 	
 	<!-- 업무 전체 수정 -->
 	<update id="modifyTask" parameterType="ProjectVO" >
 		UPDATE task_common
-		SET 
+		SET 	standard_no = standard_no
 			<if test="taskName != null and !taskName.equals('')">
-				 task_name = #{taskName},
+				 ,task_name = #{taskName}
 			</if>
 			<if test="prjtMat != null and !prjtMat.equals('')">
-				 prjt_mat = #{prjtMat},
+				 ,prjt_mat = #{prjtMat}
 			</if>
 		    <if test="taskStartDt != null and !taskStartDt.equals('')">
-				 task_start_dt = #{taskStartDt},
+				 ,task_start_dt = #{taskStartDt}
 			</if>
 		    <if test="taskDueDt != null and !taskDueDt.equals('')">
-				 task_due_dt = #{taskDueDt},
+				 ,task_due_dt = #{taskDueDt}
 			</if>
 			<if test="taskPurpose != null and !taskPurpose.equals('')">
-				 task_purpose = #{taskPurpose},
+				 ,task_purpose = #{taskPurpose}
 			</if>
 		    <if test="taskCntn != null and !taskCntn.equals('')">
-				task_cntn = #{taskCntn}
+				,task_cntn = #{taskCntn}
 			</if>
 		WHERE task_no= #{taskNo}
-	 	AND cust_no =#{custNo}
 	</update>
 	
 	<!-- 협력업체 전체 조회 -->
-	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="SearchVO">
+	<select id="selectCoopCoAllList" resultType="ProjectVO" parameterType="map">
 		SELECT r.*
 			FROM (SELECT rownum rn,
 						t.*
@@ -262,27 +261,24 @@
 						                    , c.cntn
 								FROM coop_co c JOIN task_common t
 						               			 ON c.task_no = t.task_no
-				<where>
-					<if test="keyword != null and keyword != ''">
-						AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+					WHERE t.cust_no = #{cno}
+					<if test="sch.keyword != null and sch.keyword != ''">
+						AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 					</if>
-				</where>
-				ORDER BY  ${coSort} , c.coop_co_no ) t 
-			WHERE rownum <![CDATA[<=]]> (#{page} * 10)) r
-		WHERE r.rn > (#{page} -1) * 10 
-	
+				ORDER BY  ${sch.coSort} , c.coop_co_no ) t 
+			WHERE rownum <![CDATA[<=]]> (#{sch.page} * 10)) r
+		WHERE r.rn > (#{sch.page} -1) * 10 
 	</select>
 	
 	<!-- 협력업체 페이징 -->
-	<select id="coCount" parameterType="SearchVO">
+	<select id="coCount" parameterType="map">
 		SELECT COUNT(*)
 		FROM  coop_co c JOIN task_common t
 						   ON c.task_no = t.task_no
-		<where>
-			<if test="keyword != null and keyword != ''">
-					AND ${searchCondition} LIKE '%' || #{keyword} || '%'
+		WHERE t.cust_no = #{cno}
+			<if test="sch.keyword != null and sch.keyword != ''">
+					AND ${sch.searchCondition} LIKE '%' || #{sch.keyword} || '%'
 			</if>
-		</where>
 	</select>
 	
 	<!-- 협력업체 등록 -->

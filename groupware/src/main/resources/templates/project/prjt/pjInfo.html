@@ -4,78 +4,82 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
+
 		<div class="container container-p-y mt-3">
 			<h2>프로젝트 상세조회</h2>
-			<div class="bg-light p-3 m-5">
+			<div class="bg-light p-3">
 				<div class="table-responsive">
+
 					<input type="hidden" th:value="${prjt.prjtId}" id="prjtId" readonly />
 					<div class="table-responsive">
-						<table class="table table-hover table-bordered">
+
+						<table class="table table-hover table-bordered text-center">
 							<tr>
-								<th>프로젝트ID</th>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트ID</td>
 								<td id="pid">[[ ${prjt.prjtId}]]</td>
-								<th>프로젝트명</th>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트명</td>
 								<td>[[ ${prjt.prjtName}]]</td>
-								<th>책임자</th>
-								<td>[[ ${prjt.empName}]]</td>
-								<th>진행상황</th>
-								<td>[[ ${prjt.prjtStat}]]</td>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">진행상황</td>
+								<td th:if="${prjt.prjtStat == '프로젝트진행중'}"class="table-secondary">[[${prjt.prjtStat}]]</td>
+								<td th:if="${prjt.prjtStat == '프로젝트완료'}" class="table-success">[[${prjt.prjtStat}]]</td>
 							</tr>
-						</table>
-						<br>
-						<table class="table table-hover table-bordered">
 							<tr>
-								<th>시작일</th>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</td>
 								<td>[[ ${#dates.format(prjt.prjtStartDt, "yyyy-MM-dd")}]]</td>
-								<th>마감일</th>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</td>
 								<td>[[ ${#dates.format(prjt.prjtDueDt, "yyyy-MM-dd")}]]</td>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</td>
+								<td>[[ ${prjt.empName}]]</td>
 							</tr>
-						</table>
-						<br>
-						<table class="table table-hover table-bordered">
-							<thead>
-								<tr>
-									<th>목적</th>
-									<td>[[ ${prjt.purpose}]]</td>
-									<th>개요</th>
-									<td>[[ ${prjt.smry}]]</td>
-								</tr>
-							</tbody>
+							<tr>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">목적</td>
+								<td colspan="8">[[ ${prjt.purpose}]]</td>
+							</tr>
+							<tr>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">개요</td>
+								<td colspan="8">[[ ${prjt.smry}]]</td>
+							</tr>
 						</table>
 						<br>
 						<div style="text-align: end">
 							<button type="button" class="btn btn-light  mt-2"
 								onclick="goToList()">프로젝트목록</button>
-							<button type="button" 
-							  th:onclick="|location.href='@{/cust/prjtModify(prjtId=${prjt.prjtId})}'|" class="btn btn-success">수정</button>
+							<th:block sec:authorize="hasAnyAuthority('1C3c','1C2c')">
+							<button type="button"
+								th:onclick="|location.href='@{/cust/prjtModify(prjtId=${prjt.prjtId})}'|"
+								class="btn btn-success">수정</button>
+							</th:block>
 						</div>
 					</div>
 				</div>
 			</div>
+			
 			<div class="bg-light p-3 m-5">
 				<div class="table-responsive">
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>업무번호</th>
-								<th>업무상황</th>
-								<th>업무명</th>
-								<th>업무시작일</th>
-								<th>업무마감일</th>
-								<th>참여인원</th>
-								<th>진행도</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">업무번호</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">업무상황</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">업무명</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">업무시작일</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">업무마감일</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">참여인원</th>
+								<th class="fw-bold  text-white" style="background-color: #3F72AF">진행도</th>
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="task : ${list}"> 
-								<tr th:onclick="|location.href='@{/cust/tsInfo/{tno}(tno=${task.taskNo})}'|">
+							<th:block th:each="task : ${list}">
+								<tr
+									th:onclick="|location.href='@{/cust/tsInfo/{tno}(tno=${task.taskNo})}'|">
 									<td>[[ ${task.taskNo} ]]</td>
 									<td>[[ ${task.prjtMat} ]]</td>
 									<td>[[ ${task.taskName} ]]</td>
 									<td>[[ ${#dates.format(task.taskStartDt, "yyyy-MM-dd")}]]</td>
 									<td>[[ ${#dates.format(task.taskDueDt, "yyyy-MM-dd")} ]]</td>
 									<td>[[ ${task.participantsCnt} ]] 명</td>
-									<td>[[ ${task.progress} ]] %</td>
+									<td th:if="${task.progress == 100}" class="table-success">[[${task.progress}]]%</td>
+									<td th:if="${task.progress != 100}" class="table-secondary">[[${task.progress}]]%</td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -85,7 +89,6 @@
 		</div>
 
 		<script>
-		
 			const token = document.querySelector('meta[name="_csrf"]')
 					.getAttribute('content');
 			const header = document.querySelector('meta[name="_csrf_header"]')
@@ -95,7 +98,6 @@
 			function goToList() {
 				window.location.href = '/cust/prjtAllList';
 			}
-
 		</script>
 	</th:block>
 </body>

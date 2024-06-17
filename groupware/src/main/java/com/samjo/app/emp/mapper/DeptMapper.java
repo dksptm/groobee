@@ -36,4 +36,20 @@ public interface DeptMapper {
 	// 한 회사의 부서전체 목록(상세목록)
 	public List<DeptVO> selectCustDeptinfoAll(@Param("emp") EmpVO empVO);
 	
+	// 부서이름 중복체크
+	public int countDname(@Param("dname") String deptName, @Param("cno") String custNo);
+	
+	// 부서등록.
+	public int insertDeptInfo(DeptVO dept);
+	// 부서장 null.
+	public int updateDeptMngr(DeptVO dept);
+	
+	// 부서수정
+	public int updateDeptInfo(DeptVO dept);
+	
+	// 부서삭제
+	public int deleteDeptInfo(@Param("did") String deptId, @Param("cno") String custNo);
+	
+	
+	
 }

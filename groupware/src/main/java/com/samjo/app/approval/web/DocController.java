@@ -193,14 +193,14 @@ public class DocController {
 			fileInfoList = fileUploadService.uploadFileInfo(filelist);			
 		}
 		
-		// 파일저장 트랜잭션으로.
+		// 문서등록 트랜잭션으로.
 		int result = docService.docInfoInsert(docVO, fileInfoList);
 		
 		if(result == -1) {
-			return "test/test";
+			return "common/error500";
 			
 		} else if (result == 0) {
-			return "test/test";
+			return "common/error500";
 			
 		} else {
 			
@@ -280,14 +280,14 @@ public class DocController {
 		return docService.deleteDoc(docVO);
 	}
 	
-	// 기존문서 참고.
+	// 반려문서 재작성 - 양식.
 	@GetMapping("cust/doc/rewrite")
 	public String docReInsertForm(@RequestParam Integer no, Model model) {
 		
 		DocVO docVO = new DocVO();
 		docVO.setDocNo(no);
 		DocVO findVO = docService.docInfo(docVO);
-		findVO.setDocNo(-1);
+		/* findVO.setDocNo(-1); */
 		model.addAttribute("doc", findVO);
 		
 		List<TempVO> temps = docService.getCustTemps();
@@ -300,6 +300,34 @@ public class DocController {
 		return "approval/doc/rewrite";
 	}
 	
+	// 반려문서 재작성 - 처리.
+	@PostMapping("cust/doc/reinsert")
+	public String docReinsertProcess(DocVO docVO, MultipartFile[] filelist) {
+		
+		// 첨부파일 디렉토리 저장.
+		List<Map<String, Object>> fileInfoList = new ArrayList<Map<String, Object>>();
+		
+		if(filelist != null && !filelist[0].isEmpty()) {
+			fileInfoList = fileUploadService.uploadFileInfo(filelist);			
+		}
+		
+		System.out.println("fileInfoList---" + fileInfoList);
+		// 파일저장 트랜잭션으로.
+		int result = docService.docInfoInsert(docVO, fileInfoList);
+		
+		if(result == -1) {
+			return "test/test";
+			
+		} else if (result == 0) {
+			return "test/test";
+			
+		} else {
+			
+			return "redirect:/cust/doc/info?docNo=" + result;
+		}
+		
+	}
+		
 	public SearchVO checkSearch(SearchVO searchVO) {
 		if(searchVO.getPage() == 0) {
 			searchVO.setPage(1);

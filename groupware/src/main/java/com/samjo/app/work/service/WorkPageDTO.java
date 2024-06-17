@@ -11,8 +11,8 @@ import lombok.Data;
 public class WorkPageDTO {
 	private int page;
 	private int startPage, endPage;
-	private int totalCnt;
 	private boolean prev, next;
+	private int totalCnt;
 	
 	
 	public WorkPageDTO (int page, int totalCnt) {

@@ -11,45 +11,40 @@
 					<div class="table-responsive">	
 					<table class="table table-hover table-bordered">
 								<tr>
-									<th class="fw-bold">프로젝트ID</th>
+									<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트ID</td>
 										<!-- <td id="prjtId">[[ ${prjt.prjtId}]]</td> -->
 										<td><input type="text" th:value="${prjt.prjtId}" class="form-control" name="prjtId" id="prjtId" readonly/></td>
-									<th class="fw-bold">프로젝트명</th>
+									<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트명</td>
 										<td><input type="text" th:value="${prjt.prjtName}" class="form-control" name="prjtName" id="prjtName"/></td>
-									<th class="fw-bold">책임자</th>
+									<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">책임자</td>
 										<td>[[ ${prjt.empName}]]</td>
-									<td class="fw-bold">진행상황</td>
-									<td><select class="form-select" name="prjtStat" id="prjtStat">
-										    <option value="5E1e">프로젝트진행중</option>
-										    <option value="5E2e">프로젝트완료</option>
-									  	</select>
-									</td>
 								</tr>
-							</table>
-							<br>
-							<table class="table table-hover table-bordered">
 								<tr>
-									<th>시작일</th>			
+									<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">진행상황</td>
+								<td><select class="form-select" name="prjtStat"
+									id="prjtStat">
+										<option value="5E1e">프로젝트진행중</option>
+										<option value="5E2e">프로젝트완료</option>
+								</select></td>
+								<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</td>			
 									<td><input type="date" th:value="${#dates.format(prjt.prjtStartDt, 'yyyy-MM-dd')}" class="form-control"  id="prjtStartDt" /></td>
-									<th>마감일</th>
+									<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">마감일</td>
 									<td><input type="date" th:value="${#dates.format(prjt.prjtDueDt, 'yyyy-MM-dd')}" class="form-control" id="prjtDueDt" /></td> 
 								</tr>
-							</table>
-							<br>
-							<table class="table table-hover table-bordered">
-								<thead>
+
 									<tr>
-										<th>목적</th>
+										<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">목적</td>
 										<td colspan="5"><textarea name="purpose" class="form-control" id="purpose">[[ ${prjt.purpose} ]]</textarea></td>
-										<th>개요</th>
+										</tr>
+										<tr>
+										<td class="fw-bold col-2 text-white" style="background-color: #3F72AF">개요</td>
 										<td colspan="5"><textarea name="smry" class="form-control" id="smry">[[ ${prjt.smry} ]]</textarea></td>
 									</tr>
-								</thead>
 							</table>
 							<br>
 							<div style="text-align: end">
 								<button type="button" class="btn btn-primary mt-2" id="modiBtn">저장</button>
-								<button type="button" class="btn btn-light mt-2"
+								<button type="button" class="btn btn-secondary mt-2"
 									onclick="goToInfo()">취소</button>
 							</div>
 							
