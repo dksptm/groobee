@@ -21,6 +21,9 @@ public class CustVO {
 	private String lastCtStat;
 	private String lastCtStatName;
 	
+	private Integer curEmps;
+	private Integer maxEmps;
+	
 	private String spell;
 	private List<CtVO> ctList;
 }

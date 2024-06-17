@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.emp.service.EmpVO;
 
 public interface EmpMapper {
@@ -14,6 +15,7 @@ public interface EmpMapper {
 	// 고객사 소속 계정 전체조회. 
 	public List<EmpVO> selectEmpAll(@Param("cno") String custNo, @Param("sch") SearchVO search);
 	public int countEmpAll(@Param("cno") String custNo, @Param("sch") SearchVO search);
+	public CustVO selectEmpMaxCur(@Param("cno") String custNo);
 	
 	// id check
 	public int countEno(@Param("eno") String empNo, @Param("cno") String custNo);

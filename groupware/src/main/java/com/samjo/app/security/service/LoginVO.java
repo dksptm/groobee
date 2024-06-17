@@ -16,4 +16,5 @@ public class LoginVO {
 	private String permId;
 	private String empStat;
 	private List<String> roleMod;
+	private String ableCheck;
 }

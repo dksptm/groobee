@@ -1,132 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/default_layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-securityh">
 <body>
-    <th:block layout:fragment="Content">
-        <div class="d-flex justify-content-center">
-            <div class="card my-4 col-10">
-                <h5 class="card-header">업무 수정</h5>
-                <div class="card-body">
-                    <input type="hidden" th:value="${task.taskNo}" name="taskNo" />
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <tr>
-                                <th>업무번호</th>
-                                <td id="taskNo">[[ ${task.taskNo}]]</td>
-                                <th>업무명</th>
-                                <td><input type="text" class="form-control" th:value="${task.taskName}" name="taskName" /></td>
-                                <th>진행도</th>
-                                <td>[[ ${task.progress}]] %</td>
-                                <th>진행상황</th>
-                                <td class="fw-bold">진행상황</td>
-                                <td>
-                                    <select class="form-select" name="prjtMat" id="prjtMat">
-                                        <option value="5B1b">업무진행중</option>
-                                        <option value="5B2b">업무완료</option>
-                                        <option value="5B3b">업무취소</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>부서명</th>
-                                    <th>부서참여인원</th>
-                                </tr>
-                            </thead>
-                           <tbody>
-								<th:block th:each="te : ${task.taskEmps}">
-									<tr>
-										<td>[[ ${te.deptName}]]</td>
-										<td>[[ ${te.empName}]]</td>
-									</tr>
-								</th:block>
-							</tbody>
-                        </table>
-                        <br>
-                        <table class="table table-hover table-bordered">
-                            <tr>
-                                <th>시작일</th>
-                                <td><input type="date" class="form-control" th:value="${#dates.format(task.taskStartDt, 'yyyy-MM-dd')}" name="taskStartDt" /></td>
-                                <th>마감일</th>
-                                <td><input type="date" class="form-control" th:value="${#dates.format(task.taskDueDt, 'yyyy-MM-dd')}" name="taskDueDt" /></td>
-                            </tr>
-                        </table>
-                        <br>
-                        <table class="table table-hover table-bordered">
-                            <tr>
-                                <th>업무목적</th>
-                                <td colspan="5"><textarea name="purpose" class="form-control" id="taskPurpose">[[ ${task.taskPurpose} ]]</textarea></td>
-                                <th>업무내용</th>
-                                <td colspan="5"><textarea name="taskCntn" class="form-control" id="taskCntn">[[ ${task.taskCntn} ]]</textarea></td>
-                            </tr>
-                        </table>
-                        <br><br>
-                        <div style="text-align: center">
-                            <button type="button" class="btn btn-primary mt-2" id="modiBtn">수정</button>
-                            <button type="button" class="btn btn-primary mt-2" onclick="goInfo()">취소</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-   
+	<th:block layout:fragment="Content">
+	<div sec:authorize="hasAuthority('1C2c') or hasAuthority('1C3c')">
+		<div class="d-flex justify-content-center">
+			<div class="card my-4 col-10">
+			
+				<h5 class="card-header">업무 수정</h5>
+				<div class="card-body">
+					<input type="hidden" th:value="${task.taskNo}" name="taskNo" />
+					<div class="table-responsive">
+						<table class="table table-hover table-bordered text-center">
+							<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무번호</td>
+								<td id="taskNo">[[ ${task.taskNo}]]</td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무명</td>
+								<td><input type="text" class="form-control"
+									th:value="${task.taskName}" name="taskName" /></td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">진행도</td>
+								<td>[[ ${task.progress}]] %</td>
+							</tr>
+							<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">시작일</td>
+								<td><input type="date" class="form-control"
+									th:value="${#dates.format(task.taskStartDt, 'yyyy-MM-dd')}"
+									name="taskStartDt" /></td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">마감일</td>
+								<td><input type="date" class="form-control"
+									th:value="${#dates.format(task.taskDueDt, 'yyyy-MM-dd')}"
+									name="taskDueDt" /></td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">진행상황</td>
+								<td>
+									<select class="form-select" name="prjtMat" id="prjtMat">
+										<option value="5B1b">업무진행중</option>
+										<option value="5B2b">업무완료</option>
+										<option value="5B3b">업무취소</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무목적</td>
+								<td colspan="6"><textarea name="purpose"
+										class="form-control" id="taskPurpose">[[ ${task.taskPurpose} ]]</textarea></td>
+								</tr>
+								<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">업무내용</td>
+								<td colspan="6"><textarea name="taskCntn"
+										class="form-control" id="taskCntn">[[ ${task.taskCntn} ]]</textarea></td>
+							</tr>
+						</table>
+							<br>
+						<table class="table table-hover table-bordered">
+							<tr>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">부서명</td>
+								<td class="fw-bold col-2 text-white"
+									style="background-color: #3F72AF">부서참여인원</td>
+							</tr>
+							<th:block th:each="te : ${task.taskEmps}">
+								<tr>
+									<td>[[ ${te.deptName}]]</td>
+									<td>[[ ${te.empName}]]</td>
+								</tr>
+							</th:block>
 
-    <script th:inline="javascript">
-        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+						</table>
+						<br>
+						<br>
+						<div style="text-align: center">
+							<button type="button" class="btn btn-primary mt-2" id="modiBtn">등록</button>
+							<button type="button" class="btn btn-secondary mt-2"
+								onclick="goInfo()">취소</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
 
-        
-        $('#modiBtn').click(function() {
-            let formData = {
-                taskNo : $('input[name="taskNo"]').val(),
-                taskName : $('input[name="taskName"]').val(),
-                prjtMat : $('select[name="prjtMat"] option:selected').val(),
-                taskStartDt : $('input[name="taskStartDt"]').val(),
-                taskDueDt : $('input[name="taskDueDt"]').val(),
-                taskPurpose : $('textarea[name="purpose"]').val(),
-                taskCntn : $('textarea[name="taskCntn"]').val(),
-            };
+		<script th:inline="javascript">
+			const token = document.querySelector('meta[name="_csrf"]')
+					.getAttribute('content');
+			const header = document.querySelector('meta[name="_csrf_header"]')
+					.getAttribute('content');
 
-            $.ajax({
-                url : '/cust/tsModify',
-                type : 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(formData), 
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
-                },
-                success : function(data) {
-                    Swal.fire({
-                        title: '수정완료!',        
-                        text:  '업무가 성공적으로 수정되었습니다.',  
-                        icon:  'success' 
-                    })
-                    .then(function(){
-                        location.href = '/cust/tsInfo/' + formData.taskNo;               
-                    });
-                },
-                error : function(err) {
-                    Swal.fire({
-                        title: '수정실패',        
-                        text:  '업무 수정이 실패하였습니다.',  
-                        icon:  'error' 
-                    })
-                    .then(function(){
-                        location.reload(true);                  
-                    });
-                }
-            });
-        });
+			$('#modiBtn').click(
+					function() {
+						let formData = {
+							taskNo : $('input[name="taskNo"]').val(),
+							taskName : $('input[name="taskName"]').val(),
+							prjtMat : $(
+									'select[name="prjtMat"] option:selected')
+									.val(),
+							taskStartDt : $('input[name="taskStartDt"]').val(),
+							taskDueDt : $('input[name="taskDueDt"]').val(),
+							taskPurpose : $('textarea[name="purpose"]').val(),
+							taskCntn : $('textarea[name="taskCntn"]').val(),
+						};
 
-        function goInfo() {
-        	 let taskNo = $('#taskNo').text();
-            location.href = '/cust/tsInfo/' + taskNo;
-        }
-    </script>
-   </th:block> 
+						$.ajax({
+							url : '/cust/tsModify',
+							type : 'POST',
+							contentType : 'application/json',
+							data : JSON.stringify(formData),
+							beforeSend : function(xhr) {
+								xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+							},
+							success : function(data) {
+								console.log(data)
+								Swal.fire({
+									title : '수정완료!',
+									text : '업무가 성공적으로 수정되었습니다.',
+									icon : 'success'
+								}).then(
+										function() {
+											location.href = '/cust/tsInfo/'
+													+ formData.taskNo;
+										});
+							},
+							error : function(err) {
+								Swal.fire({
+									title : '수정실패',
+									text : '업무 수정이 실패하였습니다.',
+									icon : 'error'
+								}).then(function() {
+									//location.reload(true);
+								});
+							}
+						});
+					});
+
+			function goInfo() {
+				let taskNo = $('#taskNo').text();
+				location.href = '/cust/tsInfo/' + taskNo;
+			}
+		</script>
+	</th:block>
 </body>
 </html>

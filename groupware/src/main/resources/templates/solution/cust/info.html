@@ -6,66 +6,76 @@
 	  
 <th:block layout:fragment="Content">
 <th:block sec:authorize="hasAuthority('1C1c')">
+
 <style>
 .cust-table th{
-	font-size: 0.9rem;
-	font-weight: bold;
-	text-align: center;
+	text-align:center;
+	background-color:#F9F7F7;
+	font-weight:bold;
 }
 </style>
 
-<div class="container container-p-y mt-3">
-	<h4>고객관리 - 조회</h4>
-	<div class="bg-light p-3">
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">고객관리 - 상세</h5>
+	<div class="card-body">	
 		<div class="table-responsive">
-			<div>
-				<table class="table table-bordered cust-table">
-					<tr class="table-primary">
-						<th class="col-2">고객번호 <span id="cno">[[ ${cust.custNo} ]]</span></th>
-						<th colspan="5" class="text-start align-middle">
-							고객사 상세정보
-						</th>
-					</tr>
-					<tr>
-						<th class="col-2">사업자번호</th><td class="col-3">[[ ${cust.brn} ]]</td>
-						<th class="col-1">상호명</th><td class="col-2">[[ ${cust.custName} ]]</td>
-						<th class="col-1">대표자</th><td class="col-3">[[ ${cust.rep} ]]</td>
-					</tr>
-					<tr>
-					</tr>
-					<tr>
-						<th>주소</th><td colspan="3">[[ ${cust.custAddr} ]]</td>
-						<th>전화번호</th><td>[[ ${cust.custTel} ]]</td>
-					</tr>
-					<tr>
-					</tr>
-					<tr>
-						<th>계약상태</th>
-						<td>[[ ${cust.lastCtStatName} ]]
-							<span ><a href="/sol/ctInsert" th:if="${cust.lastCtStat != '0A1a'}" class="text-danger">
-							&emsp;신규계약 등록하기
-							</a></span>
-						</td>
-						<th>계약번호</th>
-						<td th:if="${cust.lastCtNo != null}">[[ ${cust.lastCtNo} ]]</td>
-						<td th:unless="${cust.lastCtNo != null}">-</td>
-						<th>결제담당</th><td>[[ ${cust.payPic} ]] &emsp;&emsp;(TEL : <span>[[ ${cust.payPicTel} ]]</span>)</td>
-					</tr>
-					<tr>
-					</tr>
-				</table>
-				<div class="d-flex justify-content-between">
-					<button type="button" th:onclick="|location.href='@{list}'|" class="btn btn-secondary py-1 mx-2">목록으로</button>
-					<button th:if="${#arrays.length(list)} != 0" type="button" class="btn btn-secondary py-1 doc-toggle-btn">등록계정 ▼</button>
+			<table class="table table-bordered cust-table">
+				<tr style="background-color:#3F72AF;">
+					<td class="col-1 text-white text-center" >고객번호 <span id="cno">[[ ${cust.custNo} ]]</span></td>
+					<td colspan="5" class="text-start align-middle text-white">
+						고객사 상세정보
+					</td>
+				</tr>
+				<tr>
+					<th class="col-2">사업자번호</th><td class="col-3">[[ ${cust.brn} ]]</td>
+					<th class="col-1">상호명</th><td class="col-2">[[ ${cust.custName} ]]</td>
+					<th class="col-1">대표자</th><td class="col-3">[[ ${cust.rep} ]]</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<th>주소</th><td colspan="3">[[ ${cust.custAddr} ]]</td>
+					<th>전화번호</th><td>[[ ${cust.custTel} ]]</td>
+				</tr>
+				<tr>
+				</tr>
+				<tr>
+					<th>계약상태</th>
+					<td>[[ ${cust.lastCtStatName} ]]
+						<span ><a href="/sol/ctInsert" th:if="${cust.lastCtStat != '0A1a'}" class="text-danger">
+						&emsp;신규계약 등록하기
+						</a></span>
+					</td>
+					<th>계약번호</th>
+					<td th:if="${cust.lastCtNo != null}">[[ ${cust.lastCtNo} ]]</td>
+					<td th:unless="${cust.lastCtNo != null}">-</td>
+					<th>결제담당</th><td>[[ ${cust.payPic} ]] &emsp;&emsp;(TEL : <span>[[ ${cust.payPicTel} ]]</span>)</td>
+				</tr>
+				<tr>
+				</tr>
+			</table>
+			<div class="d-flex justify-content-between mt-3">
+				<button type="button" th:onclick="|location.href='@{list}'|" class="btn btn-primary">목록으로</button>
+				<button th:if="${#arrays.length(list)} != 0" type="button" class="btn btn-secondary py-1 doc-toggle-btn">등록계정 ▼</button>
+				<div th:unless="${#arrays.length(list)} != 0">
+				<div class="text-end">
+						<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp"
+								class="btn btn-danger">최초계정생성</button>	
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- 계정목록 -->
-	<div th:if="${#arrays.length(list)} != 0" class="collapse doc-toggle-area">
-		<div class="d-flex justify-content-end condition">
-		<div class="col-3 d-flex justify-content-between">
+	<div th:if="${#arrays.length(list)} != 0" class="card-body pt-0 collapse doc-toggle-area">
+		<div class="d-flex justify-content-between condition">
+			<div class="col-3 d-flex mt-3 justify-content-start">
+			<span><b>등록가능 사원 수 : [[${cust.maxEmps}]]</b></span>&emsp;&emsp;
+			<span><b>현재 사원 수 : [[${cust.curEmps}]]</b></span>
+			</div>
+			<div class="col-3 d-flex justify-content-between">
 			<select class="form-select keywordCondition">
 				<option value="all">권 한</option>
 				<option value="1C2c">관리자</option>
@@ -84,13 +94,9 @@
 		<th:block th:replace="solution/cust/modal :: Emps"></th:block>
 	</div>
 	
-	<div th:unless="${#arrays.length(list)} != 0">
-		<div class="text-end">
-			<button th:if="${cust.lastCtStat == '0A1a'}" type="button" id="firstEmp"
-					class="btn btn-danger">최초계정생성</button>	
-		</div>
-	</div>
 	
+	
+</div>
 </div>
 
 <script>
@@ -181,7 +187,7 @@ function showTable(param) {
             xhr.setRequestHeader(header, token);
         },
         data: param,
-        dataType: 'Text',
+        dataType: 'text',
         success: function(result) {
             $('#EmpListArea').replaceWith(result);
             pagination();

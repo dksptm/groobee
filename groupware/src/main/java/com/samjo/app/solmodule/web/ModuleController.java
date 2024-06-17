@@ -143,7 +143,7 @@ public class ModuleController {
 	public String tempUpdate(@PathVariable String id, @ModelAttribute TempVO tempVO, Model model) {
 		tempVO.setTempNo(id);
 		moduleservice.tempUpdate(tempVO);
-		return "redirect:/solTempInfo/" + id;
+		return "redirect:/sol/tempInfo/" + id;
 	}
 	
 	//템플릿 삭제 처리

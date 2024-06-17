@@ -7,33 +7,67 @@
 <div class="d-flex justify-content-center">
 <div class="card my-4 col-10">
 	<h5 class="card-header">부서관리 - 목록</h5>
-	<div class="card-body">
+	<input type="hidden" th:value="${#authentication.principal.custNo}" id="cno" readonly />
+	<div class="card-body pt-0">
 		<div id="taskTable">
 			<div class="table-responsive">
+				<div class="text-end mt-0 pt-0">
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-danger dept-delete">삭제</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-info dept-insert">저장</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn btn-outline-success dept-update">수정</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-warning dept-update-chk">선택한 부서 수정</button>
+					<button type="button" style="display:none;" class="btn mb-1 rounded-pill btn-outline-secondary dept-reset">취소</button>
+					<button type="button" class="btn mb-1 btn-danger dept-del">부서삭제</button>
+					<button type="button" class="btn mb-1 btn-info dept-add">부서추가</button>	
+					<button type="button" class="btn mb-1 btn-success dept-mod">부서수정</button>	
+				</div>
 				<table th:if="${#arrays.length(depts)} != 0" class="table table-hover text-center">
 					<thead>
 						<tr>
 							<th class="col-2 text-white" style="background-color:#3F72AF;">부서명</th>
 							<th class="col-3 text-white" style="background-color:#3F72AF;">부서소재지</th>
-							<th class="col-3 text-white" style="background-color:#3F72AF;">부서설명</th>
-							<th class="col-3 text-white" style="background-color:#3F72AF;">부서장</th>
+							<th class="col-2 text-white" style="background-color:#3F72AF;">부서설명</th>
+							<th class="col-2 text-white" style="background-color:#3F72AF;">부서장</th>
 							<th class="col-1 text-white" style="background-color:#3F72AF;">사원수</th>
+							<th class="col-1 text-white del-end" style="background-color:#3F72AF;display:none;">삭제선택</th>
+							<th class="col-1 text-white mod-end" style="background-color:#3F72AF;display:none;">수정선택</th>
 						</tr>
 					</thead>
 					<tbody>
+						<tr id="insertForm" style="display:none;">
+							<td><input type="text" maxlength='10' class="form-control" id="dname" /></td>
+							<td><button type="button" class="btn btn-primary btn-sm p-2" id="locBtn">주소입력</button></td>
+							<td><input type="text" class="form-control" id="dinfo" /></td>
+							<td><input type="text" class="form-control" id="dmngr" placeholder="사원조회 클릭" readonly /></td>
+							<td><button type="button" class="btn btn-primary btn-sm p-2" id="empBtn">사원조회
+								</button>
+							</td>						
+						</tr>
 						<th:block th:each="dept : ${depts}">
 						<tr th:attr="data-did=${dept.deptId}">
 							<td>[[ ${dept.deptName} ]]</td>
+							
 							<td>[[ ${dept.deptLoc} ]]</td>
 							
-							<td th:if="${dept.deptInfo != null}">[[ ${dept.deptInfo} ]]</td>
+							<td th:if="${dept.deptInfo != null}" 
+								class="text-truncate" style="max-width: 10px;">[[ ${dept.deptInfo} ]]</td>
 							<td th:unless="${dept.deptInfo != null}">-</td>
 							
-							<td th:if="${dept.mngrName != null}">[[ ${dept.mngrName} ]]</td>
-							<td th:unless="${dept.mngrName != null}">미정</td>
+							<td th:if="${dept.mngrName != null}">
+							<input type="hidden" th:value="${dept.deptMngr}" class="mngrlist" />
+								<span>[[ ${dept.mngrName} ]]</span>
+							</td>
+							<td th:unless="${dept.mngrName != null}"><span>미정</span></td>
 							
 							<td th:if="${dept.cnt != null}">[[ ${dept.cnt} ]] 명</td>
 							<td th:unless="${dept.cnt != null}">없음</td>
+							
+							<td class="del-end" style="display:none;">
+								<input type="checkbox" class="form-check-input delchk" th:disabled="${dept.cnt != null}">
+							</td>
+							<td class="mod-end" style="display:none;">
+								<input type="radio" class="form-check-input modchk" name="modchk">
+							</td>
 						</tr>
 						</th:block>
 					</tbody>
@@ -44,60 +78,751 @@
 </div>
 </div>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDeptInfo">
-  Option 2
-</button>
+<div>
+<input type="hidden" class="form-control bg-transparent" id="empAddr1">
+<input type="hidden" class="form-control bg-transparent" id="empAddr2">
+<input type="hidden" class="form-control bg-transparent" id="empAddr3">
+<input type="hidden" class="form-control bg-transparent" id="empAddr4">												
+</div>
 
-<!-- MODAL START 부서상세 -->
-<div class="modal fade" id="modalDeptInfo" tabindex="-1" aria-labelledby="modalScrollableTitle" aria-hidden="true">
+<div style="display:none;">
+<div class="list-group list-copy">
+  <label class="list-group-item">
+    <input class="form-check-input me-1" type="radio" name="mngr" value="">
+  </label>
+</div>
+<div class="spinner-border text-info spinner-copy" role="status">
+  <span class="visually-hidden spinner-copy">Loading...</span>
+</div>
+</div>
+
+<!-- 모달: 부서장급 사원목록.-->
+<div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalScrollableTitle">부서관리 - 상세</h5>
+        <h5 class="modal-title" id="exampleModalLabel">부서장급 사원조회</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        </button>
+          </button>
       </div>
       <div class="modal-body">
-      	<input type="text"  />
-       <!-- 부서상세 가져오는 공간 -->
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary chk-btn">선택</button>
       </div>
     </div>
   </div>
 </div>
-<!-- MODAL END 부서상세 -->
+</div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                if(data.userSelectedType === 'R'){
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    document.getElementById("empAddr4").value = extraAddr;
+                
+                } else {
+                    document.getElementById("empAddr4").value = '';
+                }
+				
+                $('.juso1').parent().find('br').remove();
+    			$('.juso1').remove();
+    			$('.juso2').remove();
+                
+                document.getElementById('empAddr1').value = data.zonecode;
+                document.getElementById("empAddr2").value = addr + " ";
+                
+                let creTag = document.createElement("span");
+                let locTag = document.querySelector('#locBtn');
+                
+                creTag.classList.add('juso1');
+                creTag.innerText = document.getElementById("empAddr2").value;
+                
+                locTag.insertAdjacentElement('beforebegin', creTag);
+                
+                creTag = document.createElement("input");
+                creTag.placeholder = "상세주소를 입력하세요..";
+                creTag.classList.add('form-control');
+                creTag.classList.add('juso');
+                
+                locTag.insertAdjacentElement('beforebegin', creTag);
+                
+                creTag.focus();
+                //document.getElementById("empAddr3").focus();
+
+            	$('input.juso').blur(function() {
+            		let span = $('<span></span>').text($('input.juso').val());
+            		span.addClass('juso2');
+            		$('input.juso').after(span);
+            		$('input.juso').remove();
+            		span.after($('<br>'));
+            		
+            	});
+                
+            }
+        }).open();
+    }
+</script>
 
 <script>
-	var exampleModal = document.getElementById('modalDeptInfo')
-	exampleModal.addEventListener('show.bs.modal', function (event) {
+$(function(){
+	
+	const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+	const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+	let firstDname = '';
+	let firstLoc = '';
+	let firstMngr = '';
+	let firstInfo = '';
+	
+	let dnameFlag = false;
+	let blurEvent = null;
+	let mngrlist = [];
+	let mngrFlag = false;
+	
+	
+	const Toast = Swal.mixin({
+	      toast: true,
+	      position: 'center',
+	      showConfirmButton: false,
+	      timer: 1000,
+	      timerProgressBar: true,
+	      didOpen: (toast) => {
+	        toast.addEventListener('mouseenter', Swal.stopTimer)
+	        toast.addEventListener('mouseleave', Swal.resumeTimer)
+	      }
+	 })
+ 	
+	//<span class="icon bx bx-message-square-minus bx-md"></span>
+	//<span class="icon bx bx-message-square-add bx-md"></span>
+	
+	// 부서추가 버튼클릭시
+	$('button.dept-add').on('click', function(e) {
+		$('#insertForm').show();
+		
+		$(this).hide();
+		$('button.dept-del').hide();
+		$('button.dept-mod').hide();
+
+		$('button.dept-insert').show();
+		$('button.dept-reset').show();
+		
+	});
+	
+	// 부서삭제 버튼클릭시
+	$('button.dept-del').on('click', function(e) {
+		
+		Swal.fire({
+	    	  icon: 'info',               
+			  title: '소속사원이 없는 부서만 삭제가능.',
+			  confirmButtonText: '확인'
+		})
+
+		$('.del-end').show();	
+		$(this).hide();
+		$('button.dept-mod').hide();
+		$('button.dept-add').hide();
+		
+		$('button.dept-delete').show();
+		$('button.dept-reset').show();
+		
+		$('button.dept-delete').on('click', function(e) {
+			
+			let cno = $('#cno').val();
+			let param = [];
+			let checks = $('input.delchk:checked').closest('tr');
+			
+			if(checks.length == 0) {
+				Swal.fire({
+			    	  icon: 'info',               
+					  title: '선택된 부서가 없습니다.',
+					  confirmButtonText: '확인'
+				})
+				return;
+			}
+
+			checks.each(function(idx,chk){
+				param.push(chk.dataset.did)
+			})
+			
+			$.ajax({
+				url: 'dept/' + cno,
+				type: 'delete',
+				data : JSON.stringify(param),
+				contentType : 'application/json',
+				beforeSend: function(xhr) {
+			        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+			    },
+				dataType : 'text'
+			})
+			.done(deleteResult => {
+				
+				if(deleteResult > 0) {
+					Swal.fire({
+						position: "center",
+						icon: 'success',
+					    title: "부서 " + deleteResult +"건 삭제 완료!"
+					})
+					.then((ret) => {
+						if(ret.value){
+							location.reload();
+						}
+					})				
+				} else {
+					Swal.fire({
+						position: "center",
+			    		icon: "error",
+			    		title: "부서 삭제 실패"
+			    	})				
+				}
+				
+			})
+			.fail(err => console.error(err));
+			
+			
+			
+		})
+
+	});
+	
+	// 부서수정 버튼클릭시
+	$('button.dept-mod').on('click', function(e) {
+		$('.mod-end').show();	
+		
+		$(this).hide();
+		$('button.dept-del').hide();
+		$('button.dept-add').hide();
+		
+		$('button.dept-update-chk').show();
+		//$('button.dept-update').show();
+		$('button.dept-reset').show();
+		
+	});
+	
+	// 수정할 부서 선택시.
+	$('button.dept-update-chk').on('click', function(e){
+		
+		let check = $('input[name="modchk"]:checked');
+		if(check.length == 0) {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '선택한 부서가 없습니다.'
+			});
+			return;
+		}
+		
+		// deptId번호 가져오기
+		let tr = check.closest('tr');
+		let did = tr.data('did');
+
+		// 선택한 부서 뒤로 insertForm 옮기고.
+		tr.after($('#insertForm'));
+		$('#insertForm').show();
+		$('#insertForm').addClass('table table-success');
+		$('.mod-end').hide();	//체크박스들 숨기기			
+		tr.hide(); 				// tr숨기기
 		
 		
-	  	// 모달 트리거 버튼.
-		var button = event.relatedTarget;
-		console.log("--1--");
-		console.log(button);
-		console.log("--2--");
-	  	// data-bs-* 속성에서 정보 추출
-	  	var recipient = button.getAttribute('data-did')
-	  	console.log(recipient);
-	  	console.log("--3--");
-		// 필요한 경우 여기에서 AJAX 요청을 시작할 수 있습니다.
-		// 그런 다음 콜백에서 업데이트를 수행합니다.
+		// insertForm에 각 정보 담기.
+		$("#dname").val(tr.children('td').eq(0).text());
+		dnameFlag = true;
+		firstDname = tr.children('td').eq(0).text();
+				
+		let span = $('<span></span>').text(tr.children('td').eq(1).text());
+		span.addClass('juso1');
+		$('#locBtn').before(span);
+		span.after($('<br>'));
+		firstLoc = tr.children('td').eq(1).text();
 		
-		// 모달의 콘텐츠를 업데이트합니다.
-		console.log("--4--");
-	  	var modalTitle = exampleModal.querySelector('.modal-title')
-	  	console.log("--5--");
-	  	var modalBodyInput = exampleModal.querySelector('.modal-body input')
-		console.log("--6--");
-	  	modalTitle.textContent = 'New message to ' + recipient
-	  	console.log("--7--");
-	  	modalBodyInput.value = recipient;
-	  	console.log("--8--");
+		if(tr.children('td').eq(2).text() != '-') {
+			$("#dinfo").val(tr.children('td').eq(2).text());
+			firstInfo = tr.children('td').eq(2).text();
+		}
+		
+		if(tr.children('td').eq(3).find('span').text() != '미정') {
+			$("#dmngr").val(tr.children('td').eq(3).find('span').text());
+			firstMngr = tr.children('td').eq(3).find('input').val();
+		}
+		
+		$('button.dept-update-chk').hide();
+		$('button.dept-update').show();
+		
+		// 수정버튼.
+		$('.dept-update').on('click', function(e) {
+			
+			if(!validation()) return;	// 유효성확인.
+			
+			Swal.fire({
+				title: '부서정보를 수정할까요?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '수정',
+				cancelButtonText: '취소',
+				reverseButtons: true	
+			})
+			.then((result) => {
+				if (result.isConfirmed) {
+					updateAjax(did);// ajax.
+				}
+			})
+			
+		})
+		
 	})
+	
+	// 주소버튼
+	$('#locBtn').on('click', async function(e) {
+		console.log('주소버튼 클릭')
+		console.log(dnameFlag)
+		if(blurEvent) {
+			console.log('기다림')
+			await blurEvent;
+		}
+		
+		setTimeout(() => {	
+			console.log('주소이벤트 시작')
+			
+			if(!firstCheckt()) return;
+			
+			sample6_execDaumPostcode();
+			
+			
+	    }, 300);
+
+	});
+	
+	// 부서명 입력할때마다.
+	$("#dname").on('focus', function(e){		
+		console.log('부서명 입력')
+		
+		if(firstDname == $("#dname").val()){
+			return;
+		}
+		
+		$('.dnamechk').remove();
+		dnameFlag = false;
+	})
+	
+	// 부서명 중복체크.
+	$("#dname").on('blur', async function(e){
+		console.log('부서명 blur start')	
+		
+		let dname = $('#dname').val();
+		if(dname == '') {
+			dnameFlag = false;
+			console.log('부서명 blur stop')
+			return;
+		}
+		if(firstDname == $("#dname").val()) {
+			console.log('부서명 blur stop dnameFlage true처리');
+			dnameFlag = true;
+			return;
+		}
+		
+		blurEvent = await dnameCheck(dname); // ajax.
+		
+		await timeout(100, blurEvent);
+
+		/* setTimeout(() => {
+			let span = $('<span></span>');
+			if(blurEvent == 0) {
+				span.text('부서명 확인완료.').css('color', 'blue').addClass('dnamechk');
+				$("#dname").after(span);
+				dnameFlag = true;
+				console.log('결과 true')
+			} else if (blurEvent > 0) {
+				span.text('중복된 부서명입니다.').css('color', 'red').addClass('dnamechk');
+				$("#dname").after(span);
+				dnameFlag = false;
+				console.log('결과 false')
+			} 
+			
+	    }, 100); */
+	    
+		console.log('부서명 blur end')		
+	});
+	
+	var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+	
+	// 사원조회 버튼.
+	$('#empBtn').on('click', function(e) {
+		
+		setTimeout(() => {
+			if(!firstCheckt()) return;
+			
+			showMngrModal();// ajax.
+	    }, 300);
+		
+	});	
+	
+	// 사원조회 모달에서 선택버튼.
+	$('.chk-btn').on('click', function(e) {
+		
+		let mngrs = $('.mngrlist');
+		mngrs.each(function(idx,mngr) {
+			mngrlist.push(mngr.value)			
+		});
+		
+		let body = $('#exampleModal .modal-body');
+		let chk = body.find('input[name="mngr"]:checked');
+		
+		if(chk.length == 0) return;
+		
+		let swalMsg = '해당사원의 소속부서도 변경됩니다.';
+		let index = mngrlist.indexOf(chk.val());
+		if(index != -1) {
+			swalMsg = '해당사원은 이미 부서장입니다.<br>부서장을 변경할까요?';
+			mngrFlag = true;
+		}
+		
+	 	Swal.fire({
+			title: '',
+			html: swalMsg,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: '확인',
+			cancelButtonText: '취소',
+			reverseButtons: true, // 버튼 순서 거꾸로	
+			willOpen: (popup) => { // 스윗얼럿이 모달뒤로 숨는것 방지.
+                popup.style.zIndex = '2000';
+                document.querySelectorAll('.swal2-container').forEach((el) => {
+                    el.style.zIndex = '2000';
+                });
+            }
+		})
+		.then((result) => {
+			if (result.isConfirmed) {
+				
+				$('#dmngr').val('');
+				$('#dmngr').next('span').remove();
+				
+				$('#dmngr').val(chk.val()).attr('type', 'hidden');
+				let mngr = chk.closest('label');
+				let creTag = $('<span></span>').text(mngr.text());
+				$('#dmngr').after(creTag);
+				
+				Swal.fire({
+			    	  icon: 'info',               
+					  text: '부서장 선택완료',
+					  confirmButtonText: '확인'
+				});
+				
+				myModal.hide();
+			}
+		})
+		//body.children().remove();		
+	})
+	
+	// 취소버튼.
+	$('.dept-reset').on('click', function(e) {
+		location.reload();
+	})
+	// 저장버튼.
+	$('.dept-insert').on('click', function(e) {
+		
+		setTimeout(() => {
+			if(!validation()) return;	// 유효성확인.
+			
+			Swal.fire({
+				title: '부서를 새롭게 등록할까요?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '등록',
+				cancelButtonText: '취소',
+				reverseButtons: true	
+			})
+			.then((result) => {
+				if (result.isConfirmed) {
+					insertAjax();// ajax.
+				}
+			})
+			
+	    }, 300);
+		
+	})
+	
+	/* -------------정의된 함수들--------------- */
+	// 부서명 입력 및 중복체크 했는지 확인하는 함수정의.
+	const firstCheckt = function() {
+		console.log('firstCheckt')
+		if(!dnameFlag) {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서명부터 확인해주세요',
+				  confirmButtonText: '확인'
+			});
+			return false;
+		}
+		return true;
+	}
+	
+	// 부서명 중복체크 함수정의.
+	const dnameCheck = function(dname) {
+		console.log('dnameCheck func.')	
+		
+		return new Promise((resolve, reject) => {
+			let cno = $('#cno').val();
+			
+			console.log('ajax - dname check.')
+			$.ajax({
+				type : 'GET',
+				url	 : 'dnameCheck?dname=' + dname,
+				beforeSend: function(xhr) {
+			        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+			    },
+			    dataType: 'text'
+			})
+			.done(result => resolve(result))
+			.fail(err =>reject(err));
+		})
+	}
+	
+	//부서장급 사원 불러오기 모달 함수정의.
+	const showMngrModal = function() {
+		
+		myModal.show();
+        
+        $('#exampleModal .modal-body').html('');
+        
+        let copy1 = $('div.spinner-copy').clone();
+        let copy2 = $('span.spinner-copy').clone();
+        copy1.append(copy2);
+        $('#exampleModal .modal-body').html(copy1);
+        
+		let listDiv = $('.list-copy');
+		let label = listDiv.find('label');
+		let input = label.find('input');
+		
+		let copyDiv = listDiv.clone();
+		let copyLabel = label.clone();
+		let copyInput = input.clone();
+		copyLabel.append(copyInput);
+		
+		$.ajax({
+			type : 'GET',
+			url	 : 'dept/mngrs',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+		    dataType: 'json'
+		})
+		.done(result => {
+			
+			copyDiv.children().remove();
+			
+			result.forEach((val,idx) => {
+				
+				copyLabel.text(" " + val.deptName + " " + val.empName + " " + val.jobTitle);
+				copyInput.val(val.empId)
+				
+				copyLabel.prepend(copyInput);
+				copyDiv.append(copyLabel);
+				
+				copyLabel = label.clone();
+				copyInput = input.clone();
+				
+			})
+			
+			$('#exampleModal .modal-body').html(copyDiv);
+			
+			console.log('modal ajax.');
+		})
+		.fail(err => console.error(err));
+		
+	}//showMngrModal end.
+	
+	// validation check 함수정의.
+	const validation = function() {
+		console.log('validation')
+		if($('#dname').val() == '') {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서명 필수입력',
+				  confirmButtonText: '확인'
+			});
+			$('#dname').focus();
+			return false;
+		} else if(!dnameFlag) {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '중복된 부서명',
+				  confirmButtonText: '확인'
+			});
+			$('#dname').focus();
+			return false;
+		} else if($('span.juso1').text() == '') {
+			Swal.fire({
+		    	  icon: 'info',               
+				  title: '부서소재지 필수',
+				  text: '주소입력 버튼을 클릭하여 주소를 입력해주세요.',
+				  confirmButtonText: '확인'
+			});
+			return false;
+		}
+		return true;
+	}
+	
+	// 부서 insert ajax 함수정의
+	const insertAjax = function() {
+		console.log('insertAjax')
+		
+		// 데이터담기.
+		let param = {};
+		let deptName = $('#dname').val();
+		let deptLoc = `${$('span.juso1').text()}${$('span.juso2').text()} (${$('#empAddr1').val()})`;
+		let deptInfo = $('#dinfo').val();
+		let deptMngr = $('#dmngr').val();
+		if(deptMngr == '조회 >>') deptMngr = '';
+		param = {deptName, deptLoc, deptInfo, deptMngr, mngrFlag}
+			
+		// 아작스전송
+		$.ajax('dept', {
+			type: 'post',
+			data : JSON.stringify(param),
+			contentType : 'application/json',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+			dataType : 'text'
+		})
+		.done(insertResult => {
+			
+			if(insertResult == 'OK') {
+				Swal.fire({
+					position: "center",
+					icon: 'success',
+				    title: "부서 등록 완료!"
+				})
+				.then((ret) => {
+					if(ret.value){
+						location.reload();
+					}
+				})				
+			} else {
+				Swal.fire({
+					position: "center-center",
+		    		icon: "error",
+		    		title: "부서 등록 실패!"
+		    	})				
+			}
+			
+		})
+		.fail(err => console.error(err));
+		
+	}// insertAjax end.
+	
+	// 부서 update ajax 함수정의
+	const updateAjax = function(did) {
+		console.log('updateAjax')
+		
+		// 데이터담기.
+		let param = {};
+		
+		let deptId = did;
+		let deptName = firstDname == $('#dname').val() ? '' : $('#dname').val();
+		let deptLoc =  firstLoc == $('span.juso1').text() ?  '' : `${$('span.juso1').text()}${$('span.juso2').text()} (${$('#empAddr1').val()})`;
+		let deptInfo = firstInfo == $('#dinfo').val() ? '' : $('#dinfo').val();
+		let deptMngr = firstMngr == $('#dmngr').val() ? '' : $('#dmngr').val();
+		//if(deptMngr == '') deptMngr = '';
+		if(deptName == '' && deptLoc == '' && deptInfo == '' && deptMngr == ''){
+			console.log('...')
+			Swal.fire({
+				position: "center",
+				icon: 'info',
+			    title: "수정한 내용이 없습니다!"
+			})
+			
+			return;
+		}
+		
+		param = {deptId, deptName, deptLoc, deptInfo, deptMngr, mngrFlag}
+		console.log('updateAjax---')
+		// 아작스전송
+		$.ajax({
+			url: 'dept/' + did,
+			type: 'put',
+			data : JSON.stringify(param),
+			contentType : 'application/json',
+			beforeSend: function(xhr) {
+		        xhr.setRequestHeader(header, token); // 헤더에 CSRF 토큰 추가
+		    },
+			dataType : 'text'
+		})
+		.done(updateResult => {
+			
+			if(updateResult == 'OK') {
+				Swal.fire({
+					position: "center",
+					icon: 'success',
+				    title: "부서 수정 완료!"
+				})
+				.then((ret) => {
+					if(ret.value){
+						location.reload();
+					}
+				})				
+			} else {
+				Swal.fire({
+					position: "center",
+		    		icon: "error",
+		    		title: "부서 수정 실패!"
+		    	})				
+			}
+			
+		})
+		.fail(err => console.error(err));
+		
+	}// insertAjax end.
+	
+	const timeout = (timeToDelay, blurEvent) => {
+		return new Promise((resolve) => {
+			setTimeout(() => {
+				let span = $('<span></span>');
+				if(blurEvent == 0) {
+					span.text('부서명 확인완료.').css('color', 'blue').addClass('dnamechk');
+					$("#dname").after(span);
+					dnameFlag = true;
+				} else if (blurEvent > 0) {
+					span.text('중복된 부서명입니다.').css('color', 'red').addClass('dnamechk');
+					$("#dname").after(span);
+					dnameFlag = false;
+				} 
+				resolve('cmplt');
+		    }, timeToDelay)
+		}) 
+	} 
+		
+	
+	
+}) // end.
+
+
+
+
+
+
 
 </script>
 

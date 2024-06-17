@@ -20,4 +20,6 @@ public class TaskEmpsVO {
 	private String codeName;
 	private String flag;
 	
+	private String prjtId;
+	
 }

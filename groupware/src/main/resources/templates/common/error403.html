@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<body>
+	<th:block layout:fragment="Content">
+	<div>
+		
+	</div>
+	<script>
+		$(document).ready(function(){
+			Swal.fire({
+				icon: 'error',               
+			  	title: '권한이 없는 페이지입니다.',    
+			  	text: '', 
+			}).then((result) => {
+	           	window.location.href = "/home";
+			});
+		});
+	</script>
+	</th:block>
+</body>
+</html>

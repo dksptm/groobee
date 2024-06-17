@@ -12,9 +12,9 @@ import com.samjo.app.project.service.TaskEmpsVO;
 public interface TaskMapper {
 	
 		// 업무 조회
-		public List<ProjectVO> selectTaskAllList(SearchVO searchVO);
+		public List<ProjectVO> selectTaskAllList(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 		// 업무 페이징
-		public int taskCount(SearchVO searchVO);
+		public int taskCount(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 		//  업무 등록
 		public int insertTask(@Param("pj") ProjectVO projectVO);
 		
@@ -42,9 +42,9 @@ public interface TaskMapper {
 		public int modifyTask(ProjectVO projectVO);
 		
 		// 협력업체 조회
-		public List<ProjectVO> selectCoopCoAllList(SearchVO searchVO);
+		public List<ProjectVO> selectCoopCoAllList(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 		// 협력업체 페이징
-		public int coCount(SearchVO searchVO);
+		public int coCount(@Param("sch")SearchVO searchVO,  @Param("cno")String custNo);
 		// 협력업체 등록
 		public int insertCoop(ProjectVO projectVO);
 		// 협력업체 단건

@@ -9,9 +9,9 @@ import com.samjo.app.emp.service.EmpVO;
 public interface TaskService {
 	// 프로젝트 하위 - (프로젝트)업무 //
 	//  업무 조회 
-	public List<ProjectVO> taskAllList(SearchVO searchVO);
+	public List<ProjectVO> taskAllList(SearchVO searchVO, String custNo);
 	//  업무 페이징
-	public int count(SearchVO searchVO);
+	public int count(SearchVO searchVO, String custNo);
 	//  업무 단건조회
 	public ProjectVO taskInfo(int taskNo);
 	//  업무 등록
@@ -26,9 +26,9 @@ public interface TaskService {
 	public Map<String, Object> taskModify(ProjectVO projectVO);
 	
 	// 협력업체 조회
-	public List<ProjectVO> CoopCoAllList(SearchVO searchVO);
+	public List<ProjectVO> CoopCoAllList(SearchVO searchVO, String custNo);
 	// 협력업체 페이징
-	public int coCount(SearchVO searchVO);
+	public int coCount(SearchVO searchVO, String custNo);
 	// 협력업체 등록
 	public int coopInsert(ProjectVO projectVO);
 	// 협력업체 단건조회

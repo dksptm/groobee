@@ -15,37 +15,38 @@
 						<div style="text-align: center;">
 							<button type="button"
 								th:onclick="|location.href='@{/cust/prjtInsert}'|"
-								class="btn btn-light">프로젝트 등록</button>
+								class="btn btn-secondary">프로젝트 등록</button>
 							<button type="button"
 								th:onclick="|location.href='@{/cust/taskInsert}'|"
-								class="btn btn-light">프로젝트 업무등록</button>
+								class="btn btn-secondary">프로젝트 업무등록</button>
 						</div>
 						<br><br>
-						<table id="taskForm" class="table table-bordered border-2 col-12 table">
+						<table id="taskForm" class="table table-bordered col-12 table">
 							<tr>
-								<th style="font-size:15px">프로젝트</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">프로젝트</th>
 								<td><select class="form-select" style="width: 200px"
 									th:field="*{standardNo}" id="prjtName" >
 										<option value="">프로젝트명</option>
 										<option th:each=" plist : ${pjlist}"
-											th:value="${plist.prjtId}" th:text="${plist.prjtName}"></option>
+											th:value="${plist.prjtId}" th:text="${plist.prjtName}" 
+											th:if="${plist.prjtStat} != '프로젝트완료'"></option>
 								</select></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">업무명</th>
-								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName"></td>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">업무명</th>
+								<td><input type="text" th:field="*{taskName}" style="width: 200px" id="taskName" class="form-control"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">부서명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서명</th>
 								<td><select class="form-select" style="width: 200px"
-									th:field="*{deptId}">
+									th:field="*{deptId}" id="deptId" >
 										<option value="">부서명</option>
 										<option th:each=" dept : ${dept}" th:value="${dept.deptId}"
 											th:text="${dept.deptName}"></option>
 								</select></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">부서참여인원</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서참여인원</th>
 								<td><button type="button" class="btn btn-primary"
 										id="deptEmpBtn" data-bs-toggle="modal"
 										data-bs-target="#deptEmpModal">선택</button>
@@ -54,20 +55,20 @@
 									</table>
 							</tr>
 							<tr>
-								<th style="font-size:15px">시작일</th>
-								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt"></td>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">시작일</th>
+								<td><input type="date" th:field="*{taskStartDt}" id="taskStartDt" class="form-control" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">마감일</th>
-								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt"></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">마감일</th>
+								<td><input type="date" th:field="*{taskDueDt}" id="taskDueDt" class="form-control" style="width: 200px"></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">업무목적</th>
-								<td><textarea cols="50" th:field="*{taskPurpose}"></textarea></td>
+								<th class="fw-bold col-2 text-white " style="background-color: #3F72AF">업무목적</th>
+								<td><textarea cols="50" th:field="*{taskPurpose}" class="form-control" ></textarea></td>
 							</tr>
 							<tr>
-								<th style="font-size:15px">내용</th>
-								<td><textarea cols="50" th:field="*{taskCntn}"></textarea></td>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">내용</th>
+								<td><textarea cols="50" th:field="*{taskCntn}" class="form-control"></textarea></td>
 							</tr>
 						</table>
 						<br>
@@ -91,15 +92,16 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
 							aria-label="Close"></button>
 					</div>
+					<br>
 					<table class="table table-light table-sm">
 						<thead>
 							<tr>
-								<th>부서번호</th>
-								<th>부서명</th>
-								<th>직급명</th>
-								<th>사원이름</th>
-								<th>사원번호</th>
-								<th>선택</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서번호</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">부서명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">직급명</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">사원이름</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">사원번호</th>
+								<th class="fw-bold col-2 text-white" style="background-color: #3F72AF">선택</th>
 							</tr>
 						</thead>
 						<tbody id="empList">
@@ -111,7 +113,7 @@
 									<td>[[ ${emp.empName} ]]</td>
 									<td>[[ ${emp.empId} ]]</td>
 									<td><input class="form-radio-input" type="checkbox"
-										name="empCheck"></td>
+										name="empCheck" id="empCheck"></td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -129,6 +131,7 @@
 
 
 		<script th:inline="javascript">
+		
 		const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
 		const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 	
@@ -158,6 +161,7 @@
 				  $.each(this.serializeArray(), extend)
 				  return result
 				}
+			
 			
 			let deptEmp = [];
 			
@@ -257,19 +261,38 @@
 			});
 			
 			
+			
+			// 마감일 선택 시 시작일 이전 날짜는 선택할 수 없도록 함
+			$('#taskDueDt').on('change', function() {
+				let startDate = $('#taskStartDt').val();
+				let dueDate = $(this).val();
+
+			    let startDateObj = new Date(startDate);
+			    let dueDateObj = new Date(dueDate);
+
+
+			    if (dueDateObj < startDateObj) {
+			        Swal.fire({
+			            title: '날짜 선택 오류',
+			            text: '마감일은 시작일 이후로 선택해주세요.',
+			            icon: 'error'
+			        });
+			        $(this).val('');
+			    }
+			 });
+	
 			// 등록 전 체크
 			function validationCheck() {
 				
-				if($('input[name="standardNo"]').val() == 'no-data') {
+				if($('select[name="standardNo"]').val() == '') {
 					Swal.fire({
 						title:  '프로젝트명 입력 필요!',        
-						text:  '프로젝트명은 필수로 선택해야합니다.',  
+						text:  '프로젝트명은 필수로 입력해야합니다.',  
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						standardNo.focus();               
 					});
-					pname.focus();
 					return false; 
 				} 
 				
@@ -281,12 +304,34 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						tname.focus();              
 					});
-					tname.focus();
 					return false; 
 				}
 				
+				if($('select[name="deptId"]').val() == '') {
+					Swal.fire({
+						title:  '입력확인',        
+						text:  '부서명은 필수로 선택해야합니다.',  
+						icon:  'error' 
+					})
+					.then(function(){
+						deptId.focus();     
+					});
+					return false; 
+				}
+				
+		/* 		let deptEmpTr = $("#deptEmpList tr");
+
+				if (deptEmpTr.length === 0) {
+				    Swal.fire({
+				        title: '부서원을 선택하세요.',
+				        text: '부서원을 선택해야합니다.',
+				        icon: 'error'
+				    });
+				    return; 
+				} 
+				 */
 				let startdt = document.getElementById('taskStartDt');
 				if(startdt.value == '') {
 					Swal.fire({
@@ -295,13 +340,12 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						startdt.focus();              
 					});
-					name.focus();
 					return false;
 				}
 				
-				let duedt = document.getElementById('taskStartDt');
+				let duedt = document.getElementById('taskDueDt');
 				if(duedt.value == '') {
 					Swal.fire({
 						title:  '입력확인',        
@@ -309,38 +353,12 @@
 						icon:  'error' 
 					})
 					.then(function(){
-						location.reload(true);                  
+						duedt.focus();                
 					});
-					name.focus();
 					return false;
 				}
 				
-/* 				let dname = document.getElementById('dname');
-				if(dname.value == '') {
-					Swal.fire({
-						title:  '부서명 선택 필요!,        
-						text:  '부서명은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				}
-				let demp = document.getElementById('demp');
-				if(name.value == '') {
-					Swal.fire({
-						title:  '부서인원 선택 필요!',        
-						text:  '부서인원은 필수로 선택해야합니다.',  
-						icon:  'error' 
-					})
-					.then(function(){
-						location.reload(true);                  
-					});
-					name.focus();
-					return false;
-				} */
+				
 				return true;
 			};
 			

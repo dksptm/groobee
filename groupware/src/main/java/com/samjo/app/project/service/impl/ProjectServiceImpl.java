@@ -29,13 +29,13 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override // 프로젝트 전체조회
-	public List<ProjectVO> PrjtAllList(SearchVO searchVO) {
-		return projectMapper.selectPrjtAllList(searchVO);
+	public List<ProjectVO> PrjtAllList(SearchVO searchVO, String custNo) {
+		return projectMapper.selectPrjtAllList(searchVO,custNo);
 	}
 	
 	@Override // 프로젝트 페이징
-	public int count(SearchVO searchVO) {
-		return projectMapper.prjtCount(searchVO);
+	public int count(SearchVO searchVO, String custNo) {
+		return projectMapper.prjtCount(searchVO,custNo);
 	}
 	
 	@Override // 프로젝트 단순조회 taskInsert용
@@ -44,8 +44,8 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override // 프로젝트 단건조회
-	public ProjectVO prjtInfo(String prjtId) {
-		return projectMapper.selectPrjt(prjtId);
+	public ProjectVO prjtInfo(String prjtId, String custNo) {
+		return projectMapper.selectPrjt(prjtId,custNo);
 	}
 	
 	@Override // 프로젝트 등록

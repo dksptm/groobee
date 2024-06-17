@@ -4,13 +4,16 @@
 	layout:decorate="~{common/layouts/default_layout}">
 <body>
 	<th:block layout:fragment="Content">
-		<div class="d-flex justify-content-center">
-			<div style="min-width:880px" class="card my-4 col-10">
-				<h5 class="card-header">계약 현황</h5>
+		<div class="container-xxl flex-grow-1">
+		<div class="flex-xl-nowrap row">
+		<div class="row">
+			<div class="row mt-3 pt-3">
+				<h2 class="ms-3">계약 현황</h2>
+			</div>
+			<div style="min-width:880px" class="card my-2">
 				<div class="card-body ">
 
 					<!-- 검색 -->
-					<p class="navbar-brand">검색조건</p>
 					<nav class="navbar navbar-expand-lg navbar-light">
 						<div class="container-fluid">
 							<!-- <button class="navbar-toggler" type="button"
@@ -39,8 +42,8 @@
 												<option value="0A2a">계약종료</option>
 										</select></td>
 										<td>
-										<button class="btn btn-outline-success searchbtn bg-light"
-										type="submit">검색</button>
+										<button class="btn btn-info searchbtn"
+										type="submit">검&emsp;색</button>
 										</td>
 									</tr>
 									<tr>
@@ -61,6 +64,10 @@
 												<option value="ct.ct_end_dt">계약종료일순</option>
 												<option value="ct.ct_end_dt DESC">계약종료일역순</option>
 										</select></td>
+										<td>
+										<button class="btn btn-secondary"
+										type="reset" th:onclick="|location.href='@{/sol/ctList}'|">초기화</button>
+										</td>
 									</tr>
 								</table>
 								<!-- <span class="position-absolute top-50 end-0 translate-middle-y">
@@ -73,16 +80,16 @@
 					<div id="ctTable">
 						<!-- 계약 목록 출력 -->
 						<div class="table-responsive">
-							<table class="table table-hover">
+							<table class="table table-hover text-center">
 								<thead>
-									<tr class="table-secondary">
-										<th>계약번호</th>
-										<th>고객번호</th>
-										<th>상호명</th>
-										<th>계약금액</th>
-										<th>계약상태</th>
-										<th>계약시작일</th>
-										<th>계약종료일</th>
+									<tr style="background-color:#3F72AF;">
+										<th class="text-white">계약번호</th>
+										<th class="text-white">고객번호</th>
+										<th class="text-white">상호명</th>
+										<th class="text-white">계약금액</th>
+										<th class="text-white">계약시작일</th>
+										<th class="text-white">계약종료일</th>
+										<th class="text-white">계약상태</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -92,11 +99,11 @@
 											<td>[[ ${CtVO.custNo} ]]</td>
 											<td>[[ ${CtVO.custName} ]]</td>
 											<td>[[ ${CtVO.ctAmt} ]]</td>
-											<td
-												th:class="${CtVO.ctStat == '0A2a' ? 'table-secondary' : ''}">
-												[[ ${CtVO.ctStatName} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctStartDt, "yyyy-MM-dd")} ]]</td>
 											<td>[[ ${#dates.format(CtVO.ctEndDt, "yyyy-MM-dd")} ]]</td>
+											<td
+												th:class="${CtVO.ctStat == '0A2a' ? 'table-danger' : 'table-success'}">
+												[[ ${CtVO.ctStatName} ]]</td>
 										</tr>
 									</th:block>
 								</tbody>
@@ -136,6 +143,8 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		</div>
 		</div>
 
 		<script>

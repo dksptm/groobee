@@ -12,4 +12,7 @@ public class WorkManagerSearchVO {
 	private String empId;
 	private boolean prev, next;
 	private int totalCnt;
+	private String permId;
+	private String custNo;
+	private String deptId;
 }

@@ -4,54 +4,62 @@
 	layout:decorate="~{common/layouts/default_layout}">
 
 <th:block layout:fragment="Content">
-
-<div class="container container-p-y mt-3">
-	<h2>상시업무 상세조회</h2>
-<div class="bg-light p-3">
+<div class="d-flex justify-content-center">
+<div class="card my-4 col-10">
+	<h5 class="card-header">생성된 상시업무 - 상세</h5>
+<div class="card-body">
 <div class="table-responsive">
 	
 	<table class="table table-bordered text-center">
+		<thead>
 		<tr>
-			<td class="fw-bold col-2">업무번호</td>
-				<td>[[ ${regu.taskNo} ]]</td>
-			<td class="fw-bold col-2">업무명</td>
-				<td>[[ ${regu.taskName} ]]</td>
-			<td class="fw-bold col-2">진행도</td>
-				<td>[[ ${regu.progress} ]] %</td>
-		</tr>
-		<tr>
-			<td class="fw-bold">부서명</td>
-				<td>[[ ${regu.deptName} ]]</td>
-			<td class="fw-bold">책임자</td>
-				<td>[[ ${regu.respEmpName} ]]</td>
-			<td class="fw-bold" th:attr="data-pmat=${regu.prjtMat}">업무상태</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무명</th>
+				<td class="col-3">[[ ${regu.taskName} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무번호</th>
+				<td class="col-3">[[ ${regu.taskNo} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;" th:attr="data-pmat=${regu.prjtMat}">업무상태</th>
 				<th:block th:switch="${regu.prjtMat}">
 					<td th:case="5B1b" class="table-primary">[[ ${regu.matName} ]]</td>
 					<td th:case="5B2b" class="table-success">[[ ${regu.matName} ]]</td>
-					<td th:case="5B3b" class="table-warning">[[ ${regu.matName} ]]</td>
+					<td th:case="5B3b" class="table-secondary">[[ ${regu.matName} ]]</td>
 					<td th:case="5B4b" class="table-danger">[[ ${regu.matName} ]]</td>
 				</th:block>
 		</tr>
 		<tr>
-			<td class="fw-bold">개요</td>
-				<td colspan="4">[[ ${regu.taskPurpose} ]]</td>
-			<td>[[${regu.creType}]] <span class="cre-perd">[[${regu.crePerd}]]</span></td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">개요</th>
+				<td colspan="5">[[ ${regu.taskPurpose} ]]</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">목적</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">목적</th>
 				<td colspan="5">[[ ${regu.taskCntn} ]]</td>
 		</tr>
 		<tr>
-			<td class="fw-bold">시작</td>
-				<td colspan="2">[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd  a hh:mm')} ]]</td>
-			<td class="fw-bold">마감</td>
-				<td colspan="2">[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd  a hh:mm')} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">부서명</th>
+				<td>[[ ${regu.deptName} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">책임자</th>
+				<td>[[ ${regu.respEmpName} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">업무주기</th>
+				<td>[[${regu.creType}]] <span class="cre-perd">[[${regu.crePerd}]]</span></td>
 		</tr>
-		
+		<tr>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">시작</th>
+				<td>[[ ${#dates.format(regu.taskStartDt, 'yy-MM-dd  a hh:mm')} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">마감</th>
+				<td>[[ ${#dates.format(regu.taskDueDt, 'yy-MM-dd  a hh:mm')} ]]</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">진행도</th>
+				<th:block th:switch="${regu.prjtMat}">
+					<td th:case="5B1b" class="table-primary">[[ ${regu.progress} ]] %</td>
+					<td th:case="5B2b" class="table-success">[[ ${regu.progress} ]] %</td>
+					<td th:case="5B3b" class="table-secondary">[[ ${regu.progress} ]] %</td>
+					<td th:case="5B4b" class="table-danger">[[ ${regu.progress} ]] %</td>
+				</th:block>
+		</tr>
+		</thead>
+		<tbody>
 		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
 		<tr th:if="${#authentication.principal.permId} == '1C2c' or 
 					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
-			<td class="fw-bold">담당자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">담당자</th>
 			<td colspan="4" class="regu-task-emps">
 				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
 					<div class="input-group-text" th:attr="data-teid=${te.taskEmpId}">
@@ -64,13 +72,13 @@
 						   th:classappend="${te.cmplt == '5F1f'} ? 'text-primary' : ' '" readonly />
 				</div>
 			</td>
-			<td>
+			<td style="border-left:hidden;" class="dddd">
 				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
 			</td>
 		</tr>
 		<tr th:unless="${#authentication.principal.permId} == '1C2c' or 
 					(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
-			<td class="fw-bold">담당자</td>
+			<th class="col-1 text-white" style="background-color:#3F72AF;">담당자</th>
 			<td colspan="4" class="regu-task-emps">
 				<div class="input-group mb-3" th:each="te : ${regu.taskEmps}">
 					<th:block th:if="${te.taskEmpId} == ${#authentication.principal.empId}">
@@ -95,36 +103,37 @@
 					</th:block>
 				</div>
 			</td>
-			<td>
+			<td style="border-left:hidden;" class="dddd">
 				<button type="button" class="btn btn-success regu-emp-ok-btn">완료여부 저장</button><br>
 			</td>
 		</tr>
+		</tbody>
 		<!------------------------------------------권한별, 로그인별 다름-------------------------------------------------->
 	</table>
 	
-	<div class="d-flex justify-content-between">
-		<button type="button" class="btn btn-primary ms-3 mb-3"
+	<div class="d-flex justify-content-between mt-3">
+		<button type="button" class="btn btn-primary mb-3"
 				th:onclick="|location.href='@{list}'|">목록으로</button>
 		<th:block th:if="${#authentication.principal.permId} == '1C2c' or 
 				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
-		<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서보기▽</button>
+		<button type="button" class="btn btn-secondary mb-3 doc-toggle-btn">연결문서보기 ▽</button>
 		</th:block>
 	</div>
 	<div th:if="${#authentication.principal.permId} == '1C2c' or 
 				(${#authentication.principal.permId} == '1C3c' and ${#authentication.principal.deptId} == ${regu.deptId})">
 	<!-- 연결된 문서들 -->
-	<div class="collapse bg-light pt-2 doc-toggle-area">
+	<div class="collapse pt-2 doc-toggle-area">
 		<th:block th:if="${#arrays.length(docs)} != 0">
 		<table class="table table-hover text-center">
-			<thead class="table-dark">
+			<thead style="background-color:#3F72AF;">
 				<tr>
-					<td>문서번호</td>
-					<td>문서종류</td>
-					<td>제목</td>
-					<td>기안자</td>
-					<td>문서상태</td>
-					<td>작성일자</td>
-					<td>완료일자</td>
+					<th class="text-white">문서번호</th>
+					<th class="text-white">문서종류</th>
+					<th class="text-white">제목</th>
+					<th class="text-white">기안자</th>
+					<th class="text-white">작성일자</th>
+					<th class="text-white">완료일자</th>
+					<th class="text-white">문서상태</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -134,14 +143,14 @@
 					<td>[[ ${doc.tempName} ]]</td>
 					<td>[[ ${doc.title} ]]</td>
 					<td>[[ ${doc.draftName} ]]</td>
-					<th:block th:switch="${doc.docStat}">
-						<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
-						<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
-						<td th:case="4B4b" class="table-warning">[[ ${doc.docStatName} ]]</td>
-					</th:block>
 					<td>[[ ${#dates.format(doc.draftDt, 'yyyy-MM-dd')} ]]</td>
 					<td th:if="${doc.cmpltDt == null}"> - </td>
 					<td th:unless="${doc.cmpltDt == null}">[[ ${#dates.format(doc.cmpltDt, 'yyyy-MM-dd')} ]]</td>
+					<th:block th:switch="${doc.docStat}">
+						<td th:case="4B2b" class="table-primary">[[ ${doc.docStatName} ]]</td>
+						<td th:case="4B3b" class="table-success">[[ ${doc.docStatName} ]]</td>
+						<td th:case="4B4b" class="table-danger">[[ ${doc.docStatName} ]]</td>
+					</th:block>
 				</tr>
 				</th:block>
 			</tbody>
@@ -153,6 +162,7 @@
 	</div>
 	</div>	
 		
+</div>
 </div>
 </div>
 </div>
@@ -175,7 +185,7 @@
 		}
 		
 		// 마감기간 지나면(업무미완성) -> 업무완료 못하게.
-		if($('td[data-pmat]').data('pmat') == '5B4b') {
+		if($('th[data-pmat]').data('pmat') == '5B4b') {
 			$('.regu-task-emps').find('input').prop('disabled', true);
 			$('button.regu-emp-ok-btn').prop('disabled', true);
 		}

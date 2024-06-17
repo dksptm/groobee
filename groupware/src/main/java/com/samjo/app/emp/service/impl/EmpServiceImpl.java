@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.samjo.app.common.service.SearchVO;
+import com.samjo.app.cust.service.CustVO;
 import com.samjo.app.emp.mapper.DeptMapper;
 import com.samjo.app.emp.mapper.EmpMapper;
 import com.samjo.app.emp.service.DeptVO;
@@ -77,6 +78,11 @@ public class EmpServiceImpl implements EmpService {
 		return empMapper.countEmpAll(custNo, search);
 	}
 	
+	@Override
+	public CustVO empMaxCur(String custNo) {
+		return empMapper.selectEmpMaxCur(custNo);
+	}
+	
 	// 사원등록 위한 부서조회
 	@Override
 	public List<DeptVO> insertFormDepts(EmpVO empVO) {
@@ -89,8 +95,8 @@ public class EmpServiceImpl implements EmpService {
 	}
 	// 사원등록 위한 사번중복체크
 	@Override
-	public int idCheck(String eno, String cno) {
-		return empMapper.countEno(eno, cno);
+	public int idCheck(String empId, String custNo) {
+		return empMapper.countEno(empId, custNo);
 	}
 	
 	// 사원등록.
@@ -138,6 +144,7 @@ public class EmpServiceImpl implements EmpService {
 		
 		return eid;
 	}
+
 
 
 }

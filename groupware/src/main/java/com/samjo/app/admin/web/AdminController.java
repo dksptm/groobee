@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +34,7 @@ public class AdminController {
 	PayService payservice;
 	@Autowired
 	JobService jobService;
-	
+
 	//결제·계약조회
 	@GetMapping("cust/admin/payAndCt")
 	public String payCtPage(SearchVO searchVO, Model model) {
@@ -69,38 +70,69 @@ public class AdminController {
 		return "admin/jobList";	
 	}
 	
+	//직급관리 상세조회 -> 데이터가 적어서 그냥 스크립트단에서 들고오기로 함
+	
+	//직급관리 등록
 	@ResponseBody
-	@PutMapping("cust/admin/JobInsert")
-	public String JobInsert(@RequestBody JobVO jobVO, Model model) {
-		//Object principal = authentication.getPrincipal();
-//		if (principal instanceof LoginUserVO) {
-//				LoginUserVO loginUserVO = (LoginUserVO) principal;
-//				String custNo = loginUserVO.getCustNo();
-//				
-//		jobVO.setCustNo(custNo);
+	@PostMapping("cust/admin/jobInsert")
+	public String JobInsert(@RequestBody JobVO jobVO, Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+			LoginUserVO loginUserVO = (LoginUserVO) principal;
+			String custNo = loginUserVO.getCustNo();
+			jobVO.setCustNo(custNo);
+		}
+			
 		int jNo = jobService.jobInsert(jobVO);
-		String uri = "admin/JobList";
-		
+		String uri = "";
 		if (jNo > -1) {
-			uri = "true";
+			uri = "admin/jobList";
 		} else {
-			uri = "false";
+			uri = "/";
 		}
 		return uri;
 	}
 	
+	//직급관리 수정
 	@ResponseBody
-	@PutMapping("cust/admin/JobUpdate")
-	public String JobUpdate(@RequestBody JobVO jobVO) {
-		
-		return "admin/JobList";
+	@PutMapping("cust/admin/jobUpdate")
+	public String JobUpdate(@RequestBody JobVO jobVO, Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+			LoginUserVO loginUserVO = (LoginUserVO) principal;
+			String custNo = loginUserVO.getCustNo();
+			jobVO.setCustNo(custNo);
+		}
+			
+		int jNo = jobService.jobUpdate(jobVO);
+		String uri = "";
+		if (jNo > -1) {
+			uri = "admin/jobList";
+		} else {
+			uri = "/";
+		}
+		return uri;
 	}
 	
+	//직급관리 삭제
 	@ResponseBody
-	@DeleteMapping("cust/admin/JobDelete")
-	public String JobDelete(@RequestBody JobVO jobVO) {
-	
-		return "admin/JobList";
+	@DeleteMapping("cust/admin/jobDelete")
+	public String JobDelete(@RequestBody JobVO jobVO, Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof LoginUserVO) {
+			LoginUserVO loginUserVO = (LoginUserVO) principal;
+			String custNo = loginUserVO.getCustNo();
+			jobVO.setCustNo(custNo);
+		}
+			
+		int jNo = jobService.jobDelete(jobVO);
+		String uri = "";
+		if (jNo > -1) {
+			uri = "admin/jobList";
+		} else {
+			uri = "/";
+		}
+		return uri;
 	}
 	
 }

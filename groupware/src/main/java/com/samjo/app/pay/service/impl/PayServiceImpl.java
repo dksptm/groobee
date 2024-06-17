@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,7 @@ public class PayServiceImpl implements PayService{
 		return payMapper.payCount(searchVO);
 	}
 
-	/*결제처리 테스트*/
+	//결제처리
 	@Override
 	public String getToken() {
 		
@@ -77,8 +79,6 @@ public class PayServiceImpl implements PayService{
 		return restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
 	}
 
-	
-	
 	//최초정기결제 예약 및 DB생성
 	@Override
 	public String firstPay(String customer_uid, int ctNo, long merchant_uid) {
@@ -101,7 +101,7 @@ public class PayServiceImpl implements PayService{
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.MINUTE, +5);
+		cal.add(Calendar.MINUTE, +1);
 		payDay = cal.getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
@@ -147,27 +147,54 @@ public class PayServiceImpl implements PayService{
 		payVO.setPayExpcDt(payDay);
 		payVO.setMerchantUid(timestamp);
 		int result = payMapper.payInsert(payVO);
-		/* if(result == 1) {
-			schedulePay(customer_uid, price, ctNo);
-		}*/
+		
+		if(result == 1) {
+			Timer m_timer = new Timer();
+			TimerTask m_task = new TimerTask() {
+				@Override
+				public void run() {
+					List<PayVO> pList = payMapper.selectWaitPay();
+			    	if(pList != null) {
+			    		for(PayVO payVO: pList) {
+			    			String result = payResultCheck(payVO.getMerchantUid(), payVO.getCtNo());
+			    			if(result.equals("UPDATE")) {
+			    				if(ctMapper.selectCtPayCheck(payVO.getCtNo()) == 1) {
+			    					schedulePay(payVO.getCustNo(), payVO.getCtNo());
+			    				};
+			    			};
+			    		};
+			    	};
+				}
+			};
+			m_timer.schedule(m_task, 61000);
+		}
 		return response;
 	}
 	
-	//정기결제 예약 및 DB생성(현재 1시간단위)
+	//정기결제 예약 및 DB생성
 	@Override
 	public String schedulePay(String customer_uid, int ctNo) {
 		CtVO pCtVO = ctMapper.ctInfo(ctNo);
 		int price = pCtVO.getCtAmt();
+		Date ctPayDay = pCtVO.getCtPayDt();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
+		SimpleDateFormat sdfM = new SimpleDateFormat("yyyy/MM/", Locale.KOREA);
+		SimpleDateFormat sdfD = new SimpleDateFormat("dd HH:mm", Locale.KOREA);
 		
 		String token = getToken();
 		long timestamp = 0;
 		Calendar cal = Calendar.getInstance();
 		Date payDay;
-		cal.add(Calendar.HOUR, +1);
+		cal.add(Calendar.MONTH, +1);
 		payDay = cal.getTime();
+		String date = "";
+		if(ctPayDay != null) {
+			date = sdfM.format(payDay) + sdfD.format(ctPayDay);
+		}else {
+			date = sdf.format(payDay);
+		}
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.KOREA);
-		String date = sdf.format(payDay);
 		try {
 			Date stp = sdf.parse(date);
 			timestamp = stp.getTime()/1000;
@@ -207,7 +234,6 @@ public class PayServiceImpl implements PayService{
 		payVO.setPayExpcDt(payDay);
 		payVO.setMerchantUid(timestamp);
 		payMapper.payInsert(payVO);
-		System.out.println("정기결제 API응답 : " + response);
 		return response;
 	}
 
@@ -293,6 +319,7 @@ public class PayServiceImpl implements PayService{
 	public int custCount(String custNo) {
 		return payMapper.custPayCount(custNo);
 	}
+	
 	//이하 삭제예정 ========================================================================================================================
 	//dateStamp처리
 	@Override

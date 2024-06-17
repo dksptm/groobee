@@ -20,8 +20,7 @@ public class JobServiceImpl implements JobService {
 	//직급 전체조회 : 고객사가 관리하는 직급 정보 가져오기
 	@Override
 	public List<JobVO> getJobList(JobVO jobVO) {
-		//컨트롤러에 들어온 ajax정보를 jobVO에 집어넣고 매퍼 돌리기
-		
+
 		return jobMapper.getJobList(jobVO);
 	}
 
